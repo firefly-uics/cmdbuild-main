@@ -3,7 +3,14 @@ CMDBuild 2.4.3 (released YYYY/MM/DD)
 
 NEW FEATURES
 
- * Relations Graph: print
+ * Print dialog on Relations Graph: current card and relations report
+
+ * "Class" and "Activity" must not be visible within translations table and CSV export
+
+ * NextActivitySubsetId workflow metadata implementation
+
+ * Widget NavigationTree: destination class description added to tree nodes
+
 
  * Better performances when importing CSV data
 
@@ -11,8 +18,6 @@ NEW FEATURES
 FIXES
 
  * Gis: Fault on Geo Server Layers
-
- * Cannot see all cards using a default group between two groups when one has row privileges and the other no one
 
  * AdditionalActivityLabel metadata not correctly managed if relative attribute is not displayed in grid
 
@@ -29,6 +34,12 @@ FIXES
  * Classes UI history tab error
 
  * Wrong activity selection after going on completed state
+
+ * Workflow attachment tab translation variable error
+
+ * Activities not sorted
+
+ * GIS configurations problems while using comma as decimal separator
 
 
 
