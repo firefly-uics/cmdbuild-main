@@ -78,6 +78,12 @@ FIXES
 
  * Active task can be removed
 
+ * Fullscreen mode doesn't work in processes's UI
+
+ * Dashboards cannot be seen using "SuperUser" role when no permissions has been set
+
+ * Attachments within emails sent from Apple Mail are not stored
+
 
 
 
