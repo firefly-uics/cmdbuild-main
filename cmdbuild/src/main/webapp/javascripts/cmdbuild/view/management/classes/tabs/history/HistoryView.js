@@ -1,5 +1,10 @@
 (function () {
 
+	/**
+	 * @link CMDBuild.view.management.dataView.filter.panel.form.tabs.history.HistoryView
+	 *
+	 * @legacy
+	 */
 	Ext.define('CMDBuild.view.management.classes.tabs.history.HistoryView', {
 		extend: 'Ext.panel.Panel',
 

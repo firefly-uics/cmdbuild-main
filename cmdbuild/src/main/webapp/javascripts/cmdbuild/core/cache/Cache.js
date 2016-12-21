@@ -55,6 +55,7 @@
 		managedGroupsArray: [
 			CMDBuild.core.constants.Proxy.GENERIC, // Default
 			CMDBuild.core.constants.Proxy.CLASS,
+			CMDBuild.core.constants.Proxy.DATA_VIEW,
 			CMDBuild.core.constants.Proxy.GROUP,
 			CMDBuild.core.constants.Proxy.USER
 		],

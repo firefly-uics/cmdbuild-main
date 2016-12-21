@@ -1,20 +1,23 @@
 (function () {
 
+	/**
+	 * @deprecated CMDBuild.view.common.panel.gridAndForm.panel.common.filter.advanced.AdvancedView
+	 */
 	Ext.define('CMDBuild.view.management.workflow.panel.tree.filter.advanced.AdvancedView', {
 		extend: 'Ext.container.ButtonGroup',
 
 		/**
-		 * @cfg {CMDBuild.controller.common.panel.gridAndForm.panel.common.filter.advanced.Advanced}
+		 * @cfg {CMDBuild.controller.management.workflow.panel.tree.filter.advanced.Advanced}
 		 */
 		delegate: undefined,
 
 		/**
-		 * @property {CMDBuild.core.buttons.iconized.filter.SearchClear}
+		 * @property {CMDBuild.core.buttons.icon.filter.SearchClear}
 		 */
 		clearButton: undefined,
 
 		/**
-		 * @property {CMDBuild.core.buttons.iconized.filter.SearchSet}
+		 * @property {CMDBuild.core.buttons.icon.filter.SearchSet}
 		 */
 		manageToggleButton: undefined,
 
@@ -30,7 +33,7 @@
 		initComponent: function () {
 			Ext.apply(this, {
 				items: [
-					this.manageToggleButton = Ext.create('CMDBuild.core.buttons.iconized.filter.SearchSet', {
+					this.manageToggleButton = Ext.create('CMDBuild.core.buttons.icon.filter.SearchSet', {
 						enableToggle: true,
 						scope: this,
 
@@ -38,7 +41,7 @@
 							this.delegate.cmfg('onWorkflowTreeFilterAdvancedManageToggleButtonClick', state);
 						}
 					}),
-					this.clearButton = Ext.create('CMDBuild.core.buttons.iconized.filter.SearchClear', {
+					this.clearButton = Ext.create('CMDBuild.core.buttons.icon.filter.SearchClear', {
 						disabled: true,
 						scope: this,
 

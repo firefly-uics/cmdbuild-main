@@ -3,8 +3,6 @@
 	/**
 	 * Adapter
 	 *
-	 * @link CMDBuild.controller.management.common.CMModClassAndWFCommons
-	 *
 	 * @legacy
 	 */
 	Ext.define('CMDBuild.controller.management.workflow.panel.form.Form', {
@@ -139,9 +137,7 @@
 				this.tabPanel // as CMTabbedWidgetDelegate
 			);
 			this.widgetControllerManager = new CMDBuild.controller.management.common.CMWidgetManagerController(this.widgetManager);
-			var activityPanelController = new CMDBuild.controller.management.workflow.panel.form.tabs.activity.Activity(view, this, this.widgetControllerManager);
-
-			return activityPanelController;
+			return new CMDBuild.controller.management.workflow.panel.form.tabs.activity.Activity(view, this, this.widgetControllerManager);
 		},
 
 		/**
@@ -171,8 +167,6 @@
 		},
 
 		/**
-		 * @param {Boolean} isSuperActivity
-		 *
 		 * @returns {Void}
 		 */
 		onWorkflowFormActivitySelect: function () {
@@ -289,6 +283,8 @@
 				false,
 				Ext.isEmpty(node) ? null : node.get(CMDBuild.core.constants.Proxy.FILTER)
 			);
+
+			this.controllerTabActivity.changeClassUIConfigurationForGroup(this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.ID));
 
 			this.workflowFormPanelTabSelectionManage(true);
 		},

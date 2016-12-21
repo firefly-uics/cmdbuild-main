@@ -1,16 +1,18 @@
 (function () {
 
 	/**
-	 * Required cmfg methods:
-	 * 	- panelGridAndFormGridStoreGet
-	 * 	- panelGridAndFormGridStoreLoad
+	 * Required managed functions from upper structure:
+	 * 	- panelGridAndFormListPanelAppliedFilterGet
+	 * 	- panelGridAndFormListPanelFilterApply
+	 * 	- panelGridAndFormListPanelFilterClear
+	 * 	- panelGridAndFormListPanelGet
+	 * 	- panelGridAndFormListPanelStoreGet
+	 * 	- panelGridAndFormListPanelStoreLoad
 	 *
 	 * @abstract
 	 */
 	Ext.define('CMDBuild.controller.common.panel.gridAndForm.panel.grid.Grid', {
 		extend: 'CMDBuild.controller.common.abstract.Base',
-
-		requires: ['CMDBuild.core.constants.Proxy'],
 
 		/**
 		 * @cfg {CMDBuild.controller.common.panel.gridAndForm.GridAndForm}

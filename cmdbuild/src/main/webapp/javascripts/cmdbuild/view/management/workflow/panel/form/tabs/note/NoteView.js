@@ -79,6 +79,7 @@
 						border: false,
 						cls: 'x-panel-body-default-framed',
 						frame: false,
+						overflowY: 'auto',
 
 						items: [
 							this.displayField = Ext.create('Ext.form.field.Display', {
@@ -94,7 +95,7 @@
 		},
 
 		listeners: {
-			show: function(panel, eOpts) {
+			show: function (panel, eOpts) {
 				this.delegate.cmfg('onWorkflowFormTabNoteShow');
 			}
 		}

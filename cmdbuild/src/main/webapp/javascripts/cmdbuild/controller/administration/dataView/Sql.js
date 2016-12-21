@@ -5,9 +5,8 @@
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.core.Message',
-			'CMDBuild.proxy.dataView.Sql',
-			'CMDBuild.view.common.field.translatable.Utils'
+			'CMDBuild.proxy.administration.dataView.Sql',
+			'CMDBuild.controller.common.field.translatable.Utils'
 		],
 
 		/**
@@ -108,7 +107,7 @@
 			var params = {};
 			params[CMDBuild.core.constants.Proxy.ID] = selectedViewId;
 
-			CMDBuild.proxy.dataView.Sql.read({ // TODO: waiting for refactor (CRUD)
+			CMDBuild.proxy.administration.dataView.Sql.read({ // TODO: waiting for refactor (CRUD)
 				params: params,
 				scope: this,
 				success: function(response, options, decodedResponse) {
@@ -131,13 +130,13 @@
 				var formData = Ext.create('CMDBuild.model.dataView.sql.SelectedView',this.form.getData(true));
 
 				if (Ext.isEmpty(formData.get(CMDBuild.core.constants.Proxy.ID))) {
-					CMDBuild.proxy.dataView.Sql.create({
+					CMDBuild.proxy.administration.dataView.Sql.create({
 						params: formData.getData(),
 						scope: this,
 						success: this.success
 					});
 				} else {
-					CMDBuild.proxy.dataView.Sql.update({
+					CMDBuild.proxy.administration.dataView.Sql.update({
 						params: formData.getData(),
 						scope: this,
 						success: this.success
@@ -154,13 +153,11 @@
 				var params = {};
 				params[CMDBuild.core.constants.Proxy.ID] = this.selectedViewGet(CMDBuild.core.constants.Proxy.ID);
 
-				CMDBuild.proxy.dataView.Sql.remove({
+				CMDBuild.proxy.administration.dataView.Sql.remove({
 					params: params,
 					scope: this,
 					success: function(response, options, decodedResponse) {
 						this.form.reset();
-
-						CMDBuild.core.Message.success();
 
 						this.grid.getStore().load({
 							scope: this,
@@ -239,9 +236,7 @@
 		success: function(response, options, decodedResponse) {
 			var me = this;
 
-			CMDBuild.view.common.field.translatable.Utils.commit(this.form);
-
-			CMDBuild.core.Message.success();
+			CMDBuild.controller.common.field.translatable.Utils.commit(this.form);
 
 			this.grid.getStore().load({
 				callback: function(records, operation, success) {

@@ -6,7 +6,7 @@
 		requires: ['CMDBuild.core.constants.Proxy'],
 
 		/**
-		 * @cfg {CMDBuild.controller.management.dataView.Sql}
+		 * @cfg {CMDBuild.controller.management.dataView.sql.Sql}
 		 */
 		delegate: undefined,
 

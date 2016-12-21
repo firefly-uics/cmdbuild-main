@@ -1,7 +1,7 @@
 (function() {
 
 	/**
-	 * @deprecated CMDBuild.controller.management.workflow.panel.tree.filter.advanced.Advanced
+	 * @deprecated CMDBuild.controller.common.panel.gridAndForm.panel.common.filter.advanced.Advanced
 	 */
 	Ext.define('CMDBuild.controller.common.field.filter.advanced.Advanced', {
 		extend: 'CMDBuild.controller.common.abstract.Base',
@@ -119,7 +119,7 @@
 			 */
 			fieldFilterAdvancedConfigurationIsPanelEnabled: function(panelIdentifier) {
 				if (!Ext.isEmpty(panelIdentifier) && Ext.isString(panelIdentifier))
-					return Ext.Array.contains(this.fieldFilterAdvancedConfigurationGet(CMDBuild.core.constants.Proxy.ENABLED_PANELS), panelIdentifier);
+					return !Ext.Array.contains(this.fieldFilterAdvancedConfigurationGet(CMDBuild.core.constants.Proxy.DISABLED_PANELS), panelIdentifier);
 
 				return false;
 			},
@@ -148,7 +148,7 @@
 			 * @returns {Mixed}
 			 */
 			fieldFilterAdvancedFilterGet: function(attributePath) {
-				attributePath = Ext.isArray(attributePath) ? attributePath : [attributePath];
+				attributePath = Ext.isArray(attributePath) ? attributePath : Ext.Array.clean([attributePath]);
 
 				var requiredAttribute = this.filter;
 
@@ -282,7 +282,13 @@
 		},
 
 		onFieldFilterAdvancedFilterSetButtonClick: function() {
-			this.controllerFilterWindow.show();
+			this.controllerFilterWindow.cmfg('fieldFilterAdvancedWindowConfigureAndShow', {
+				classDescription: this.cmfg('fieldFilterAdvancedSelectedClassGet', CMDBuild.core.constants.Proxy.TEXT),
+				className: this.cmfg('fieldFilterAdvancedSelectedClassGet', CMDBuild.core.constants.Proxy.NAME),
+				disabledPanels: this.cmfg('fieldFilterAdvancedConfigurationGet', CMDBuild.core.constants.Proxy.DISABLED_PANELS),
+				filter: this.cmfg('fieldFilterAdvancedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION),
+				mode: 'field'
+			});
 		},
 
 		onFieldFilterAdvancedReset: function() {

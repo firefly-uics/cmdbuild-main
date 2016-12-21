@@ -1,5 +1,10 @@
 (function () {
 
+	/**
+	 * Required managed functions from upper structure:
+	 * 	- panelGridAndFormListPanelFilterApply
+	 * 	- panelGridAndFormGridFilterClear
+	 */
 	Ext.define('CMDBuild.controller.common.field.filter.basic.Basic', {
 		extend: 'CMDBuild.controller.common.abstract.Base',
 
@@ -47,12 +52,12 @@
 		},
 
 		/**
-		 * @param {Boolean} silently
+		 * @param {Boolean} disableStoreLoad
 		 *
 		 * @returns {Void}
 		 */
-		onFieldFilterBasicReset: function (silently) {
-			silently = Ext.isBoolean(silently) ? silently : false;
+		onFieldFilterBasicReset: function (disableStoreLoad) {
+			disableStoreLoad = Ext.isBoolean(disableStoreLoad) ? disableStoreLoad : false;
 
 			// Error handling
 				if (!Ext.isObject(this.view) || Ext.Object.isEmpty(this.view))
@@ -61,8 +66,8 @@
 
 			this.view.setValue();
 
-			this.cmfg('panelGridAndFormGridFilterClear', {
-				disableStoreLoad: silently,
+			this.cmfg('panelGridAndFormListPanelFilterClear', {
+				disableStoreLoad: disableStoreLoad,
 				type: 'basic'
 			});
 		},
@@ -78,8 +83,8 @@
 				filterConfigurationObject[CMDBuild.core.constants.Proxy.CONFIGURATION] = {};
 				filterConfigurationObject[CMDBuild.core.constants.Proxy.CONFIGURATION][CMDBuild.core.constants.Proxy.QUERY] = value;
 
-				this.cmfg('panelGridAndFormGridFilterApply', {
-					filter: Ext.create('CMDBuild.model.common.field.filter.basic.Filter', filterConfigurationObject),
+				this.cmfg('panelGridAndFormListPanelFilterApply', {
+					filter: Ext.create('CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter', filterConfigurationObject),
 					type: 'basic'
 				});
 			} else { // Reset action on empty filter string

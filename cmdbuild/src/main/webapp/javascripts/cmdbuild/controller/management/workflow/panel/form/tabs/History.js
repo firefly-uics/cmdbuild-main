@@ -1,7 +1,7 @@
 (function () {
 
 	/**
-	 * @link CMDBuild.controller.management.classes.tabs.History
+	 * @link CMDBuild.controller.management.dataView.filter.panel.form.tabs.History
 	 *
 	 * @legacy
 	 */

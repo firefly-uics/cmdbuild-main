@@ -1,18 +1,15 @@
 (function () {
 
-	/**
-	 * @link CMDBuild.view.management.workflow.panel.tree.filter.advanced.manager.GridPanel
-	 */
 	Ext.define('CMDBuild.view.common.panel.gridAndForm.panel.common.filter.advanced.manager.GridPanel', {
 		extend: 'Ext.grid.Panel',
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.common.panel.gridAndForm.filter.advanced.Manager'
+			'CMDBuild.proxy.common.panel.gridAndForm.panel.common.filter.advanced.Manager'
 		],
 
 		/**
-		 * @cfg {CMDBuild.controller.administration.workflow.tabs.Domains}
+		 * @cfg {CMDBuild.controller.common.panel.gridAndForm.panel.common.filter.advanced.Manager}
 		 */
 		delegate: undefined,
 
@@ -45,7 +42,7 @@
 						fixed: true,
 
 						items: [
-							Ext.create('CMDBuild.core.buttons.iconized.Save', {
+							Ext.create('CMDBuild.core.buttons.icon.Save', {
 								withSpacer: true,
 								tooltip: CMDBuild.Translation.save,
 								scope: this,
@@ -58,10 +55,10 @@
 								},
 
 								handler: function (grid, rowIndex, colIndex, node, e, record, rowNode) {
-									this.delegate.cmfg('onPanelGridAndFormFilterAdvancedManagerSaveButtonClick', record);
+									this.delegate.cmfg('onPanelGridAndFormCommonFilterAdvancedManagerSaveButtonClick', record);
 								}
 							}),
-							Ext.create('CMDBuild.core.buttons.iconized.Modify', {
+							Ext.create('CMDBuild.core.buttons.icon.modify.Modify', {
 								withSpacer: true,
 								tooltip: CMDBuild.Translation.modify,
 								scope: this,
@@ -71,19 +68,19 @@
 								},
 
 								handler: function (grid, rowIndex, colIndex, node, e, record, rowNode) {
-									this.delegate.cmfg('onPanelGridAndFormFilterAdvancedManagerModifyButtonClick', record);
+									this.delegate.cmfg('onPanelGridAndFormCommonFilterAdvancedManagerModifyButtonClick', record);
 								}
 							}),
-							Ext.create('CMDBuild.core.buttons.iconized.Clone', {
+							Ext.create('CMDBuild.core.buttons.icon.Clone', {
 								withSpacer: true,
 								tooltip: CMDBuild.Translation.clone,
 								scope: this,
 
 								handler: function (grid, rowIndex, colIndex, node, e, record, rowNode) {
-									this.delegate.cmfg('onPanelGridAndFormFilterAdvancedManagerCloneButtonClick', record);
+									this.delegate.cmfg('onPanelGridAndFormCommonFilterAdvancedManagerCloneButtonClick', record);
 								}
 							}),
-							Ext.create('CMDBuild.core.buttons.iconized.Remove', {
+							Ext.create('CMDBuild.core.buttons.icon.Remove', {
 								withSpacer: true,
 								tooltip: CMDBuild.Translation.remove,
 								scope: this,
@@ -93,13 +90,13 @@
 								},
 
 								handler: function (grid, rowIndex, colIndex, node, e, record, rowNode) {
-									this.delegate.cmfg('onPanelGridAndFormFilterAdvancedManagerRemoveButtonClick', record);
+									this.delegate.cmfg('onPanelGridAndFormCommonFilterAdvancedManagerRemoveButtonClick', record);
 								}
 							})
 						]
 					})
 				],
-				store: CMDBuild.proxy.common.panel.gridAndForm.filter.advanced.Manager.getStoreUser()
+				store: CMDBuild.proxy.common.panel.gridAndForm.panel.common.filter.advanced.Manager.getStoreUser()
 			});
 
 			this.callParent(arguments);
@@ -111,7 +108,7 @@
 				return cellIndex == 0;
 			},
 			select: function (grid, record, index, eOpts) {
-				this.delegate.cmfg('onPanelGridAndFormFilterAdvancedFilterSelect', record);
+				this.delegate.cmfg('onPanelGridAndFormCommonFilterAdvancedFilterSelect', record);
 			}
 		}
 	});

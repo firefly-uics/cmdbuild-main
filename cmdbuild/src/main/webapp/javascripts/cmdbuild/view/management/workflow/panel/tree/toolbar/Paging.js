@@ -1,5 +1,8 @@
 (function () {
 
+	/**
+	 * @deprecated CMDBuild.view.common.panel.gridAndForm.panel.common.toolbar.Paging
+	 */
 	Ext.define('CMDBuild.view.management.workflow.panel.tree.toolbar.Paging', {
 		extend: 'Ext.toolbar.Paging',
 

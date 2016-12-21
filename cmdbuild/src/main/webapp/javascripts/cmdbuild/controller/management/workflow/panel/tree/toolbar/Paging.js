@@ -1,5 +1,8 @@
 (function () {
 
+	/**
+	 * @deprecated CMDBuild.controller.common.panel.gridAndForm.panel.common.toolbar.Paging
+	 */
 	Ext.define('CMDBuild.controller.management.workflow.panel.tree.toolbar.Paging', {
 		extend: 'CMDBuild.controller.common.abstract.Base',
 
@@ -21,7 +24,7 @@
 		],
 
 		/**
-		 * @property {CMDBuild.controller.common.panel.gridAndForm.panel.common.filter.advanced.Advanced}
+		 * @property {CMDBuild.controller.management.workflow.panel.tree.filter.advanced.Advanced}
 		 */
 		controllerFilterAdvanced: undefined,
 
@@ -46,7 +49,7 @@
 		enableButtonPrint: false,
 
 		/**
-		 * @property {CMDBuild.core.buttons.iconized.split.Print}
+		 * @property {CMDBuild.core.buttons.icon.split.Print}
 		 */
 		printButton: undefined,
 
@@ -95,7 +98,7 @@
 			if (Ext.isBoolean(this.enableButtonPrint) && this.enableButtonPrint)
 				items: Ext.Array.push(items, [
 					{ xtype: 'tbseparator' },
-					this.printButton = Ext.create('CMDBuild.core.buttons.iconized.split.Print', {
+					this.printButton = Ext.create('CMDBuild.core.buttons.icon.split.Print', {
 						delegate: this,
 						delegateEventPrefix: 'onWorkflowTree',
 						formatList: [
@@ -127,7 +130,8 @@
 		onWorkflowTreeToolbarPagingWokflowSelect: function (filter) {
 			this.cmfg('workflowTreeToolbarPagingFilterBasicReset');
 
-			this.controllerFilterAdvanced.cmfg('onWorkflowTreeFilterAdvancedFilterSelect', filter);
+			if (Ext.isObject(this.controllerFilterAdvanced) && !Ext.Object.isEmpty(this.controllerFilterAdvanced))
+				this.controllerFilterAdvanced.cmfg('onWorkflowTreeFilterAdvancedFilterSelect', filter);
 		},
 
 		/**

@@ -1,7 +1,7 @@
 (function () {
 
 	/**
-	 * @link CMDBuild.view.management.classes.tabs.history.RowExpander
+	 * @link CMDBuild.view.management.dataView.filter.panel.form.tabs.history.RowExpander
 	 *
 	 * @legacy
 	 */

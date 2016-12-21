@@ -6,7 +6,7 @@
 	 * Full workflow model
 	 *
 	 * @link CMDBuild.model.CMProcessInstance
-	 * @link CMDBuild.model.classes.Class
+	 * @deprecated CMDBuild.model.management.dataView.filter.entryType.EntryType
 	 */
 	Ext.define('CMDBuild.model.management.workflow.Workflow', { // TODO: waiting for refactor (rename and structure)
 		extend: 'Ext.data.Model',

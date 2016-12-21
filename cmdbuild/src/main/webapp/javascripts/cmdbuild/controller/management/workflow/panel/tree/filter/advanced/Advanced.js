@@ -1,5 +1,8 @@
 (function () {
 
+	/**
+	 * @deprecated CMDBuild.controller.common.panel.gridAndForm.panel.common.filter.advanced.Advanced
+	 */
 	Ext.define('CMDBuild.controller.management.workflow.panel.tree.filter.advanced.Advanced', {
 		extend: 'CMDBuild.controller.common.abstract.Base',
 
@@ -59,7 +62,7 @@
 			// Shorthands
 			this.grid = this.cmfg('workflowTreeViewGet');
 
-			// Build sub controllers
+			// Build sub-controllers
 			this.controllerManager = Ext.create('CMDBuild.controller.management.workflow.panel.tree.filter.advanced.Manager', { parentDelegate: this });
 		},
 
@@ -122,7 +125,7 @@
 
 			if (
 				Ext.isObject(filter) && !Ext.Object.isEmpty(filter)
-				&& Ext.getClassName(filter) == 'CMDBuild.model.management.workflow.panel.tree.filter.advanced.Filter'
+				&& Ext.isBoolean(filter.isFilterAdvancedCompatible) && filter.isFilterAdvancedCompatible
 			) {
 				filter.resetRuntimeParametersValue();
 

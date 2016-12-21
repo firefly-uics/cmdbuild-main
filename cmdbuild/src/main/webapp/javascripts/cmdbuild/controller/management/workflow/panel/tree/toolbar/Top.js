@@ -46,7 +46,7 @@
 
 		/**
 		 * @param {Object} configurationObject
-		 * @param {CMDBuild.controller.management.workflow.Workflow} configurationObject.parentDelegate
+		 * @param {CMDBuild.controller.management.workflow.panel.tree.Tree} configurationObject.parentDelegate
 		 *
 		 * @returns {Void}
 		 *
@@ -59,9 +59,7 @@
 		},
 
 		/**
-		 * @param {Array} type
-		 *
-		 * @returns {CMDBuild.core.buttons.iconized.split.add.Workflow or CMDBuild.core.buttons.iconized.add.Workflow}
+		 * @returns {CMDBuild.core.buttons.icon.split.add.Workflow or CMDBuild.core.buttons.icon.add.Workflow}
 		 *
 		 * @private
 		 */
@@ -80,7 +78,7 @@
 
 				this.buildMenuChildren(selectedWorkflowDescendants, menuItems);
 
-				return Ext.create('CMDBuild.core.buttons.iconized.split.add.Workflow', {
+				return Ext.create('CMDBuild.core.buttons.icon.split.add.Workflow', {
 					text: CMDBuild.Translation.start + ' ' + this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.DESCRIPTION),
 					itemId: 'addButton',
 					disabled: this.isAddButtonDisabled(menuItems),
@@ -98,7 +96,7 @@
 					isEnableActionEnabled: this.isEnableActionEnabled
 				});
 			} else {
-				return Ext.create('CMDBuild.core.buttons.iconized.add.Workflow', {
+				return Ext.create('CMDBuild.core.buttons.icon.add.Workflow', {
 					text: CMDBuild.Translation.start + ' ' + this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.DESCRIPTION),
 					itemId: 'addButton',
 					disabled: this.isAddButtonDisabled(),
@@ -151,12 +149,14 @@
 				var menuObject = {
 					text: workflowObject.get(CMDBuild.core.constants.Proxy.DESCRIPTION),
 					workflowId: workflowObject.get(CMDBuild.core.constants.Proxy.ID),
-					scope: this,
-
-					handler: function (button, e) {
-						this.cmfg('onWorkflowAddButtonClick', button.workflowId);
-					}
+					scope: this
 				};
+
+				// Add handler function only if isn't superclass
+				if (!workflowObject.get(CMDBuild.core.constants.Proxy.IS_SUPER_CLASS))
+					menuObject.handler = function (button, e) {
+						this.cmfg('onWorkflowAddButtonClick', button.workflowId);
+					};
 
 				if (Ext.isArray(parent)) {
 					parent.push(menuObject);
