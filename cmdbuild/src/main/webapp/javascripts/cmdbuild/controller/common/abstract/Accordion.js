@@ -124,13 +124,9 @@
 		},
 
 		/**
-		 * @param {Object} parameters
-		 * @param {Function} parameters.callback
-		 * @param {Object} parameters.scope
-		 *
 		 * @returns {Void}
 		 */
-		accordionExpand: function (parameters) {
+		accordionExpand: function () {
 			if (Ext.isObject(this.view) && !Ext.Object.isEmpty(this.view) && Ext.isFunction(this.view.expand)) {
 				var wasExpanded = this.view.getCollapsed() === false && this.view.isVisible();
 

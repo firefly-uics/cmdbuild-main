@@ -1,8 +1,8 @@
 (function () {
 
 	/**
-	 * @link CMDBuild.controller.common.field.filter.advanced.window.Window
-	 * @link CMDBuild.controller.management.workflow.panel.tree.filter.advanced.FilterEditor
+	 * Required managed functions from upper structure:
+	 * 	- panelGridAndFormSelectedEntityGet
 	 */
 	Ext.define('CMDBuild.controller.common.panel.gridAndForm.panel.common.filter.advanced.FilterEditor', {
 		extend: 'CMDBuild.controller.common.abstract.Base',
@@ -18,11 +18,11 @@
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
-			'onPanelGridAndFormFilterAdvancedFilterEditorAbortButtonClick',
-			'onPanelGridAndFormFilterAdvancedFilterEditorApplyButtonClick',
-			'onPanelGridAndFormFilterAdvancedFilterEditorSaveAndApplyButtonClick',
-			'onPanelGridAndFormFilterAdvancedFilterEditorViewHide',
-			'onPanelGridAndFormFilterAdvancedFilterEditorViewShow'
+			'onPanelGridAndFormCommonFilterAdvancedFilterEditorAbortButtonClick',
+			'onPanelGridAndFormCommonFilterAdvancedFilterEditorApplyButtonClick',
+			'onPanelGridAndFormCommonFilterAdvancedFilterEditorSaveAndApplyButtonClick',
+			'onPanelGridAndFormCommonFilterAdvancedFilterEditorViewHide',
+			'onPanelGridAndFormCommonFilterAdvancedFilterEditorViewShow'
 		],
 
 		/**
@@ -47,15 +47,15 @@
 		/**
 		 * @returns {Void}
 		 */
-		onPanelGridAndFormFilterAdvancedFilterEditorAbortButtonClick: function () {
+		onPanelGridAndFormCommonFilterAdvancedFilterEditorAbortButtonClick: function () {
 			this.view.close();
 		},
 
 		/**
 		 * @returns {Void}
 		 */
-		onPanelGridAndFormFilterAdvancedFilterEditorApplyButtonClick: function () {
-			var filterModelObject = this.cmfg('panelGridAndFormFilterAdvancedManagerSelectedFilterGet').getData();
+		onPanelGridAndFormCommonFilterAdvancedFilterEditorApplyButtonClick: function () {
+			var filterModelObject = this.cmfg('panelGridAndFormCommonFilterAdvancedManagerSelectedFilterGet').getData();
 			filterModelObject[CMDBuild.core.constants.Proxy.CONFIGURATION] = this.view.fieldFilter.getValue();
 
 			// If new filter model
@@ -64,26 +64,26 @@
 				filterModelObject[CMDBuild.core.constants.Proxy.NAME] = CMDBuild.Translation.newSearchFilter;
 			}
 
-			this.cmfg('panelGridAndFormFilterAdvancedManagerSelectedFilterSet', { value: filterModelObject });
+			this.cmfg('panelGridAndFormCommonFilterAdvancedManagerSelectedFilterSet', { value: filterModelObject });
 
 			// Save filter in local storage
-			if (this.cmfg('panelGridAndFormFilterAdvancedManagerSelectedFilterIsEmpty', CMDBuild.core.constants.Proxy.ID))
-				this.cmfg('panelGridAndFormFilterAdvancedLocalFilterAdd', this.cmfg('panelGridAndFormFilterAdvancedManagerSelectedFilterGet'));
+			if (this.cmfg('panelGridAndFormCommonFilterAdvancedManagerSelectedFilterIsEmpty', CMDBuild.core.constants.Proxy.ID))
+				this.cmfg('panelGridAndFormCommonFilterAdvancedLocalFilterAdd', this.cmfg('panelGridAndFormCommonFilterAdvancedManagerSelectedFilterGet'));
 
-			this.cmfg('onPanelGridAndFormFilterAdvancedFilterEditorAbortButtonClick'); // Close filter editor view
-			this.cmfg('panelGridAndFormFilterAdvancedManagerViewClose'); // Close manager view
-			this.cmfg('onPanelGridAndFormFilterAdvancedFilterSelect', this.cmfg('panelGridAndFormFilterAdvancedManagerSelectedFilterGet')); // Apply filter to store
+			this.cmfg('onPanelGridAndFormCommonFilterAdvancedFilterEditorAbortButtonClick'); // Close filter editor view
+			this.cmfg('panelGridAndFormCommonFilterAdvancedManagerViewClose'); // Close manager view
+			this.cmfg('onPanelGridAndFormCommonFilterAdvancedFilterSelect', this.cmfg('panelGridAndFormCommonFilterAdvancedManagerSelectedFilterGet')); // Apply filter to store
 		},
 
 		/**
 		 * @returns {Void}
 		 */
-		onPanelGridAndFormFilterAdvancedFilterEditorSaveAndApplyButtonClick: function () {
-			var filterModelObject = this.cmfg('panelGridAndFormFilterAdvancedManagerSelectedFilterGet').getData();
+		onPanelGridAndFormCommonFilterAdvancedFilterEditorSaveAndApplyButtonClick: function () {
+			var filterModelObject = this.cmfg('panelGridAndFormCommonFilterAdvancedManagerSelectedFilterGet').getData();
 			filterModelObject[CMDBuild.core.constants.Proxy.CONFIGURATION] = this.view.fieldFilter.getValue();
 
-			this.cmfg('panelGridAndFormFilterAdvancedManagerSelectedFilterSet', { value: filterModelObject });
-			this.cmfg('panelGridAndFormFilterAdvancedManagerSave', { enableApply: true });
+			this.cmfg('panelGridAndFormCommonFilterAdvancedManagerSelectedFilterSet', { value: filterModelObject });
+			this.cmfg('panelGridAndFormCommonFilterAdvancedManagerSave', { enableApply: true });
 		},
 
 		/**
@@ -91,9 +91,9 @@
 		 *
 		 * @returns {Void}
 		 */
-		onPanelGridAndFormFilterAdvancedFilterEditorViewHide: function () {
-			if (this.cmfg('panelGridAndFormFilterAdvancedManagerStoreIsEmpty'))
-				this.cmfg('panelGridAndFormFilterAdvancedManageToggleStateReset');
+		onPanelGridAndFormCommonFilterAdvancedFilterEditorViewHide: function () {
+			if (this.cmfg('panelGridAndFormCommonFilterAdvancedManagerStoreIsEmpty'))
+				this.cmfg('panelGridAndFormCommonFilterAdvancedManageToggleStateReset');
 		},
 
 		/**
@@ -101,18 +101,18 @@
 		 *
 		 * @returns {Void}
 		 */
-		onPanelGridAndFormFilterAdvancedFilterEditorViewShow: function () {
+		onPanelGridAndFormCommonFilterAdvancedFilterEditorViewShow: function () {
 			this.setViewTitle([
-				this.cmfg('panelGridAndFormFilterAdvancedManagerSelectedFilterGet', CMDBuild.core.constants.Proxy.NAME),
-				this.cmfg('panelGridAndFormFilterAdvancedEntryTypeGet', CMDBuild.core.constants.Proxy.DESCRIPTION)
+				this.cmfg('panelGridAndFormCommonFilterAdvancedManagerSelectedFilterGet', CMDBuild.core.constants.Proxy.NAME),
+				this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.DESCRIPTION)
 			]);
 
 			this.view.fieldFilter.configure({
-				className: this.cmfg('panelGridAndFormFilterAdvancedEntryTypeGet', CMDBuild.core.constants.Proxy.NAME),
+				className: this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.NAME),
 				disabledPanels: ['functions'],
 				scope: this,
 				callback: function () {
-					this.view.fieldFilter.setValue(this.cmfg('panelGridAndFormFilterAdvancedManagerSelectedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION));
+					this.view.fieldFilter.setValue(this.cmfg('panelGridAndFormCommonFilterAdvancedManagerSelectedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION));
 				}
 			});
 		}

@@ -46,7 +46,7 @@
 		constructor: function (configurationObject) {
 			this.callParent(arguments);
 
-			// Build sub controllers
+			// Build sub-controllers
 			this.controllerWindow = Ext.create('CMDBuild.controller.administration.taskManager.task.common.field.stringList.window.Edit', { parentDelegate: this });
 		},
 

@@ -127,7 +127,7 @@
 						editable: false,
 						allowBlank: false,
 
-						store: CMDBuild.proxy.dataView.Sql.getStoreDataSources(),
+						store: CMDBuild.proxy.administration.dataView.Sql.getStoreDataSources(),
 						queryMode: 'local'
 					}),
 					{

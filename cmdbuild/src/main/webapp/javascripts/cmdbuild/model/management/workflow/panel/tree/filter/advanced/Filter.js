@@ -2,6 +2,9 @@
 
 	Ext.require('CMDBuild.core.constants.Proxy');
 
+	/**
+	 * @deprecated CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter
+	 */
 	Ext.define('CMDBuild.model.management.workflow.panel.tree.filter.advanced.Filter', {
 		extend: 'Ext.data.Model',
 
@@ -20,42 +23,6 @@
 			{ name: CMDBuild.core.constants.Proxy.NAME, type: 'string' },
 			{ name: CMDBuild.core.constants.Proxy.TEMPLATE, type: 'boolean' } // Filter is marked as template if it's defined in administration side
 		],
-
-		/**
-		 * Implementation of model get custom routines:
-		 * - on get description if description is empty return name property
-		 *
-		 * @param {String} propertyName
-		 *
-		 * @returns {Mixed}
-		 *
-		 * @override
-		 */
-		get: function (propertyName) {
-			switch (propertyName) {
-				case CMDBuild.core.constants.Proxy.DESCRIPTION:
-					return this.callParent(arguments) || this.get(CMDBuild.core.constants.Proxy.NAME) || '';
-
-				default:
-					return this.callParent(arguments);
-			}
-		},
-
-		/**
-		 * @returns {Array} parameters
-		 */
-		getEmptyRuntimeParameters: function () {
-			var parameters = [];
-
-			this.findParameters(
-				this.get(CMDBuild.core.constants.Proxy.CONFIGURATION)[CMDBuild.core.constants.Proxy.ATTRIBUTE],
-				CMDBuild.core.constants.Proxy.RUNTIME,
-				parameters,
-				true
-			);
-
-			return parameters;
-		},
 
 		/**
 		 * Recursive method to find all filter parameters with parameterType
@@ -95,6 +62,49 @@
 						}, this);
 				}
 			}
+		},
+
+		/**
+		 * Implementation of model get custom routines:
+		 * - on get description if description is empty return name property
+		 *
+		 * @param {String} propertyName
+		 *
+		 * @returns {Mixed}
+		 *
+		 * @override
+		 */
+		get: function (propertyName) {
+			switch (propertyName) {
+				case CMDBuild.core.constants.Proxy.DESCRIPTION:
+					return this.callParent(arguments) || this.get(CMDBuild.core.constants.Proxy.NAME) || '';
+
+				default:
+					return this.callParent(arguments);
+			}
+		},
+
+		/**
+		 * @returns {Array} parameters
+		 */
+		getEmptyRuntimeParameters: function () {
+			var parameters = [];
+
+			this.findParameters(
+				this.get(CMDBuild.core.constants.Proxy.CONFIGURATION)[CMDBuild.core.constants.Proxy.ATTRIBUTE],
+				CMDBuild.core.constants.Proxy.RUNTIME,
+				parameters,
+				true
+			);
+
+			return parameters;
+		},
+
+		/**
+		 * @returns {Boolean}
+		 */
+		isEmpty: function () {
+			return Ext.Object.isEmpty(this.get(CMDBuild.core.constants.Proxy.CONFIGURATION));
 		},
 
 		/**

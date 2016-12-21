@@ -59,7 +59,7 @@
 		constructor: function (configurationObject) {
 			this.callParent(arguments);
 
-			// Build sub controllers
+			// Build sub-controllers
 			this.controllerWindow = Ext.create('CMDBuild.controller.common.field.translatable.Window', { parentDelegate: this });
 		},
 

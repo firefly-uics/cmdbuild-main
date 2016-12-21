@@ -6,12 +6,12 @@
 		requires: ['CMDBuild.core.constants.Proxy'],
 
 		/**
-		 * @cfg {CMDBuild.controller.management.dataView.Sql}
+		 * @cfg {CMDBuild.controller.management.dataView.sql.Sql}
 		 */
 		delegate: undefined,
 
 		/**
-		 * @property {CMDBuild.controller.common.panel.gridAndForm.panel.common.filter.advanced.Advanced}
+		 * @property {CMDBuild.controller.common.filter.advanced.Advanced}
 		 */
 		controllerAdvancedFilterButtons: undefined,
 
@@ -20,8 +20,8 @@
 		frame: false,
 
 		initComponent: function() {
-			this.controllerAdvancedFilterButtons = Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.filter.advanced.Advanced', { masterGrid: this });
-			this.controllerAdvancedFilterButtons.cmfg('onPanelGridAndFormFilterAdvancedDisable'); // Disable advanced filter buttons
+			this.controllerAdvancedFilterButtons = Ext.create('CMDBuild.controller.common.filter.advanced.Advanced', { masterGrid: this });
+			this.controllerAdvancedFilterButtons.cmfg('onPanelGridAndFormCommonFilterAdvancedDisable'); // Disable advanced filter buttons
 
 			Ext.apply(this, { store: this.delegate.cmfg('dataViewSqlBuildStore') });
 

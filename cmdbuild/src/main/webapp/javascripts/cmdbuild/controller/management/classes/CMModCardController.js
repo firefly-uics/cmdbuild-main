@@ -50,8 +50,6 @@
 				var filter = entryType.get(CMDBuild.core.constants.Proxy.FILTER);
 				var newEntryId = entryType.get(idPropertyName);
 
-				this.selectedAccordionNode = entryType; // FIXME: hack to temporary fix DataView bug
-
 				if (CMDBuild.configuration.userInterface.get(CMDBuild.core.constants.Proxy.FULL_SCREEN_MODE))
 					_CMUIState.onlyGrid();
 
@@ -509,17 +507,6 @@
 			_CMUIState.onlyGridIfFullScreen();
 
 			this.changeClassUIConfigurationForGroup(entryTypeId);
-
-			// FIXME: hack to temporary fix DataView bug
-			if (
-				Ext.isString(filter) && !Ext.isEmpty(filter)
-				&& Ext.Array.contains(this.selectedAccordionNode.get(CMDBuild.core.constants.Proxy.SECTION_HIERARCHY), 'filter')
-			) {
-				CMDBuild.global.dataViewHack = {
-					filter: filter,
-					entryType: entryType
-				};
-			}
 		}
 	});
 

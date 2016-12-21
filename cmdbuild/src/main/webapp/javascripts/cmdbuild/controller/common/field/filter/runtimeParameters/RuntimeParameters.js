@@ -2,7 +2,7 @@
 
 	/**
 	 * Required managed functions from upper structure:
-	 * 	- panelGridAndFormGridFilterApply
+	 * 	- panelGridAndFormListPanelFilterApply
 	 * 	- panelGridAndFormGridFilterClear
 	 */
 	Ext.define('CMDBuild.controller.common.field.filter.runtimeParameters.RuntimeParameters', {
@@ -28,7 +28,7 @@
 		],
 
 		/**
-		 * @parameter {CMDBuild.model.common.panel.gridAndForm.filter.advanced.Filter}
+		 * @parameter {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter}
 		 */
 		filter: undefined,
 
@@ -174,7 +174,7 @@
 			if (this.form.getForm().isValid()) {
 				this.filter.setRuntimeParameterValue(this.form.getValues());
 
-				this.cmfg('panelGridAndFormGridFilterApply', {
+				this.cmfg('panelGridAndFormListPanelFilterApply', {
 					filter: this.filter,
 					type: 'advanced'
 				});

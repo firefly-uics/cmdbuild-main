@@ -1,8 +1,5 @@
 (function () {
 
-	/**
-	 * @link CMDBuild.view.management.workflow.panel.tree.filter.advanced.AdvancedView
-	 */
 	Ext.define('CMDBuild.view.common.panel.gridAndForm.panel.common.filter.advanced.AdvancedView', {
 		extend: 'Ext.container.ButtonGroup',
 
@@ -38,7 +35,7 @@
 						scope: this,
 
 						toggleHandler: function (button, state) {
-							this.delegate.cmfg('onPanelGridAndFormFilterAdvancedManageToggleButtonClick', state);
+							this.delegate.cmfg('onPanelGridAndFormCommonFilterAdvancedManageToggleButtonClick', state);
 						}
 					}),
 					this.clearButton = Ext.create('CMDBuild.core.buttons.icon.filter.SearchClear', {
@@ -46,7 +43,7 @@
 						scope: this,
 
 						handler: function (button, e) {
-							this.delegate.cmfg('onPanelGridAndFormFilterAdvancedClearButtonClick');
+							this.delegate.cmfg('onPanelGridAndFormCommonFilterAdvancedClearButtonClick');
 						}
 					})
 				]
@@ -63,18 +60,7 @@
 		 * @override
 		 */
 		disable: function () {
-			this.delegate.cmfg('onPanelGridAndFormFilterAdvancedDisable');
-		},
-
-		/**
-		 * @returns {Void}
-		 *
-		 * @deprecated
-		 */
-		disableClearFilterButton: function () {
-			_deprecated('disableClearFilterButton', this);
-
-			this.clearButton.disable();
+			this.delegate.cmfg('onPanelGridAndFormCommonFilterAdvancedDisable');
 		},
 
 		/**
@@ -85,44 +71,7 @@
 		 * @override
 		 */
 		enable: function () {
-			this.delegate.cmfg('onPanelGridAndFormFilterAdvancedEnable');
-		},
-
-		/**
-		 * @returns {Void}
-		 *
-		 * @deprecated
-		 */
-		enableClearFilterButton: function () {
-			_deprecated('enableClearFilterButton', this);
-
-			this.clearButton.enable();
-		},
-
-		/**
-		 * @param {String} label
-		 *
-		 * @returns {Ext.data.Store}
-		 *
-		 * @deprecated
-		 */
-		getFilterStore: function () {
-			_deprecated('getFilterStore', this);
-
-			return this.delegate.controllerManager.grid.getStore();
-		},
-
-		/**
-		 * @param {String} label
-		 *
-		 * @returns {Void}
-		 *
-		 * @deprecated
-		 */
-		setFilterButtonLabel: function (label) {
-			_deprecated('setFilterButtonLabel', this);
-
-			this.delegate.cmfg('panelGridAndFormFilterAdvancedManageToggleButtonLabelSet', label);
+			this.delegate.cmfg('onPanelGridAndFormCommonFilterAdvancedEnable');
 		}
 	});
 

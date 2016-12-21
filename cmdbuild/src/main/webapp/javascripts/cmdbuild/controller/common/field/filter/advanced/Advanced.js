@@ -1,7 +1,7 @@
 (function() {
 
 	/**
-	 * @deprecated CMDBuild.controller.management.workflow.panel.tree.filter.advanced.Advanced
+	 * @deprecated CMDBuild.controller.common.panel.gridAndForm.panel.common.filter.advanced.Advanced
 	 */
 	Ext.define('CMDBuild.controller.common.field.filter.advanced.Advanced', {
 		extend: 'CMDBuild.controller.common.abstract.Base',
@@ -148,7 +148,7 @@
 			 * @returns {Mixed}
 			 */
 			fieldFilterAdvancedFilterGet: function(attributePath) {
-				attributePath = Ext.isArray(attributePath) ? attributePath : [attributePath];
+				attributePath = Ext.isArray(attributePath) ? attributePath : Ext.Array.clean([attributePath]);
 
 				var requiredAttribute = this.filter;
 

@@ -22,7 +22,7 @@
 			navigationTree: 'navigationtree',
 			report: 'report',
 			reportSingle: 'reportsingle',
-			taskManager: 'taskManager',
+			taskManager: 'taskmanager',
 			userAndGroup: 'userandgroup',
 			utility: 'utility',
 			workflow: 'workflow'

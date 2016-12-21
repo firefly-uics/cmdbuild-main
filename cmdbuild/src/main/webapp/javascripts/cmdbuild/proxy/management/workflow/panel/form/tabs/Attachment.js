@@ -30,6 +30,19 @@
 		 *
 		 * @returns {Void}
 		 */
+		create: function (parameters) {
+			parameters = Ext.isEmpty(parameters) ? {} : parameters;
+
+			Ext.apply(parameters, { url: CMDBuild.proxy.index.Json.attachment.create });
+
+			CMDBuild.core.interfaces.FormSubmit.submit(parameters);
+		},
+
+		/**
+		 * @param {Object} parameters
+		 *
+		 * @returns {Void}
+		 */
 		download: function (parameters) {
 			if (
 				Ext.isObject(parameters) && !Ext.Object.isEmpty(parameters)

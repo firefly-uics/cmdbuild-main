@@ -71,7 +71,7 @@
 
 			this.view = Ext.create('CMDBuild.view.administration.taskManager.TaskManagerView', { delegate: this });
 
-			// Build sub controllers
+			// Build sub-controllers
 			this.controllerForm = Ext.create('CMDBuild.controller.administration.taskManager.Form', { parentDelegate: this });
 			this.controllerGrid = Ext.create('CMDBuild.controller.administration.taskManager.Grid', { parentDelegate: this });
 
@@ -325,7 +325,7 @@
 
 			this.taskManagerSelectedTaskReset();
 
-			// Forward to sub controllers
+			// Forward to sub-controllers
 			if (!parameters.disableClearForm)
 				this.controllerForm.cmfg('taskManagerFormClearSelection');
 

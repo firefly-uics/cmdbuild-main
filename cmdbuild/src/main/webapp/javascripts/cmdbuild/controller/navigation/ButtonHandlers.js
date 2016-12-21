@@ -24,7 +24,7 @@
 					return this.buttonHandlerDefault(record);
 
 				case CMDBuild.core.constants.ModuleIdentifiers.getDataView():
-					return this.buttonHandlerDefault(record);
+					return this.buttonHandlerDataView(record);
 
 				case CMDBuild.core.constants.ModuleIdentifiers.getReport():
 					return this.buttonHandlerDefault(record);
@@ -62,6 +62,29 @@
 							);
 						}, this, { single: true });
 					}, this, { single: true });
+			}
+		},
+
+		/**
+		 * @param {CMDBuild.model.navigation.chronology.Record} record
+		 *
+		 * @returns {Void}
+		 *
+		 * @private
+		 */
+		buttonHandlerDataView: function (record) {
+			// Error handling
+				if (!Ext.isObject(record) || Ext.Object.isEmpty(record))
+					return _error('buttonHandlerDataView(): unmanaged record parameter', this, record);
+
+				if (!Ext.isString(record.get(CMDBuild.core.constants.Proxy.MODULE_ID)) || Ext.isEmpty(record.get(CMDBuild.core.constants.Proxy.MODULE_ID)))
+					return _error('buttonHandlerDataView(): unmanaged record moduleId parameter', this, record.get(CMDBuild.core.constants.Proxy.MODULE_ID));
+			// END: Error handling
+
+			if (CMDBuild.global.controller.MainViewport.cmfg('mainViewportModuleControllerExists', record.get(CMDBuild.core.constants.Proxy.MODULE_ID))) {
+				var moduleController = CMDBuild.global.controller.MainViewport.cmfg('mainViewportModuleControllerGet', record.get(CMDBuild.core.constants.Proxy.MODULE_ID));
+
+				moduleController.cmfg('onDataViewExternalServicesNavigationChronologyRecordSelect', { record: record });
 			}
 		},
 

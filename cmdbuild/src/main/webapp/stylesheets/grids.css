@@ -60,12 +60,15 @@
 /*
  * History
  */
-	.cmdb-history-grid .x-grid-rowbody p {
-		margin: 0px !important;
+	.cmdb-history-grid .x-grid-rowbody div {
 		padding: 0px 0px 0px 35px;
 		white-space: nowrap;
 	}
-	.cmdb-history-grid .x-grid-rowbody p.changedRow {
+	.cmdb-history-grid .x-grid-rowbody p {
+		margin: 0px !important;
+		white-space: nowrap;
+	}
+	.cmdb-history-grid .x-grid-rowbody .changedRow {
 		background-color: #e9f4e7;
 		color: #0d5f07;
 	}

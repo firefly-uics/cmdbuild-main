@@ -72,7 +72,7 @@
 			// Shorthands
 			this.grid = this.view.grid;
 
-			// Build sub controllers
+			// Build sub-controllers
 			this.controllerTabColumnPrivileges = Ext.create('CMDBuild.controller.common.field.filter.advanced.window.panels.ColumnPrivileges', {
 				parentDelegate: this,
 				view: this.view.columnPrivileges

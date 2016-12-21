@@ -23,6 +23,8 @@
 
 		/**
 		 * @param {Object} parameters
+		 * @param {Boolean} parameters.disableMandatoryFlag
+		 * @param {Boolean} parameters.withEditor
 		 *
 		 * @returns {Ext.grid.column.Column or Object}
 		 *
@@ -37,7 +39,8 @@
 //				renderer: this.rendererColumn,
 //				scope: this,
 //				sortable: true,
-//				text: this.applyMandatoryLabelFlag(this.cmfg('fieldManagerAttributeModelGet', CMDBuild.core.constants.Proxy.DESCRIPTION))
+//				text: parameters.disableMandatoryFlag ? this.cmfg('fieldManagerAttributeModelGet', CMDBuild.core.constants.Proxy.DESCRIPTION)
+//					: this.applyMandatoryLabelFlag(this.cmfg('fieldManagerAttributeModelGet', CMDBuild.core.constants.Proxy.DESCRIPTION)),
 //			});
 		},
 

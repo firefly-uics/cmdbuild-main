@@ -12,7 +12,10 @@
 	 */
 	Ext.define('CMDBuild.view.common.PanelFunctions2', {
 
-		requires: ['CMDBuild.core.constants.Proxy'],
+		requires: [
+			'CMDBuild.core.constants.Proxy',
+			'Ext.ux.form.MultiSelect'
+		],
 
 		/**
 		 * @param {Object} field

@@ -72,7 +72,7 @@
 			this.menuTreePanel = this.view.menuTreePanel;
 			this.removeItemButton = this.view.removeItemButton;
 
-			// Build sub controllers
+			// Build sub-controllers
 			this.controllerTranslationWindow = Ext.create('CMDBuild.controller.common.field.translatable.NoFieldWindow', { parentDelegate: this });
 		},
 

@@ -22,6 +22,8 @@
 		 * @param {String} message
 		 *
 		 * @returns {Ext.LoadMask}
+		 *
+		 * @private
 		 */
 		build: function (message) {
 			message = Ext.isString(message) ? message : CMDBuild.Translation.pleaseWait;

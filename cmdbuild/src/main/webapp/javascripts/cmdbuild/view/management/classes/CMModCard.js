@@ -142,7 +142,7 @@
 		buildComponents: function() {
 			var gridratio = CMDBuild.configuration.instance.get('cardFormRatio') || 50; // TODO: use proxy constants
 			var tbar = [
-				this.addCardButton = Ext.create('CMDBuild.core.buttons.icon.split.add.Card', {
+				this.addCardButton = Ext.create('CMDBuild.core.buttons.icon.split.add.Cards', {
 					classId: undefined,
 					disabled: true
 				})

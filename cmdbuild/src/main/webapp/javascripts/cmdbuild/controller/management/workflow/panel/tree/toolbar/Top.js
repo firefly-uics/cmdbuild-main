@@ -46,7 +46,7 @@
 
 		/**
 		 * @param {Object} configurationObject
-		 * @param {CMDBuild.controller.management.workflow.Workflow} configurationObject.parentDelegate
+		 * @param {CMDBuild.controller.management.workflow.panel.tree.Tree} configurationObject.parentDelegate
 		 *
 		 * @returns {Void}
 		 *
@@ -59,8 +59,6 @@
 		},
 
 		/**
-		 * @param {Array} type
-		 *
 		 * @returns {CMDBuild.core.buttons.icon.split.add.Workflow or CMDBuild.core.buttons.icon.add.Workflow}
 		 *
 		 * @private
@@ -151,12 +149,14 @@
 				var menuObject = {
 					text: workflowObject.get(CMDBuild.core.constants.Proxy.DESCRIPTION),
 					workflowId: workflowObject.get(CMDBuild.core.constants.Proxy.ID),
-					scope: this,
-
-					handler: function (button, e) {
-						this.cmfg('onWorkflowAddButtonClick', button.workflowId);
-					}
+					scope: this
 				};
+
+				// Add handler function only if isn't superclass
+				if (!workflowObject.get(CMDBuild.core.constants.Proxy.IS_SUPER_CLASS))
+					menuObject.handler = function (button, e) {
+						this.cmfg('onWorkflowAddButtonClick', button.workflowId);
+					};
 
 				if (Ext.isArray(parent)) {
 					parent.push(menuObject);

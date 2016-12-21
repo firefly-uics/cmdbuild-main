@@ -1,8 +1,5 @@
 (function () {
 
-	/**
-	 * @link CMDBuild.view.management.workflow.panel.tree.filter.advanced.saveDialog.FormPanel
-	 */
 	Ext.define('CMDBuild.view.common.panel.gridAndForm.panel.common.filter.advanced.saveDialog.FormPanel', {
 		extend: 'Ext.form.Panel',
 
@@ -11,7 +8,7 @@
 			'CMDBuild.core.Utils'
 		],
 
-		mixins: ['CMDBuild.view.common.PanelFunctions'],
+		mixins: ['CMDBuild.view.common.PanelFunctions2'],
 
 		/**
 		 * @cfg {CMDBuild.controller.common.panel.gridAndForm.panel.common.filter.advanced.SaveDialog}
@@ -52,14 +49,14 @@
 								scope: this,
 
 								handler: function (button, e) {
-									this.delegate.cmfg('onPanelGridAndFormFilterAdvancedSaveDialogSaveButtonClick');
+									this.delegate.cmfg('onPanelGridAndFormCommonFilterAdvancedSaveDialogSaveButtonClick');
 								}
 							}),
 							Ext.create('CMDBuild.core.buttons.text.Abort', {
 								scope: this,
 
 								handler: function (button, e) {
-									this.delegate.cmfg('onPanelGridAndFormFilterAdvancedSaveDialogAbortButtonClick');
+									this.delegate.cmfg('onPanelGridAndFormCommonFilterAdvancedSaveDialogAbortButtonClick');
 								}
 							})
 						]

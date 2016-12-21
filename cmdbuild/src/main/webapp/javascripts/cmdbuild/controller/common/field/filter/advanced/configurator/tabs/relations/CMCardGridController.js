@@ -4,7 +4,7 @@
 	 * FIXME: build own controller
 	 *
 	 * @link CMDBuild.controller.management.common.CMCardGridController
-	 * @link CMDBuild.controller.common.panel.gridAndForm.panel.common.filter.advanced.filterEditor.relations.CMCardGridController
+	 * @link CMDBuild.controller.common.filter.advanced.filterEditor.relations.CMCardGridController
 	 */
 
 	Ext.require([
@@ -261,7 +261,7 @@
 
 		// As filterMentuButtonDelegate
 		/**
-		 * Called by the CMDBuild.controller.management.workflow.panel.tree.filter.advanced.Advanced when click to on the apply icon or on a row of the picker
+		 * Called by the CMDBuild.controller.common.panel.gridAndForm.panel.common.filter.advanced.Advanced when click to on the apply icon or on a row of the picker
 		 *
 		 * @param {object} filter
 		 *

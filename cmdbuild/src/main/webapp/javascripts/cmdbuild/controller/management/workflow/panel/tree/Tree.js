@@ -43,8 +43,8 @@
 			'workflowTreeActivitySelect',
 			'workflowTreeAppliedFilterGet',
 			'workflowTreeApplyStoreEvent',
-			'workflowTreeFilterApply = panelGridAndFormGridFilterApply',
-			'workflowTreeFilterClear = panelGridAndFormGridFilterClear',
+			'workflowTreeFilterApply = panelGridAndFormListPanelFilterApply',
+			'workflowTreeFilterClear = panelGridAndFormListPanelFilterClear',
 			'workflowTreeRendererTreeColumn',
 			'workflowTreeReset',
 			'workflowTreeStoreGet',
@@ -102,8 +102,10 @@
 			this.controllerToolbarTop = Ext.create('CMDBuild.controller.management.workflow.panel.tree.toolbar.Top', { parentDelegate: this });
 
 			// Add docked
-			this.view.addDocked(this.controllerToolbarTop.getView(), 'top');
-			this.view.addDocked(this.controllerToolbarPaging.getView(), 'bottom');
+			this.view.addDocked([
+				this.controllerToolbarPaging.getView(),
+				this.controllerToolbarTop.getView()
+			]);
 		},
 
 		/**
@@ -418,7 +420,7 @@
 		onWorkflowTreeWokflowSelect: function (node) {
 			this.view.reconfigure(this.storeSortersSet(this.cmfg('workflowTreeStoreGet')), this.workflowTreeBuildColumns());
 
-			// Forward to sub controllers
+			// Forward to sub-controllers
 			this.controllerToolbarPaging.cmfg('onWorkflowTreeToolbarPagingWokflowSelect', node.get(CMDBuild.core.constants.Proxy.FILTER));
 			this.controllerToolbarTop.cmfg('onWorkflowTreeToolbarTopWokflowSelect');
 		},
@@ -815,6 +817,8 @@
 			},
 
 			/**
+			 * Sort array descending because storeSortersAdd() inserts values from the bottom of sorters array, not from top
+			 *
 			 * @param {Ext.data.TreeStore} store
 			 *
 			 * @returns {Ext.data.TreeStore} store
@@ -822,7 +826,7 @@
 			 * @private
 			 */
 			storeSortersSet: function (store) {
-				var attributes = CMDBuild.core.Utils.objectArraySort(this.cmfg('workflowSelectedWorkflowAttributesGet'), CMDBuild.core.constants.Proxy.SORT_INDEX);
+				var attributes = CMDBuild.core.Utils.objectArraySort(this.cmfg('workflowSelectedWorkflowAttributesGet'), CMDBuild.core.constants.Proxy.SORT_INDEX, 'DESC');
 
 				// Setup store sorters
 				this.storeSortersClear(store);
@@ -839,6 +843,8 @@
 							});
 						}
 					}, this);
+
+				return store;
 			},
 
 		/**
@@ -1065,11 +1071,6 @@
 			workflowTreeFilterApply: function (parameters) {
 				parameters = Ext.isObject(parameters) ? parameters : {};
 
-				// Error handling
-					if (!Ext.isObject(parameters.filter) || Ext.Object.isEmpty(parameters.filter))
-						return _error('workflowTreeFilterApply(): unmanaged filter object parameter', this, parameters.filter);
-				// END: Error handling
-
 				switch (parameters.type) {
 					case 'advanced':
 						return this.workflowTreeFilterApplyAdvanced(parameters.filter);
@@ -1091,11 +1092,8 @@
 			 */
 			workflowTreeFilterApplyAdvanced: function (filter) {
 				// Error handling
-					if (!Ext.isObject(filter) || Ext.Object.isEmpty(filter) || !Ext.isFunction(filter.get) || !Ext.isFunction(filter.set))
-						return _error('workflowTreeFilterApplyAdvanced(): unmanaged filter object parameter', this, filter);
-
-					if (!Ext.isFunction(filter.getEmptyRuntimeParameters) || !Ext.isFunction(filter.resolveCalculatedParameters))
-						return _error('workflowTreeFilterApplyAdvanced(): unsupported filter object functions', this, filter);
+					if (!Ext.isObject(filter) || Ext.Object.isEmpty(filter) || !filter.isFilterAdvancedCompatible)
+						return _error('workflowTreeFilterApplyAdvanced(): unmanaged filter parameter', this, filter);
 				// END: Error handling
 
 				var emptyRuntimeParameters = filter.getEmptyRuntimeParameters(),
@@ -1122,7 +1120,7 @@
 			},
 
 			/**
-			 * @param {CMDBuild.model.common.field.filter.basic.Filter} filter
+			 * @param {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter} filter
 			 *
 			 * @returns {Void}
 			 *
@@ -1130,8 +1128,8 @@
 			 */
 			workflowTreeFilterApplyBasic: function (filter) {
 				// Error handling
-					if (!Ext.isObject(filter) || Ext.Object.isEmpty(filter) || !Ext.isFunction(filter.get) || !Ext.isFunction(filter.set))
-						return _error('workflowTreeFilterApplyBasic(): unmanaged filter object parameter', this, filter);
+					if (!Ext.isObject(filter) || Ext.Object.isEmpty(filter) || !filter.isFilterAdvancedCompatible)
+						return _error('workflowTreeFilterApplyBasic(): unmanaged filter parameter', this, filter);
 				// END: Error handling
 
 				var newConfigurationObject = {},

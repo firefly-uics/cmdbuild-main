@@ -63,7 +63,7 @@
 		constructor: function (configurationObject) {
 			this.callParent(arguments);
 
-			// Build sub controllers
+			// Build sub-controllers
 			this.controllerStep1 = Ext.create('CMDBuild.controller.administration.taskManager.task.generic.Step1', { parentDelegate: this });
 			this.controllerStep2 = Ext.create('CMDBuild.controller.administration.taskManager.task.generic.Step2', { parentDelegate: this });
 			this.controllerStep3 = Ext.create('CMDBuild.controller.administration.taskManager.task.generic.Step3', { parentDelegate: this });

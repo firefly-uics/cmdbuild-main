@@ -68,7 +68,7 @@
 			 * @returns {Mixed}
 			 */
 			fieldManagerAttributeModelGet: function (attributePath) {
-				attributePath = Ext.isArray(attributePath) ? attributePath : [attributePath];
+				attributePath = Ext.isArray(attributePath) ? attributePath : Ext.Array.clean([attributePath]);
 
 				var requiredAttribute = this.attributeModel;
 
@@ -155,12 +155,14 @@
 			 * Builds Ext.grid.column.* object
 			 *
 			 * @param {Object} parameters
+			 * @param {Boolean} parameters.disableMandatoryFlag
 			 * @param {Boolean} parameters.withEditor
 			 *
 			 * @returns {Object}
 			 */
 			buildColumn: function (parameters) {
 				parameters = Ext.isObject(parameters) ? parameters : {};
+				parameters.disableMandatoryFlag = Ext.isBoolean(parameters.disableMandatoryFlag) ? parameters.disableMandatoryFlag : true;
 				parameters.withEditor = Ext.isBoolean(parameters.withEditor) ? parameters.withEditor : false;
 
 				return this.buildAttributeController().buildColumn(parameters);

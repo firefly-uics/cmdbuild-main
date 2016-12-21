@@ -54,7 +54,7 @@
 		constructor: function (configurationObject) {
 			this.callParent(arguments);
 
-			// Build sub controllers
+			// Build sub-controllers
 			this.controllerStep1 = Ext.create('CMDBuild.controller.administration.taskManager.task.event.synchronous.Step1', { parentDelegate: this });
 			this.controllerStep2 = Ext.create('CMDBuild.controller.administration.taskManager.task.event.synchronous.Step2', { parentDelegate: this });
 			this.controllerStep3 = Ext.create('CMDBuild.controller.administration.taskManager.task.event.synchronous.Step3', { parentDelegate: this });

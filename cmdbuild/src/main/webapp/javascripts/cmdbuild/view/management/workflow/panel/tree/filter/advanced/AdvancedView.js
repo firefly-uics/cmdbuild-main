@@ -1,10 +1,13 @@
 (function () {
 
+	/**
+	 * @deprecated CMDBuild.view.common.panel.gridAndForm.panel.common.filter.advanced.AdvancedView
+	 */
 	Ext.define('CMDBuild.view.management.workflow.panel.tree.filter.advanced.AdvancedView', {
 		extend: 'Ext.container.ButtonGroup',
 
 		/**
-		 * @cfg {CMDBuild.controller.common.panel.gridAndForm.panel.common.filter.advanced.Advanced}
+		 * @cfg {CMDBuild.controller.management.workflow.panel.tree.filter.advanced.Advanced}
 		 */
 		delegate: undefined,
 

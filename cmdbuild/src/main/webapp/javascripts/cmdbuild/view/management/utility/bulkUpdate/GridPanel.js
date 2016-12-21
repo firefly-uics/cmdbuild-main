@@ -87,7 +87,7 @@
 		delegate: undefined,
 
 		/**
-		 * @property {CMDBuild.controller.common.panel.gridAndForm.panel.common.filter.advanced.Advanced}
+		 * @property {CMDBuild.controller.common.filter.advanced.Advanced}
 		 */
 		controllerAdvancedFilterButtons: undefined,
 
@@ -578,7 +578,7 @@
 		}
 
 		if (me.cmAdvancedFilter) {
-			me.controllerAdvancedFilterButtons = Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.filter.advanced.Advanced', { masterGrid: me });
+			me.controllerAdvancedFilterButtons = Ext.create('CMDBuild.controller.common.filter.advanced.Advanced', { masterGrid: me });
 			CMDBuild.core.Utils.forwardMethods(me, me.controllerAdvancedFilterButtons.getView(), [
 				"enableClearFilterButton",
 				"disableClearFilterButton",

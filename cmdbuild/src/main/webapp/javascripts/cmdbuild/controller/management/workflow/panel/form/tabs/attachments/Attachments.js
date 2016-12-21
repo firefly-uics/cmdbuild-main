@@ -275,8 +275,7 @@
 			delegate: me
 		}).show();
 
-		me.confirmStrategy = new CMDBuild.controller.management.classes
-		.attachments.AddAttachmentStrategy(me);
+		me.confirmStrategy = Ext.create('CMDBuild.controller.management.workflow.panel.form.tabs.attachments.AddAttachmentStrategy', this);
 	}
 
 	function findAutocompletionRules(me) {

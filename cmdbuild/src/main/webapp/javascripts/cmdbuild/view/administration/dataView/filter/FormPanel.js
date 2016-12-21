@@ -6,7 +6,7 @@
 		requires: [
 			'CMDBuild.core.constants.FieldWidths',
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.dataView.Filter'
+			'CMDBuild.proxy.administration.dataView.Filter'
 		],
 
 		mixins: ['CMDBuild.view.common.PanelFunctions'],
@@ -44,7 +44,7 @@
 				editable: false,
 				allowBlank: false,
 
-				store: CMDBuild.proxy.dataView.Filter.getStoreSourceClass(),
+				store: CMDBuild.proxy.administration.dataView.Filter.getStoreSourceClass(),
 				queryMode: 'local'
 			});
 

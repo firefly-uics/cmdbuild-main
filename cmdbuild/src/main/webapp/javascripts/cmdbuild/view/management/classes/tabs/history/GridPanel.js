@@ -1,5 +1,10 @@
 (function () {
 
+	/**
+	 * @link CMDBuild.view.management.dataView.filter.panel.form.tabs.history.GridPanel
+	 *
+	 * @legacy
+	 */
 	Ext.define('CMDBuild.view.management.classes.tabs.history.GridPanel', {
 		extend: 'Ext.grid.Panel',
 

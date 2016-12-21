@@ -19,8 +19,7 @@
 	});
 
 	/**
-	 * @link CMDBuild.controller.common.panel.gridAndForm.panel.common.filter.advanced.filterEditor.relations.CMCardGridController
-	 * @link CMDBuild.controller.management.workflow.panel.tree.filter.advanced.filterEditor.relations.CMCardGridController
+	 * @link CMDBuild.controller.common.filter.advanced.filterEditor.relations.CMCardGridController
 	 */
 	Ext.define("CMDBuild.controller.management.common.CMCardGridController", {
 
@@ -212,7 +211,7 @@
 
 				if (
 					Ext.isNumber(selected.get('Id')) && !Ext.isEmpty(selected.get('Id'))
-					&& Ext.isString(selected.get('IdClass_value')) && !Ext.isEmpty(selected.get('IdClass_value'))
+					&& Ext.isNumber(selected.get('IdClass')) && !Ext.isEmpty(selected.get('IdClass'))
 				) {
 					CMDBuild.proxy.Card.read({
 						params: {
@@ -339,9 +338,9 @@
 		// protected
 		unApplyFilter: unApplyFilter,
 
-		// As CMDBuild.controller.common.panel.gridAndForm.panel.common.filter.advanced.Advanced delegate
+		// As CMDBuild.controller.common.filter.advanced.Advanced delegate
 		/**
-		 * Called by the CMDBuild.controller.common.panel.gridAndForm.panel.common.filter.advanced.Advanced when click to on the apply icon or on a row of the picker
+		 * Called by the CMDBuild.controller.common.filter.advanced.Advanced when click to on the apply icon or on a row of the picker
 		 *
 		 * @param {object} filter
 		 *

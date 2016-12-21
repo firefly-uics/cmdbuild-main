@@ -78,7 +78,7 @@
 					eventName: 'load',
 					fn: function () {
 						moduleController.cmfg('workflowTreeFilterApply', {
-							filter: Ext.create('CMDBuild.model.common.panel.gridAndForm.filter.advanced.Filter', {
+							filter: Ext.create('CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter', {
 								configuration: this.parametersModel.get(CMDBuild.core.constants.Proxy.CLIENT_FILTER)
 							}),
 							type: 'advanced'

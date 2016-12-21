@@ -240,7 +240,10 @@
 		getRawValue: function() {
 			var me = this;
 
-			return (!me.editor || !me.editor.initialized) ? Ext.valueFrom(me.value, '') : me.editor.getContent();
+			if (me.rendered)
+				return (!me.editor || !me.editor.initialized) ? Ext.valueFrom(me.value, '') : me.editor.getContent();
+
+			return '';
 		},
 
 		disable: function() {

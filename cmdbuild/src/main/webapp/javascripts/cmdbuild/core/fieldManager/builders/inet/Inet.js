@@ -16,6 +16,8 @@
 
 		/**
 		 * @param {Object} parameters
+		 * @param {Boolean} parameters.disableMandatoryFlag
+		 * @param {Boolean} parameters.withEditor
 		 *
 		 * @returns {Ext.grid.column.Column or Object}
 		 *

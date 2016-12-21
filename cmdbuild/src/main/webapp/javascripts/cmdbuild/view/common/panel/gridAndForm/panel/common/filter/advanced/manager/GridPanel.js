@@ -1,8 +1,5 @@
 (function () {
 
-	/**
-	 * @link CMDBuild.view.management.workflow.panel.tree.filter.advanced.manager.GridPanel
-	 */
 	Ext.define('CMDBuild.view.common.panel.gridAndForm.panel.common.filter.advanced.manager.GridPanel', {
 		extend: 'Ext.grid.Panel',
 
@@ -12,7 +9,7 @@
 		],
 
 		/**
-		 * @cfg {CMDBuild.controller.administration.workflow.tabs.Domains}
+		 * @cfg {CMDBuild.controller.common.panel.gridAndForm.panel.common.filter.advanced.Manager}
 		 */
 		delegate: undefined,
 
@@ -58,7 +55,7 @@
 								},
 
 								handler: function (grid, rowIndex, colIndex, node, e, record, rowNode) {
-									this.delegate.cmfg('onPanelGridAndFormFilterAdvancedManagerSaveButtonClick', record);
+									this.delegate.cmfg('onPanelGridAndFormCommonFilterAdvancedManagerSaveButtonClick', record);
 								}
 							}),
 							Ext.create('CMDBuild.core.buttons.icon.modify.Modify', {
@@ -71,7 +68,7 @@
 								},
 
 								handler: function (grid, rowIndex, colIndex, node, e, record, rowNode) {
-									this.delegate.cmfg('onPanelGridAndFormFilterAdvancedManagerModifyButtonClick', record);
+									this.delegate.cmfg('onPanelGridAndFormCommonFilterAdvancedManagerModifyButtonClick', record);
 								}
 							}),
 							Ext.create('CMDBuild.core.buttons.icon.Clone', {
@@ -80,7 +77,7 @@
 								scope: this,
 
 								handler: function (grid, rowIndex, colIndex, node, e, record, rowNode) {
-									this.delegate.cmfg('onPanelGridAndFormFilterAdvancedManagerCloneButtonClick', record);
+									this.delegate.cmfg('onPanelGridAndFormCommonFilterAdvancedManagerCloneButtonClick', record);
 								}
 							}),
 							Ext.create('CMDBuild.core.buttons.icon.Remove', {
@@ -93,7 +90,7 @@
 								},
 
 								handler: function (grid, rowIndex, colIndex, node, e, record, rowNode) {
-									this.delegate.cmfg('onPanelGridAndFormFilterAdvancedManagerRemoveButtonClick', record);
+									this.delegate.cmfg('onPanelGridAndFormCommonFilterAdvancedManagerRemoveButtonClick', record);
 								}
 							})
 						]
@@ -111,7 +108,7 @@
 				return cellIndex == 0;
 			},
 			select: function (grid, record, index, eOpts) {
-				this.delegate.cmfg('onPanelGridAndFormFilterAdvancedFilterSelect', record);
+				this.delegate.cmfg('onPanelGridAndFormCommonFilterAdvancedFilterSelect', record);
 			}
 		}
 	});

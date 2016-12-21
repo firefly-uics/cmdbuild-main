@@ -1,9 +1,5 @@
 (function () {
 
-	/**
-	 * @link CMDBuild.view.common.field.filter.advanced.window.Window
-	 * @link CMDBuild.view.management.workflow.panel.tree.filter.advanced.FilterEditorWindow
-	 */
 	Ext.define('CMDBuild.view.common.panel.gridAndForm.panel.common.filter.advanced.FilterEditorWindow', {
 		extend: 'CMDBuild.core.window.AbstractModal',
 
@@ -56,21 +52,21 @@
 								scope: this,
 
 								handler: function (button, e) {
-									this.delegate.cmfg('onPanelGridAndFormFilterAdvancedFilterEditorApplyButtonClick');
+									this.delegate.cmfg('onPanelGridAndFormCommonFilterAdvancedFilterEditorApplyButtonClick');
 								}
 							}),
 							Ext.create('CMDBuild.core.buttons.text.SaveAndApply', {
 								scope: this,
 
 								handler: function (button, e) {
-									this.delegate.cmfg('onPanelGridAndFormFilterAdvancedFilterEditorSaveAndApplyButtonClick');
+									this.delegate.cmfg('onPanelGridAndFormCommonFilterAdvancedFilterEditorSaveAndApplyButtonClick');
 								}
 							}),
 							Ext.create('CMDBuild.core.buttons.text.Abort', {
 								scope: this,
 
 								handler: function (button, e) {
-									this.delegate.cmfg('onPanelGridAndFormFilterAdvancedFilterEditorAbortButtonClick');
+									this.delegate.cmfg('onPanelGridAndFormCommonFilterAdvancedFilterEditorAbortButtonClick');
 								}
 							})
 						]
@@ -86,10 +82,10 @@
 
 		listeners: {
 			hide: function (panel, eOpts) {
-				this.delegate.cmfg('onPanelGridAndFormFilterAdvancedFilterEditorViewHide');
+				this.delegate.cmfg('onPanelGridAndFormCommonFilterAdvancedFilterEditorViewHide');
 			},
 			show: function (panel, eOpts) {
-				this.delegate.cmfg('onPanelGridAndFormFilterAdvancedFilterEditorViewShow');
+				this.delegate.cmfg('onPanelGridAndFormCommonFilterAdvancedFilterEditorViewShow');
 			}
 		}
 	});
