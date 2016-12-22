@@ -303,25 +303,7 @@
 				),
 				state: this.cmfg('dataViewFilterUiViewModeIsEdit'),
 			});
-		},
-
-//		/**
-//		 * @param {String} mode
-//		 *
-//		 * @returns {Void}
-//		 *
-//		 * @private
-//		 */
-//		viewModeSet: function (mode) {
-//			switch (mode) {
-//				case 'edit':
-//					return this.view.getLayout().setActiveItem(this.view.panelModeEdit);
-//
-//				case 'read':
-//				default:
-//					return this.view.getLayout().setActiveItem(this.view.panelModeRead);
-//			}
-//		}
+		}
 	});
 
 })();

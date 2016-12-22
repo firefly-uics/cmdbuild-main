@@ -31,6 +31,7 @@
 			'onDataViewFilterFormPrintButtonClick',
 			'onDataViewFilterFormRemoveButtonClick',
 			'onDataViewFilterFormSaveButtonClick',
+			'panelGridAndFormPanelFormTabActiveFireShowEvent = dataViewFilterFormTabActiveFireShowEvent',
 			'panelGridAndFormPanelFormTabActiveSet = dataViewFilterFormTabActiveSet',
 			'panelGridAndFormPanelFormTabSelectionManage = dataViewFilterFormTabSelectionManage'
 		],
@@ -180,7 +181,6 @@
 		/**
 		 * @param {Object} parameters
 		 * @param {Object} parameters.tabToSelect
-		 * @param {String} parameters.viewMode // FIXME: future todo, must be synchronized with internal tab structure
 		 *
 		 * @returns {Void}
 		 */
@@ -319,11 +319,9 @@
 		},
 
 		/**
-		 * Synchronize tab states
-		 *
 		 * @returns {Void}
 		 */
-		onDataViewFilterFormModifyButtonClick: function () { // TODO: on card tab show event use onModifyCardClick
+		onDataViewFilterFormModifyButtonClick: function () {
 			// Forward to sub-controllers
 			if (Ext.isObject(this.controllerTabCard) && !Ext.Object.isEmpty(this.controllerTabCard))
 				this.controllerTabCard.onModifyCardClick();
@@ -331,11 +329,7 @@
 			if (Ext.isObject(this.controllerTabEmail) && !Ext.Object.isEmpty(this.controllerTabEmail))
 				this.controllerTabEmail.onModifyCardClick();
 
-			// TODO
-			var activeTab = this.tabPanel.getActiveTab();
-
-			if (Ext.isObject(activeTab) && !Ext.Object.isEmpty(activeTab))
-				activeTab.fireEvent('show');
+			this.cmfg('dataViewFilterFormTabActiveFireShowEvent');
 		},
 
 		/**

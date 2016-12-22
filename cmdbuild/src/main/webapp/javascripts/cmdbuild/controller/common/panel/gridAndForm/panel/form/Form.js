@@ -2,6 +2,7 @@
 
 	/**
 	 * Required managed functions:
+	 * 	- panelGridAndFormPanelFormTabActiveFireShowEvent
 	 * 	- panelGridAndFormPanelFormTabActiveSet
 	 * 	- panelGridAndFormPanelFormTabSelectionManage
 	 *
@@ -38,6 +39,13 @@
 				if (Ext.isEmpty(this.tabPanel.getActiveTab()))
 					this.cmfg('panelGridAndFormPanelFormTabActiveSet');
 
+				this.cmfg('panelGridAndFormPanelFormTabActiveFireShowEvent');
+			},
+
+			/**
+			 * @returns {Void}
+			 */
+			panelGridAndFormPanelFormTabActiveFireShowEvent: function () {
 				var activeTab = this.tabPanel.getActiveTab();
 
 				if (Ext.isObject(activeTab) && !Ext.Object.isEmpty(activeTab))
@@ -52,10 +60,7 @@
 			panelGridAndFormPanelFormTabActiveSet: function (panelToDisplay) {
 				this.tabPanel.setActiveTab(Ext.isEmpty(panelToDisplay) ? 0 : panelToDisplay);
 
-				var activeTab = this.tabPanel.getActiveTab();
-
-				if (Ext.isObject(activeTab) && !Ext.Object.isEmpty(activeTab))
-					activeTab.fireEvent('show');
+				this.cmfg('panelGridAndFormPanelFormTabActiveFireShowEvent');
 			}
 	});
 

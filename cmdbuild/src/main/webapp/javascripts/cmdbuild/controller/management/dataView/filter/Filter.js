@@ -264,10 +264,7 @@
 						this.setViewTitle(this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.DESCRIPTION));
 
 						// Forward to sub-controllers
-						this.controllerForm.cmfg('dataViewFilterFormUiUpdate', {
-							tabToSelect: parameters.tabToSelect,
-							viewMode: parameters.viewMode
-						});
+						this.controllerForm.cmfg('dataViewFilterFormUiUpdate', { tabToSelect: parameters.tabToSelect });
 						this.controllerGrid.cmfg('dataViewFilterGridUiUpdate', {
 							enableFilterReset: parameters.enableFilterReset,
 							forceStoreLoad: parameters.forceStoreLoad,
@@ -307,10 +304,7 @@
 										this.setViewTitle(this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.DESCRIPTION));
 
 										// Forward to sub-controllers
-										this.controllerForm.cmfg('dataViewFilterFormUiUpdate', {
-											tabToSelect: parameters.tabToSelect,
-											viewMode: parameters.viewMode
-										});
+										this.controllerForm.cmfg('dataViewFilterFormUiUpdate', { tabToSelect: parameters.tabToSelect });
 										this.controllerGrid.cmfg('dataViewFilterGridUiUpdate', {
 											enableFilterReset: parameters.enableFilterReset,
 											forceStoreLoad: parameters.forceStoreLoad,
