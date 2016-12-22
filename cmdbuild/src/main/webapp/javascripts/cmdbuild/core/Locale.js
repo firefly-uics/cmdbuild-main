@@ -40,6 +40,10 @@
 
 			// Override defaults with localized data
 				switch (CMDBuild.configuration.runtime.get(CMDBuild.core.constants.Proxy.LANGUAGE)) {
+					case 'en': {
+						mergedConfigObject = Ext.Object.merge(mergedConfigObject, CMDBuild.locale.en.config);
+					} break;
+
 					case 'fr': {
 						mergedConfigObject = Ext.Object.merge(mergedConfigObject, CMDBuild.locale.fr.config);
 					} break;
