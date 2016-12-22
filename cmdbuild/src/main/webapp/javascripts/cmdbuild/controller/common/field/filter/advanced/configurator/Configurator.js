@@ -5,7 +5,7 @@
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.core.interfaces.service.LoadMask'
+			'CMDBuild.core.LoadMask'
 		],
 
 		/**
@@ -142,7 +142,7 @@
 					return _error('fieldFilterAdvancedConfiguratorConfigure(): unmanaged className parameter', this, configuration.className);
 			// END: Error handling
 
-			CMDBuild.core.interfaces.service.LoadMask.manage(true, true); // Manually manage LoadMask (show)
+			CMDBuild.core.LoadMask.show();
 
 			this.fieldFilterAdvancedConfiguratorConfigurationSet({ value: configuration });
 
@@ -153,7 +153,7 @@
 					callback: function () {
 						this.manageActiveTabSet();
 
-						CMDBuild.core.interfaces.service.LoadMask.manage(true, false); // Manually manage LoadMask (hide)
+						CMDBuild.core.LoadMask.hide();
 
 						if (Ext.isFunction(configuration.callback))
 							Ext.callback(configuration.callback, configuration.scope);

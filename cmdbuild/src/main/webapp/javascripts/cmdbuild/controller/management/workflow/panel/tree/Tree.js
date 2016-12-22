@@ -8,7 +8,7 @@
 			'CMDBuild.core.constants.Metadata',
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.core.constants.WorkflowStates',
-			'CMDBuild.core.interfaces.service.LoadMask',
+			'CMDBuild.core.LoadMask',
 			'CMDBuild.core.Message',
 			'CMDBuild.core.Utils',
 			'CMDBuild.proxy.management.workflow.panel.tree.Tree'
@@ -356,7 +356,7 @@
 					return _error('onWorkflowTreeRecordSelect(): unmanaged record parameter', this, record);
 			// END: Error handling
 
-			CMDBuild.core.interfaces.service.LoadMask.manage(true, true); // Manually manage LoadMask (show)
+			CMDBuild.core.LoadMask.show();
 
 			switch (this.nodeTypeOf(record)) {
 				case 'activity':
@@ -630,7 +630,7 @@
 					return _error('recordSelectionCallback(): unmanaged record type', this, record);
 			}
 
-			CMDBuild.core.interfaces.service.LoadMask.manage(true, false); // Manually manage LoadMask (hide)
+			CMDBuild.core.LoadMask.hide();
 		},
 
 		// Tree selection methods

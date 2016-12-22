@@ -7,7 +7,7 @@
 			'CMDBuild.core.constants.Metadata',
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.core.constants.WorkflowStates',
-			'CMDBuild.core.interfaces.service.LoadMask',
+			'CMDBuild.core.LoadMask',
 			'CMDBuild.core.Utils',
 			'CMDBuild.proxy.management.workflow.Activity',
 			'CMDBuild.proxy.management.workflow.Instance',
@@ -587,7 +587,7 @@
 			parameters = Ext.isObject(parameters) ? parameters : {};
 
 			if (Ext.isObject(parameters.node) && !Ext.Object.isEmpty(parameters.node)) {
-				CMDBuild.core.interfaces.service.LoadMask.manage(true, true); // Manual loadMask manage (show)
+				CMDBuild.core.LoadMask.show();
 
 				this.workflowSelectedWorkflowReset();
 				this.workflowSelectedPreviousActivityReset();
@@ -595,7 +595,7 @@
 				this.cmfg('workflowSelectedInstanceReset');
 
 				this.buildLocalCache(parameters.node, function () {
-					CMDBuild.core.interfaces.service.LoadMask.manage(true, false); // Manual loadMask manage (hide)
+					CMDBuild.core.LoadMask.hide();
 
 					this.setViewTitle(this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.DESCRIPTION));
 
