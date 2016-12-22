@@ -23,6 +23,7 @@
 			'dataViewFilterPreviousCardGet',
 			'dataViewFilterPreviousCardIsEmpty',
 			'dataViewFilterPreviousCardReset = dataViewPreviousCardReset',
+			'dataViewFilterReset',
 			'dataViewFilterSelectedCardAttributesGet',
 			'dataViewFilterSelectedCardAttributesIsEmpty',
 			'dataViewFilterSelectedCardGet',
@@ -32,7 +33,6 @@
 			'dataViewFilterSelectedDataViewAttributesIsEmpty',
 			'dataViewFilterSourceEntryTypeGet = panelGridAndFormSelectedEntityGet',
 			'dataViewFilterSourceEntryTypeIsEmpty',
-			'dataViewFilterUiReset',
 			'dataViewFilterUiUpdate',
 			'onDataViewFilterAbortButtonClick',
 			'onDataViewFilterAddButtonClick',
@@ -213,14 +213,6 @@
 					}
 				}
 			});
-		},
-
-		/**
-		 * @returns {Void}
-		 */
-		dataViewFilterUiReset: function () {
-			this.controllerForm.cmfg('dataViewFilterFormReset');
-			this.controllerGrid.cmfg('dataViewFilterGridReset');
 		},
 
 		/**
@@ -409,7 +401,7 @@
 		onDataViewFilterAbortButtonClick: function () {
 			this.cmfg('dataViewFilterFullScreenUiSetup', { maximize: 'top' });
 			this.cmfg('dataViewFilterSelectedCardReset');
-			this.cmfg('dataViewFilterUiReset');
+			this.cmfg('dataViewFilterReset');
 			this.cmfg('dataViewFilterUiViewModeSet');
 
 			// Forward to sub-controllers
@@ -457,6 +449,14 @@
 
 			// Forward to sub-controllers
 			this.controllerForm.cmfg('onDataViewFilterFormRecordDoubleClick');
+		},
+
+		/**
+		 * @returns {Void}
+		 */
+		dataViewFilterReset: function () {
+			this.controllerForm.cmfg('dataViewFilterFormReset');
+			this.controllerGrid.cmfg('dataViewFilterGridReset');
 		},
 
 		// PreviousCard property functions

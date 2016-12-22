@@ -733,14 +733,14 @@
 		onDataViewFilterGridSortChange: function () {
 			this.cmfg('dataViewFilterGridStoreGet').on('load', function (store, records, successful, eOpts) {
 				if (this.cmfg('dataViewFilterSelectedCardIsEmpty')) {
-					this.cmfg('dataViewFilterUiReset');
+					this.cmfg('dataViewFilterReset');
 				} else {
 					var selectedRecordIndex = store.find(CMDBuild.core.constants.Proxy.ID, this.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.ID));
 
 					this.view.getSelectionModel().select(Math.abs(selectedRecordIndex), false, true);
 
 					if (selectedRecordIndex < 0)
-						this.cmfg('dataViewFilterUiReset');
+						this.cmfg('dataViewFilterReset');
 				}
 			}, this, { single: true });
 		},
@@ -888,7 +888,7 @@
 			if (!Ext.isString(filter) || Ext.isEmpty(filter))
 				this.cmfg('dataViewFilterGridFilterClear', { disableStoreLoad: true });
 
-			this.cmfg('dataViewFilterUiReset');
+			this.cmfg('dataViewFilterReset');
 			this.cmfg('dataViewFilterGridStoreLoad', { disableFirstRowSelection: true });
 		},
 
