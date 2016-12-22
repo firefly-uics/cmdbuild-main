@@ -20,7 +20,6 @@
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
-			'onPanelGridAndFormCommonToolbarPagingShow',
 			'panelGridAndFormCommonToolbarPagingFilterAdvancedReset',
 			'panelGridAndFormCommonToolbarPagingFilterBasicReset',
 			'panelGridAndFormCommonToolbarPagingUiUpdate'

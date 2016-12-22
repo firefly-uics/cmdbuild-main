@@ -240,7 +240,7 @@
 			parameters.cardId = Ext.isNumber(parameters.cardId) ? parameters.cardId : null;
 			parameters.className = Ext.isString(parameters.className) ? parameters.className
 				: this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.SOURCE_ENTRY_TYPE_NAME);
-_debug('dataViewFilterUiUpdate', parameters);
+
 			// Error handling
 				if (this.cmfg('dataViewSelectedDataViewIsEmpty'))
 					return _error('dataViewFilterUiUpdate(): empty selected dataView', this, this.cmfg('dataViewSelectedDataViewGet'));
