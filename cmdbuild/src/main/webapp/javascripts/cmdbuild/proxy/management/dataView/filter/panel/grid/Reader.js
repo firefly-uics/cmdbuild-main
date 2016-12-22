@@ -57,12 +57,15 @@
 		readRecords: function (data) {
 			var structure = [];
 
-			if (Ext.isArray(data[CMDBuild.core.constants.Proxy.ROWS]) && !Ext.isEmpty(data[CMDBuild.core.constants.Proxy.ROWS]))
-				Ext.Array.each(data[CMDBuild.core.constants.Proxy.ROWS], function (rowObject, i, allRowObjects) {
+			if (Ext.isArray(data[this.root]) && !Ext.isEmpty(data[this.root]))
+				Ext.Array.each(data[this.root], function (rowObject, i, allRowObjects) {
 					structure.push(this.buildRecord(rowObject));
 				}, this);
 
-			Ext.apply(data, { rows: structure }); // Override row property with custom ones
+			var decodedItems = {};
+			decodedItems[this.root] = structure;
+
+			Ext.apply(data, decodedItems); // Override row property with custom ones
 
 			return this.callParent(arguments);
 		}

@@ -19,17 +19,13 @@
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
-			'dataViewPreviousCardReset -> controllerFilter', // TODO: controllerSql
+			'dataViewPreviousCardReset -> controllerFilter', // Previous card can't be managed in Sql views
 			'dataViewSelectedDataViewGet',
 			'dataViewSelectedDataViewIsEmpty',
-//			'dataViewUiLoadCallbackGet',
-//			'dataViewUiLoadCallbackIsEmpty',
-//			'dataViewUiLoadCallbackReset',
 			'dataViewUiUpdate',
 			'identifierGet = dataViewIdentifierGet',
 			'onDataViewExternalServicesNavigationChronologyRecordSelect', // From mixins
-			'onDataViewModuleInit = onModuleInit',
-//			'onDataViewViewSelected -> sectionController' // TODO: rename in controllerSql
+			'onDataViewModuleInit = onModuleInit'
 		],
 
 		/**
@@ -43,23 +39,9 @@
 		controllerSql: undefined,
 
 		/**
-		 * @property {Object}
-		 *
-		 * @private
-		 */
-		dataSources: {}, // TODO: reset on data view select
-
-		/**
 		 * @cfg {String}
 		 */
 		identifier: undefined,
-
-		/**
-		 * @property {Object}
-		 *
-		 * @private
-		 */
-		loadCallback: {},
 
 		/**
 		 * @property {CMDBuild.model.management.dataView.DataView}
@@ -87,14 +69,13 @@
 			this.view = Ext.create('CMDBuild.view.management.dataView.DataViewView', { delegate: this });
 
 			// Build sub-controllers
-			this.controllerFilter = Ext.create('CMDBuild.controller.management.dataView.filter.Filter', { parentDelegate: this }); // TODO
-//			this.controllerSql = Ext.create('CMDBuild.controller.management.dataView.sql.Sql', { parentDelegate: this }); // TODO
+			this.controllerFilter = Ext.create('CMDBuild.controller.management.dataView.filter.Filter', { parentDelegate: this });
+			this.controllerSql = Ext.create('CMDBuild.controller.management.dataView.sql.Sql', { parentDelegate: this });
 
 			// View build
 			this.view.add([
-				this.controllerFilter.getView()
-//				,
-//				this.controllerSql.getView() // TODO
+				this.controllerFilter.getView(),
+				this.controllerSql.getView()
 			]);
 		},
 
@@ -150,57 +131,6 @@
 				}
 			},
 
-//		// LoadCallback property functions
-//			/**
-//			 * @param {String} property
-//			 *
-//			 * @returns {Function or Object}
-//			 */
-//			dataViewUiLoadCallbackGet: function (property) {
-//				if (Ext.isString(property) && !Ext.isEmpty(property))
-//					return this.loadCallback[property];
-//
-//				return this.loadCallback;
-//			},
-//
-//			/**
-//			 * @returns {Boolean}
-//			 */
-//			dataViewUiLoadCallbackIsEmpty: function () {
-//				return Ext.Object.isEmpty(this.loadCallback);
-//			},
-//
-//			/**
-//			 * @returns {Void}
-//			 */
-//			dataViewUiLoadCallbackReset: function () {
-//				this.loadCallback = {};
-//			},
-//
-//			/**
-//			 * @param {Options} parameters
-//			 * @param {Function} parameters.callback
-//			 * @param {Object} parameters.scope
-//			 *
-//			 * @returns {Void}
-//			 *
-//			 * @private
-//			 */
-//			dataViewUiLoadCallbackSet: function (parameters) {
-//				parameters = Ext.isObject(parameters) ? parameters : {};
-//				parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
-//
-//				// Error handling
-//					if (!Ext.isFunction(parameters.callback))
-//						return _error('dataViewUiLoadCallbackSet(): unmanaged callback parameter', this, parameters.callback);
-//				// END: Error handling
-//
-//				this.loadCallback = {
-//					callback: parameters.callback,
-//					scope: parameters.scope
-//				};
-//			},
-
 		/**
 		 * @param {Object} parameters
 		 * @param {Boolean} parameters.disableForward
@@ -235,6 +165,7 @@
 		 * @param {Number} parameters.entityId
 		 * @param {Object} parameters.scope
 		 * @param {Object} parameters.tabToSelect
+		 * @param {String} parameters.viewMode
 		 *
 		 * @returns {Void}
 		 */
@@ -267,27 +198,21 @@
 
 							// Forward to sub-controllers
 							this.controllerFilter.cmfg('dataViewFilterUiUpdate', {
-								callback: parameters.callback,
 								cardId: parameters.cardId,
 								enableFilterReset: true,
 								resetSorters: true,
+								tabToSelect: parameters.tabToSelect,
+								viewMode: parameters.viewMode,
 								scope: parameters.scope,
-								tabToSelect: parameters.tabToSelect
+								callback: parameters.callback
 							});
-//							this.controllerSql.cmfg('dataViewSqlUiUpdate', {
-//								cardId: parameters.cardId,
-//								enableFilterReset: true,
-//								resetSorters: true,
-//								scope: parameters.scope,
-//								callback: parameters.callback
-//							}); // TODO
-
-//							// Setup load callback
-//							if (Ext.isFunction(parameters.callback))
-//								this.dataViewUiLoadCallbackSet({
-//									callback: parameters.callback,
-//									scope: parameters.scope
-//								});
+							this.controllerSql.cmfg('dataViewSqlUiUpdate', {
+								enableFilterReset: true,
+								resetSorters: true,
+								viewMode: parameters.viewMode,
+								scope: parameters.scope,
+								callback: parameters.callback
+							});
 
 							// History record save
 							CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
@@ -324,7 +249,7 @@
 					return this.view.getLayout().setActiveItem(this.controllerFilter.getView());
 
 				case 'sql':
-//					return this.view.getLayout().setActiveItem(this.controllerSql.getView()); // TODO
+					return this.view.getLayout().setActiveItem(this.controllerSql.getView());
 
 				default:
 					return _error(

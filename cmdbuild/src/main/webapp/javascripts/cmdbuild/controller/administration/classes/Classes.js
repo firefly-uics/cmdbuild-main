@@ -230,7 +230,7 @@
 			var params = {};
 			params[CMDBuild.core.constants.Proxy.FORMAT] = format;
 
-			this.controllerPrintWindow.cmfg('panelGridAndFormPrintWindowShow', {
+			this.controllerPrintWindow.cmfg('panelGridAndFormCommonPrintWindowShow', {
 				format: format,
 				mode: 'schema',
 				params: params

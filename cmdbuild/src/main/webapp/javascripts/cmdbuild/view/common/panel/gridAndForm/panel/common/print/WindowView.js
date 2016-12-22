@@ -39,7 +39,7 @@
 								scope: this,
 
 								handler: function(button, e) {
-									this.delegate.cmfg('onPanelGridAndFormPrintWindowDownloadButtonClick');
+									this.delegate.cmfg('onPanelGridAndFormCommonPrintWindowDownloadButtonClick');
 								}
 							})
 						]
@@ -52,7 +52,7 @@
 
 		listeners: {
 			show: function (window, eOpts) {
-				this.delegate.cmfg('onPanelGridAndFormPrintWindowShow');
+				this.delegate.cmfg('onPanelGridAndFormCommonPrintWindowShow');
 			}
 		}
 	});

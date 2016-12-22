@@ -31,6 +31,7 @@
 			'panelGridAndFormCommonFilterAdvancedLocalFilterRemove',
 			'panelGridAndFormCommonFilterAdvancedManageToggleButtonLabelSet',
 			'panelGridAndFormCommonFilterAdvancedManageToggleStateReset',
+			'panelGridAndFormCommonFilterAdvancedSetDisabled',
 			'panelGridAndFormCommonFilterAdvancedUiUpdate'
 		],
 
@@ -153,6 +154,20 @@ _debug('onPanelGridAndFormCommonFilterAdvancedFilterSelect', filter);
 		 */
 		panelGridAndFormCommonFilterAdvancedManageToggleStateReset: function () {
 			this.view.manageToggleButton.toggle(false);
+		},
+
+		/**
+		 * @param {Boolean} state
+		 *
+		 * @returns {Void}
+		 */
+		panelGridAndFormCommonFilterAdvancedSetDisabled: function (state) {
+			state = Ext.isBoolean(state) ? state : true;
+
+			if (state)
+				return this.cmfg('onPanelGridAndFormCommonFilterAdvancedDisable');
+
+			return this.cmfg('onPanelGridAndFormCommonFilterAdvancedEnable');
 		},
 
 		/**

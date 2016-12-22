@@ -172,7 +172,7 @@
 				params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.NAME);
 				params[CMDBuild.core.constants.Proxy.FORMAT] = format;
 
-				this.controllerPrintWindow.cmfg('panelGridAndFormPrintWindowShow', {
+				this.controllerPrintWindow.cmfg('panelGridAndFormCommonPrintWindowShow', {
 					format: format,
 					mode: 'classSchema',
 					params: params

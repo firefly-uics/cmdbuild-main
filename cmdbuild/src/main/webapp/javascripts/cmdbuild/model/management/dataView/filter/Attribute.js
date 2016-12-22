@@ -48,7 +48,7 @@
 		 * @override
 		 */
 		constructor: function (data) {
-			data = Ext.isObject(data) ? data : {};
+			data = Ext.isObject(data) ? Ext.clone(data) : {};
 			data[CMDBuild.core.constants.Proxy.SOURCE_OBJECT] = Ext.clone(data); // FIXME: clone clean source object legacy mode with old field manager
 			data[CMDBuild.core.constants.Proxy.LENGTH] = data['len'] || data[CMDBuild.core.constants.Proxy.LENGTH];
 			data[CMDBuild.core.constants.Proxy.MANDATORY] = Ext.isBoolean(data['isnotnull']) ? data['isnotnull'] : data[CMDBuild.core.constants.Proxy.MANDATORY];

@@ -231,6 +231,7 @@
 		 * @param {Boolean} parameters.resetSorters
 		 * @param {Object} parameters.scope,
 		 * @param {Object} parameters.tabToSelect
+		 * @param {String} parameters.viewMode
 		 *
 		 * @returns {Void}
 		 */
@@ -238,7 +239,7 @@
 			parameters = Ext.isObject(parameters) ? parameters : {};
 			parameters.cardId = Ext.isNumber(parameters.cardId) ? parameters.cardId : null;
 			parameters.className = Ext.isString(parameters.className) ? parameters.className
-				: this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.SOURCE_ENTRY_TYPE_NAME)
+				: this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.SOURCE_ENTRY_TYPE_NAME);
 _debug('dataViewFilterUiUpdate', parameters);
 			// Error handling
 				if (this.cmfg('dataViewSelectedDataViewIsEmpty'))
@@ -258,7 +259,10 @@ _debug('dataViewFilterUiUpdate', parameters);
 						this.setViewTitle(this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.DESCRIPTION));
 
 						// Forward to sub-controllers
-						this.controllerForm.cmfg('dataViewFilterFormUiUpdate', { tabToSelect: parameters.tabToSelect });
+						this.controllerForm.cmfg('dataViewFilterFormUiUpdate', {
+							tabToSelect: parameters.tabToSelect,
+							viewMode: parameters.viewMode
+						});
 						this.controllerGrid.cmfg('dataViewFilterGridUiUpdate', {
 							enableFilterReset: parameters.enableFilterReset,
 							forceStoreLoad: parameters.forceStoreLoad,
@@ -298,7 +302,10 @@ _debug('dataViewFilterUiUpdate', parameters);
 										this.setViewTitle(this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.DESCRIPTION));
 
 										// Forward to sub-controllers
-										this.controllerForm.cmfg('dataViewFilterFormUiUpdate', { tabToSelect: parameters.tabToSelect });
+										this.controllerForm.cmfg('dataViewFilterFormUiUpdate', {
+											tabToSelect: parameters.tabToSelect,
+											viewMode: parameters.viewMode
+										});
 										this.controllerGrid.cmfg('dataViewFilterGridUiUpdate', {
 											enableFilterReset: parameters.enableFilterReset,
 											forceStoreLoad: parameters.forceStoreLoad,
@@ -387,7 +394,7 @@ _debug('dataViewFilterUiUpdate', parameters);
 				this.dataViewFilterCacheEntryTypeReset();
 
 				if (Ext.isArray(entryTypeArray) && !Ext.isEmpty(entryTypeArray))
-					Ext.Array.each(entryTypeArray, function (entryTypeObject, i, allEntryTypeObjects) {
+					Ext.Array.forEach(entryTypeArray, function (entryTypeObject, i, allEntryTypeObjects) {
 						if (Ext.isObject(entryTypeObject) && !Ext.Object.isEmpty(entryTypeObject)) {
 							var model = Ext.create('CMDBuild.model.management.dataView.filter.entryType.EntryType', entryTypeObject);
 
@@ -528,11 +535,9 @@ _debug('dataViewFilterUiUpdate', parameters);
 			},
 
 			/**
-			 * @param {Object} parameters
-			 *
 			 * @returns {Void}
 			 */
-			dataViewFilterSelectedCardReset: function (parameters) {
+			dataViewFilterSelectedCardReset: function () {
 				this.propertyManageReset('selectedCard');
 			},
 
@@ -758,9 +763,7 @@ _debug('dataViewFilterUiUpdate', parameters);
 			 * @returns {Boolean}
 			 */
 			dataViewFilterSourceEntryTypeIsEmpty: function () {
-				return !this.dataViewFilterCacheEntryTypeExists({
-					name: this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.SOURCE_ENTRY_TYPE_NAME)
-				});
+				return !this.dataViewFilterCacheEntryTypeExists({ name: this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.SOURCE_ENTRY_TYPE_NAME) });
 			}
 	});
 

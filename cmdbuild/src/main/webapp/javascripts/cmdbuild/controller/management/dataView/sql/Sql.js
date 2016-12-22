@@ -1,12 +1,10 @@
 (function() {
 
 	Ext.define('CMDBuild.controller.management.dataView.sql.Sql', {
-		extend: 'CMDBuild.controller.common.abstract.Base',
+		extend: 'CMDBuild.controller.common.panel.gridAndForm.GridAndForm',
 
 		requires: [
-			'CMDBuild.core.constants.FieldWidths',
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.core.Message',
 			'CMDBuild.proxy.management.dataView.sql.Sql'
 		],
 
@@ -19,28 +17,51 @@
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
-			'dataViewSqlBuildColumns',
-			'dataViewSqlBuildStore',
-			'onDataViewSqlGridSelect',
-			'onDataViewSqlPanelShow = onDataViewPanelShow',
-			'onDataViewSqlPrintButtonClick',
-			'onDataViewSqlViewSelected = onDataViewViewSelected'
+			'dataViewSqlSelectedCardGet',
+			'dataViewSqlSelectedCardIsEmpty',
+			'dataViewSqlSelectedCardReset',
+			'dataViewSqlSelectedDataSourceGet = panelGridAndFormSelectedEntityGet',
+			'dataViewSqlSelectedDataSourceIsEmpty',
+			'dataViewSqlUiReset',
+			'dataViewSqlUiUpdate',
+			'onDataViewSqlAddButtonClick',
+			'panelGridAndFromFullScreenUiSetup = dataViewSqlFullScreenUiSetup',
+			'panelGridAndFormToolsArrayBuild'
 		],
 
 		/**
-		 * @property {CMDBuild.controller.common.panel.gridAndForm.panel.common.print.Window}
+		 * @property {CMDBuild.controller.management.dataView.sql.panel.form.Form}
 		 */
-		controllerPrintWindow: undefined,
+		controllerForm: undefined,
 
 		/**
-		 * @property {CMDBuild.view.management.dataView.sql.FormPanel}
+		 * @property {CMDBuild.controller.management.dataView.sql.panel.grid.Grid}
+		 */
+		controllerGrid: undefined,
+
+		/**
+		 * @property {CMDBuild.view.management.dataView.sql.panel.form.FormPanel}
 		 */
 		form: undefined,
 
 		/**
-		 * @property {CMDBuild.view.management.dataView.sql.GridPanel}
+		 * @property {CMDBuild.view.management.dataView.sql.panel.grid.GridPanel}
 		 */
 		grid: undefined,
+
+		/**
+		 * @property {CMDBuild.model.management.dataView.sql.SelectedCard}
+		 *
+		 * @private
+		 */
+		selectedCard: undefined,
+
+		/**
+		 * @property {CMDBuild.model.management.dataView.sql.DataSource}
+		 *
+		 * @private
+		 */
+		selectedDataSource: {},
 
 		/**
 		 * @property {CMDBuild.view.management.dataView.sql.SqlView}
@@ -58,157 +79,218 @@
 
 			this.view = Ext.create('CMDBuild.view.management.dataView.sql.SqlView', { delegate: this });
 
-			// Shorthands
-			this.form = this.view.form;
-			this.grid = this.view.grid;
-
-			if (!Ext.isEmpty(_CMUIState))
-				_CMUIState.addDelegate(this);
+			// View reset
+			this.view.removeAll();
+			this.view.removeDocked(this.view.getDockedComponent(CMDBuild.core.constants.Proxy.TOOLBAR_TOP));
 
 			// Build sub-controllers
-			this.controllerPrintWindow = Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.print.Window', { parentDelegate: this });
+			this.controllerForm = Ext.create('CMDBuild.controller.management.dataView.sql.panel.form.Form', { parentDelegate: this });
+			this.controllerGrid = Ext.create('CMDBuild.controller.management.dataView.sql.panel.grid.Grid', { parentDelegate: this });
+
+			// Build view
+			this.view.add([
+				this.grid = this.controllerGrid.getView(),
+				this.form = this.controllerForm.getView()
+			]);
 		},
 
 		/**
-		 * @returns {Array} columns
+		 * @returns {Void}
 		 */
-		dataViewSqlBuildColumns: function() {
-			var columns = [];
-
-			Ext.Array.forEach(this.cmfg('dataViewSelectedGet', CMDBuild.core.constants.Proxy.OUTPUT), function(columnObject, i, allColumnObjects) {
-				columns.push({
-					text: columnObject[CMDBuild.core.constants.Proxy.NAME],
-					dataIndex: columnObject[CMDBuild.core.constants.Proxy.NAME],
-					renderer: 'stripTags',
-					flex: 1
-				});
-			}, this);
-
-			return columns;
+		dataViewSqlUiReset: function () {
+			// Forward to sub-controllers
+			this.controllerForm.cmfg('dataViewSqlFormReset');
+			this.controllerGrid.cmfg('dataViewSqlGridReset');
 		},
 
 		/**
-		 * @returns {Ext.data.Store or CMDBuild.core.cache.Store}
+		 * Custom implementation because of absence of unique ID in SQL cards
+		 *
+		 * @param {Object} parameters
+		 * @param {Function} parameters.callback
+		 * @param {Boolean} parameters.enableFilterReset
+		 * @param {Number} parameters.page
+		 * @param {Number} parameters.position
+		 * @param {CMDBuild.model.management.dataView.sql.panel.grid.Record} parameters.record
+		 * @param {Boolean} parameters.resetSorters
+		 * @param {Object} parameters.scope,
+		 * @param {String} parameters.viewMode
+		 *
+		 * @returns {Void}
 		 */
-		dataViewSqlBuildStore: function() {
-			var extraParams = {};
-			extraParams[CMDBuild.core.constants.Proxy.FUNCTION] = this.cmfg('dataViewSelectedGet', CMDBuild.core.constants.Proxy.SOURCE_FUNCTION);
+		dataViewSqlUiUpdate: function (parameters) {
+			parameters = Ext.isObject(parameters) ? parameters : {};
+			parameters.record = Ext.isObject(parameters.record) ? parameters.record : null;
 
-			return CMDBuild.proxy.management.dataView.sql.Sql.getStore({
-				fields: this.cmfg('dataViewSelectedGet', CMDBuild.core.constants.Proxy.OUTPUT),
-				extraParams: extraParams
-			});
-		},
+			// Error handling
+				if (this.cmfg('dataViewSelectedDataViewIsEmpty'))
+					return _error('dataViewSqlUiUpdate(): empty selected dataView property', this, this.cmfg('dataViewSelectedDataViewGet'));
+			// END: Error handling
 
-		/**
-		 * @returns {Array} visibleColumns
-		 */
-		getVisibleColumns: function() {
-			var visibleColumns = [];
+			this.dataViewSqlSelectedDataSourceReset();
+			this.cmfg('dataViewSqlSelectedCardReset');
+			this.cmfg('dataViewSqlFullScreenUiSetup', { maximize: 'top' });
 
-			Ext.Array.forEach(this.grid.columns, function(column, i, allColumns) {
-				if (!column.isHidden() && !Ext.isEmpty(column.dataIndex))
-					visibleColumns.push(column.dataIndex);
-			}, this);
+			if (this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.TYPE) == 'sql')
+				CMDBuild.proxy.management.dataView.sql.Sql.readAllDataSources({
+					scope: this,
+					success: function (response, options, decodedResponse) {
+						decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.RESPONSE];
+						decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.DATA_SOURCES];
 
-			return visibleColumns;
-		},
+						if (Ext.isArray(decodedResponse) && !Ext.isEmpty(decodedResponse)) {
+							var dataSourceFunction = this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.SOURCE_FUNCTION),
+								selectedDataSource = Ext.Array.findBy(decodedResponse, function (dataSourceObject, i) {
+									return dataSourceObject[CMDBuild.core.constants.Proxy.NAME] == dataSourceFunction;
+								}, this);
 
-		onDataViewSqlGridSelect: function() {
-			var record = this.grid.getSelectionModel().getSelection()[0];
+							if (Ext.isObject(selectedDataSource) && !Ext.Object.isEmpty(selectedDataSource)) {
+								this.dataViewSqlSelectedDataSourceSet({ value: selectedDataSource });
 
-			this.form.cardPanel.removeAll();
+								if (Ext.isObject(parameters.record) && !Ext.Object.isEmpty(parameters.record))
+									this.dataViewSqlSelectedCardSet({ value: parameters.record.getData() });
 
-			record.fields.each(function(field) {
-				var name = field.name;
+								this.setViewTitle(this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.DESCRIPTION));
 
-				if (!Ext.Array.contains([CMDBuild.core.constants.Proxy.ID], name)) { // Filters id attribute
-					var value = record.get(name);
-
-					if (
-						!Ext.isEmpty(value)
-						&& Ext.isObject(value)
-						&& Ext.isFunction(value.toString)
-					) {
-						value = value.toString();
+								// Forward to sub-controllers
+								this.controllerForm.cmfg('dataViewSqlFormUiUpdate', {
+									tabToSelect: parameters.tabToSelect,
+									viewMode: parameters.viewMode
+								});
+								this.controllerGrid.cmfg('dataViewSqlGridUiUpdate', {
+									enableFilterReset: parameters.enableFilterReset,
+									page: parameters.page,
+									position: parameters.position,
+									resetSorters: parameters.resetSorters,
+									scope: parameters.scope,
+									callback: parameters.callback
+								});
+							} else {
+								_error('dataViewSqlUiUpdate(): dataSource not found', this, dataSourceFunction);
+							}
+						} else {
+							_error('dataViewSqlUiUpdate(): unmanaged response', this, decodedResponse);
+						}
 					}
+				});
+		},
 
-					this.form.cardPanel.add(
-						Ext.create('CMDBuild.view.common.field.display.Text', {
-							name: field.name,
-							fieldLabel: field.name,
-							labelWidth: CMDBuild.core.constants.FieldWidths.LABEL,
-							labelAlign: 'right',
-							maxWidth: CMDBuild.core.constants.FieldWidths.STANDARD_BIG,
-							value: value,
-							submitValue: false
-						})
-					);
+		// LocalCacheDataSource property functions
+			/**
+			 * @param {Array or String} attributePath
+			 *
+			 * @returns {Mixed or undefined}
+			 */
+			dataViewSqlSelectedDataSourceGet: function (attributePath) {
+				var parameters = {};
+				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedDataSource';
+				parameters[CMDBuild.core.constants.Proxy.ATTRIBUTE_PATH] = attributePath;
+
+				return this.propertyManageGet(parameters);
+			},
+
+			/**
+			 * @param {Array or String} attributePath
+			 *
+			 * @returns {Boolean}
+			 */
+			dataViewSqlSelectedDataSourceIsEmpty: function (attributePath) {
+				var parameters = {};
+				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedDataSource';
+				parameters[CMDBuild.core.constants.Proxy.ATTRIBUTE_PATH] = attributePath;
+
+				return this.propertyManageIsEmpty(parameters);
+			},
+
+			/**
+			 * @returns {Void}
+			 *
+			 * @private
+			 */
+			dataViewSqlSelectedDataSourceReset: function () {
+				this.propertyManageReset('selectedDataSource');
+			},
+
+			/**
+			 * @param {Object} parameters
+			 *
+			 * @returns {Void}
+			 *
+			 * @private
+			 */
+			dataViewSqlSelectedDataSourceSet: function (parameters) {
+				if (Ext.isObject(parameters) && !Ext.Object.isEmpty(parameters)) {
+					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.management.dataView.sql.DataSource';
+					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedDataSource';
+
+					this.propertyManageSet(parameters);
 				}
-			}, this);
-		},
-
-		onDataViewSqlPanelShow: function() {
-			this.view.grid.getStore().on('load', function() {
-				if (!this.grid.getSelectionModel().hasSelection())
-					this.grid.getSelectionModel().select(0, true);
-			}, this);
-		},
+			},
 
 		/**
-		 * @param {String} format
+		 * @param {Number} id
+		 *
+		 * @returns {Void}
 		 */
-		onDataViewSqlPrintButtonClick: function(format) {
-			if (!Ext.isEmpty(format)) {
-				var params = {};
-				params[CMDBuild.core.constants.Proxy.ATTRIBUTES] = Ext.encode(this.getVisibleColumns());
-				params[CMDBuild.core.constants.Proxy.FUNCTION] = this.cmfg('dataViewSelectedGet', CMDBuild.core.constants.Proxy.SOURCE_FUNCTION);
-				params[CMDBuild.core.constants.Proxy.SORT] = Ext.encode(this.grid.getStore().getSorters());
-				params[CMDBuild.core.constants.Proxy.TYPE] = format;
+		onDataViewSqlAddButtonClick: function (id) {
+			this.cmfg('dataViewSqlSelectedCardReset');
+			this.cmfg('dataViewSqlFullScreenUiSetup', { maximize: 'bottom' });
 
-				this.controllerPrintWindow = Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.print.Window', { parentDelegate: this });
-				this.controllerPrintWindow.cmfg('panelGridAndFormPrintWindowShow', {
-					format: format,
-					mode: 'dataViewSql',
-					params: params
-				});
-			}
+			// Forward to sub-controllers
+			this.controllerForm.cmfg('onDataViewFilterSqlAddButtonClick', id);
+			this.controllerGrid.cmfg('onDataViewFilterSqlAddButtonClick', id);
 		},
 
-		// _CMUIState methods
-			onFullScreenChangeToFormOnly: function() {
-				Ext.suspendLayouts();
+		// SelectedCard property functions
+			/**
+			 * @param {Array or String} attributePath
+			 *
+			 * @returns {Mixed or undefined}
+			 */
+			dataViewSqlSelectedCardGet: function (attributePath) {
+				var parameters = {};
+				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedCard';
+				parameters[CMDBuild.core.constants.Proxy.ATTRIBUTE_PATH] = attributePath;
 
-				this.grid.hide();
-				this.grid.region = '';
-
-				this.form.show();
-				this.form.region = 'center';
-
-				Ext.resumeLayouts(true);
+				return this.propertyManageGet(parameters);
 			},
 
-			onFullScreenChangeToGridOnly: function() {
-				Ext.suspendLayouts();
+			/**
+			 * @param {Array or String} attributePath
+			 *
+			 * @returns {Boolean}
+			 */
+			dataViewSqlSelectedCardIsEmpty: function (attributePath) {
+				var parameters = {};
+				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedCard';
+				parameters[CMDBuild.core.constants.Proxy.ATTRIBUTE_PATH] = attributePath;
 
-				this.form.hide();
-				this.form.region = '';
-
-				this.grid.show();
-				this.grid.region = 'center';
-
-				Ext.resumeLayouts(true);
+				return this.propertyManageIsEmpty(parameters);
 			},
 
-			onFullScreenChangeToOff: function() {
-				Ext.suspendLayouts();
-				this.form.show();
-				this.form.region = 'south';
+			/**
+			 * @param {Object} parameters
+			 *
+			 * @returns {Void}
+			 */
+			dataViewSqlSelectedCardReset: function (parameters) {
+				this.propertyManageReset('selectedCard');
+			},
 
-				this.grid.show();
-				this.grid.region = 'center';
+			/**
+			 * @param {Object} parameters
+			 *
+			 * @returns {Void}
+			 *
+			 * @private
+			 */
+			dataViewSqlSelectedCardSet: function (parameters) {
+				if (Ext.isObject(parameters) && !Ext.Object.isEmpty(parameters)) {
+					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.management.dataView.sql.SelectedCard';
+					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedCard';
 
-				Ext.resumeLayouts(true);
+					this.propertyManageSet(parameters);
+				}
 			}
 	});
 

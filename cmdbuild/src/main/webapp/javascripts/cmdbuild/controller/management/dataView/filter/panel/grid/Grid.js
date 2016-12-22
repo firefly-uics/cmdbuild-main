@@ -1,7 +1,7 @@
 (function () {
 
 	Ext.define('CMDBuild.controller.management.dataView.filter.panel.grid.Grid', {
-		extend: 'CMDBuild.controller.common.panel.gridAndForm.panel.tree.Tree',
+		extend: 'CMDBuild.controller.common.panel.gridAndForm.panel.grid.Grid',
 
 		requires: [
 			'CMDBuild.core.constants.Global',
@@ -88,12 +88,7 @@
 			// Build sub-controllers
 			this.controllerPrintWindow = Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.print.Window', { parentDelegate: this });
 			this.controllerRuntimeParameters = Ext.create('CMDBuild.controller.common.field.filter.runtimeParameters.RuntimeParameters', { parentDelegate: this });
-			this.controllerToolbarPaging = Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.toolbar.Paging', {
-				parentDelegate: this,
-				enableFilterAdvanced: true,
-				enableFilterBasic: true,
-				enableButtonPrint: true
-			});
+			this.controllerToolbarPaging = Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.toolbar.Paging', { parentDelegate: this });
 			this.controllerToolbarTop = Ext.create('CMDBuild.controller.management.dataView.filter.panel.grid.toolbar.Top', { parentDelegate: this });
 			this.controllerWindowGraph = Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.graph.Window', { parentDelegate: this });
 
@@ -263,7 +258,7 @@
 						sortable: false
 					});
 
-				Ext.Array.each(attributes, function (attributeModel, i, allAttributeModels) {
+				Ext.Array.forEach(attributes, function (attributeModel, i, allAttributeModels) {
 					if (
 						Ext.isObject(attributeModel) && !Ext.Object.isEmpty(attributeModel)
 						&& attributeModel.get(CMDBuild.core.constants.Proxy.NAME) != CMDBuild.core.constants.Proxy.CLASS_DESCRIPTION
@@ -646,7 +641,7 @@
 			this.controllerToolbarPaging.cmfg('panelGridAndFormCommonToolbarPagingUiUpdate');
 			this.controllerToolbarTop.cmfg('dataViewFilterGridToolbarTopUiUpdate');
 
-			// Select selectedCard inside store
+			// Select selectedCard inside loaded store
 			if (!this.cmfg('dataViewFilterSelectedCardIsEmpty'))
 				return this.dataViewFilterGridCardSelect({
 					id: this.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.ID),
@@ -674,7 +669,7 @@
 
 			// Build columns dataIndex array
 			if (Ext.isArray(visibleColumns) && !Ext.isEmpty(visibleColumns))
-				Ext.Array.each(visibleColumns, function (columnObject, i, allColumnObjects) {
+				Ext.Array.forEach(visibleColumns, function (columnObject, i, allColumnObjects) {
 					if (
 						Ext.isObject(columnObject) && !Ext.Object.isEmpty(columnObject)
 						&& !Ext.isEmpty(columnObject.dataIndex)
@@ -723,7 +718,7 @@
 			delete params[CMDBuild.core.constants.Proxy.PAGE];
 			delete params[CMDBuild.core.constants.Proxy.LIMIT];
 
-			this.controllerPrintWindow.cmfg('panelGridAndFormPrintWindowShow', {
+			this.controllerPrintWindow.cmfg('panelGridAndFormCommonPrintWindowShow', {
 				format: format,
 				mode: 'view',
 				params: params
@@ -768,6 +763,8 @@
 			},
 
 			/**
+			 * Event fired because UI must be reconfigured with first store record
+			 *
 			 * @returns {Void}
 			 *
 			 * @private

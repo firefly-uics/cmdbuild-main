@@ -148,7 +148,7 @@
 				params[CMDBuild.core.constants.Proxy.FORMAT] = format;
 
 				this.controllerPrintWindow = Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.print.Window', { parentDelegate: this });
-				this.controllerPrintWindow.cmfg('panelGridAndFormPrintWindowShow', {
+				this.controllerPrintWindow.cmfg('panelGridAndFormCommonPrintWindowShow', {
 					format: format,
 					mode: 'cardDetails',
 					params: params

@@ -140,7 +140,7 @@
 				params[CMDBuild.core.constants.Proxy.TYPE] = format;
 
 				this.controllerPrintWindow = Ext.create('CMDBuild.controller.management.workflow.panel.tree.print.Window', { parentDelegate: this });
-				this.controllerPrintWindow.cmfg('panelGridAndFormPrintWindowShow', {
+				this.controllerPrintWindow.cmfg('panelGridAndFormCommonPrintWindowShow', {
 					format: format,
 					mode: 'view',
 					params: params

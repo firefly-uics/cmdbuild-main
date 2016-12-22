@@ -180,6 +180,7 @@
 		/**
 		 * @param {Object} parameters
 		 * @param {Object} parameters.tabToSelect
+		 * @param {String} parameters.viewMode // FIXME: future todo, must be synchronized with internal tab structure
 		 *
 		 * @returns {Void}
 		 */

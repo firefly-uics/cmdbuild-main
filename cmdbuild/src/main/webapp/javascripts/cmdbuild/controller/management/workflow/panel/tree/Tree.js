@@ -338,7 +338,7 @@
 			delete params[CMDBuild.core.constants.Proxy.PAGE];
 			delete params[CMDBuild.core.constants.Proxy.LIMIT];
 
-			this.controllerPrintWindow.cmfg('panelGridAndFormPrintWindowShow', {
+			this.controllerPrintWindow.cmfg('panelGridAndFormCommonPrintWindowShow', {
 				format: format,
 				mode: 'view',
 				params: params

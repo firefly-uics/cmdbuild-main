@@ -19,7 +19,7 @@
 		 * @override
 		 */
 		constructor: function (data) {
-			data = Ext.isObject(data) ? data : {};
+			data = Ext.isObject(data) ? Ext.clone(data) : {};
 			data[CMDBuild.core.constants.Proxy.DISABLED_FEATURES] = Ext.create(
 				'CMDBuild.model.management.dataView.filter.entryType.DisabledFeatures',
 				data[CMDBuild.core.constants.Proxy.DISABLED_FEATURES]

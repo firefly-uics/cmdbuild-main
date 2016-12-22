@@ -1,28 +1,32 @@
-(function() {
+(function () {
 
-	Ext.define('CMDBuild.view.management.dataView.sql.tabs.CardPanel', {
+	Ext.define('CMDBuild.view.management.dataView.sql.panel.form.tabs.card.CardView', {
 		extend: 'Ext.panel.Panel',
 
 		requires: ['CMDBuild.core.constants.Proxy'],
 
 		/**
-		 * @cfg {CMDBuild.controller.management.dataView.sql.Sql}
+		 * @cfg {CMDBuild.controller.management.dataView.sql.panel.form.tabs.card.Card}
 		 */
 		delegate: undefined,
 
-		bodyCls: 'x-panel-body-default-framed cmdb-border-top',
-		bodyPadding: '5 5 0 5',
+		/**
+		 * @property {CMDBuild.view.management.dataView.sql.panel.form.tabs.card.FormPanel}
+		 */
+		form: undefined,
+
 		border: false,
+		cls: 'cmdb-blue-panel-no-padding',
 		frame: false,
-		overflowY: 'auto',
+		layout: 'fit',
 		title: CMDBuild.Translation.card,
 
-		layout: {
-			type: 'vbox',
-			align: 'stretch'
-		},
-
-		initComponent: function() {
+		/**
+		 * @returns {Void}
+		 *
+		 * @override
+		 */
+		initComponent: function () {
 			Ext.apply(this, {
 				dockedItems: [
 					Ext.create('Ext.toolbar.Toolbar', {
@@ -42,7 +46,9 @@
 								text: CMDBuild.Translation.cloneCard,
 								disabled: true
 							}),
-							Ext.create('CMDBuild.core.buttons.icon.RelationGraph', { disabled: true }),
+							Ext.create('CMDBuild.core.buttons.icon.RelationGraph', {
+								disabled: true
+							}),
 							Ext.create('CMDBuild.core.buttons.icon.split.Print', {
 								text: CMDBuild.Translation.print + ' ' + CMDBuild.Translation.card.toLowerCase(),
 								disabled: true
@@ -66,6 +72,9 @@
 							Ext.create('CMDBuild.core.buttons.text.Abort', { disabled: true })
 						]
 					})
+				],
+				items: [
+					this.form = Ext.create('CMDBuild.view.management.dataView.sql.panel.form.tabs.card.FormPanel', { delegate: this.delegate })
 				]
 			});
 

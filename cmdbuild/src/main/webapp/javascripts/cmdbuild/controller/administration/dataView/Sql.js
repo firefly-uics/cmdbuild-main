@@ -37,7 +37,7 @@
 		grid: undefined,
 
 		/**
-		 * @property {CMDBuild.model.dataView.sql.SelectedView}
+		 * @property {CMDBuild.model.administration.dataView.sql.SelectedView}
 		 *
 		 * @private
 		 */
@@ -80,7 +80,7 @@
 
 			this.form.reset();
 			this.form.setDisabledModify(false, true);
-			this.form.loadRecord(Ext.create('CMDBuild.model.dataView.sql.GridStore'));
+			this.form.loadRecord(Ext.create('CMDBuild.model.administration.dataView.sql.GridStore'));
 		},
 
 		onDataViewSqlModifyButtonClick: function() {
@@ -127,7 +127,7 @@
 
 		onDataViewSqlSaveButtonClick: function() {
 			if (this.validate(this.form)) {
-				var formData = Ext.create('CMDBuild.model.dataView.sql.SelectedView',this.form.getData(true));
+				var formData = Ext.create('CMDBuild.model.administration.dataView.sql.SelectedView',this.form.getData(true));
 
 				if (Ext.isEmpty(formData.get(CMDBuild.core.constants.Proxy.ID))) {
 					CMDBuild.proxy.administration.dataView.Sql.create({
@@ -219,7 +219,7 @@
 			 */
 			selectedViewSet: function(parameters) {
 				if (!Ext.Object.isEmpty(parameters)) {
-					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.dataView.sql.SelectedView';
+					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.administration.dataView.sql.SelectedView';
 					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedView';
 
 					this.propertyManageSet(parameters);

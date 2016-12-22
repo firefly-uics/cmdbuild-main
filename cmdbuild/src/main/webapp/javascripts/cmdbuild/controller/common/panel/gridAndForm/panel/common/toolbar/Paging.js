@@ -39,17 +39,17 @@
 		/**
 		 * @cfg {Boolean}
 		 */
-		enableFilterAdvanced: false,
+		disableButtonPrint: false,
 
 		/**
 		 * @cfg {Boolean}
 		 */
-		enableFilterBasic: false,
+		disableFilterAdvanced: false,
 
 		/**
 		 * @cfg {Boolean}
 		 */
-		enableButtonPrint: false,
+		disableFilterBasic: false,
 
 		/**
 		 * @property {CMDBuild.core.buttons.icon.split.Print}
@@ -75,31 +75,18 @@
 		constructor: function (configurationObject) {
 			this.callParent(arguments);
 
-			var items = [];
+			// Build sub-controllers
+			this.controllerFilterAdvanced = Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.filter.advanced.Advanced', { parentDelegate: this });
+			this.controllerFilterBasic = Ext.create('CMDBuild.controller.common.field.filter.basic.Basic', { parentDelegate: this });
 
-			// Build basic filter controller
-			if (Ext.isBoolean(this.enableFilterBasic) && this.enableFilterBasic) {
-				this.controllerFilterBasic = Ext.create('CMDBuild.controller.common.field.filter.basic.Basic', { parentDelegate: this });
-
-				items: Ext.Array.push(items, [
+			this.view = Ext.create('CMDBuild.view.common.panel.gridAndForm.panel.common.toolbar.Paging', {
+				delegate: this,
+				store: this.cmfg('panelGridAndFormListPanelStoreGet'),
+				items: [
 					{ xtype: 'tbseparator' },
-					this.controllerFilterBasic.getView()
-				]);
-			}
-
-			// Build advanced filter controller
-			if (Ext.isBoolean(this.enableFilterAdvanced) && this.enableFilterAdvanced) {
-				this.controllerFilterAdvanced = Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.filter.advanced.Advanced', { parentDelegate: this });
-
-				items: Ext.Array.push(items, [
+					this.controllerFilterBasic.getView(),
 					{ xtype: 'tbseparator' },
-					this.controllerFilterAdvanced.getView()
-				]);
-			}
-
-			// Build print button
-			if (Ext.isBoolean(this.enableButtonPrint) && this.enableButtonPrint)
-				items: Ext.Array.push(items, [
+					this.controllerFilterAdvanced.getView(),
 					{ xtype: 'tbseparator' },
 					this.printButton = Ext.create('CMDBuild.core.buttons.icon.split.Print', {
 						delegate: this,
@@ -109,12 +96,7 @@
 							CMDBuild.core.constants.Proxy.CSV
 						]
 					})
-				]);
-
-			this.view = Ext.create('CMDBuild.view.common.panel.gridAndForm.panel.common.toolbar.Paging', {
-				delegate: this,
-				store: this.cmfg('panelGridAndFormListPanelStoreGet'),
-				items: items
+				]
 			});
 		},
 
@@ -142,8 +124,13 @@
 		panelGridAndFormCommonToolbarPagingUiUpdate: function () {
 			this.cmfg('panelGridAndFormCommonToolbarPagingFilterBasicReset');
 
-			if (Ext.isObject(this.controllerFilterAdvanced) && !Ext.Object.isEmpty(this.controllerFilterAdvanced))
-				this.controllerFilterAdvanced.cmfg('panelGridAndFormCommonFilterAdvancedUiUpdate');
+			// Setup enable/disable state
+			this.controllerFilterAdvanced.cmfg('panelGridAndFormCommonFilterAdvancedSetDisabled', this.disableFilterAdvanced);
+			this.controllerFilterBasic.cmfg('fieldFilterBasicSetDisabled', this.disableFilterBasic);
+			this.printButton.setDisabled(this.disableButtonPrint);
+
+			// Forward to sub-controllers
+			this.controllerFilterAdvanced.cmfg('panelGridAndFormCommonFilterAdvancedUiUpdate');
 		}
 	});
 

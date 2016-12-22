@@ -27,6 +27,7 @@
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
+			'fieldFilterBasicSetDisabled',
 			'onFieldFilterBasicReset',
 			'onFieldFilterBasicTrigger1Click = onFieldFilterBasicEnterKeyPress',
 			'onFieldFilterBasicTrigger2Click'
@@ -49,6 +50,17 @@
 			this.callParent(arguments);
 
 			this.view = Ext.create('CMDBuild.view.common.field.filter.basic.Basic', { delegate: this });
+		},
+
+		/**
+		 * @param {Boolean} state
+		 *
+		 * @returns {Void}
+		 */
+		fieldFilterBasicSetDisabled: function (state) {
+			state = Ext.isBoolean(state) ? state : true;
+
+			return this.view.setDisabled(state);
 		},
 
 		/**

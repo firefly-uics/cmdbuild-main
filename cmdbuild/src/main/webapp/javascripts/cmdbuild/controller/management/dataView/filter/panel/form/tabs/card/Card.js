@@ -165,7 +165,7 @@
 				params[CMDBuild.core.constants.Proxy.CARD_ID] = this.card.get(CMDBuild.core.constants.Proxy.ID);
 				params[CMDBuild.core.constants.Proxy.FORMAT] = format;
 
-				this.controllerPrintWindow.cmfg('panelGridAndFormPrintWindowShow', {
+				this.controllerPrintWindow.cmfg('panelGridAndFormCommonPrintWindowShow', {
 					format: format,
 					mode: 'cardDetails',
 					params: params

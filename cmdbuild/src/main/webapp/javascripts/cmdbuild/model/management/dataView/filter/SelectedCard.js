@@ -28,7 +28,7 @@
 		 * @override
 		 */
 		constructor: function (data) {
-			data = Ext.isObject(data) ? data : {};
+			data = Ext.isObject(data) ? Ext.clone(data) : {};
 			data[CMDBuild.core.constants.Proxy.VALUES] = Ext.clone(data);
 			data[CMDBuild.core.constants.Proxy.CLASS_DESCRIPTION] = data['IdClass_value'];
 			data[CMDBuild.core.constants.Proxy.CLASS_ID] = data['IdClass'];

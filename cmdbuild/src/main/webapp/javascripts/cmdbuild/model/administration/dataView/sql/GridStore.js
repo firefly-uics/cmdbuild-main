@@ -2,7 +2,7 @@
 
 	Ext.require('CMDBuild.core.constants.Proxy');
 
-	Ext.define('CMDBuild.model.dataView.sql.GridStore', {
+	Ext.define('CMDBuild.model.administration.dataView.sql.GridStore', {
 		extend: 'Ext.data.Model',
 
 		fields: [

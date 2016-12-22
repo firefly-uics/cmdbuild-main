@@ -27,7 +27,7 @@
 		 * @override
 		 */
 		constructor: function (data) {
-			data = Ext.isObject(data) ? data : {};
+			data = Ext.isObject(data) ? Ext.clone(data) : {};
 			data['rawData'] = Ext.clone(data); // FIXME: legacy mode to remove on complete Cards UI and cardState modules refactor
 			data[CMDBuild.core.constants.Proxy.DESCRIPTION] = Ext.isString(data[CMDBuild.core.constants.Proxy.TEXT]) ? data[CMDBuild.core.constants.Proxy.TEXT] : data[CMDBuild.core.constants.Proxy.DESCRIPTION];
 			data[CMDBuild.core.constants.Proxy.IS_SUPER_CLASS] = Ext.isBoolean(data['superclass']) ? data['superclass'] : data[CMDBuild.core.constants.Proxy.IS_SUPER_CLASS];

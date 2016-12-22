@@ -6,8 +6,8 @@
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.proxy.index.Json',
 			'CMDBuild.core.Utils',
-			'CMDBuild.model.dataView.sql.GridStore',
-			'CMDBuild.model.dataView.sql.Function'
+			'CMDBuild.model.administration.dataView.sql.GridStore',
+			'CMDBuild.model.administration.dataView.sql.Function'
 		],
 
 		singleton: true,
@@ -31,7 +31,7 @@
 		getStore: function () {
 			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.DATA_VIEW, {
 				autoLoad: false,
-				model: 'CMDBuild.model.dataView.sql.GridStore',
+				model: 'CMDBuild.model.administration.dataView.sql.GridStore',
 				proxy: {
 					type: 'ajax',
 					url: CMDBuild.proxy.index.Json.dataView.sql.readAll,
@@ -57,7 +57,7 @@
 		getStoreDataSources: function () {
 			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.FUNCTION, {
 				autoLoad: true,
-				model: 'CMDBuild.model.dataView.sql.Function',
+				model: 'CMDBuild.model.administration.dataView.sql.Function',
 				proxy: {
 					type: 'ajax',
 					url: CMDBuild.proxy.index.Json.functions.readAll,

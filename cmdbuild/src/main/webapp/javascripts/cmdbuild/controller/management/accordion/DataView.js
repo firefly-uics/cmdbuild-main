@@ -74,7 +74,6 @@
 							nodeObject[CMDBuild.core.constants.Proxy.ID] = this.cmfg('accordionBuildId', viewObject[CMDBuild.core.constants.Proxy.ID]);
 							nodeObject[CMDBuild.core.constants.Proxy.LEAF] = true;
 							nodeObject[CMDBuild.core.constants.Proxy.NAME] = viewObject[CMDBuild.core.constants.Proxy.NAME];
-//							nodeObject[CMDBuild.core.constants.Proxy.SECTION_HIERARCHY] = [viewObject[CMDBuild.core.constants.Proxy.TYPE].toLowerCase()];
 							nodeObject[CMDBuild.core.constants.Proxy.TEXT] = viewObject[CMDBuild.core.constants.Proxy.DESCRIPTION];
 
 							nodes.push(nodeObject);

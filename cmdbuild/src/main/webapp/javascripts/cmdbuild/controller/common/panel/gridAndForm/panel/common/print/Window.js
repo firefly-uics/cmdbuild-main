@@ -20,9 +20,9 @@
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
-			'onPanelGridAndFormPrintWindowDownloadButtonClick',
-			'onPanelGridAndFormPrintWindowShow',
-			'panelGridAndFormPrintWindowShow'
+			'onPanelGridAndFormCommonPrintWindowDownloadButtonClick',
+			'onPanelGridAndFormCommonPrintWindowShow',
+			'panelGridAndFormCommonPrintWindowShow'
 		],
 
 		/**
@@ -132,7 +132,7 @@
 		/**
 		 * @returns {Void}
 		 */
-		onPanelGridAndFormPrintWindowDownloadButtonClick: function () {
+		onPanelGridAndFormCommonPrintWindowDownloadButtonClick: function () {
 			this.forceDownload = true;
 
 			this.createDocument();
@@ -141,7 +141,7 @@
 		/**
 		 * @returns {Void}
 		 */
-		onPanelGridAndFormPrintWindowShow: function () {
+		onPanelGridAndFormCommonPrintWindowShow: function () {
 			this.forceDownload = false; // Reset value on show
 
 			if (!Ext.isEmpty(this.format))
@@ -156,7 +156,7 @@
 		 *
 		 * @returns {Void}
 		 */
-		panelGridAndFormPrintWindowShow: function (parameters) {
+		panelGridAndFormCommonPrintWindowShow: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
 			parameters.format = Ext.isString(parameters.format) && Ext.Array.contains(this.managedFormats, parameters.format)
 				? parameters.format : CMDBuild.core.constants.Proxy.PDF;
