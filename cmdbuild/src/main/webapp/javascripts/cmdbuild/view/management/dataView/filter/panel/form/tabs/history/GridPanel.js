@@ -21,7 +21,7 @@
 
 		config: {
 			plugins: [
-				Ext.create('CMDBuild.view.management.dataView.filter.panel.form.tabs.history.RowExpander', { pluginId: 'dataViewHistoryTabRowExpander' })
+				Ext.create('CMDBuild.view.management.dataView.filter.panel.form.tabs.history.RowExpander', { pluginId: 'dataViewFilterFormTabHistoryRowExpander' })
 			]
 		},
 
@@ -51,7 +51,7 @@
 								checked: false, // Default as false
 								scope: this,
 
-								handler: function (checkbox, checked) {
+								handler: function (field, checked) {
 									this.delegate.cmfg('onDataViewFilterFormTabHistoryIncludeRelationCheck');
 								}
 							})

@@ -101,9 +101,10 @@
 		 * @private
 		 */
 		clearStoreAdd: function (items) {
-			items = Ext.isArray(items) ? items : [items];
+			items = Ext.isArray(items) ? Ext.Array.clean(items) : Ext.Array.clean([items]);
 
-			this.grid.getStore().loadData(Ext.Array.merge(this.grid.getStore().getRange(), items));
+			if (!Ext.isEmpty(items))
+				this.grid.getStore().loadData(Ext.Array.merge(this.grid.getStore().getRange(), items));
 		},
 
 		/**
@@ -129,7 +130,7 @@
 
 			var resultObject = subjectObject;
 
-			if (Ext.isObject(subjectObject) && !Ext.Object.isEmpty(subjectObject)) {
+			if (Ext.isObject(subjectObject) && !Ext.Object.isEmpty(subjectObject))
 				Ext.Object.each(subjectObject, function (key, value, myself) {
 					var attributeModel = this.cmfg('dataViewFilterSelectedCardAttributesGet', key),
 						changed = false;
@@ -157,7 +158,6 @@
 
 					resultObject[key].set(CMDBuild.core.constants.Proxy.CHANGED, changed);
 				}, this);
-			}
 
 			return resultObject;
 		},
@@ -270,7 +270,7 @@
 		 * @private
 		 */
 		getRowExpanderPlugin: function () {
-			return this.grid.getPlugin('dataViewHistoryTabRowExpander');
+			return this.grid.getPlugin('dataViewFilterFormTabHistoryRowExpander');
 		},
 
 		/**
@@ -352,7 +352,10 @@
 
 									// Build reference records
 									Ext.Array.forEach(decodedResponse, function (cardObject, i, allCardObjects) {
-										referenceElementsModels.push(Ext.create('CMDBuild.model.management.dataView.filter.panel.form.tabs.history.RelationRecord', cardObject));
+										if (Ext.isObject(cardObject) && !Ext.Object.isEmpty(cardObject))
+											referenceElementsModels.push(
+												Ext.create('CMDBuild.model.management.dataView.filter.panel.form.tabs.history.RelationRecord', cardObject)
+											);
 									});
 
 									this.clearStoreAdd(referenceElementsModels);
@@ -406,7 +409,7 @@
 
 				CMDBuild.proxy.management.dataView.filter.panel.form.tabs.History.readHistoric({ // Get expanded predecessor's card data
 					params: params,
-					loadMask: this.grid,
+					loadMask: this.view,
 					scope: this,
 					success: function (response, options, decodedResponse) {
 						decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.RESPONSE];
@@ -519,7 +522,7 @@
 
 			CMDBuild.proxy.management.dataView.filter.panel.form.tabs.History.readHistoricRelation({
 				params: params,
-				loadMask: this.grid,
+				loadMask: this.view,
 				scope: this,
 				success: function (response, options, decodedResponse) {
 					decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.RESPONSE];

@@ -743,7 +743,7 @@
 			 * @returns {Mixed or undefined}
 			 */
 			dataViewFilterSourceEntryTypeGet: function (attributePath) {
-				attributePath = Ext.isArray(attributePath) ? attributePath : Ext.Array.clean([attributePath]);
+				attributePath = Ext.isArray(attributePath) ? Ext.Array.clean(attributePath) : Ext.Array.clean([attributePath]);
 
 				var sourceEntryType = this.cmfg('dataViewFilterCacheEntryTypeGet', {
 					name: this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.SOURCE_ENTRY_TYPE_NAME)

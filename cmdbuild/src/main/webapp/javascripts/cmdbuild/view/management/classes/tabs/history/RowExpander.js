@@ -2,8 +2,6 @@
 
 	/**
 	 * @link CMDBuild.view.management.dataView.filter.panel.form.tabs.history.RowExpander
-	 *
-	 * @legacy
 	 */
 	Ext.define('CMDBuild.view.management.classes.tabs.history.RowExpander', {
 		extend: 'Ext.grid.plugin.RowExpander',
@@ -21,11 +19,11 @@
 			'<tpl exec="this.formatter(' + CMDBuild.core.constants.Proxy.VALUES + ')"></tpl>',
 			'<tpl for="this.formattedArray">',
 				'<tpl if="' + CMDBuild.core.constants.Proxy.CHANGED + '">',
-					'<p class="changedRow">',
+					'<div class="changedRow">',
 				'<tpl else>',
-					'<p>',
+					'<div>',
 				'</tpl>',
-				'<b>{attribute}:</b> {value}</p>',
+				'<b>{attribute}:</b> {value}</div>',
 			'</tpl>',
 			'<tpl if="this.formattedArray.length == 0">',
 				'<p>' + CMDBuild.Translation.noAvailableData + '<p>',
@@ -33,11 +31,13 @@
 			{
 				/**
 				 * @param {Object} values
+				 *
+				 * @returns {Void}
 				 */
 				formatter: function (values) {
-					if (!Ext.isEmpty(values)) {
-						this.formattedArray = [];
+					this.formattedArray = [];
 
+					if (Ext.isObject(values) && !Ext.Object.isEmpty(values)) {
 						Ext.Object.each(values, function (key, value, myself) {
 							this.formattedArray.push({
 								attribute: value.get(CMDBuild.core.constants.Proxy.ATTRIBUTE_DESCRIPTION) || key,

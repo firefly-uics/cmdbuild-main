@@ -14,7 +14,7 @@
 		grid: undefined,
 
 		border: false,
-		cls: 'x-panel-body-default-framed',
+		cls: 'cmdb-blue-panel-no-padding',
 		frame: false,
 		itemId: 'dataViewFilterFormTabHistory',
 		layout: 'fit',

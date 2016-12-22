@@ -18,6 +18,7 @@
 		border: false,
 		cls: 'cmdb-blue-panel-no-padding',
 		frame: false,
+		itemId: 'dataViewSqlFormTabCard',
 		layout: 'fit',
 		title: CMDBuild.Translation.card,
 

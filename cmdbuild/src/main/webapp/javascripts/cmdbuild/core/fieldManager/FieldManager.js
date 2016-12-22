@@ -68,7 +68,7 @@
 			 * @returns {Mixed}
 			 */
 			fieldManagerAttributeModelGet: function (attributePath) {
-				attributePath = Ext.isArray(attributePath) ? attributePath : Ext.Array.clean([attributePath]);
+				attributePath = Ext.isArray(attributePath) ? Ext.Array.clean(attributePath) : Ext.Array.clean([attributePath]);
 
 				var requiredAttribute = this.attributeModel;
 

@@ -109,7 +109,7 @@
 			this.cmfg('dataViewSqlFormReset');
 
 			// Forward to sub-controllers
-			this.controllerTabCard.cmfg('dataViewSqlFormTabCardUiUpdate', { viewMode: parameters.viewMode });
+			this.controllerTabCard.cmfg('dataViewSqlFormTabCardUiUpdate', { viewMode: parameters.viewMode }); // TODO
 
 			if (!Ext.isEmpty(parameters.tabToSelect))
 				return this.cmfg('dataViewSqlFormTabActiveSet', parameters.tabToSelect);

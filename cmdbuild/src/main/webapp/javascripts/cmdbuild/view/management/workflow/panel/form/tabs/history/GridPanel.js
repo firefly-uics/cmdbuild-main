@@ -35,11 +35,11 @@
 			]
 		},
 
-		autoScroll: true,
 		border: false,
 		cls: 'cmdb-history-grid', // Apply right style to grid rows
 		disableSelection: true,
 		frame: false,
+		overflowY: 'auto',
 
 		/**
 		 * @returns {Void}

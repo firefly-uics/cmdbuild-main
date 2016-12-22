@@ -358,8 +358,7 @@
 		 * @private
 		 */
 		setViewTitle: function (titlePart) {
-			titlePart = Ext.isEmpty(titlePart) ? [] : titlePart;
-			titlePart = Ext.isArray(titlePart) ? titlePart : [titlePart];
+			titlePart = Ext.isArray(titlePart) ? Ext.Array.clean(titlePart) : Ext.Array.clean([titlePart]);
 
 			if (!Ext.isEmpty(this.view))
 				if (Ext.isEmpty(titlePart)) {
