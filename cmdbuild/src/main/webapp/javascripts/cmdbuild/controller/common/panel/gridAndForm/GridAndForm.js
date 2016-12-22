@@ -3,8 +3,12 @@
 
 	/**
 	 * Required managed functions:
-	 * 	- panelGridAndFromFullScreenUiSetup
+	 * 	- panelGridAndFormFullScreenUiSetup
 	 *  - panelGridAndFormToolsArrayBuild
+	 *
+	 * Available functionalities:
+	 * 	- viewMode manage
+	 * 		Methods: panelGridAndFormViewModeGet, panelGridAndFormViewModeIsEdit, panelGridAndFormViewModeIsRead, panelGridAndFormViewModeSet
 	 *
 	 * NOTE: "form" and "grid" (or "tree") pointers are required to work with UI state module
 	 *
@@ -32,6 +36,13 @@
 		 * @property {CMDBuild.view.common.panel.gridAndForm.GridAndFormView}
 		 */
 		view: undefined,
+
+		/**
+		 * @property {String}
+		 *
+		 * @private
+		 */
+		viewMode: 'read',
 
 		// FullScreen UI manage methods
 			/**
@@ -184,13 +195,13 @@
 			 *
 			 * @returns {Void}
 			 */
-			panelGridAndFromFullScreenUiSetup: function (parameters) {
+			panelGridAndFormFullScreenUiSetup: function (parameters) {
 				parameters = Ext.isObject(parameters) ? parameters : {};
 				parameters.force = Ext.isBoolean(parameters.force) ? parameters.force : false;
 
 				// Error handling
 					if (!Ext.isString(parameters.maximize) || Ext.isEmpty(parameters.maximize))
-						return _error('panelGridAndFromFullScreenUiSetup(): unmanaged maximize parameter', this, parameters.maximize);
+						return _error('panelGridAndFormFullScreenUiSetup(): unmanaged maximize parameter', this, parameters.maximize);
 				// END: Error handling
 
 				if (CMDBuild.configuration.userInterface.get(CMDBuild.core.constants.Proxy.FULL_SCREEN_MODE) || parameters.force)
@@ -205,6 +216,42 @@
 						default:
 							return this.panelGridAndFromFullScreenDisplayBoth();
 					}
+			},
+
+		// ViewMode manage methods
+			/**
+			 * @returns {String}
+			 */
+			panelGridAndFormViewModeGet: function () {
+				return this.viewMode;
+			},
+
+			/**
+			 * @returns {Boolean}
+			 */
+			panelGridAndFormViewModeIsEdit: function () {
+				return this.viewMode == 'edit';
+			},
+
+			/**
+			 * @returns {Boolean}
+			 */
+			panelGridAndFormViewModeIsRead: function () {
+				return this.viewMode == 'read';
+			},
+
+			/**
+			 * @param {String} mode - managed values: read, edit
+			 *
+			 * @returns {Void}
+			 */
+			panelGridAndFormViewModeSet: function (mode) {
+				mode = Ext.isString(mode) ? mode : 'read';
+
+				if (mode == 'edit')
+					return this.viewMode = 'edit';
+
+				return this.viewMode = 'read';
 			},
 
 		/**

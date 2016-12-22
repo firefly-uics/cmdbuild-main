@@ -1,5 +1,8 @@
 (function () {
 
+	/**
+	 * @link CMDBuild.view.management.dataView.filter.panel.form.tabs.note.NoteView
+	 */
 	Ext.define('CMDBuild.view.management.workflow.panel.form.tabs.note.NoteView', {
 		extend: 'Ext.form.Panel',
 

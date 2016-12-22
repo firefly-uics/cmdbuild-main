@@ -1,8 +1,5 @@
 (function () {
 
-	/**
-	 * @link CMDBuild.controller.management.workflow.panel.form.tabs.Note
-	 */
 	Ext.define('CMDBuild.controller.management.dataView.filter.panel.form.tabs.Note', {
 		extend: 'CMDBuild.controller.common.abstract.Base',
 
@@ -24,11 +21,8 @@
 			'dataViewFilterFormTabNoteReset',
 			'onDataViewFilterFormCardAddTabNoteButtonClick',
 			'onDataViewFilterFormCardCloneTabNoteButtonClick',
-			'onDataViewFilterFormTabNoteAbortButtonClick',
 			'onDataViewFilterFormTabNoteAddButtonClick',
 			'onDataViewFilterFormTabNoteCardSelect',
-			'onDataViewFilterFormTabNoteInstanceSelect',
-			'onDataViewFilterFormTabNoteModifyButtonClick',
 			'onDataViewFilterFormTabNoteSaveButtonClick',
 			'onDataViewFilterFormTabNoteShow'
 		],
@@ -50,13 +44,69 @@
 			this.callParent(arguments);
 
 			this.view = Ext.create('CMDBuild.view.management.dataView.filter.panel.form.tabs.note.NoteView', { delegate: this });
+
+			// Shorthands
+			this.form = this.view.form;
+		},
+
+		/**
+		 * @returns {Void}
+		 *
+		 * @private
+		 */
+		buildForm: function () {
+			if (this.cmfg('dataViewFilterUiViewModeIsEdit'))
+				return this.buildFormModeEdit();
+
+			return this.buildFormModeRead();
+		},
+
+		/**
+		 * @returns {Void}
+		 *
+		 * @private
+		 */
+		buildFormModeEdit: function () {
+			this.form.add(
+				Ext.create('CMDBuild.view.common.field.HtmlEditor', {
+					name: 'Notes',
+					border: false,
+					hideLabel: true
+				})
+			);
+		},
+
+		/**
+		 * @returns {Void}
+		 *
+		 * @private
+		 */
+		buildFormModeRead: function () {
+			this.form.add(
+				Ext.create('Ext.container.Container', {
+					border: false,
+					cls: 'cmdb-blue-panel-no-padding',
+					frame: false,
+					overflowY: 'auto',
+
+					items: [
+						Ext.create('Ext.form.field.Display', {
+							disablePanelFunctions: true,
+							name: 'Notes',
+							padding: '5px'
+						})
+					]
+				})
+			);
+
 		},
 
 		/**
 		 * @returns {Void}
 		 */
 		dataViewFilterFormTabNoteReset: function () {
-			this.view.panelFunctionReset();
+			this.form.removeAll(false);
+
 			this.view.disable();
 		},
 
@@ -143,25 +193,6 @@
 		/**
 		 * @returns {Void}
 		 */
-		onDataViewFilterFormTabNoteAbortButtonClick: function () {
-			if (!this.cmfg('dataViewFilterSelectedCardIsEmpty')) {
-				this.cmfg('onDataViewFilterFormTabNoteShow');
-			} else {
-				this.itemUnlock({
-					scope: this,
-					callback: function () {
-						this.viewModeSet('read');
-
-						this.view.panelFunctionReset();
-						this.view.panelFunctionModifyStateSet({ state: false });
-					}
-				});
-			}
-		},
-
-		/**
-		 * @returns {Void}
-		 */
 		onDataViewFilterFormTabNoteAddButtonClick: function () {
 			this.view.disable();
 		},
@@ -170,42 +201,24 @@
 		 * @returns {Void}
 		 */
 		onDataViewFilterFormTabNoteCardSelect: function () {
-			this.view.enable();
-		},
-
-		/**
-		 * @returns {Void}
-		 */
-		onDataViewFilterFormTabNoteInstanceSelect: function () {
-			this.view.enable();
-		},
-
-		/**
-		 * @returns {Void}
-		 */
-		onDataViewFilterFormTabNoteModifyButtonClick: function () {
-			this.itemLock({
-				scope: this,
-				callback: function () {
-					this.viewModeSet('edit');
-
-					this.view.panelFunctionModifyStateSet({ state: true });
-				}
-			});
+			this.view.setDisabled(this.cmfg('dataViewFilterSelectedCardIsEmpty'));
 		},
 
 		/**
 		 * @returns {Void}
 		 */
 		onDataViewFilterFormTabNoteSaveButtonClick: function () {
-			if (this.validate(this.view)) {
+			if (this.validate(this.form)) {
+				CMDBuild.core.LoadMask.show();
+
 				var params = {};
-				params['Notes'] = this.view.htmlField.getValue();
+				params['Notes'] = this.view.panelFunctionDataGet({ target: this.form });
 				params[CMDBuild.core.constants.Proxy.CARD_ID] = this.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.ID);
 				params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.CLASS_NAME);
 
 				CMDBuild.proxy.management.dataView.filter.panel.form.tabs.Note.update({
 					params: params,
+					loadMask: false,
 					scope: this,
 					success: function (response, options, decodedResponse) {
 						params[CMDBuild.core.constants.Proxy.ID] = params[CMDBuild.core.constants.Proxy.CARD_ID];
@@ -213,7 +226,10 @@
 						this.cmfg('dataViewFilterUiUpdate', {
 							cardId: params[CMDBuild.core.constants.Proxy.CARD_ID],
 							className: params[CMDBuild.core.constants.Proxy.CLASS_NAME],
-							tabToSelect: this.view
+							tabToSelect: this.view,
+							callback: function () {
+								CMDBuild.core.LoadMask.hide();
+							}
 						});
 					}
 				});
@@ -224,6 +240,8 @@
 		 * @returns {Void}
 		 */
 		onDataViewFilterFormTabNoteShow: function () {
+			this.form.removeAll(false);
+
 			// Error handling
 				if (this.cmfg('dataViewSelectedDataViewIsEmpty'))
 					return _error('onDataViewFilterFormTabNoteShow(): empty selected dataView property', this, this.cmfg('dataViewSelectedDataViewGet'));
@@ -231,8 +249,6 @@
 				if (this.cmfg('dataViewFilterSelectedCardIsEmpty'))
 					return _error('onDataViewFilterFormTabNoteShow(): empty selected card property', this, this.cmfg('dataViewFilterSelectedCardGet'));
 			// END: Error handling
-
-			this.view.panelFunctionReset();
 
 			// History record save
 			CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
@@ -254,44 +270,58 @@
 				}
 			});
 
-			this.itemUnlock({
+			if (this.cmfg('dataViewFilterUiViewModeIsEdit'))
+				return this.itemLock({
+					scope: this,
+					callback: this.showEventCallback
+				});
+
+			return this.itemUnlock({
 				scope: this,
-				callback: function () {
-					var notes = this.cmfg('dataViewFilterSelectedCardGet', [CMDBuild.core.constants.Proxy.VALUES, 'Notes']);
-
-					this.view.htmlField.setValue(notes);
-					this.view.displayField.setValue(notes);
-
-					this.viewModeSet('read');
-
-					this.view.panelFunctionModifyStateSet({
-						forceToolbarTopState: !this.cmfg('dataViewFilterSourceEntryTypeGet', [
-							CMDBuild.core.constants.Proxy.PERMISSIONS,
-							CMDBuild.core.constants.Proxy.WRITE
-						]),
-						state: false,
-					});
-				}
+				callback: this.showEventCallback
 			});
 		},
 
+
 		/**
-		 * @param {String} mode
-		 *
 		 * @returns {Void}
 		 *
 		 * @private
 		 */
-		viewModeSet: function (mode) {
-			switch (mode) {
-				case 'edit':
-					return this.view.getLayout().setActiveItem(this.view.panelModeEdit);
+		showEventCallback: function () {
+			this.buildForm();
 
-				case 'read':
-				default:
-					return this.view.getLayout().setActiveItem(this.view.panelModeRead);
-			}
-		}
+			this.form.getForm().setValues(this.cmfg('dataViewFilterSelectedCardGet', [CMDBuild.core.constants.Proxy.VALUES]));
+
+			this.view.panelFunctionModifyStateSet({
+				forceToolbarTopState: (
+					this.cmfg('dataViewFilterUiViewModeIsEdit')
+					&& this.cmfg('dataViewFilterSourceEntryTypeGet', [
+						CMDBuild.core.constants.Proxy.PERMISSIONS,
+						CMDBuild.core.constants.Proxy.WRITE
+					])
+				),
+				state: this.cmfg('dataViewFilterUiViewModeIsEdit'),
+			});
+		},
+
+//		/**
+//		 * @param {String} mode
+//		 *
+//		 * @returns {Void}
+//		 *
+//		 * @private
+//		 */
+//		viewModeSet: function (mode) {
+//			switch (mode) {
+//				case 'edit':
+//					return this.view.getLayout().setActiveItem(this.view.panelModeEdit);
+//
+//				case 'read':
+//				default:
+//					return this.view.getLayout().setActiveItem(this.view.panelModeRead);
+//			}
+//		}
 	});
 
 })();

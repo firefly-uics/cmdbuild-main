@@ -323,13 +323,19 @@
 		 *
 		 * @returns {Void}
 		 */
-		onDataViewFilterFormModifyButtonClick: function () {
+		onDataViewFilterFormModifyButtonClick: function () { // TODO: on card tab show event use onModifyCardClick
 			// Forward to sub-controllers
 			if (Ext.isObject(this.controllerTabCard) && !Ext.Object.isEmpty(this.controllerTabCard))
 				this.controllerTabCard.onModifyCardClick();
 
 			if (Ext.isObject(this.controllerTabEmail) && !Ext.Object.isEmpty(this.controllerTabEmail))
 				this.controllerTabEmail.onModifyCardClick();
+
+			// TODO
+			var activeTab = this.tabPanel.getActiveTab();
+
+			if (Ext.isObject(activeTab) && !Ext.Object.isEmpty(activeTab))
+				activeTab.fireEvent('show');
 		},
 
 		/**

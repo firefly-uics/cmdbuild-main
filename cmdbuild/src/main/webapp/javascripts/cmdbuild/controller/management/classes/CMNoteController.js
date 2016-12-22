@@ -8,7 +8,7 @@
 	]);
 
 	/**
-	 * @link CMDBuild.controller.management.workflow.panel.form.tabs.Note
+	 * @link CMDBuild.controller.management.dataView.filter.panel.form.tabs.Note
 	 */
 	Ext.define("CMDBuild.controller.management.classes.CMNoteController", {
 		extend: "CMDBuild.controller.management.classes.CMModCardSubController",

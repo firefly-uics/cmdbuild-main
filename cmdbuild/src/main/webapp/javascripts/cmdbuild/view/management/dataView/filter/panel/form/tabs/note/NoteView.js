@@ -1,10 +1,7 @@
 (function () {
 
-	/**
-	 * @link CMDBuild.view.management.workflow.panel.form.tabs.note.NoteView
-	 */
 	Ext.define('CMDBuild.view.management.dataView.filter.panel.form.tabs.note.NoteView', {
-		extend: 'Ext.form.Panel',
+		extend: 'Ext.panel.Panel',
 
 		mixins: ['CMDBuild.view.common.PanelFunctions2'],
 
@@ -14,26 +11,10 @@
 		delegate: undefined,
 
 		/**
-		 * @property {Ext.form.field.Display}
+		 * @property {CMDBuild.view.management.dataView.filter.panel.form.tabs.note.FormPanel}
 		 */
-		displayField: undefined,
+		form: undefined,
 
-		/**
-		 * @property {CMDBuild.view.common.field.HtmlEditor}
-		 */
-		htmlField: undefined,
-
-		/**
-		 * @property {Ext.container.Container}
-		 */
-		panelModeEdit: undefined,
-
-		/**
-		 * @property {Ext.container.Container}
-		 */
-		panelModeRead: undefined,
-
-		bodyCls: 'cmdb-gray-panel-no-padding',
 		border: false,
 		cls: 'x-panel-body-default-framed',
 		frame: false,
@@ -59,7 +40,7 @@
 								scope: this,
 
 								handler: function (button, e) {
-									this.delegate.cmfg('onDataViewFilterFormTabNoteModifyButtonClick');
+									this.delegate.cmfg('onDataViewFilterModifyButtonClick');
 								}
 							})
 						]
@@ -87,40 +68,14 @@
 								scope: this,
 
 								handler: function (button, e) {
-									this.delegate.cmfg('onDataViewFilterFormTabNoteAbortButtonClick');
+									this.delegate.cmfg('onDataViewFilterAbortButtonClick');
 								}
 							})
 						]
 					})
 				],
 				items: [
-					this.panelModeEdit = Ext.create('Ext.container.Container', {
-						border: false,
-						frame: false,
-						layout: 'fit',
-
-						items: [
-							this.htmlField = Ext.create('CMDBuild.view.common.field.HtmlEditor', {
-								name: 'Notes',
-								border: false,
-								hideLabel: true
-							})
-						]
-					}),
-					this.panelModeRead = Ext.create('Ext.container.Container', {
-						border: false,
-						cls: 'x-panel-body-default-framed',
-						frame: false,
-						overflowY: 'auto',
-
-						items: [
-							this.displayField = Ext.create('Ext.form.field.Display', {
-								disablePanelFunctions: true,
-								name: 'Notes',
-								padding: '5px'
-							})
-						]
-					})
+					this.form = Ext.create('CMDBuild.view.management.dataView.filter.panel.form.tabs.note.FormPanel', { delegate: this.delegate })
 				]
 			});
 

@@ -25,8 +25,11 @@
 			'dataViewSqlUiReset',
 			'dataViewSqlUiUpdate',
 			'onDataViewSqlAddButtonClick',
-			'panelGridAndFromFullScreenUiSetup = dataViewSqlFullScreenUiSetup',
-			'panelGridAndFormToolsArrayBuild'
+			'panelGridAndFormFullScreenUiSetup = dataViewSqlFullScreenUiSetup',
+			'panelGridAndFormToolsArrayBuild',
+			'panelGridAndFormViewModeGet = dataViewSqlUiViewModeGet',
+			'panelGridAndFormViewModeIsEdit = dataViewSqlUiViewModeIsEdit',
+			'panelGridAndFormViewModeSet = dataViewSqlUiViewModeSet'
 		],
 
 		/**
@@ -113,7 +116,7 @@
 		 * @param {Number} parameters.position
 		 * @param {CMDBuild.model.management.dataView.sql.panel.grid.Record} parameters.record
 		 * @param {Boolean} parameters.resetSorters
-		 * @param {Object} parameters.scope,
+		 * @param {Object} parameters.scope
 		 * @param {String} parameters.viewMode
 		 *
 		 * @returns {Void}
@@ -121,6 +124,7 @@
 		dataViewSqlUiUpdate: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
 			parameters.record = Ext.isObject(parameters.record) ? parameters.record : null;
+			parameters.viewMode = Ext.isString(parameters.viewMode) ? parameters.viewMode : 'read';
 
 			// Error handling
 				if (this.cmfg('dataViewSelectedDataViewIsEmpty'))
@@ -128,8 +132,9 @@
 			// END: Error handling
 
 			this.dataViewSqlSelectedDataSourceReset();
-			this.cmfg('dataViewSqlSelectedCardReset');
 			this.cmfg('dataViewSqlFullScreenUiSetup', { maximize: 'top' });
+			this.cmfg('dataViewSqlSelectedCardReset');
+			this.cmfg('dataViewSqlUiViewModeSet', parameters.viewMode);
 
 			if (this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.TYPE) == 'sql')
 				CMDBuild.proxy.management.dataView.sql.Sql.readAllDataSources({
@@ -153,10 +158,7 @@
 								this.setViewTitle(this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.DESCRIPTION));
 
 								// Forward to sub-controllers
-								this.controllerForm.cmfg('dataViewSqlFormUiUpdate', {
-									tabToSelect: parameters.tabToSelect,
-									viewMode: parameters.viewMode
-								});
+								this.controllerForm.cmfg('dataViewSqlFormUiUpdate', { tabToSelect: parameters.tabToSelect });
 								this.controllerGrid.cmfg('dataViewSqlGridUiUpdate', {
 									enableFilterReset: parameters.enableFilterReset,
 									page: parameters.page,
@@ -175,7 +177,7 @@
 				});
 		},
 
-		// LocalCacheDataSource property functions
+		// SelectedDataSource property functions
 			/**
 			 * @param {Array or String} attributePath
 			 *

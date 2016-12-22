@@ -207,8 +207,10 @@
 								callback: parameters.callback
 							});
 							this.controllerSql.cmfg('dataViewSqlUiUpdate', {
+								cardId: parameters.cardId,
 								enableFilterReset: true,
 								resetSorters: true,
+								tabToSelect: parameters.tabToSelect,
 								viewMode: parameters.viewMode,
 								scope: parameters.scope,
 								callback: parameters.callback

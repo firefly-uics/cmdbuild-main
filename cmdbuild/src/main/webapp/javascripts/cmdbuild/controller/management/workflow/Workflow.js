@@ -36,7 +36,7 @@
 			'onWorkflowSaveFailure',
 			'onWorkflowTreePrintButtonClick -> controllerTree',
 			'onWorkflowWokflowSelect -> controllerForm, controllerTree',
-			'panelGridAndFromFullScreenUiSetup = workflowFullScreenUiSetup',
+			'panelGridAndFormFullScreenUiSetup = workflowFullScreenUiSetup',
 			'panelGridAndFormToolsArrayBuild',
 			'workflowFormReset -> controllerForm',
 			'workflowIsStartActivityGet',

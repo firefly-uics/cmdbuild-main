@@ -1,7 +1,7 @@
 (function() {
 
 	/**
-	 * @link CMDBuild.view.management.workflow.panel.form.tabs.note.NoteView
+	 * @link CMDBuild.view.management.dataView.filter.panel.form.tabs.note.NoteView
 	 */
 	Ext.define("CMDBuild.view.management.classes.CMCardNotesPanel", {
 		extend: "Ext.panel.Panel",

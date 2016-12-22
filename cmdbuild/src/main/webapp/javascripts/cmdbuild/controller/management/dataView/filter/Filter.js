@@ -38,8 +38,11 @@
 			'onDataViewFilterAddButtonClick',
 			'onDataViewFilterModifyButtonClick',
 			'onDataViewFilterRecordDoubleClick',
-			'panelGridAndFromFullScreenUiSetup = dataViewFilterFullScreenUiSetup',
-			'panelGridAndFormToolsArrayBuild'
+			'panelGridAndFormFullScreenUiSetup = dataViewFilterFullScreenUiSetup',
+			'panelGridAndFormToolsArrayBuild',
+			'panelGridAndFormViewModeGet = dataViewFilterUiViewModeGet',
+			'panelGridAndFormViewModeIsEdit = dataViewFilterUiViewModeIsEdit',
+			'panelGridAndFormViewModeSet = dataViewFilterUiViewModeSet'
 		],
 
 		/**
@@ -240,14 +243,16 @@
 			parameters.cardId = Ext.isNumber(parameters.cardId) ? parameters.cardId : null;
 			parameters.className = Ext.isString(parameters.className) ? parameters.className
 				: this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.SOURCE_ENTRY_TYPE_NAME);
+			parameters.viewMode = Ext.isString(parameters.viewMode) ? parameters.viewMode : 'read';
 
 			// Error handling
 				if (this.cmfg('dataViewSelectedDataViewIsEmpty'))
 					return _error('dataViewFilterUiUpdate(): empty selected dataView', this, this.cmfg('dataViewSelectedDataViewGet'));
 			// END: Error handling
 
-			this.cmfg('dataViewFilterSelectedCardReset');
 			this.cmfg('dataViewFilterFullScreenUiSetup', { maximize: 'top' });
+			this.cmfg('dataViewFilterSelectedCardReset');
+			this.cmfg('dataViewFilterUiViewModeSet', parameters.viewMode);
 
 			if (this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.TYPE) == 'filter') {
 				CMDBuild.core.LoadMask.show(); // Manual loadMask manage
@@ -408,9 +413,10 @@
 		 * @returns {Void}
 		 */
 		onDataViewFilterAbortButtonClick: function () {
+			this.cmfg('dataViewFilterFullScreenUiSetup', { maximize: 'top' });
 			this.cmfg('dataViewFilterSelectedCardReset');
 			this.cmfg('dataViewFilterUiReset');
-			this.cmfg('dataViewFilterFullScreenUiSetup', { maximize: 'top' });
+			this.cmfg('dataViewFilterUiViewModeSet');
 
 			// Forward to sub-controllers
 			this.controllerForm.cmfg('onDataViewFilterFormAbortButtonClick');
@@ -429,8 +435,9 @@
 		 * @returns {Void}
 		 */
 		onDataViewFilterAddButtonClick: function (id) {
-			this.cmfg('dataViewFilterSelectedCardReset');
 			this.cmfg('dataViewFilterFullScreenUiSetup', { maximize: 'bottom' });
+			this.cmfg('dataViewFilterSelectedCardReset');
+			this.cmfg('dataViewFilterUiViewModeSet', 'edit');
 
 			// Forward to sub-controllers
 			this.controllerForm.cmfg('onDataViewFilterFormAddButtonClick', id);
@@ -442,6 +449,7 @@
 		 */
 		onDataViewFilterModifyButtonClick: function () {
 			this.cmfg('dataViewFilterFullScreenUiSetup', { maximize: 'bottom' });
+			this.cmfg('dataViewFilterUiViewModeSet', 'edit');
 
 			// Forward to sub-controllers
 			this.controllerForm.cmfg('onDataViewFilterFormModifyButtonClick');

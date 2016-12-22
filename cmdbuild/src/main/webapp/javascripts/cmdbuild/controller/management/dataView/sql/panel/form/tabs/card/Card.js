@@ -15,7 +15,7 @@
 		 */
 		cmfgCatchedFunctions: [
 			'dataViewSqlFormTabCardReset',
-			'dataViewSqlFormTabCardUiUpdate'
+			'dataViewSqlFormTabCardShow'
 		],
 
 		/**
@@ -46,21 +46,15 @@
 		},
 
 		/**
-		 * @param {String} mode
-		 *
 		 * @returns {Void}
 		 *
 		 * @private
 		 */
-		buildForm: function (mode) {
-			switch (mode) {
-				case 'edit':
-					return this.buildFormModeEdit();
+		buildForm: function () {
+			if (this.cmfg('dataViewSqlUiViewModeIsEdit'))
+				return this.buildFormModeEdit();
 
-				case 'read':
-				default:
-					return this.buildFormModeRead();
-			}
+			return this.buildFormModeRead();
 		},
 
 		/**
@@ -138,16 +132,12 @@
 
 		/**
 		 * @param {Object} parameters
-		 * @param {String} parameters.viewMode
 		 *
 		 * @returns {Void}
 		 */
-		dataViewSqlFormTabCardUiUpdate: function (parameters) {
-			parameters = Ext.isObject(parameters) ? parameters : {};
-			parameters.viewMode = Ext.isString(parameters.viewMode) ? parameters.viewMode : 'read';
-
+		dataViewSqlFormTabCardShow: function () {
 			if (!this.cmfg('dataViewSqlSelectedCardIsEmpty')) {
-				this.buildForm(parameters.viewMode);
+				this.buildForm();
 
 				this.form.getForm().setValues(this.cmfg('dataViewSqlSelectedCardGet', CMDBuild.core.constants.Proxy.VALUES));
 			}

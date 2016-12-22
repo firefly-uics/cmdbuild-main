@@ -99,7 +99,6 @@
 		/**
 		 * @param {Object} parameters
 		 * @param {Object} parameters.tabToSelect
-		 * @param {String} parameters.viewMode
 		 *
 		 * @returns {Void}
 		 */
@@ -107,9 +106,6 @@
 			parameters = Ext.isObject(parameters) ? parameters : {};
 
 			this.cmfg('dataViewSqlFormReset');
-
-			// Forward to sub-controllers
-			this.controllerTabCard.cmfg('dataViewSqlFormTabCardUiUpdate', { viewMode: parameters.viewMode }); // TODO
 
 			if (!Ext.isEmpty(parameters.tabToSelect))
 				return this.cmfg('dataViewSqlFormTabActiveSet', parameters.tabToSelect);
