@@ -3,10 +3,12 @@
 	/**
 	 * Adapter
 	 *
+	 * Extends "CMDBuild.view.common.panel.gridAndForm.panel.form.FormPanel" on full widget refactor
+	 *
 	 * @legacy
 	 */
 	Ext.define('CMDBuild.view.management.workflow.panel.form.FormPanel', {
-		extend: 'CMDBuild.view.common.panel.gridAndForm.panel.form.FormPanel',
+		extend: 'Ext.form.Panel',
 
 		requires: ['CMDBuild.core.constants.Proxy'],
 
@@ -25,7 +27,14 @@
 		 */
 		tabPanel: undefined,
 
+		bodyCls: 'cmdb-blue-panel-no-padding',
+		border: false,
+		cls: 'cmdb-border-top',
+		frame: false,
+		height: CMDBuild.configuration.instance.get(CMDBuild.core.constants.Proxy.CARD_FORM_RATIO) + '%',
 		layout: 'border',
+		region: 'south',
+		split: true,
 
 		/**
 		 * @returns {Void}

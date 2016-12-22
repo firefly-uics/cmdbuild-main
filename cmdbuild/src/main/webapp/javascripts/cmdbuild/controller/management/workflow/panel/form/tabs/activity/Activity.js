@@ -66,13 +66,7 @@
 
 			var ev = this.view.CMEVENTS;
 
-			if (widgetControllerManager) {
-				this.widgetControllerManager = widgetControllerManager;
-			} else {
-				var widgetManager = new CMDBuild.view.management.common.widgets.CMWidgetManager(this.view);
-				this.widgetControllerManager = new CMDBuild.controller.management.common.CMWidgetManagerController(widgetManager);
-			}
-
+			this.widgetControllerManager = widgetControllerManager;
 			this.widgetControllerManager.setDelegate(this);
 
 			this.CMEVENTS = {
