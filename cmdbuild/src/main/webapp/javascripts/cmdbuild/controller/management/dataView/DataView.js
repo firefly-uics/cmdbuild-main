@@ -144,16 +144,11 @@
 		onDataViewModuleInit: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
 			parameters.disableForward = Ext.isBoolean(parameters.disableForward) ? parameters.disableForward : false;
+			parameters.node = Ext.isObject(parameters.node) ? parameters.node : {};
 			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
 
-			if (Ext.isObject(parameters.node) && !Ext.Object.isEmpty(parameters.node)) {
-				// Error handling
-					if (!Ext.isNumber(parameters.node.get(CMDBuild.core.constants.Proxy.ENTITY_ID)) || Ext.isEmpty(parameters.node.get(CMDBuild.core.constants.Proxy.ENTITY_ID)))
-						return _error('onDataViewModuleInit(): unmanaged node entityId property', this, parameters.node.get(CMDBuild.core.constants.Proxy.ENTITY_ID));
-				// END: Error handling
-
+			if (Ext.isObject(parameters.node) && !Ext.Object.isEmpty(parameters.node))
 				this.cmfg('dataViewUiUpdate', { entityId: parameters.node.get(CMDBuild.core.constants.Proxy.ENTITY_ID) });
-			}
 		},
 
 		/**
