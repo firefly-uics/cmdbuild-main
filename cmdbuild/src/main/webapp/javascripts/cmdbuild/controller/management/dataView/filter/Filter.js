@@ -22,7 +22,7 @@
 			'dataViewFilterCacheEntryTypeGetAll',
 			'dataViewFilterPreviousCardGet',
 			'dataViewFilterPreviousCardIsEmpty',
-			'dataViewFilterPreviousCardReset = dataViewPreviousCardReset',
+			'dataViewFilterPreviousCardReset',
 			'dataViewFilterReset',
 			'dataViewFilterSelectedCardAttributesGet',
 			'dataViewFilterSelectedCardAttributesIsEmpty',
@@ -243,6 +243,7 @@
 			// END: Error handling
 
 			this.cmfg('dataViewFilterFullScreenUiSetup', { maximize: 'top' });
+			this.cmfg('dataViewFilterPreviousCardReset');
 			this.cmfg('dataViewFilterSelectedCardReset');
 			this.cmfg('dataViewFilterUiViewModeSet', parameters.viewMode);
 

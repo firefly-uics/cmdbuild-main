@@ -19,7 +19,6 @@
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
-			'dataViewPreviousCardReset -> controllerFilter', // Previous card can't be managed in Sql views
 			'dataViewSelectedDataViewGet',
 			'dataViewSelectedDataViewIsEmpty',
 			'dataViewUiUpdate',
@@ -153,7 +152,6 @@
 						return _error('onDataViewModuleInit(): unmanaged node entityId property', this, parameters.node.get(CMDBuild.core.constants.Proxy.ENTITY_ID));
 				// END: Error handling
 
-				this.cmfg('dataViewPreviousCardReset');
 				this.cmfg('dataViewUiUpdate', { entityId: parameters.node.get(CMDBuild.core.constants.Proxy.ENTITY_ID) });
 			}
 		},
