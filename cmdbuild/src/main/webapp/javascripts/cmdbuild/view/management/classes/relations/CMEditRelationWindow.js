@@ -1,11 +1,14 @@
-(function() {
+(function () {
 
 	Ext.require('CMDBuild.core.constants.Global');
 
 	var NO_SELECTION = 'No selection';
 
+	/**
+	 * @link CMDBuild.view.management.common.CMCardListWindow
+	 */
 	Ext.define('CMDBuild.view.management.classes.relations.CMEditRelationWindow', {
-		extend: 'CMDBuild.view.management.common.CMCardListWindow', // To choose the card for the relation
+		extend: 'CMDBuild.core.window.AbstractModal',
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
@@ -15,9 +18,17 @@
 		successCb: Ext.emptyFn,
 
 		// configuration
+			ClassName: undefined, // passed at instantiation
 			classObject: undefined,
 			extraParams: {},
+			filterType: undefined, // passed at instantiation
+			gridConfig: {}, // passed at instantiation
+			idClass: undefined, // passed at instantiation
+			multiSelect: false,
+			readOnly: undefined, // passed at instantiation
 			relation: undefined, // {dst_id: '', dst_cid: '', dom_id: '', rel_id: '', masterSide: '_1', slaveSide: '_2', rel_attr: []}
+			selModel: undefined, // if undefined is used the default selType
+			selType: 'rowmodel', // to allow the opportunity to pass a selection model to the grid
 			sourceCard: undefined, // the source of the relation
 			src: undefined, // Gives the side where i'm on domain
 		// configuration
@@ -84,18 +95,82 @@
 				};
 			}
 
+			if (typeof this.idClass == 'undefined' && typeof this.ClassName == 'undefined')
+				throw 'There are no Class Id or Class Name to load';
+
+			this.title = CMDBuild.Translation.management.modcard.title + getClassDescription(this);
+			this.grid = new CMDBuild.view.management.common.CMCardGrid(this.buildGrdiConfiguration());
+			this.setItems();
+
 			this.callParent(arguments);
 
-			if (
-				Ext.isObject(this.classObject) && !Ext.Object.isEmpty(this.classObject)
-				&& Ext.isFunction(this.classObject.get)
-			) {
+			if (Ext.isObject(this.classObject) && !Ext.Object.isEmpty(this.classObject) && Ext.isFunction(this.classObject.get)) {
 				var params = {};
 				params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.classObject.get(CMDBuild.core.constants.Proxy.NAME);
 
 				this.grid.applyFilterToStore();
 				this.grid.getStore().load({ params: params });
 			}
+		},
+
+		buildAddButton: function() {
+			var addCardButton = Ext.create('CMDBuild.core.buttons.iconized.split.add.Card');
+			var entry = _CMCache.getEntryTypeById(this.getIdClass());
+
+			addCardButton.updateForEntry(entry);
+			this.mon(addCardButton, 'cmClick', function buildTheAddWindow(p) {
+				var w = new CMDBuild.view.management.common.CMCardWindow({
+					withButtons: true,
+					title: p.className
+				});
+
+				new CMDBuild.controller.management.common.CMCardWindowController(w, {
+					cmEditMode: true,
+					card: null,
+					entryType: p.classId
+				});
+				w.show();
+
+				this.mon(w, 'destroy', function() {
+					this.grid.reload();
+				}, this);
+
+			}, this);
+
+			return addCardButton;
+		},
+
+		buildGrdiConfiguration: function() {
+			var gridConfig = Ext.apply(this.gridConfig, {
+				cmAdvancedFilter: false,
+				columns: [],
+				CQL: this.extraParams,
+				frame: false,
+				border: false,
+				selType: this.selType,
+				multiSelect: this.multiSelect
+			});
+
+			if (typeof this.selModel == 'undefined') {
+				gridConfig['selType'] = this.selType;
+			} else {
+				gridConfig['selModel'] = this.selModel;
+			}
+
+			return gridConfig;
+		},
+
+		getIdClass: function() {
+			if (this.idClass) {
+				return this.idClass;
+			} else {
+				var et = _CMCache.getEntryTypeByName(this.ClassName);
+				if (et) {
+					return et.getId();
+				}
+			}
+
+			throw 'No class info for ' + Ext.getClassName(this);
 		},
 
 		/**
@@ -118,7 +193,16 @@
 				}
 			});
 
-			this.callParent(arguments);
+			this.items = [this.grid];
+
+			if (
+				!this.readOnly
+				&& _CMCache.getEntryTypeById(this.getIdClass()).get('type') == 'class' // Create add button and topBar only for classes (no for processes)
+			) {
+				this.tbar = [
+					this.addCardButton = this.buildAddButton()
+				];
+			}
 
 			if (this.attributesPanel != null) {
 				this.layout = 'border';
@@ -131,10 +215,23 @@
 		},
 
 		/**
+		 * @param {Object} parameters
+		 * @param {Function} parameters.callback
+		 * @param {Object} parameters.scope
+		 *
+		 * @returns {Void}
+		 *
 		 * @override
 		 */
-		show: function() {
+		show: function (parameters) {
+			parameters = Ext.isObject(parameters) ? parameters : {};
+
 			this.callParent(arguments);
+
+			this.grid.updateStoreForClassId(this.getIdClass(), {
+				scope: parameters.scope,
+				cb: parameters.callback
+			});
 
 			this.attributesPanel.editMode();
 
@@ -176,6 +273,16 @@
 			}
 		}
 	});
+
+	function getClassDescription(me) {
+		var entryType = _CMCache.getEntryTypeById(me.getIdClass());
+		var description = '';
+		if (entryType) {
+			description = entryType.getDescription();
+		}
+
+		return description;
+	}
 
 	function onSaveButtonClick() {
 		var p = buildSaveParams(this);
