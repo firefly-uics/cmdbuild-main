@@ -280,114 +280,116 @@
 				this.loadData();
 			}, this, { single: true });
 
-			editRelationWindow.show();
+			editRelationWindow.show({
+				callback: function () {
+					// Disable already related cards
+					editRelationWindow.grid.getStore().loadPage(1, {
+						callback: function (records, options, success) {
+							editRelationWindow.setLoading(true); // Manual loadMask manage
 
-			// Disable already related cards
-			editRelationWindow.grid.getStore().on('load', function (store, records, successful, eOpts) {
-				editRelationWindow.setLoading(true); // Manual loadMask manage
+							var cardsIdArray = [];
 
-				Ext.Function.createDelayed(function() { // HACK to wait store to be correctly loaded
-					var cardsIdArray = [];
+							editRelationWindow.grid.getStore().each(function (record) {
+								cardsIdArray.push(record.get(CMDBuild.core.constants.Proxy.ID));
+							});
 
-					editRelationWindow.grid.getStore().each(function (record) {
-						cardsIdArray.push(record.get(CMDBuild.core.constants.Proxy.ID));
-					});
+							var parameters = {};
+							parameters[CMDBuild.core.constants.Proxy.DOMAIN_NAME] = domain.get(CMDBuild.core.constants.Proxy.NAME);
+							parameters[CMDBuild.core.constants.Proxy.CLASS_NAME] = classData.get(CMDBuild.core.constants.Proxy.NAME);
+							parameters[CMDBuild.core.constants.Proxy.CARDS] = Ext.encode(cardsIdArray);
+							parameters[CMDBuild.core.constants.Proxy.DOMAIN_DIRECTION] = destination;
 
-					var parameters = {};
-					parameters[CMDBuild.core.constants.Proxy.DOMAIN_NAME] = domain.get(CMDBuild.core.constants.Proxy.NAME);
-					parameters[CMDBuild.core.constants.Proxy.CLASS_NAME] = classData.get(CMDBuild.core.constants.Proxy.NAME);
-					parameters[CMDBuild.core.constants.Proxy.CARDS] = Ext.encode(cardsIdArray);
-					parameters[CMDBuild.core.constants.Proxy.DOMAIN_DIRECTION] = destination;
+							CMDBuild.proxy.Relation.getAlreadyRelatedCards({
+								params: parameters,
+								loadMask: false,
+								scope: this,
+								success: function (response, options, decodedResponse) {
+									decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.RESPONSE];
 
-					CMDBuild.proxy.Relation.getAlreadyRelatedCards({
-						params: parameters,
-						loadMask: false,
-						scope: this,
-						success: function (response, options, decodedResponse) {
-							decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.RESPONSE];
+									if (Ext.isArray(decodedResponse)) {
+										var filterAlreadyRelatedCardsIds = [];
 
-							if (Ext.isArray(decodedResponse)) {
-								var filterAlreadyRelatedCardsIds = [];
+										Ext.Array.forEach(decodedResponse, function (alreadyRelatedCard, index, allAlreadyRelatedCards) {
+											if (Ext.isObject(alreadyRelatedCard) && !Ext.Object.isEmpty(alreadyRelatedCard)) {
+												var id = alreadyRelatedCard[CMDBuild.core.constants.Proxy.ID];
 
-								Ext.Array.forEach(decodedResponse, function (alreadyRelatedCard, index, allAlreadyRelatedCards) {
-									if (Ext.isObject(alreadyRelatedCard) && !Ext.Object.isEmpty(alreadyRelatedCard)) {
-										var id = alreadyRelatedCard[CMDBuild.core.constants.Proxy.ID];
-
-										if (Ext.isNumber(id) && !Ext.isEmpty(id))
-											filterAlreadyRelatedCardsIds.push(id);
-									}
-								}, this);
-
-								if (Ext.isArray(filterAlreadyRelatedCardsIds) && !Ext.isEmpty(filterAlreadyRelatedCardsIds)) {
-									var parameters = {};
-									parameters[CMDBuild.core.constants.Proxy.ATTRIBUTES] = Ext.encode(['Description']);
-									parameters[CMDBuild.core.constants.Proxy.CLASS_NAME] = classData.get(CMDBuild.core.constants.Proxy.NAME);
-									parameters[CMDBuild.core.constants.Proxy.FILTER] = Ext.encode({
-										"attribute": {
-											"simple": {
-												"attribute": "Id",
-												"operator": "in",
-												"value": filterAlreadyRelatedCardsIds,
-												"parameterType": "fixed"
+												if (Ext.isNumber(id) && !Ext.isEmpty(id))
+													filterAlreadyRelatedCardsIds.push(id);
 											}
-										},
-										"relation": [
-											{
-												"destination": _CMCache.getEntryTypeNameById(this.getClassId()), // This class name
-												"direction": destination,
-												"domain": domain.get(CMDBuild.core.constants.Proxy.NAME),
-												"source": classData.get(CMDBuild.core.constants.Proxy.NAME), // Other class of domain
-												"type": "any"
-											}
-										]
-									});
+										}, this);
 
-									CMDBuild.proxy.Relation.getCards({
-										params: parameters,
-										loadMask: false,
-										scope: this,
-										success: function (response, options, decodedResponse) {
-											decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.ROWS];
-
-											if (Ext.isArray(decodedResponse) && !Ext.isEmpty(decodedResponse)) {
-												var alreadyRelatedCardsIds = [];
-
-												Ext.Array.forEach(decodedResponse, function (cardObject, index, allCardObjects) {
-													if (Ext.isObject(cardObject) && !Ext.Object.isEmpty(cardObject)) {
-														var id = cardObject['Id'];
-
-														if (Ext.isNumber(id) && !Ext.isEmpty(id))
-															alreadyRelatedCardsIds.push(id);
+										if (Ext.isArray(filterAlreadyRelatedCardsIds) && !Ext.isEmpty(filterAlreadyRelatedCardsIds)) {
+											var parameters = {};
+											parameters[CMDBuild.core.constants.Proxy.ATTRIBUTES] = Ext.encode(['Description']);
+											parameters[CMDBuild.core.constants.Proxy.CLASS_NAME] = classData.get(CMDBuild.core.constants.Proxy.NAME);
+											parameters[CMDBuild.core.constants.Proxy.FILTER] = Ext.encode({
+												"attribute": {
+													"simple": {
+														"attribute": "Id",
+														"operator": "in",
+														"value": filterAlreadyRelatedCardsIds,
+														"parameterType": "fixed"
 													}
-												}, this);
+												},
+												"relation": [
+													{
+														"destination": _CMCache.getEntryTypeNameById(me.getClassId()), // This class name
+														"direction": destination,
+														"domain": domain.get(CMDBuild.core.constants.Proxy.NAME),
+														"source": classData.get(CMDBuild.core.constants.Proxy.NAME), // Other class of domain
+														"type": "any"
+													}
+												]
+											});
 
-												// Add class to disable rows as user feedback
-												editRelationWindow.grid.getView().getRowClass = function (record, rowIndex, rowParams, store) {
-													return Ext.Array.contains(alreadyRelatedCardsIds, record.get('Id')) ? 'grid-row-disabled' : null;
-												};
-												editRelationWindow.grid.getView().refresh();
+											CMDBuild.proxy.Relation.getCards({
+												params: parameters,
+												loadMask: false,
+												scope: this,
+												success: function (response, options, decodedResponse) {
+													decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.ROWS];
 
-												// Disable row selection
-												editRelationWindow.grid.getSelectionModel().addListener('beforeselect', function(selectionModel, record, index, eOpts) {
-													return Ext.Array.contains(alreadyRelatedCardsIds, record.get('Id')) ? false : true;
-												});
-											}
+													if (Ext.isArray(decodedResponse) && !Ext.isEmpty(decodedResponse)) {
+														var alreadyRelatedCardsIds = [];
 
+														Ext.Array.forEach(decodedResponse, function (cardObject, index, allCardObjects) {
+															if (Ext.isObject(cardObject) && !Ext.Object.isEmpty(cardObject)) {
+																var id = cardObject['Id'];
+
+																if (Ext.isNumber(id) && !Ext.isEmpty(id))
+																	alreadyRelatedCardsIds.push(id);
+															}
+														}, this);
+
+														// Add class to disable rows as user feedback
+														editRelationWindow.grid.getView().getRowClass = function (record, rowIndex, rowParams, store) {
+															return Ext.Array.contains(alreadyRelatedCardsIds, record.get('Id')) ? 'grid-row-disabled' : null;
+														};
+														editRelationWindow.grid.getView().refresh();
+
+														// Disable row selection
+														editRelationWindow.grid.getSelectionModel().addListener('beforeselect', function(selectionModel, record, index, eOpts) {
+															return Ext.Array.contains(alreadyRelatedCardsIds, record.get('Id')) ? false : true;
+														});
+													}
+
+													editRelationWindow.setLoading(false); // Manual loadMask manage
+												}
+											});
+										} else {
 											editRelationWindow.setLoading(false); // Manual loadMask manage
 										}
-									});
-								} else {
-									editRelationWindow.setLoading(false); // Manual loadMask manage
-								}
-							} else {
-								editRelationWindow.setLoading(false); // Manual loadMask manage
+									} else {
+										editRelationWindow.setLoading(false); // Manual loadMask manage
 
-								_error('onAddRelationButtonClick(): unmanaged response', this, decodedResult);
-							}
+										_error('onAddRelationButtonClick(): unmanaged response', me, decodedResult);
+									}
+								}
+							});
 						}
 					});
-				}, 100, this)();
-			}, this);
+				}
+			});
 		},
 
 		onAddRelationSuccess: function() {
@@ -431,24 +433,27 @@
 				this.loadData();
 			}, this, { single: true });
 
-			// Model fix to select right row(s) with select()
-			model.set({
-				Code: model.get('dst_code'),
-				Description: model.get('dst_desc'),
-				Id: model.get('dst_id'),
-				id: model.get('dst_id'),
-				IdClass: model.get('dst_cid')
+			editRelationWindow.show({
+				scope: this,
+				callback: function () {
+					// Model fix to select right row(s) with select()
+					model.set({
+						Code: model.get('dst_code'),
+						Description: model.get('dst_desc'),
+						Id: model.get('dst_id'),
+						id: model.get('dst_id'),
+						IdClass: model.get('dst_cid')
+					});
+
+					// Select right cards as a modify routine
+					editRelationWindow.grid.getStore().loadPage(1, {
+						callback: function (records, options, success) {
+							if (!Ext.isEmpty(model))
+								editRelationWindow.grid.getSelectionModel().select(model);
+						}
+					});
+				}
 			});
-
-			// Select right cards as a modify routine
-			editRelationWindow.grid.getStore().on('load', function (store, records, successful, eOpts) {
-				Ext.Function.createDelayed(function() { // HACK to wait store to be correctly loaded
-					if (!Ext.isEmpty(model))
-						editRelationWindow.grid.getSelectionModel().select(model);
-				}, 100)();
-			}, this);
-
-			editRelationWindow.show();
 		},
 
 		onEditRelationSuccess: function() {
