@@ -469,21 +469,27 @@ public class DefaultGISLogic implements GISLogic {
 				}
 
 				for (final RelationInfo ri : relationsBySource.get(sourceCardId)) {
-					final DomainTreeCardNode child = new DomainTreeCardNode();
+					final Long childId = ri.getTargetId();
+					final DomainTreeCardNode child;
+					if (nodes.containsKey(childId)) {
+						child = nodes.get(childId);
+					} else {
+						child = new DomainTreeCardNode();
+						nodes.put(childId, child);
+					}
 					String text = ri.getTargetDescription();
 					if (text == null || text.equals("")) {
 						text = ri.getTargetCode();
 					}
 
 					child.setText(text);
-					child.setCardId(ri.getTargetId());
+					child.setCardId(childId);
 					child.setClassId(ri.getTargetType().getId());
 					child.setClassName(ri.getTargetType().getIdentifier().getLocalName());
 					child.setLeaf(leaf);
 					child.setBaseNode(baseNode);
 
 					parent.addChild(child);
-					nodes.put(child.getCardId(), child);
 				}
 			}
 		}
