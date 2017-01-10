@@ -84,6 +84,8 @@ FIXES
 
  * GIS navigation tree is not showing all elements
 
+ * Wrong reference id on tab email create/update actions on classes
+
 
 
 
