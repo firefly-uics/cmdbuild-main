@@ -2,9 +2,10 @@
 
 	/**
 	 * Required managed functions from upper structure:
+	 * 	- panelGridAndFormListPanelAppliedFilterGet
+	 * 	- panelGridAndFormListPanelAppliedFilterIsEmpty
 	 * 	- panelGridAndFormListPanelFilterApply
 	 * 	- panelGridAndFormListPanelFilterClear
-	 * 	- panelGridAndFormListPanelGet
 	 * 	- panelGridAndFormSelectedEntityGet
 	 */
 	Ext.define('CMDBuild.controller.common.panel.gridAndForm.panel.common.filter.advanced.Advanced', {
@@ -114,7 +115,7 @@
 			this.controllerManager.cmfg('panelGridAndFormCommonFilterAdvancedManagerViewClose');
 
 			this.view.clearButton.enable();
-_debug('onPanelGridAndFormCommonFilterAdvancedFilterSelect', filter);
+
 			if (Ext.isObject(filter) && !Ext.Object.isEmpty(filter) && filter.isFilterAdvancedCompatible && !filter.isEmpty()) {
 				filter.resetRuntimeParametersValue();
 

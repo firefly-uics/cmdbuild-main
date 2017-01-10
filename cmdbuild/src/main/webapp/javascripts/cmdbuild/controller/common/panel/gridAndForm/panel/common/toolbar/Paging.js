@@ -3,8 +3,13 @@
 	/**
 	 * Required managed functions from upper structure:
 	 * 	- onPanelGridAndFormCommonToolbarPrintButtonClick
+	 * 	- panelGridAndFormListPanelAppliedFilterGet
+	 * 	- panelGridAndFormListPanelAppliedFilterIsEmpty
+	 * 	- panelGridAndFormListPanelFilterApply
+	 * 	- panelGridAndFormListPanelFilterClear
 	 * 	- panelGridAndFormListPanelStoreGet
 	 * 	- panelGridAndFormListPanelStoreLoad
+	 * 	- panelGridAndFormSelectedEntityGet
 	 */
 	Ext.define('CMDBuild.controller.common.panel.gridAndForm.panel.common.toolbar.Paging', {
 		extend: 'CMDBuild.controller.common.abstract.Base',
@@ -108,8 +113,6 @@
 		},
 
 		/**
-		 * Forwarder method
-		 *
 		 * @returns {Void}
 		 */
 		panelGridAndFormCommonToolbarPagingFilterBasicReset: function () {

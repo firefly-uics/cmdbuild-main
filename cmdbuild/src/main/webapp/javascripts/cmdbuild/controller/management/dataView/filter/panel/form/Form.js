@@ -24,6 +24,7 @@
 		cmfgCatchedFunctions: [
 			'dataViewFilterFormReset',
 			'dataViewFilterFormUiUpdate',
+			'dataViewFilterFormWidgetExists',
 			'onDataViewFilterFormAbortButtonClick',
 			'onDataViewFilterFormAddButtonClick',
 			'onDataViewFilterFormCloneButtonClick',
@@ -190,7 +191,7 @@
 			this.cmfg('dataViewFilterFormReset');
 
 			// Forward to sub-controllers
-			if (!this.cmfg('dataViewFilterSelectedCardIsEmpty') && !this.cmfg('dataViewFilterSourceEntryTypeIsEmpty')) {
+			if (!this.cmfg('dataViewFilterSourceEntryTypeIsEmpty') && !this.cmfg('dataViewFilterSelectedCardIsEmpty')) {
 				if (Ext.isObject(this.controllerTabCard) && !Ext.Object.isEmpty(this.controllerTabCard)) {
 					this.controllerTabCard.onEntryTypeSelected();
 					this.controllerTabCard.onCardSelected();
@@ -215,7 +216,7 @@
 				}
 
 				if (Ext.isObject(this.controllerTabNote) && !Ext.Object.isEmpty(this.controllerTabNote))
-					this.controllerTabNote.cmfg('onDataViewFilterFormTabNoteCardSelect');
+					this.controllerTabNote.cmfg('onDataViewFilterFormTabNoteUiUpdate');
 
 				if (Ext.isObject(this.controllerTabRelations) && !Ext.Object.isEmpty(this.controllerTabRelations)) {
 					this.controllerTabRelations.onEntryTypeSelected();
@@ -227,6 +228,15 @@
 				return this.cmfg('dataViewFilterFormTabActiveSet', parameters.tabToSelect);
 
 			return this.cmfg('dataViewFilterFormTabSelectionManage');
+		},
+
+		/**
+		 * @param {String} type
+		 *
+		 * @returns {Boolean}
+		 */
+		dataViewFilterFormWidgetExists: function (type) { // TODO: implementation
+			return false
 		},
 
 		/**

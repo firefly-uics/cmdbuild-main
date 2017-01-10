@@ -132,7 +132,6 @@
 
 		/**
 		 * @param {Object} parameters
-		 * @param {Boolean} parameters.disableForward
 		 * @param {CMDBuild.model.common.Accordion} parameters.node
 		 * @param {Function} parameters.callback
 		 * @param {Object} parameters.scope
@@ -143,19 +142,26 @@
 		 */
 		onDataViewModuleInit: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
-			parameters.disableForward = Ext.isBoolean(parameters.disableForward) ? parameters.disableForward : false;
 			parameters.node = Ext.isObject(parameters.node) ? parameters.node : {};
 			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
 
 			if (Ext.isObject(parameters.node) && !Ext.Object.isEmpty(parameters.node))
-				this.cmfg('dataViewUiUpdate', { entityId: parameters.node.get(CMDBuild.core.constants.Proxy.ENTITY_ID) });
+				this.cmfg('dataViewUiUpdate', {
+					enableFilterReset: true,
+					entityId: parameters.node.get(CMDBuild.core.constants.Proxy.ENTITY_ID),
+					resetSorters: true
+				});
+
+			this.onModuleInit(parameters); // Custom callParent() implementation
 		},
 
 		/**
 		 * @param {Object} parameters
 		 * @param {Function} parameters.callback
 		 * @param {Number} parameters.cardId
+		 * @param {Boolean} parameters.enableFilterReset
 		 * @param {Number} parameters.entityId
+		 * @param {Boolean} parameters.resetSorters
 		 * @param {Object} parameters.scope
 		 * @param {Object} parameters.tabToSelect
 		 * @param {String} parameters.viewMode
@@ -192,8 +198,8 @@
 							// Forward to sub-controllers
 							this.controllerFilter.cmfg('dataViewFilterUiUpdate', {
 								cardId: parameters.cardId,
-								enableFilterReset: true,
-								resetSorters: true,
+								enableFilterReset: parameters.enableFilterReset,
+								resetSorters: parameters.resetSorters,
 								tabToSelect: parameters.tabToSelect,
 								viewMode: parameters.viewMode,
 								scope: parameters.scope,
@@ -201,8 +207,8 @@
 							});
 							this.controllerSql.cmfg('dataViewSqlUiUpdate', {
 								cardId: parameters.cardId,
-								enableFilterReset: true,
-								resetSorters: true,
+								enableFilterReset: parameters.enableFilterReset,
+								resetSorters: parameters.resetSorters,
 								tabToSelect: parameters.tabToSelect,
 								viewMode: parameters.viewMode,
 								scope: parameters.scope,

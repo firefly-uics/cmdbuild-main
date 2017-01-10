@@ -35,7 +35,6 @@
 			'dataViewFilterGridStoreGet = panelGridAndFormListPanelStoreGet',
 			'dataViewFilterGridStoreLoad = panelGridAndFormListPanelStoreLoad',
 			'dataViewFilterGridUiUpdate',
-			'getView = panelGridAndFormListPanelGet',
 			'onDataViewFilterGridAddButtonClick',
 			'onDataViewFilterGridColumnChanged',
 			'onDataViewFilterGridPrintButtonClick = onPanelGridAndFormCommonToolbarPrintButtonClick',
@@ -374,7 +373,7 @@
 					}
 				});
 
-			// Directly select card in current loaded store
+			// Directly select card in currently loaded store
 			return this.positionCardGetSuccessCallback(parameters.position, parameters);
 		},
 

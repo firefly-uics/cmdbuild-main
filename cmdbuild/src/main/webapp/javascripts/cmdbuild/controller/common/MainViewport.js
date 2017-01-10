@@ -443,7 +443,7 @@
 
 			// Error handling
 				if (Ext.isEmpty(parameters['Id']) || Ext.isEmpty(parameters['IdClass']))
-					return _error('mainViewportActivitySelect(): unmanaged parameter', this, parameters);
+					return _error('mainViewportCardSelect(): unmanaged parameter', this, parameters);
 			// END: Error handling
 
 			if (_CMCache.isClassById(parameters['IdClass'])) { /** @legacy */

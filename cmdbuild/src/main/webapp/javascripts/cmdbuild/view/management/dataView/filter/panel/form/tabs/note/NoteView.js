@@ -18,7 +18,7 @@
 		border: false,
 		cls: 'x-panel-body-default-framed',
 		frame: false,
-		itemId: 'dataViewFilterFormTabNote',
+		itemId: 'formTabNote',
 		layout: 'card',
 		title: CMDBuild.Translation.note,
 

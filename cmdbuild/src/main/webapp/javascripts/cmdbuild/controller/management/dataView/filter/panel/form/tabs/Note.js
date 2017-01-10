@@ -4,7 +4,6 @@
 		extend: 'CMDBuild.controller.common.abstract.Base',
 
 		requires: [
-			'CMDBuild.core.constants.ModuleIdentifiers',
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.proxy.management.dataView.filter.panel.form.tabs.Note'
 		],
@@ -21,10 +20,9 @@
 			'dataViewFilterFormTabNoteReset',
 			'onDataViewFilterFormCardAddTabNoteButtonClick',
 			'onDataViewFilterFormCardCloneTabNoteButtonClick',
-			'onDataViewFilterFormTabNoteAddButtonClick',
-			'onDataViewFilterFormTabNoteCardSelect',
 			'onDataViewFilterFormTabNoteSaveButtonClick',
-			'onDataViewFilterFormTabNoteShow'
+			'onDataViewFilterFormTabNoteShow',
+			'onDataViewFilterFormTabNoteUiUpdate'
 		],
 
 		/**
@@ -98,7 +96,6 @@
 					]
 				})
 			);
-
 		},
 
 		/**
@@ -121,7 +118,6 @@
 		 */
 		itemLock: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
-			parameters.callback = Ext.isFunction(parameters.callback) ? parameters.callback : Ext.emptyFn;
 			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
 
 			if (
@@ -134,9 +130,9 @@
 				CMDBuild.proxy.management.dataView.filter.panel.form.tabs.Note.lock({
 					params: params,
 					scope: parameters.scope,
-					success: parameters.callback
+					success: Ext.isFunction(parameters.callback) ? parameters.callback : Ext.emptyFn
 				});
-			} else {
+			} else if (Ext.isFunction(parameters.callback)) {
 				Ext.callback(parameters.callback, parameters.scope);
 			}
 		},
@@ -152,7 +148,6 @@
 		 */
 		itemUnlock: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
-			parameters.callback = Ext.isFunction(parameters.callback) ? parameters.callback : Ext.emptyFn;
 			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
 
 			if (
@@ -165,9 +160,9 @@
 				CMDBuild.proxy.management.dataView.filter.panel.form.tabs.Note.unlock({
 					params: params,
 					scope: parameters.scope,
-					success: parameters.callback
+					success: Ext.isFunction(parameters.callback) ? parameters.callback : Ext.emptyFn
 				});
-			} else {
+			} else if (Ext.isFunction(parameters.callback)) {
 				Ext.callback(parameters.callback, parameters.scope);
 			}
 		},
@@ -188,20 +183,6 @@
 		 */
 		onDataViewFilterFormCardCloneTabNoteButtonClick: function () {
 			this.view.disable();
-		},
-
-		/**
-		 * @returns {Void}
-		 */
-		onDataViewFilterFormTabNoteAddButtonClick: function () {
-			this.view.disable();
-		},
-
-		/**
-		 * @returns {Void}
-		 */
-		onDataViewFilterFormTabNoteCardSelect: function () {
-			this.view.setDisabled(this.cmfg('dataViewFilterSelectedCardIsEmpty'));
 		},
 
 		/**
@@ -237,6 +218,8 @@
 		},
 
 		/**
+		 * Performance optimization to avoid to do all computation on UiUpdate action
+		 *
 		 * @returns {Void}
 		 */
 		onDataViewFilterFormTabNoteShow: function () {
@@ -282,6 +265,14 @@
 			});
 		},
 
+		/**
+		 * Enable disable tab based on selection validity
+		 *
+		 * @returns {Void}
+		 */
+		onDataViewFilterFormTabNoteUiUpdate: function () {
+			this.view.setDisabled(this.cmfg('dataViewFilterSelectedCardIsEmpty'));
+		},
 
 		/**
 		 * @returns {Void}
@@ -294,14 +285,14 @@
 			this.form.getForm().setValues(this.cmfg('dataViewFilterSelectedCardGet', [CMDBuild.core.constants.Proxy.VALUES]));
 
 			this.view.panelFunctionModifyStateSet({
-				forceToolbarTopState: (
-					this.cmfg('dataViewFilterUiViewModeIsEdit')
+				forceToolbarTopState: !( // TODO: check
+					!this.cmfg('dataViewFilterUiViewModeIsEdit')
 					&& this.cmfg('dataViewFilterSourceEntryTypeGet', [
 						CMDBuild.core.constants.Proxy.PERMISSIONS,
 						CMDBuild.core.constants.Proxy.WRITE
 					])
 				),
-				state: this.cmfg('dataViewFilterUiViewModeIsEdit'),
+				state: this.cmfg('dataViewFilterUiViewModeIsEdit')
 			});
 		}
 	});

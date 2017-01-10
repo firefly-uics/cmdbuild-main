@@ -5,7 +5,6 @@
 	 * 	- panelGridAndFormListPanelAppliedFilterGet
 	 * 	- panelGridAndFormListPanelFilterApply
 	 * 	- panelGridAndFormListPanelFilterClear
-	 * 	- panelGridAndFormListPanelGet
 	 * 	- panelGridAndFormListPanelStoreGet
 	 * 	- panelGridAndFormListPanelStoreLoad
 	 *

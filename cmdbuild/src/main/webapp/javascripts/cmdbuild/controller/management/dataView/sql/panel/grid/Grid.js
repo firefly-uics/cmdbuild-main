@@ -29,7 +29,6 @@
 			'dataViewSqlGridStoreGet = panelGridAndFormListPanelStoreGet',
 			'dataViewSqlGridStoreLoad = panelGridAndFormListPanelStoreLoad',
 			'dataViewSqlGridUiUpdate',
-			'getView = panelGridAndFormListPanelGet',
 			'onDataViewFilterSqlAddButtonClick',
 			'onDataViewSqlGridColumnChanged',
 			'onDataViewSqlGridPrintButtonClick = onPanelGridAndFormCommonToolbarPrintButtonClick',

@@ -40,7 +40,6 @@
 			'onDataViewFilterRecordDoubleClick',
 			'panelGridAndFormFullScreenUiSetup = dataViewFilterFullScreenUiSetup',
 			'panelGridAndFormToolsArrayBuild',
-			'panelGridAndFormViewModeGet = dataViewFilterUiViewModeGet',
 			'panelGridAndFormViewModeIsEdit = dataViewFilterUiViewModeIsEdit',
 			'panelGridAndFormViewModeSet = dataViewFilterUiViewModeSet'
 		],
@@ -224,7 +223,7 @@
 		 * @param {Boolean} parameters.forceStoreLoad
 		 * @param {Number} parameters.position
 		 * @param {Boolean} parameters.resetSorters
-		 * @param {Object} parameters.scope,
+		 * @param {Object} parameters.scope
 		 * @param {Object} parameters.tabToSelect
 		 * @param {String} parameters.viewMode
 		 *
