@@ -37,8 +37,12 @@ public class Functions {
 
 	}
 
+	@SuppressWarnings("rawtypes")
+	private static final ToId ID = new ToId<>();
+
+	@SuppressWarnings("unchecked")
 	public static <T extends CMEntry> Function<T, Long> toId() {
-		return new ToId<T>();
+		return ID;
 	}
 
 	private Functions() {

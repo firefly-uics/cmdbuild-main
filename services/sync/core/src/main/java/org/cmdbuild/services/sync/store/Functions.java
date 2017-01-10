@@ -4,29 +4,43 @@ import com.google.common.base.Function;
 
 class Functions {
 
-	private static Function<Attribute, String> TO_ATTRIBUTE_NAME = new Function<Attribute, String>() {
+	private static class Name<T extends Attribute> implements Function<T, String> {
+
+		private Name() {
+		}
 
 		@Override
-		public String apply(final Attribute input) {
+		public String apply(final T input) {
 			return input.getName();
 		}
 
-	};
+	}
 
-	private static Function<Attribute, Boolean> TO_ATTRIBUTE_KEY = new Function<Attribute, Boolean>() {
+	@SuppressWarnings("rawtypes")
+	private static final Name TO_ATTRIBUTE_NAME = new Name<>();
 
-		@Override
-		public Boolean apply(final Attribute input) {
-			return input.isKey();
-		}
-
-	};
-
-	public static Function<Attribute, String> toAttributeName() {
+	@SuppressWarnings("unchecked")
+	public static <T extends Attribute> Function<T, String> toAttributeName() {
 		return TO_ATTRIBUTE_NAME;
 	}
 
-	public static Function<Attribute, Boolean> toAttributeKey() {
+	private static class Key<T extends Attribute> implements Function<T, Boolean> {
+
+		private Key() {
+		}
+
+		@Override
+		public Boolean apply(final T input) {
+			return input.isKey();
+		}
+
+	}
+
+	@SuppressWarnings("rawtypes")
+	private static final Key TO_ATTRIBUTE_KEY = new Key<>();
+
+	@SuppressWarnings("unchecked")
+	public static <T extends Attribute> Function<T, Boolean> toAttributeKey() {
 		return TO_ATTRIBUTE_KEY;
 	}
 

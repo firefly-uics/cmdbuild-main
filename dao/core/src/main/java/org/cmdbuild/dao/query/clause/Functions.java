@@ -4,7 +4,6 @@ import static org.cmdbuild.dao.query.clause.QueryAliasAttribute.attribute;
 
 import org.cmdbuild.dao.entrytype.CMAttribute;
 import org.cmdbuild.dao.entrytype.CMEntryType;
-import org.cmdbuild.dao.query.clause.alias.Alias;
 
 import com.google.common.base.Function;
 
@@ -23,9 +22,9 @@ public class Functions {
 
 	private static class ToQueryAliasAttributeWithAlias implements Function<CMAttribute, QueryAliasAttribute> {
 
-		private final Alias alias;
+		private final org.cmdbuild.dao.query.clause.alias.Alias alias;
 
-		public ToQueryAliasAttributeWithAlias(final Alias alias) {
+		public ToQueryAliasAttributeWithAlias(final org.cmdbuild.dao.query.clause.alias.Alias alias) {
 			this.alias = alias;
 		}
 
@@ -36,7 +35,8 @@ public class Functions {
 
 	}
 
-	public static Function<CMAttribute, QueryAliasAttribute> queryAliasAttribute(final Alias alias) {
+	public static Function<CMAttribute, QueryAliasAttribute> queryAliasAttribute(
+			final org.cmdbuild.dao.query.clause.alias.Alias alias) {
 		return new ToQueryAliasAttributeWithAlias(alias);
 	}
 
@@ -57,6 +57,27 @@ public class Functions {
 
 	public static Function<CMAttribute, QueryAliasAttribute> queryAliasAttribute(final CMEntryType entryType) {
 		return new ToQueryAliasAttributeWithEntryType(entryType);
+	}
+
+	private static class Alias<T extends QueryAttribute>
+			implements Function<T, org.cmdbuild.dao.query.clause.alias.Alias> {
+
+		private Alias() {
+		}
+
+		@Override
+		public org.cmdbuild.dao.query.clause.alias.Alias apply(T input) {
+			return input.getAlias();
+		}
+
+	}
+
+	@SuppressWarnings("rawtypes")
+	private static final Alias ALIAS = new Alias<>();
+
+	@SuppressWarnings("unchecked")
+	public static <T extends QueryAttribute> Function<T, org.cmdbuild.dao.query.clause.alias.Alias> alias() {
+		return ALIAS;
 	}
 
 	private Functions() {

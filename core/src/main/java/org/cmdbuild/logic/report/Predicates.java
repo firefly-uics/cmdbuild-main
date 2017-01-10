@@ -1,20 +1,25 @@
 package org.cmdbuild.logic.report;
 
+import static com.google.common.base.Predicates.alwaysTrue;
+import static com.google.common.base.Predicates.compose;
 import static com.google.common.collect.Sets.intersection;
 import static com.google.common.collect.Sets.newHashSet;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.cmdbuild.common.utils.guava.Functions.set;
+import static org.cmdbuild.logic.report.Functions.groups;
 
 import java.util.Set;
 
 import org.cmdbuild.auth.user.OperationUser;
 import org.cmdbuild.services.store.report.Report;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
 
 public class Predicates {
 
-	private static class CurrentGroupAllowed implements Predicate<Report> {
+	private static class CurrentGroupAllowed implements Predicate<Set<? super String>> {
 
 		private final Supplier<OperationUser> supplier;
 
@@ -23,11 +28,8 @@ public class Predicates {
 		}
 
 		@Override
-		public boolean apply(final Report input) {
+		public boolean apply(final Set<? super String> input) {
 			final OperationUser operationUser = supplier.get();
-			if (operationUser.hasAdministratorPrivileges()) {
-				return true;
-			}
 			final Set<String> userGroups;
 			if (isNotBlank(operationUser.getAuthenticatedUser().getDefaultGroupName())) {
 				/*
@@ -38,13 +40,27 @@ public class Predicates {
 			} else {
 				userGroups = newHashSet(operationUser.getPreferredGroup().getName());
 			}
-			return !intersection(newHashSet(input.getGroups()), userGroups).isEmpty();
+			return !intersection(input, userGroups).isEmpty();
 		}
 
 	}
 
-	public static Predicate<Report> currentGroupAllowed(final Supplier<OperationUser> supplier) {
-		return new CurrentGroupAllowed(supplier);
+	/**
+	 * @deprecated Use basic predicates instead.
+	 */
+	@Deprecated
+	public static <T extends Report> Predicate<T> currentGroupAllowed(final Supplier<OperationUser> supplier) {
+		return supplier.get().hasAdministratorPrivileges() ? alwaysTrue()
+				: report(groups(), compose(new CurrentGroupAllowed(supplier), set()));
+	}
+
+	/**
+	 * Syntactic sugar for
+	 * {@link org.cmdbuild.common.utils.guava.Predicates.compose}.
+	 */
+	public static <F extends Report, T> Predicate<F> report(final Function<F, ? extends T> function,
+			final Predicate<T> predicate) {
+		return compose(predicate, function);
 	}
 
 	private Predicates() {

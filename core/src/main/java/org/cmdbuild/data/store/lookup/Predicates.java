@@ -1,5 +1,14 @@
 package org.cmdbuild.data.store.lookup;
 
+import static com.google.common.base.Predicates.compose;
+import static com.google.common.base.Predicates.equalTo;
+import static org.cmdbuild.data.store.lookup.Functions.description;
+import static org.cmdbuild.data.store.lookup.Functions.isActive;
+import static org.cmdbuild.data.store.lookup.Functions.isDefault;
+import static org.cmdbuild.data.store.lookup.Functions.lookupTypeName;
+import static org.cmdbuild.data.store.lookup.Functions.toLookupType;
+
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ForwardingObject;
 
@@ -73,63 +82,42 @@ public class Predicates {
 		return new LookupTranslationUuid(delegate);
 	}
 
-	private static final Predicate<Lookup> ACTIVE = new Predicate<Lookup>() {
-
-		@Override
-		public boolean apply(final Lookup input) {
-			return input.active();
-		}
-
-	};
-
-	private static final Predicate<Lookup> DEFAULT = new Predicate<Lookup>() {
-
-		@Override
-		public boolean apply(final Lookup input) {
-			return input.isDefault();
-		}
-
-	};
-
 	public static Predicate<Lookup> lookupActive() {
-		return ACTIVE;
+		return lookup(isActive(), equalTo(true));
 	}
 
 	public static Predicate<Lookup> lookupWithType(final LookupType type) {
-		return new Predicate<Lookup>() {
-
-			@Override
-			public boolean apply(final Lookup input) {
-				return input.type().name.equals(type.name);
-			}
-
-		};
+		return lookup(toLookupType(), lookupType(lookupTypeName(), equalTo(type.name)));
 	}
 
-	public static Predicate<Lookup> lookupWithDescription(final String description) {
-		return new Predicate<Lookup>() {
-
-			@Override
-			public boolean apply(final Lookup input) {
-				return input.description().equals(description);
-			}
-
-		};
+	public static Predicate<Lookup> lookupWithDescription(final String value) {
+		return lookup(description(), equalTo(value));
 	}
 
 	public static Predicate<LookupType> lookupTypeWithName(final String name) {
-		return new Predicate<LookupType>() {
-
-			@Override
-			public boolean apply(final LookupType input) {
-				return input.name.equals(name);
-			}
-
-		};
+		return lookupType(lookupTypeName(), equalTo(name));
 	}
 
-	public static Predicate<Lookup> defaultLookup() {
-		return DEFAULT;
+	public static <T extends Lookup> Predicate<T> defaultLookup() {
+		return lookup(isDefault(), equalTo(true));
+	}
+
+	/**
+	 * Syntactic sugar for
+	 * {@link org.cmdbuild.common.utils.guava.Predicates.compose}.
+	 */
+	public static <F extends Lookup, T> Predicate<F> lookup(final Function<F, ? extends T> function,
+			final Predicate<T> predicate) {
+		return compose(predicate, function);
+	}
+
+	/**
+	 * Syntactic sugar for
+	 * {@link org.cmdbuild.common.utils.guava.Predicates.compose}.
+	 */
+	public static <F extends LookupType, T> Predicate<F> lookupType(final Function<F, ? extends T> function,
+			final Predicate<T> predicate) {
+		return compose(predicate, function);
 	}
 
 	private Predicates() {

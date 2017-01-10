@@ -1025,7 +1025,7 @@ public class DefaultDataAccessLogic implements DataAccessLogic {
 						: alwaysTrue()) //
 				.filter(excludeProcesses ? and(domain(class1(), not(hasAnchestor(dataView.getActivityClass()))),
 						domain(class2(), not(hasAnchestor(dataView.getActivityClass())))) : alwaysTrue()) //
-				.filter(not(isSystem(CMDomain.class))) //
+				.filter(not(isSystem())) //
 				.filter(CMDomain.class);
 	}
 

@@ -527,7 +527,7 @@ public class ModClass extends JSONBaseWithSpringContext {
 		// TODO system really needed
 		final Iterable<CMDomain> domains =
 				from(systemDataAccessLogic().findDomainsForClass(className, skipDisabledClasses)) //
-						.filter(not(isSystem(CMDomain.class)));
+						.filter(not(isSystem()));
 		for (final CMDomain domain : domains) {
 			jsonDomains.put(domainSerializer().toClient(domain, className));
 		}

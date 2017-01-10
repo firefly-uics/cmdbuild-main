@@ -1,20 +1,29 @@
 package org.cmdbuild.services.sync.store;
 
+import static com.google.common.base.Predicates.compose;
+import static com.google.common.base.Predicates.equalTo;
+import static org.cmdbuild.services.sync.store.Functions.toAttributeKey;
+
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 
 class Predicates {
 
-	private static Predicate<Attribute> KEY_ATTRIBUTES = new Predicate<Attribute>() {
+	/**
+	 * @deprecated Use basic predicates instead.
+	 */
+	@Deprecated
+	public static <T extends Attribute> Predicate<T> keyAttributes() {
+		return attribute(toAttributeKey(), equalTo(true));
+	}
 
-		@Override
-		public boolean apply(final Attribute input) {
-			return input.isKey();
-		}
-
-	};
-
-	public static Predicate<Attribute> keyAttributes() {
-		return KEY_ATTRIBUTES;
+	/**
+	 * Syntactic sugar for
+	 * {@link org.cmdbuild.common.utils.guava.Predicates.compose}.
+	 */
+	public static <F extends Attribute, T> Predicate<F> attribute(final Function<F, ? extends T> function,
+			final Predicate<T> predicate) {
+		return compose(predicate, function);
 	}
 
 	private Predicates() {

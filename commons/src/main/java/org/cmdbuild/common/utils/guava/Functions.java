@@ -1,5 +1,7 @@
 package org.cmdbuild.common.utils.guava;
 
+import static com.google.common.collect.Sets.newLinkedHashSet;
+
 import java.util.Map.Entry;
 
 import org.apache.commons.lang3.builder.Builder;
@@ -94,6 +96,21 @@ public final class Functions {
 
 	public static <T> Function<Builder<? extends T>, T> build() {
 		return BuildFunction.newInstance();
+	}
+
+	private static class Set<T> implements Function<Iterable<? extends T>, java.util.Set<T>> {
+		@Override
+		public java.util.Set<T> apply(final Iterable<? extends T> input) {
+			return newLinkedHashSet(input);
+		}
+	}
+
+	@SuppressWarnings("rawtypes")
+	private static final Set SET = new Set<>();
+
+	@SuppressWarnings("unchecked")
+	public static <T> Function<Iterable<? extends T>, java.util.Set<T>> set() {
+		return SET;
 	}
 
 	private Functions() {
