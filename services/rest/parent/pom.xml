@@ -33,11 +33,6 @@
 			<version>${javax.ws.rs-api.version}</version>
 		</dependency>
 		<dependency>
-			<artifactId>jackson-core-asl</artifactId>
-			<groupId>org.codehaus.jackson</groupId>
-			<version>${jackson.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-frontend-jaxrs</artifactId>
 		</dependency>

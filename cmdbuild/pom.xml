@@ -182,6 +182,7 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
+				<version>${maven-war-plugin.version}</version>
 				<configuration>
 					<!-- Remove when not using Spring and not the context.xml -->
 					<packagingExcludes>WEB-INF/lib/postgresql-*.jar</packagingExcludes>

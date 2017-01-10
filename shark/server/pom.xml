@@ -31,6 +31,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
+				<version>${maven-war-plugin.version}</version>
 				<configuration>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
 					<dependentWarExcludes>WEB-INF/lib/bcprov-jdk15-1.45.jar</dependentWarExcludes>
