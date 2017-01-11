@@ -18,9 +18,7 @@
 		 */
 		cmfgCatchedFunctions: [
 			'dataViewFilterFormTabHistoryReset',
-			'onDataViewFilterFormCardAddTabHistoryButtonClick',
-			'onDataViewFilterFormCardCloneTabHistoryButtonClick',
-			'onDataViewFilterFormTabHistoryCardSelect',
+			'dataViewFilterFormTabHistoryUiUpdate',
 			'onDataViewFilterFormTabHistoryPanelShow = onDataViewFilterFormTabHistoryIncludeRelationCheck', // Reloads store to be consistent with includeRelationsCheckbox state
 			'onDataViewFilterFormTabHistoryRowExpand'
 		],
@@ -112,6 +110,27 @@
 		 */
 		dataViewFilterFormTabHistoryReset: function () {
 			this.view.setDisabled(this.cmfg('dataViewFilterSelectedCardIsEmpty'));
+		},
+
+		/**
+		 * Enable/Disable tab selection based
+		 *
+		 * @returns {Void}
+		 *
+		 * @legacy
+		 */
+		dataViewFilterFormTabHistoryUiUpdate: function () {
+			// Ui view mode manage
+			switch (this.parentDelegate.cmfg('dataViewFilterUiViewModeGet')) {
+				case 'add':
+					return this.view.disable();
+
+				case 'clone':
+					return this.view.disable();
+
+				default:
+					return this.view.setDisabled(this.cmfg('dataViewFilterSelectedCardIsEmpty'));
+			}
 		},
 
 		/**
@@ -274,27 +293,6 @@
 		},
 
 		/**
-		 * @returns {Void}
-		 */
-		onDataViewFilterFormCardAddTabHistoryButtonClick: function () {
-			this.view.disable();
-		},
-
-		/**
-		 * @returns {Void}
-		 */
-		onDataViewFilterFormCardCloneTabHistoryButtonClick: function () {
-			this.view.disable();
-		},
-
-		/**
-		 * @returns {Void}
-		 */
-		onDataViewFilterFormTabHistoryCardSelect: function () {
-			this.view.setDisabled(this.cmfg('dataViewFilterSelectedCardIsEmpty'));
-		},
-
-		/**
 		 * Loads store and if includeRelationsCheckbox is checked fills store with relations rows
 		 *
 		 * @returns {Void}
@@ -337,6 +335,15 @@
 							object: this.view
 						}
 					});
+
+					// Ui view mode manage
+					switch (this.parentDelegate.cmfg('dataViewFilterUiViewModeGet')) {
+						case 'add':
+							return this.view.disable();
+
+						case 'clone':
+							return this.view.disable();
+					}
 
 					if (this.grid.includeRelationsCheckbox.getValue())
 						CMDBuild.proxy.management.dataView.filter.panel.form.tabs.History.readRelations({

@@ -18,11 +18,9 @@
 		 */
 		cmfgCatchedFunctions: [
 			'dataViewFilterFormTabNoteReset',
-			'onDataViewFilterFormCardAddTabNoteButtonClick',
-			'onDataViewFilterFormCardCloneTabNoteButtonClick',
+			'dataViewFilterFormTabNoteUiUpdate',
 			'onDataViewFilterFormTabNoteSaveButtonClick',
-			'onDataViewFilterFormTabNoteShow',
-			'onDataViewFilterFormTabNoteUiUpdate'
+			'onDataViewFilterFormTabNoteShow'
 		],
 
 		/**
@@ -108,6 +106,25 @@
 		},
 
 		/**
+		 * Enable disable tab based on selection validity
+		 *
+		 * @returns {Void}
+		 */
+		dataViewFilterFormTabNoteUiUpdate: function () {
+			// Ui view mode manage
+			switch (this.parentDelegate.cmfg('dataViewFilterUiViewModeGet')) {
+				case 'add':
+					return this.view.disable();
+
+				case 'clone':
+					return this.view.disable();
+
+				default:
+					return this.view.setDisabled(this.cmfg('dataViewFilterSelectedCardIsEmpty'));
+			}
+		},
+
+		/**
 		 * @param {Object} parameters
 		 * @param {Function} parameters.callback
 		 * @param {Object} parameters.scope
@@ -165,24 +182,6 @@
 			} else if (Ext.isFunction(parameters.callback)) {
 				Ext.callback(parameters.callback, parameters.scope);
 			}
-		},
-
-		/**
-		 * Card panel button event
-		 *
-		 * @returns {Void}
-		 */
-		onDataViewFilterFormCardAddTabNoteButtonClick: function () {
-			this.view.disable();
-		},
-
-		/**
-		 * Card panel button event
-		 *
-		 * @returns {Void}
-		 */
-		onDataViewFilterFormCardCloneTabNoteButtonClick: function () {
-			this.view.disable();
 		},
 
 		/**
@@ -253,25 +252,26 @@
 				}
 			});
 
-			if (this.cmfg('dataViewFilterUiViewModeIsEdit'))
-				return this.itemLock({
-					scope: this,
-					callback: this.showEventCallback
-				});
+			// Ui view mode manage
+			switch (this.parentDelegate.cmfg('dataViewFilterUiViewModeGet')) {
+				case 'add':
+					return this.view.disable();
 
-			return this.itemUnlock({
-				scope: this,
-				callback: this.showEventCallback
-			});
-		},
+				case 'clone':
+					return this.view.disable();
 
-		/**
-		 * Enable disable tab based on selection validity
-		 *
-		 * @returns {Void}
-		 */
-		onDataViewFilterFormTabNoteUiUpdate: function () {
-			this.view.setDisabled(this.cmfg('dataViewFilterSelectedCardIsEmpty'));
+				case 'edit':
+					return this.itemLock({
+						scope: this,
+						callback: this.showEventCallback
+					});
+
+				default:
+					return this.itemUnlock({
+						scope: this,
+						callback: this.showEventCallback
+					});
+			}
 		},
 
 		/**
@@ -285,7 +285,7 @@
 			this.form.getForm().setValues(this.cmfg('dataViewFilterSelectedCardGet', [CMDBuild.core.constants.Proxy.VALUES]));
 
 			this.view.panelFunctionModifyStateSet({
-				forceToolbarTopState: !( // TODO: check
+				forceToolbarTopState: !(
 					!this.cmfg('dataViewFilterUiViewModeIsEdit')
 					&& this.cmfg('dataViewFilterSourceEntryTypeGet', [
 						CMDBuild.core.constants.Proxy.PERMISSIONS,

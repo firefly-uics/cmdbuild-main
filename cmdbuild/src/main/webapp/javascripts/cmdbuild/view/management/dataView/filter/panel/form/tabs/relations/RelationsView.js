@@ -130,26 +130,7 @@
 
 		listeners: {
 			show: function(panel, eOpts) {
-				// History record save
-				if (!this.delegate.parentDelegate.cmfg('dataViewSelectedDataViewIsEmpty') && !this.delegate.parentDelegate.cmfg('dataViewFilterSelectedCardIsEmpty'))
-					CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
-						moduleId: this.delegate.parentDelegate.cmfg('dataViewIdentifierGet'),
-						entryType: {
-							description: this.delegate.parentDelegate.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.DESCRIPTION),
-							id: this.delegate.parentDelegate.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.ID),
-							object: this.delegate.parentDelegate.cmfg('dataViewSelectedDataViewGet')
-						},
-						item: {
-							description: this.delegate.parentDelegate.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.DESCRIPTION)
-								|| this.delegate.parentDelegate.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.CODE),
-							id: this.delegate.parentDelegate.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.ID),
-							object: this.delegate.parentDelegate.cmfg('dataViewFilterSelectedCardGet')
-						},
-						section: {
-							description: this.title,
-							object: this
-						}
-					});
+				this.delegate.panelListenerManagerShow();
 			}
 		},
 

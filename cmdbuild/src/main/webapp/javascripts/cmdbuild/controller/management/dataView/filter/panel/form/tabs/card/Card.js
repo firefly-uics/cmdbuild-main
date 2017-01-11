@@ -80,10 +80,79 @@
 		},
 
 		/**
+		 * Enable/Disable tab selection based
+		 *
+		 * @param {Object} parameters
+		 * @param {Number} parameters.classId - Used on create mode
+		 *
+		 * @returns {Void}
+		 *
+		 * @legacy
+		 */
+		dataViewFilterFormTabCardUiUpdate: function (parameters) {
+			parameters = Ext.isObject(parameters) ? parameters : {};
+			parameters.classId = Ext.isNumber(parameters.classId) ? parameters.classId : null;
+
+			if (!this.parentDelegate.cmfg('dataViewFilterSourceEntryTypeIsEmpty'))
+				this.onEntryTypeSelected();
+
+			if (!this.parentDelegate.cmfg('dataViewFilterSelectedCardIsEmpty'))
+				this.onCardSelected();
+
+			this.subjectClassIdForCreation = parameters.classId;
+
+			this.view.setDisabled(
+				this.parentDelegate.cmfg('dataViewFilterSelectedCardIsEmpty')
+				&& Ext.isEmpty(this.subjectClassIdForCreation)
+			);
+		},
+
+		/**
 		 * @legacy
 		 */
 		getView: function () {
 			return this.view;
+		},
+
+		/**
+		 * @returns {Void}
+		 *
+		 * @private
+		 * @legacy
+		 */
+		panelListenerManagerShow: function () {
+			// History record save
+			if (!this.parentDelegate.cmfg('dataViewSelectedDataViewIsEmpty') && !this.parentDelegate.cmfg('dataViewFilterSelectedCardIsEmpty'))
+				CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
+					moduleId: this.parentDelegate.cmfg('dataViewIdentifierGet'),
+					entryType: {
+						description: this.parentDelegate.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.DESCRIPTION),
+						id: this.parentDelegate.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.ID),
+						object: this.parentDelegate.cmfg('dataViewSelectedDataViewGet')
+					},
+					item: {
+						description: this.parentDelegate.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.DESCRIPTION)
+							|| this.parentDelegate.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.CODE),
+						id: this.parentDelegate.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.ID),
+						object: this.parentDelegate.cmfg('dataViewFilterSelectedCardGet')
+					},
+					section: {
+						description: this.view.title,
+						object: this.view
+					}
+				});
+
+			// Ui view mode manage
+			switch (this.parentDelegate.cmfg('dataViewFilterUiViewModeGet')) {
+				case 'add':
+					return this.onAddCardButtonClick(this.subjectClassIdForCreation);
+
+				case 'clone':
+					return this.onCloneCardClick();
+
+				case 'edit':
+					return this.onModifyCardClick();
+			}
 		},
 
 		/**
@@ -202,38 +271,43 @@
 			);
 		},
 
-		onRemoveCardClick: function() {
-			var me = this,
-				idCard = me.card.get("Id"),
-				idClass = me.entryType.get("id");
+		/**
+		 * @returns {Void}
+		 */
+		onRemoveCardClick: function () {
+			Ext.Msg.show({
+				title: CMDBuild.Translation.common.confirmpopup.title,
+				msg: CMDBuild.Translation.common.confirmpopup.areyousure,
+				buttons: Ext.Msg.YESNO,
+				scope: this,
 
-			function makeRequest(btn) {
-				if (btn != 'yes') {
-					return;
+				fn: function (buttonId, text, opt) {
+					if (buttonId == 'yes')
+						this.removeItem();
 				}
+			});
+		},
 
-				CMDBuild.core.LoadMask.show();
+		/**
+		 * @returns {Void}
+		 */
+		removeItem: function () {
+			if (Ext.isObject(this.card) && !Ext.Object.isEmpty(this.card))
 				CMDBuild.proxy.management.dataView.filter.panel.form.tabs.Card.remove({
-					params : {
-						IdClass: idClass,
-						Id: idCard
+					params: {
+						IdClass: this.entryType.get(CMDBuild.core.constants.Proxy.ID),
+						Id: this.card.get('Id')
 					},
-					loadMask: false,
-					success : function() {
-						_CMCache.onClassContentChanged(idClass);
-					},
-					callback : function() {
-						CMDBuild.core.LoadMask.hide();
+					scope: this,
+					success: function (response, options, decodedResponse) {
+						_CMCache.onClassContentChanged(this.entryType.get(CMDBuild.core.constants.Proxy.ID));
+
+						this.parentDelegate.cmfg('dataViewFilterUiUpdate', {
+							className: this.parentDelegate.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.NAME),
+							forceStoreLoad: true
+						});
 					}
 				});
-			};
-
-			Ext.Msg.confirm(
-				CMDBuild.Translation.attention,
-				CMDBuild.Translation.management.modcard.delete_card_confirm,
-				makeRequest,
-				this
-			);
 		},
 
 		onCloneCardClick: function() {
@@ -301,6 +375,7 @@
 
 		loadFields: function(entryTypeId, cb) {
 			var me = this;
+
 			_CMCache.getAttributeList(entryTypeId, function(attributes) {
 				me.view.fillForm(attributes, editMode = false);
 				if (cb) {

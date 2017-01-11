@@ -25,12 +25,7 @@
 			'dataViewFilterFormReset',
 			'dataViewFilterFormUiUpdate',
 			'dataViewFilterFormWidgetExists',
-			'onDataViewFilterFormAbortButtonClick',
-			'onDataViewFilterFormAddButtonClick',
-			'onDataViewFilterFormCloneButtonClick',
-			'onDataViewFilterFormModifyButtonClick = onDataViewFilterFormRecordDoubleClick',
 			'onDataViewFilterFormPrintButtonClick',
-			'onDataViewFilterFormRemoveButtonClick',
 			'onDataViewFilterFormSaveButtonClick',
 			'panelGridAndFormPanelFormTabActiveFireShowEvent = dataViewFilterFormTabActiveFireShowEvent',
 			'panelGridAndFormPanelFormTabActiveSet = dataViewFilterFormTabActiveSet',
@@ -132,6 +127,8 @@
 				Ext.isEmpty(this.controllerTabEmail) ? null : this.controllerTabEmail.getView(),
 				Ext.isEmpty(this.controllerTabAttachments) ? null : this.controllerTabAttachments.getView()
 			]);
+
+			this.cmfg('dataViewFilterFormTabSelectionManage');
 		},
 
 		/**
@@ -181,6 +178,7 @@
 
 		/**
 		 * @param {Object} parameters
+		 * @param {Number} parameters.classId - Used on create mode
 		 * @param {Object} parameters.tabToSelect
 		 *
 		 * @returns {Void}
@@ -191,39 +189,28 @@
 			this.cmfg('dataViewFilterFormReset');
 
 			// Forward to sub-controllers
-			if (!this.cmfg('dataViewFilterSourceEntryTypeIsEmpty') && !this.cmfg('dataViewFilterSelectedCardIsEmpty')) {
-				if (Ext.isObject(this.controllerTabCard) && !Ext.Object.isEmpty(this.controllerTabCard)) {
-					this.controllerTabCard.onEntryTypeSelected();
-					this.controllerTabCard.onCardSelected();
-				}
+			if (Ext.isObject(this.controllerTabCard) && !Ext.Object.isEmpty(this.controllerTabCard))
+				this.controllerTabCard.dataViewFilterFormTabCardUiUpdate({ classId: parameters.classId });
 
-				if (Ext.isObject(this.controllerTabAttachments) && !Ext.Object.isEmpty(this.controllerTabAttachments)) {
-					this.controllerTabAttachments.onEntryTypeSelected();
-					this.controllerTabAttachments.onCardSelected();
-				}
+			if (Ext.isObject(this.controllerTabAttachments) && !Ext.Object.isEmpty(this.controllerTabAttachments))
+				this.controllerTabAttachments.dataViewFilterFormTabAttachmentsUiUpdate();
 
-				if (Ext.isObject(this.controllerTabEmail) && !Ext.Object.isEmpty(this.controllerTabEmail)) {
-					this.controllerTabEmail.onEntryTypeSelected();
-					this.controllerTabEmail.onCardSelected();
-				}
+			if (Ext.isObject(this.controllerTabEmail) && !Ext.Object.isEmpty(this.controllerTabEmail))
+				this.controllerTabEmail.cmfg('dataViewFilterFormTabEmailUiUpdate');
 
-				if (Ext.isObject(this.controllerTabHistory) && !Ext.Object.isEmpty(this.controllerTabHistory))
-					this.controllerTabHistory.cmfg('onDataViewFilterFormTabHistoryCardSelect');
+			if (Ext.isObject(this.controllerTabHistory) && !Ext.Object.isEmpty(this.controllerTabHistory))
+				this.controllerTabHistory.cmfg('dataViewFilterFormTabHistoryUiUpdate');
 
-				if (Ext.isObject(this.controllerTabMasterDetail) && !Ext.Object.isEmpty(this.controllerTabMasterDetail)) {
-					this.controllerTabMasterDetail.onEntryTypeSelected();
-					this.controllerTabMasterDetail.onCardSelected();
-				}
+			if (Ext.isObject(this.controllerTabMasterDetail) && !Ext.Object.isEmpty(this.controllerTabMasterDetail))
+				this.controllerTabMasterDetail.dataViewFilterFormTabMasterDetailUiUpdate();
 
-				if (Ext.isObject(this.controllerTabNote) && !Ext.Object.isEmpty(this.controllerTabNote))
-					this.controllerTabNote.cmfg('onDataViewFilterFormTabNoteUiUpdate');
+			if (Ext.isObject(this.controllerTabNote) && !Ext.Object.isEmpty(this.controllerTabNote))
+				this.controllerTabNote.cmfg('dataViewFilterFormTabNoteUiUpdate');
 
-				if (Ext.isObject(this.controllerTabRelations) && !Ext.Object.isEmpty(this.controllerTabRelations)) {
-					this.controllerTabRelations.onEntryTypeSelected();
-					this.controllerTabRelations.onCardSelected();
-				}
-			}
+			if (Ext.isObject(this.controllerTabRelations) && !Ext.Object.isEmpty(this.controllerTabRelations))
+				this.controllerTabRelations.dataViewFilterFormTabRelationsUiUpdate();
 
+			// Tab selection manage
 			if (!Ext.isEmpty(parameters.tabToSelect))
 				return this.cmfg('dataViewFilterFormTabActiveSet', parameters.tabToSelect);
 
@@ -252,97 +239,6 @@
 		},
 
 		/**
-		 * @returns {Void}
-		 */
-		onDataViewFilterFormAbortButtonClick: function () {
-			// Forward to sub-controllers
-			if (Ext.isObject(this.controllerTabCard) && !Ext.Object.isEmpty(this.controllerTabCard))
-				this.controllerTabCard.onAbortCardClick();
-
-			if (Ext.isObject(this.controllerTabEmail) && !Ext.Object.isEmpty(this.controllerTabEmail))
-				this.controllerTabEmail.onAbortCardClick();
-		},
-
-		/**
-		 * @param {Number} id
-		 *
-		 * @returns {Void}
-		 */
-		onDataViewFilterFormAddButtonClick: function (id) {
-			// Error handling
-				if (!Ext.isNumber(id) || Ext.isEmpty(id))
-					return _error('onDataViewFilterFormAddButtonClick(): unmanaged id parameter', this, id);
-			// END: Error handling
-
-			this.cmfg('dataViewFilterFormTabActiveSet');
-
-			// Forward to sub-controllers
-			if (Ext.isObject(this.controllerTabCard) && !Ext.Object.isEmpty(this.controllerTabCard))
-				this.controllerTabCard.onAddCardButtonClick(id);
-
-			if (Ext.isObject(this.controllerTabAttachments) && !Ext.Object.isEmpty(this.controllerTabAttachments))
-				this.controllerTabAttachments.onAddCardButtonClick();
-
-			if (Ext.isObject(this.controllerTabEmail) && !Ext.Object.isEmpty(this.controllerTabEmail))
-				this.controllerTabEmail.onAddCardButtonClick();
-
-			if (Ext.isObject(this.controllerTabHistory) && !Ext.Object.isEmpty(this.controllerTabHistory))
-				this.controllerTabHistory.cmfg('onDataViewFilterFormCardAddTabHistoryButtonClick');
-
-			if (Ext.isObject(this.controllerTabMasterDetail) && !Ext.Object.isEmpty(this.controllerTabMasterDetail))
-				this.controllerTabMasterDetail.onAddCardButtonClick();
-
-			if (Ext.isObject(this.controllerTabNote) && !Ext.Object.isEmpty(this.controllerTabNote))
-				this.controllerTabNote.cmfg('onDataViewFilterFormCardAddTabNoteButtonClick');
-
-			if (Ext.isObject(this.controllerTabRelations) && !Ext.Object.isEmpty(this.controllerTabRelations))
-				this.controllerTabRelations.onAddCardButtonClick();
-		},
-
-		/**
-		 * @returns {Void}
-		 */
-		onDataViewFilterFormCloneButtonClick: function () {
-			this.cmfg('dataViewFilterFormTabActiveSet');
-
-			// Forward to sub-controllers
-			if (Ext.isObject(this.controllerTabCard) && !Ext.Object.isEmpty(this.controllerTabCard))
-				this.controllerTabCard.onCloneCardClick();
-
-			if (Ext.isObject(this.controllerTabAttachments) && !Ext.Object.isEmpty(this.controllerTabAttachments))
-				this.controllerTabAttachments.onCloneCard();
-
-			if (Ext.isObject(this.controllerTabEmail) && !Ext.Object.isEmpty(this.controllerTabEmail))
-				this.controllerTabEmail.onCloneCard();
-
-			if (Ext.isObject(this.controllerTabHistory) && !Ext.Object.isEmpty(this.controllerTabHistory))
-				this.controllerTabHistory.cmfg('onDataViewFilterFormCardCloneTabHistoryButtonClick');
-
-			if (Ext.isObject(this.controllerTabMasterDetail) && !Ext.Object.isEmpty(this.controllerTabMasterDetail))
-				this.controllerTabMasterDetail.onCloneCard();
-
-			if (Ext.isObject(this.controllerTabNote) && !Ext.Object.isEmpty(this.controllerTabNote))
-				this.controllerTabNote.cmfg('onDataViewFilterFormCardCloneTabNoteButtonClick');
-
-			if (Ext.isObject(this.controllerTabRelations) && !Ext.Object.isEmpty(this.controllerTabRelations))
-				this.controllerTabRelations.onCloneCard();
-		},
-
-		/**
-		 * @returns {Void}
-		 */
-		onDataViewFilterFormModifyButtonClick: function () {
-			// Forward to sub-controllers
-			if (Ext.isObject(this.controllerTabCard) && !Ext.Object.isEmpty(this.controllerTabCard))
-				this.controllerTabCard.onModifyCardClick();
-
-			if (Ext.isObject(this.controllerTabEmail) && !Ext.Object.isEmpty(this.controllerTabEmail))
-				this.controllerTabEmail.onModifyCardClick();
-
-			this.cmfg('dataViewFilterFormTabActiveFireShowEvent');
-		},
-
-		/**
 		 * @param {String} format
 		 *
 		 * @returns {Void}
@@ -353,17 +249,6 @@
 			// Forward to sub-controllers
 			if (Ext.isObject(this.controllerTabCard) && !Ext.Object.isEmpty(this.controllerTabCard))
 				this.controllerTabCard.onPrintCardMenuClick(format);
-		},
-
-		/**
-		 * @returns {Void}
-		 *
-		 * FIXME: move to card panel controller on refactor
-		 */
-		onDataViewFilterFormRemoveButtonClick: function () {
-			// Forward to sub-controllers
-			if (Ext.isObject(this.controllerTabCard) && !Ext.Object.isEmpty(this.controllerTabCard))
-				this.controllerTabCard.onRemoveCardClick();
 		},
 
 		/**

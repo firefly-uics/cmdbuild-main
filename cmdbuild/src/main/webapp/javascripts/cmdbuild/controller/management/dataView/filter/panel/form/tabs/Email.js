@@ -51,10 +51,27 @@
 		 * @override
 		 */
 		constructor: function(configObject) {
+			this.cmfgCatchedFunctions.push('dataViewFilterFormTabEmailUiUpdate');
+
 			this.callParent(arguments);
 
 			this.view = Ext.create('CMDBuild.view.management.common.tabs.email.EmailView', { delegate: this });
 			this.view.add(this.grid);
+		},
+
+		/**
+		 * @returns {Void}
+		 *
+		 * @legacy
+		 */
+		dataViewFilterFormTabEmailUiUpdate: function () {
+			if (!this.cmfg('dataViewFilterSourceEntryTypeIsEmpty'))
+				this.onEntryTypeSelected();
+
+			if (!this.cmfg('dataViewFilterSelectedCardIsEmpty'))
+				this.onCardSelected();
+
+			this.view.setDisabled(this.cmfg('dataViewFilterSelectedCardIsEmpty'));
 		},
 
 		onAbortCardClick: function() {
@@ -105,7 +122,24 @@
 				callbackFunction: function(options, success, response) {
 					this.cmfg('tabEmailRegenerateAllEmailsSet', Ext.isEmpty(this.card));
 					this.forceRegenerationSet(Ext.isEmpty(this.card));
-					this.cmfg('onTabEmailPanelShow');
+
+					// FIXME: code from onTabEmailPanelShow
+					this.cmfg('tabEmailEditModeSet', false);
+					this.cmfg('tabEmailConfigurationReset');
+
+					this.view.setDisabled(this.cmfg('tabEmailSelectedEntityIsEmpty', CMDBuild.core.constants.Proxy.ENTITY));
+
+					if (this.view.isVisible()) {
+						this.controllerGrid.cmfg('tabEmailGridUiStateSet');
+
+						// Regenerate all email only if editMode otherwise simple store load
+						this.cmfg('tabEmailRegenerateAllEmailsSet', this.cmfg('tabEmailEditModeGet'));
+						this.controllerGrid.cmfg('tabEmailGridStoreLoad');
+
+						// Fire show event to manage buttons setup
+						this.grid.buttonAdd.fireEvent('show');
+						this.grid.buttonRegenerate.fireEvent('show');
+					}
 				}
 			});
 		},
@@ -198,6 +232,21 @@
 			});
 
 			this.callParent(arguments);
+
+			// Ui view mode manage
+			switch (this.cmfg('dataViewFilterUiViewModeGet')) {
+				case 'add':
+					return this.onAddCardButtonClick();
+
+				case 'clone':
+					return this.onCloneCard();
+
+				case 'edit':
+					return this.onModifyCardClick();
+
+				default:
+					return this.onAbortCardClick();
+			}
 		}
 	});
 

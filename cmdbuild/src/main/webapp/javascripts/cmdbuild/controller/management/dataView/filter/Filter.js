@@ -36,10 +36,11 @@
 			'dataViewFilterUiUpdate',
 			'onDataViewFilterAbortButtonClick',
 			'onDataViewFilterAddButtonClick',
-			'onDataViewFilterModifyButtonClick',
-			'onDataViewFilterRecordDoubleClick',
+			'onDataViewFilterCloneButtonClick',
+			'onDataViewFilterModifyButtonClick = onDataViewFilterRecordDoubleClick',
 			'panelGridAndFormFullScreenUiSetup = dataViewFilterFullScreenUiSetup',
 			'panelGridAndFormToolsArrayBuild',
+			'panelGridAndFormViewModeGet = dataViewFilterUiViewModeGet',
 			'panelGridAndFormViewModeIsEdit = dataViewFilterUiViewModeIsEdit',
 			'panelGridAndFormViewModeSet = dataViewFilterUiViewModeSet'
 		],
@@ -117,6 +118,9 @@
 		 */
 		constructor: function (configurationObject) {
 			this.callParent(arguments);
+
+			// Managed view mode
+			this.viewModeManaged.push('clone');
 
 			this.view = Ext.create('CMDBuild.view.management.dataView.filter.FilterView', { delegate: this });
 
@@ -405,14 +409,13 @@
 			this.cmfg('dataViewFilterUiViewModeSet');
 
 			// Forward to sub-controllers
-			this.controllerForm.cmfg('onDataViewFilterFormAbortButtonClick');
-
-			// Manage previous selected Card
-			if (this.cmfg('dataViewFilterSelectedCardIsEmpty') && !this.cmfg('dataViewFilterPreviousCardIsEmpty'))
-				this.cmfg('dataViewFilterUiUpdate', {
+			if (this.cmfg('dataViewFilterSelectedCardIsEmpty') && !this.cmfg('dataViewFilterPreviousCardIsEmpty')) // Manage previous selected Card
+				return this.cmfg('dataViewFilterUiUpdate', {
 					cardId: this.cmfg('dataViewFilterPreviousCardGet', CMDBuild.core.constants.Proxy.ID),
 					className: this.cmfg('dataViewFilterPreviousCardGet', CMDBuild.core.constants.Proxy.CLASS_NAME)
 				});
+
+			return this.controllerForm.cmfg('dataViewFilterFormUiUpdate');
 		},
 
 		/**
@@ -423,11 +426,31 @@
 		onDataViewFilterAddButtonClick: function (id) {
 			this.cmfg('dataViewFilterFullScreenUiSetup', { maximize: 'bottom' });
 			this.cmfg('dataViewFilterSelectedCardReset');
-			this.cmfg('dataViewFilterUiViewModeSet', 'edit');
+			this.cmfg('dataViewFilterUiViewModeSet', 'add');
 
 			// Forward to sub-controllers
-			this.controllerForm.cmfg('onDataViewFilterFormAddButtonClick', id);
-			this.controllerGrid.cmfg('onDataViewFilterGridAddButtonClick', id);
+			this.controllerForm.cmfg('dataViewFilterFormUiUpdate', {
+				classId: id,
+				tabToSelect: 0
+			});
+			this.controllerGrid.cmfg('dataViewFilterGridUiUpdate');
+		},
+
+		/**
+		 * @returns {Void}
+		 */
+		onDataViewFilterCloneButtonClick: function () {
+			this.cmfg('dataViewFilterFullScreenUiSetup', { maximize: 'bottom' });
+			this.cmfg('dataViewFilterUiViewModeSet', 'clone');
+
+			this.dataViewFilterSelectedCardSet({ // FIXME: reset ID of cloned card, pay attention that in values ID still old one
+				propertyName: CMDBuild.core.constants.Proxy.ID,
+				value: null
+			});
+
+			// Forward to sub-controllers
+			this.controllerForm.cmfg('dataViewFilterFormUiUpdate', { tabToSelect: 0 });
+			this.controllerGrid.cmfg('dataViewFilterGridUiUpdate');
 		},
 
 		/**
@@ -438,17 +461,7 @@
 			this.cmfg('dataViewFilterUiViewModeSet', 'edit');
 
 			// Forward to sub-controllers
-			this.controllerForm.cmfg('onDataViewFilterFormModifyButtonClick');
-		},
-
-		/**
-		 * @returns {Void}
-		 */
-		onDataViewFilterRecordDoubleClick: function () {
-			this.cmfg('dataViewFilterFullScreenUiSetup', { maximize: 'bottom' });
-
-			// Forward to sub-controllers
-			this.controllerForm.cmfg('onDataViewFilterFormRecordDoubleClick');
+			this.controllerForm.cmfg('dataViewFilterFormUiUpdate');
 		},
 
 		/**

@@ -35,7 +35,6 @@
 			'dataViewFilterGridStoreGet = panelGridAndFormListPanelStoreGet',
 			'dataViewFilterGridStoreLoad = panelGridAndFormListPanelStoreLoad',
 			'dataViewFilterGridUiUpdate',
-			'onDataViewFilterGridAddButtonClick',
 			'onDataViewFilterGridColumnChanged',
 			'onDataViewFilterGridPrintButtonClick = onPanelGridAndFormCommonToolbarPrintButtonClick',
 			'onDataViewFilterGridSortChange'
@@ -603,7 +602,7 @@
 		},
 
 		/**
-		 * Setup store, columns and sorters
+		 * Setup store, columns, sorters and Ui view mode manage
 		 *
 		 * @param {Object} parameters
 		 * @param {Function} parameters.callback
@@ -629,32 +628,40 @@
 					return _error('dataViewFilterGridUiUpdate(): empty selected dataView', this, this.cmfg('dataViewSelectedDataViewGet'));
 			// END: Error handling
 
-			var store = this.cmfg('dataViewFilterGridStoreGet');
+			switch (this.cmfg('dataViewFilterUiViewModeGet')) {
+				case 'add':
+				case 'clone':
+					return this.view.getSelectionModel().deselectAll(); // Just reset selection on add and clone mode
 
-			if (parameters.resetSorters)
-				store = this.storeSortersSet(store);
+				default: {
+					var store = this.cmfg('dataViewFilterGridStoreGet');
 
-			this.view.reconfigure(store, this.dataViewFilterGridBuildColumns());
+					if (parameters.resetSorters)
+						store = this.storeSortersSet(store);
 
-			// Forward to sub-controllers
-			this.controllerToolbarPaging.cmfg('panelGridAndFormCommonToolbarPagingUiUpdate');
-			this.controllerToolbarTop.cmfg('dataViewFilterGridToolbarTopUiUpdate');
+					this.view.reconfigure(store, this.dataViewFilterGridBuildColumns());
 
-			// Select selectedCard inside loaded store
-			if (!this.cmfg('dataViewFilterSelectedCardIsEmpty'))
-				return this.dataViewFilterGridCardSelect({
-					id: this.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.ID),
-					forceStoreLoad: parameters.forceStoreLoad,
-					position: parameters.position,
-					scope: parameters.scope,
-					callback: parameters.callback
-				});
+					// Forward to sub-controllers
+					this.controllerToolbarPaging.cmfg('panelGridAndFormCommonToolbarPagingUiUpdate');
+					this.controllerToolbarTop.cmfg('dataViewFilterGridToolbarTopUiUpdate');
 
-			// Load store and select first card
-			return this.cmfg('dataViewFilterGridStoreLoad', {
-				scope: parameters.scope,
-				callback: parameters.callback
-			});
+					// Select selectedCard inside loaded store
+					if (!this.cmfg('dataViewFilterSelectedCardIsEmpty'))
+						return this.dataViewFilterGridCardSelect({
+							id: this.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.ID),
+							forceStoreLoad: parameters.forceStoreLoad,
+							position: parameters.position,
+							scope: parameters.scope,
+							callback: parameters.callback
+						});
+
+					// Load store and select first card
+					return this.cmfg('dataViewFilterGridStoreLoad', {
+						scope: parameters.scope,
+						callback: parameters.callback
+					});
+				}
+			}
 		},
 
 		/**
@@ -678,13 +685,6 @@
 				}, this);
 
 			return visibleColumnNames;
-		},
-
-		/**
-		 * @returns {Void}
-		 */
-		onDataViewFilterGridAddButtonClick: function () {
-			this.view.getSelectionModel().deselectAll();
 		},
 
 		/**

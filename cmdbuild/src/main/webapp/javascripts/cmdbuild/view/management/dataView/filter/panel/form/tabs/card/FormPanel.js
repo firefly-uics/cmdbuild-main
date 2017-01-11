@@ -195,7 +195,7 @@
 					scope: this,
 
 					handler: function (button, e) {
-						this.delegate.parentDelegate.cmfg('onDataViewFilterFormRemoveButtonClick');
+						this.delegate.onRemoveCardClick();
 					}
 				}),
 				this.cloneCardButton = Ext.create('CMDBuild.core.buttons.icon.Clone', {
@@ -203,7 +203,7 @@
 					scope: this,
 
 					handler: function (button, e) {
-						this.delegate.parentDelegate.cmfg('onDataViewFilterFormCloneButtonClick');
+						this.delegate.parentDelegate.cmfg('onDataViewFilterCloneButtonClick');
 					}
 				}),
 				CMDBuild.configuration.graph.get(CMDBuild.core.constants.Proxy.ENABLED) ? this.graphButton = Ext.create('CMDBuild.core.buttons.icon.RelationGraph', {

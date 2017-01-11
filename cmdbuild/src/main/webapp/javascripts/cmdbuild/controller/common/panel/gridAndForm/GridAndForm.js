@@ -44,6 +44,13 @@
 		 */
 		viewMode: 'read',
 
+		/**
+		 * @property {Array}
+		 *
+		 * @private
+		 */
+		viewModeManaged: ['add', 'edit', 'read'],
+
 		// FullScreen UI manage methods
 			/**
 			 * @returns {Void}
@@ -229,6 +236,13 @@
 			/**
 			 * @returns {Boolean}
 			 */
+			panelGridAndFormViewModeIsAdd: function () {
+				return this.viewMode == 'add';
+			},
+
+			/**
+			 * @returns {Boolean}
+			 */
 			panelGridAndFormViewModeIsEdit: function () {
 				return this.viewMode == 'edit';
 			},
@@ -241,17 +255,14 @@
 			},
 
 			/**
-			 * @param {String} mode - managed values: read, edit
+			 * @param {String} mode
 			 *
 			 * @returns {Void}
 			 */
 			panelGridAndFormViewModeSet: function (mode) {
-				mode = Ext.isString(mode) ? mode : 'read';
+				mode = Ext.isString(mode) && Ext.Array.contains(this.viewModeManaged, mode) ? mode : 'read';
 
-				if (mode == 'edit')
-					return this.viewMode = 'edit';
-
-				return this.viewMode = 'read';
+				this.viewMode = mode;
 			},
 
 		/**

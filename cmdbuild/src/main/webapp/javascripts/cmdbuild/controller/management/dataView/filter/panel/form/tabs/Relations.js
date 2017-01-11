@@ -80,6 +80,71 @@
 		},
 
 		/**
+		 * Enable/Disable tab selection based
+		 *
+		 * @returns {Void}
+		 *
+		 * @legacy
+		 */
+		dataViewFilterFormTabRelationsUiUpdate: function () {
+			if (!this.parentDelegate.cmfg('dataViewFilterSourceEntryTypeIsEmpty'))
+				this.onEntryTypeSelected();
+
+			if (!this.parentDelegate.cmfg('dataViewFilterSelectedCardIsEmpty'))
+				this.onCardSelected();
+
+			// Ui view mode manage
+			switch (this.parentDelegate.cmfg('dataViewFilterUiViewModeGet')) {
+				case 'add':
+					return this.view.disable();
+
+				case 'clone':
+					return this.view.disable();
+
+				default:
+					return this.view.setDisabled(this.parentDelegate.cmfg('dataViewFilterSelectedCardIsEmpty'));
+			}
+		},
+
+		/**
+		 * @returns {Void}
+		 *
+		 * @private
+		 * @legacy
+		 */
+		panelListenerManagerShow: function () {
+			// History record save
+			if (!this.parentDelegate.cmfg('dataViewSelectedDataViewIsEmpty') && !this.parentDelegate.cmfg('dataViewFilterSelectedCardIsEmpty'))
+				CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
+					moduleId: this.parentDelegate.cmfg('dataViewIdentifierGet'),
+					entryType: {
+						description: this.parentDelegate.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.DESCRIPTION),
+						id: this.parentDelegate.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.ID),
+						object: this.parentDelegate.cmfg('dataViewSelectedDataViewGet')
+					},
+					item: {
+						description: this.parentDelegate.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.DESCRIPTION)
+							|| this.parentDelegate.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.CODE),
+						id: this.parentDelegate.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.ID),
+						object: this.parentDelegate.cmfg('dataViewFilterSelectedCardGet')
+					},
+					section: {
+						description: this.view.title,
+						object: this.view
+					}
+				});
+
+			// Ui view mode manage
+			switch (this.parentDelegate.cmfg('dataViewFilterUiViewModeGet')) {
+				case 'add':
+					return this.onAddCardButtonClick();
+
+				case 'clone':
+					return this.onCloneCard();
+			}
+		},
+
+		/**
 		 * @param {CMRelationPanelModel} node
 		 * @param {CMRelationPanelModel} newNode
 		 * @param {Number} index

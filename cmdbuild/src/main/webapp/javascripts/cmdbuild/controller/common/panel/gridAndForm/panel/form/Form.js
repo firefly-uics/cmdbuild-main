@@ -36,7 +36,7 @@
 						return _error('panelGridAndFormPanelFormTabSelectionManage(): unmanaged tabPanel property', this, this.tabPanel);
 				// END: Error handling
 
-				if (Ext.isEmpty(this.tabPanel.getActiveTab()))
+				if (Ext.isEmpty(this.tabPanel.getActiveTab()) || this.tabPanel.getActiveTab().isDisabled())
 					this.cmfg('panelGridAndFormPanelFormTabActiveSet');
 
 				this.cmfg('panelGridAndFormPanelFormTabActiveFireShowEvent');
