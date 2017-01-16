@@ -143,7 +143,7 @@ public class ForeignReferenceResolver<T extends CMEntry> {
 					}
 
 					private FluentIterable<String> allAttributes(T input) {
-						return from(input.getType().getAllAttributes()) //
+						return from(input.getType().getActiveAttributes()) //
 								.transform(attributeName());
 					}
 

@@ -86,6 +86,8 @@ FIXES
 
  * Wrong reference id on tab email create/update actions on classes
 
+ * Process instance stuck on advancement doing a lot of SOAP requests
+
 
 
 
