@@ -292,12 +292,12 @@
 			this.resetFieldset();
 
 			this.classToUseForReferenceWidget = new CMDBuild.view.common.field.CMErasableCombo({
-				fieldLabel : tr.fields.fromClass,
+				fieldLabel: tr.fields.fromClass,
 				labelWidth: SUBFIELD_LABEL_WIDTH,
-				valueField : 'id',
-				displayField : 'description',
+				valueField: 'name',
+				displayField: 'description',
 				editable: false,
-				store : _CMCache.getClassesStore(),
+				store: _CMCache.getClassesStore(),
 				queryMode: 'local',
 				disabled: this.typeComboIsdisabled()
 			});
@@ -334,14 +334,12 @@
 					}
 
 					me.defaultField = new CMDBuild.view.common.field.CMErasableCombo({
-						fieldLabel : tr.fields.defaultValue,
+						fieldLabel: tr.fields.defaultValue,
 						labelWidth: SUBFIELD_LABEL_WIDTH,
 						valueField: "Id",
 						displayField: 'Description',
 						editable: false,
-						store : _CMCache.getReferenceStore({
-							referencedIdClass: value
-						}),
+						store: _CMCache.getReferenceStore({ referencedIdClass: _CMCache.getEntryTypeByName(value).get('name') }),
 						queryMode: 'local',
 						disabled: me.typeComboIsdisabled()
 					});
