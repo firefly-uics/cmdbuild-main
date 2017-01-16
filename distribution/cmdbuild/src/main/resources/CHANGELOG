@@ -92,6 +92,8 @@ FIXES
 
  * GetCard endpoint invoked with empty className parameter
 
+ * Cannot download design of demo report
+
 
 
 
