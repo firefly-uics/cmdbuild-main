@@ -266,6 +266,7 @@
 
 				CMDBuild.proxy.widget.customForm.CustomForm.readFromFunctions({
 					params: params,
+					loadMask: this.view,
 					scope: Ext.isEmpty(parameters.scope) ? this : parameters.scope,
 					callback: Ext.isFunction(parameters.callback) ? parameters.callback : Ext.emptyFn,
 					success: Ext.isFunction(parameters.success) ? parameters.success : Ext.emptyFn

@@ -7,7 +7,6 @@
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.core.Message',
 			'CMDBuild.proxy.widget.customForm.Csv',
-			'CMDBuild.proxy.lookup.Lookup',
 			'CMDBuild.proxy.widget.customForm.CustomForm'
 		],
 
@@ -121,7 +120,7 @@
 				params[CMDBuild.core.constants.Proxy.TYPE] = attribute.get(CMDBuild.core.constants.Proxy.LOOKUP_TYPE);
 				params[CMDBuild.core.constants.Proxy.ACTIVE] = true;
 
-				CMDBuild.proxy.lookup.Lookup.readAll({
+				CMDBuild.proxy.widget.customForm.Csv.readAllLookup({
 					params: params,
 					scope: this,
 					success: function (response, options, decodedResponse) {
