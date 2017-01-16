@@ -104,6 +104,24 @@
 		},
 
 		/**
+		 * @returns {CMDBuild.view.common.field.display.Reference}
+		 */
+		buildFieldReadOnly: function () {
+			return Ext.create('CMDBuild.view.common.field.display.Reference', {
+				allowBlank: !this.cmfg('fieldManagerAttributeModelGet', CMDBuild.core.constants.Proxy.MANDATORY),
+				fieldLabel: this.applyMandatoryLabelFlag(
+					this.cmfg('fieldManagerAttributeModelGet', CMDBuild.core.constants.Proxy.DESCRIPTION)
+					|| this.cmfg('fieldManagerAttributeModelGet', CMDBuild.core.constants.Proxy.NAME)
+				),
+				hidden: this.cmfg('fieldManagerAttributeModelGet', CMDBuild.core.constants.Proxy.HIDDEN),
+				labelAlign: 'right',
+				labelWidth: CMDBuild.core.constants.FieldWidths.LABEL,
+				name: this.cmfg('fieldManagerAttributeModelGet', CMDBuild.core.constants.Proxy.NAME),
+				targetClassName: this.cmfg('fieldManagerAttributeModelGet', CMDBuild.core.constants.Proxy.TARGET_CLASS)
+			});
+		},
+
+		/**
 		 * @returns {Ext.data.Store or CMDBuild.core.cache.Store}
 		 */
 		buildFieldStore: function () {

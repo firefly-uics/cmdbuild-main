@@ -88,6 +88,8 @@ FIXES
 
  * Process instance stuck on advancement doing a lot of SOAP requests
 
+ * ForeignKey report's attribute shows card's id in place of description
+
 
 
 
