@@ -6,8 +6,8 @@
 		extend: 'Ext.data.Model',
 
 		fields: [
-			{ name: 'alwaysenabled', type: 'boolean' },
 			{ name: CMDBuild.core.constants.Proxy.ACTIVE, type: 'boolean' },
+			{ name: CMDBuild.core.constants.Proxy.ALWAYS_ENABLED, type: 'boolean' },
 			{ name: CMDBuild.core.constants.Proxy.CAPABILITIES, type: 'auto' }, // Object to gather all UI disable flags
 			{ name: CMDBuild.core.constants.Proxy.DATA, type: 'auto' }, // Encoded array of CMDBuild.model.common.attributes.Generic models strings
 			{ name: CMDBuild.core.constants.Proxy.FUNCTION_DATA, type: 'auto' }, // Function data to be resolved with TemplateResolver (data attribute alias)
@@ -28,6 +28,9 @@
 		 * @override
 		 */
 		constructor: function (data) {
+			data = Ext.isObject(data) ? data : {};
+			data[CMDBuild.core.constants.Proxy.ALWAYS_ENABLED] = data['alwaysenabled'];
+
 			this.callParent(arguments);
 
 			// Apply form model attributes model

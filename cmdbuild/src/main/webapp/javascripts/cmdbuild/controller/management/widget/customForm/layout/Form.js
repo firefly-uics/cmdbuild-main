@@ -200,7 +200,12 @@
 		 * @returns {Array}
 		 */
 		widgetCustomFormLayoutFormDataGet: function () {
-			return [this.view.getData(true)];
+			var data = this.view.getData(true);
+
+			if (!Ext.isEmpty(Ext.Array.clean(Ext.Object.getValues(data))))
+				return [data];
+
+			return null;
 		},
 
 		/**

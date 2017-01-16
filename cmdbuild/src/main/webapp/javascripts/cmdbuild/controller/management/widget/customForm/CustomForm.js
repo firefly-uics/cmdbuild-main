@@ -58,7 +58,6 @@
 			'widgetCustomFormGetData = getData',
 			'widgetCustomFormIsValid = isValid',
 			'widgetCustomFormLayoutDataGet -> controllerLayout',
-			'widgetCustomFormLayoutIsValid -> controllerLayout',
 			'widgetCustomFormModelStoreBuilder',
 			'widgetCustomFormViewSetLoading'
 		],
@@ -468,7 +467,7 @@
 		 * @override
 		 */
 		widgetCustomFormIsValid: function () {
-			return Ext.isEmpty(this.controllerLayout) ? this.isValid() : this.cmfg('widgetCustomFormLayoutIsValid');
+			return Ext.isEmpty(this.controllerLayout) ? this.isValid() : this.controllerLayout.cmfg('widgetCustomFormLayoutIsValid');
 		},
 
 		/**

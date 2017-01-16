@@ -98,6 +98,8 @@ FIXES
 
  * Empty login panel while login with user that haven't associated groups
 
+ * CustomForm widget form/grid modes returns data with incongruent format
+
 
 
 
