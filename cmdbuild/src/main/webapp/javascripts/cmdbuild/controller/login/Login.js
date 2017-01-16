@@ -13,8 +13,7 @@
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
-			'onLoginViewportLoginButtonClick',
-			'onLoginViewportUserChange'
+			'onLoginLoginButtonClick'
 		],
 
 		/**
@@ -42,25 +41,47 @@
 			// Shorthands
 			this.form = this.view.formContainer.form;
 
-			this.setupFields();
+			Ext.ns('CMDBuild.configuration.runtime');
+
+			this.loginUiUpdate();
 		},
 
 		/**
+		 * Setup UI items visibility and values
+		 *
 		 * @returns {Void}
 		 */
-		onLoginViewportLoginButtonClick: function () {
-			if (this.form.group.isHidden()) {
-				this.sessionCreate();
-			} else {
-				this.sessionUpdate();
+		loginUiUpdate: function () {
+			var availableGroups = CMDBuild.configuration.runtime.get(CMDBuild.core.constants.Proxy.GROUPS),
+				userName = CMDBuild.configuration.runtime.get(CMDBuild.core.constants.Proxy.USERNAME);
+
+			// User field setup
+			this.form.user.setValue(Ext.isString(userName) && !Ext.isEmpty(userName) ? userName : '');
+			this.form.user.setDisabled(!Ext.isEmpty(this.form.user.getValue()));
+
+			if (Ext.isEmpty(this.form.user.getValue()))
+				this.form.user.focus();
+
+			// Password field setup
+			this.form.password.setVisible(Ext.isEmpty(this.form.user.getValue()));
+
+			// Group field setup
+			this.form.group.setVisible(!Ext.isEmpty(availableGroups));
+
+			if (!Ext.isEmpty(availableGroups)) {
+				this.form.group.getStore().loadData(availableGroups);
+				this.form.user.focus();
 			}
 		},
 
 		/**
 		 * @returns {Void}
 		 */
-		onLoginViewportUserChange: function () {
-			this.setupFieldsGroup();
+		onLoginLoginButtonClick: function () {
+			if (this.form.group.isHidden())
+				return this.sessionCreate();
+
+			return this.sessionUpdate();
 		},
 
 		/**
@@ -93,15 +114,28 @@
 					success: function (response, options, decodedResponse) {
 						decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.RESPONSE];
 
-						CMDBuild.core.CookiesManager.authorizationSet(decodedResponse[CMDBuild.core.constants.Proxy.SESSION_ID]);
+						if (Ext.isObject(decodedResponse) && !Ext.Object.isEmpty(decodedResponse)) {
+							CMDBuild.core.CookiesManager.authorizationSet(decodedResponse[CMDBuild.core.constants.Proxy.SESSION_ID]);
 
-						if (Ext.isEmpty(decodedResponse[CMDBuild.core.constants.Proxy.GROUP])) { // Group to be selected
-							CMDBuild.configuration.runtime.set(CMDBuild.core.constants.Proxy.USERNAME, this.form.user.getValue());
-							CMDBuild.configuration.runtime.set(CMDBuild.core.constants.Proxy.GROUPS, decodedResponse[CMDBuild.core.constants.Proxy.GROUPS]);
+							var group = decodedResponse[CMDBuild.core.constants.Proxy.GROUP],
+								groups = decodedResponse[CMDBuild.core.constants.Proxy.GROUPS],
+								language = decodedResponse[CMDBuild.core.constants.Proxy.LANGUAGE];
 
-							this.setupFields();
-						} else { // Succesfully logged
-							this.sectionRedirect();
+							// Succesfully logged
+							if (Ext.isString(group) && !Ext.isEmpty(group))
+								return this.sectionRedirect();
+
+							// Group needs to be selected
+							if (Ext.isArray(groups) && !Ext.isEmpty(groups)) {
+								CMDBuild.configuration.runtime.set(CMDBuild.core.constants.Proxy.USERNAME, this.form.user.getValue());
+								CMDBuild.configuration.runtime.set(CMDBuild.core.constants.Proxy.GROUPS, groups);
+
+								return this.loginUiUpdate();
+							}
+
+							return _error('sessionCreate(): unmanaged response', this, decodedResponse);
+						} else {
+							_error('sessionCreate(): unmanaged response', this, decodedResponse);
 						}
 					}
 				});
@@ -126,43 +160,6 @@
 					scope: this,
 					success: this.sectionRedirect
 				});
-			}
-		},
-
-		/**
-		 * @returns {Void}
-		 *
-		 * @private
-		 */
-		setupFields: function () {
-			if (!Ext.isEmpty(CMDBuild.configuration.runtime) && Ext.isEmpty(CMDBuild.configuration.runtime.get(CMDBuild.core.constants.Proxy.USERNAME))) {
-				this.form.user.focus();
-			} else {
-				this.form.user.setValue(CMDBuild.configuration.runtime.get(CMDBuild.core.constants.Proxy.USERNAME));
-				this.form.user.disable();
-
-				this.form.password.hide();
-				this.form.password.disable();
-			}
-
-			this.setupFieldsGroup();
-		},
-
-		/**
-		 * @returns {Void}
-		 *
-		 * @private
-		 */
-		setupFieldsGroup: function () {
-			if (
-				!Ext.isEmpty(CMDBuild.configuration.runtime.get(CMDBuild.core.constants.Proxy.GROUPS))
-				&& Ext.isArray(CMDBuild.configuration.runtime.get(CMDBuild.core.constants.Proxy.GROUPS))
-			) {
-				this.form.group.getStore().loadData(CMDBuild.configuration.runtime.get(CMDBuild.core.constants.Proxy.GROUPS));
-				this.form.group.show();
-				this.form.group.focus();
-			} else {
-				this.form.group.hide();
 			}
 		}
 	});

@@ -96,6 +96,8 @@ FIXES
 
  * Dashboards uses class id
 
+ * Empty login panel while login with user that haven't associated groups
+
 
 
 
