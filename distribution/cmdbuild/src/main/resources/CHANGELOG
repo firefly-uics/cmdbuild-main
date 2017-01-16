@@ -90,6 +90,8 @@ FIXES
 
  * ForeignKey report's attribute shows card's id in place of description
 
+ * GetCard endpoint invoked with empty className parameter
+
 
 
 
