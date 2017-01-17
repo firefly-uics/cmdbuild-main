@@ -87,6 +87,11 @@
 		printMapButton : undefined,
 
 		/**
+		 * CMDBuild.core.buttons.gis.SearchPlace
+		 */
+		searchMapButton : undefined,
+
+		/**
 		 * CMDBuild.view.management.classes.map.geoextension.InteractionDocument
 		 */
 		interactionDocument : undefined,
@@ -189,6 +194,9 @@
 		},
 		print : function(command, data) {
 			this.geoExtension.print();
+		},
+		search : function(command, data) {
+			this.geoExtension.search();
 		},
 		executeThematism : function(command, data) {
 			var currentCard = this.interactionDocument.getCurrentCard();

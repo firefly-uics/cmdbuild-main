@@ -30,7 +30,7 @@ Ext.define("CMDBuild.view.management.classes.map.geoextension.PrintMapForm", {
 		});
 		this.comboLayouts = Ext.create("Ext.form.field.ComboBox", {
 			xtype : 'combobox',
-			fieldLabel : '@@ Layout',
+			fieldLabel :CMDBuild.Translation.layout,
 			store : this.layoutsStore,
 			labelAlign : 'top',
 			height : 120,
@@ -46,7 +46,7 @@ Ext.define("CMDBuild.view.management.classes.map.geoextension.PrintMapForm", {
 
 		});
 		this.pageTitle = Ext.create("Ext.form.field.Text", {
-			fieldLabel : '@@ Title',
+			fieldLabel :CMDBuild.Translation.title,
 			value : "CMDBuild Map"
 
 		});

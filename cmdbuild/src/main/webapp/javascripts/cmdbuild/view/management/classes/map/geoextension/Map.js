@@ -16,9 +16,9 @@
 				GEOSERVER_PRINT_SERVICE : "pdf/print.pdf",
 				GEOSERVER_JSON_SERVICE : "pdf/create.json",
 				GEOSERVER_JSON_INFO : "pdf/info.json",
-				GEOSERVER_WORKSPACE_WMS: "wms",
+				GEOSERVER_WORKSPACE_WMS : "wms",
 				OSM_SOURCE : "http://a.tile.openstreetmap.org/"
-				
+
 			},
 			layers : {
 				PUNTUAL_ANALYSIS : "puntual_analysis",
@@ -66,6 +66,9 @@
 				MODIFY : 'MODIFY',
 				NEW : 'NEW',
 				PRINT : 'PRINT'
+			},
+			search_place : {
+				NOMINATIM_SERVER : 'http://nominatim.openstreetmap.org/search?format=json&limit=20&q='
 			}
 		}
 	};
@@ -158,7 +161,7 @@
 				});
 				var scaleLineControl = new ol.control.ScaleLine();
 				this.map = new ol.Map({
-					controls : [ zoomControl, scaleLineControl,	mousePositionControl ],
+					controls : [ zoomControl, scaleLineControl, mousePositionControl ],
 					target : configuration.mapDivId,
 					layers : [],
 					view : this.view
@@ -316,12 +319,11 @@
 			var currentZoom = this.getZoom();
 			this.interactionDocument.getLayersForCard(currentCard, function(layers) {
 				if (layers.length > 0 && layers[0].minZoom >= 0) {
-					if (! isVisible) {
+					if (!isVisible) {
 						configuration.zoom = layers[0].minZoom;
 					} else if (currentZoom < layers[0].minZoom) {
 						configuration.zoom = layers[0].minZoom;
-					}
-					else {
+					} else {
 						configuration.zoom = currentZoom;
 					}
 				}

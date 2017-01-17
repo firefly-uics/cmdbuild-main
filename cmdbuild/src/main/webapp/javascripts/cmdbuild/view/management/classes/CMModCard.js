@@ -308,13 +308,19 @@
 					me.theMap.print();
 				}
 			});
+			var searchMapButton = Ext.create('CMDBuild.core.buttons.gis.SearchPlace', {
+				handler : function(command, data) {
+					me.theMap.search(command, data);
+				}
+			});
 			this.theMap = Ext.create('CMDBuild.view.management.classes.map.CMMapPanel', {
-				tbar : [ this.mapAddCardButton, '->', printMapButton, thematismButton, this.showGridButton ],
+				tbar : [ this.mapAddCardButton, '->', searchMapButton, printMapButton, thematismButton, this.showGridButton ],
 				frame : false,
 				border : false,
 				mainGrid : this.cardGrid,
 				thematismButton : thematismButton,
-				printMapButton: printMapButton
+				printMapButton: printMapButton,
+				searchMapButton: searchMapButton
 			});
 			this.executeThematism = function(command, data) {
 				this.theMap.executeThematism(command, data);

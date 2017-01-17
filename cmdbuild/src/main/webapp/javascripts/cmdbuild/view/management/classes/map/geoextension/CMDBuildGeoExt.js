@@ -39,6 +39,15 @@
 			}
 			this.baseLayer = baseLayer;
 		},
+		search : function() {
+				var searchWindow = Ext.create("CMDBuild.view.management.classes.map.geoextension.SearchPlaceWindow", {
+					frame : false,
+					border : false,
+					region : "center",
+					interactionDocument : this.interactionDocument
+				});
+				searchWindow.show();
+		},
 		print : function() {
 			this.loadPrintCapabilities(function(capabilities) {
 				this.loadStores(capabilities);
