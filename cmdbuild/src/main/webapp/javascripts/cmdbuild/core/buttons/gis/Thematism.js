@@ -72,8 +72,6 @@
 				text : CMDBuild.Translation.hideLegend,
 				command : CMDBuild.gis.constants.thematic_commands.HIDE_LEGEND,
 				checked : !mapPanel.getOpenLegend()
-			}, {
-				xtype : 'menuseparator'
 			} ]);
 		},
 		getMenuItem : function() {

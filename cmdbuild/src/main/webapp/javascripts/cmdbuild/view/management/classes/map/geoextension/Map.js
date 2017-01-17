@@ -12,6 +12,14 @@
 			DEFAULT_SEGMENTS : 10,
 			MAX_GRADE_RADIUS : 40,
 			MIN_GRADE_RADIUS : 5,
+			print : {
+				GEOSERVER_PRINT_SERVICE : "pdf/print.pdf",
+				GEOSERVER_JSON_SERVICE : "pdf/create.json",
+				GEOSERVER_JSON_INFO : "pdf/info.json",
+				GEOSERVER_WORKSPACE_WMS: "wms",
+				OSM_SOURCE : "http://a.tile.openstreetmap.org/"
+				
+			},
 			layers : {
 				PUNTUAL_ANALYSIS : "puntual_analysis",
 				RANGES_ANALYSIS : "ranges_analysis",
@@ -57,6 +65,7 @@
 				HIDE_CURRENT : 'HIDE_CURRENT',
 				MODIFY : 'MODIFY',
 				NEW : 'NEW',
+				PRINT : 'PRINT'
 			}
 		}
 	};

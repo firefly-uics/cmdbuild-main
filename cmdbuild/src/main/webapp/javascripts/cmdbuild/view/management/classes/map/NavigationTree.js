@@ -203,7 +203,6 @@
 	}
 	function check(node, checked) {
 		node.set('checked', checked);
-		var isBase = node.get("baseNode");
 		if (checked) {
 			var parents = getParents(node);
 			openFromRoot(parents);
@@ -350,7 +349,7 @@
 	}
 	function getAllNodesRecursive(node, allNodes) {
 		var children = node.childNodes || node.children || [];
-		for (var i = 0, l = children.length; i < l; ++i) {
+		for (var i = 0; i < children.length; ++i) {
 			var child = children[i];
 			allNodes.push(child);
 			getAllNodesRecursive(child, allNodes);

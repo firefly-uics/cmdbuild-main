@@ -4,7 +4,8 @@
 					'CMDBuild.Management.CMMap',
 					{
 						extend : 'CMDBuild.view.management.classes.map.geoextension.Map',
-						requires : [ 'CMDBuild.view.management.classes.map.geoextension.Map' ],
+						requires : [ 'CMDBuild.view.management.classes.map.geoextension.Map',
+						             'CMDBuild.view.management.classes.map.proxy.Icon'],
 
 						geoExtension : undefined,
 						interactionDocument : undefined,
@@ -115,24 +116,9 @@
 								callback.apply(callbackScope, []);
 								return;
 							}
-							var http = new XMLHttpRequest();
-							http.open('HEAD', style.externalGraphic, false);
-							http.send();
-							var me = this;
-							if (http.status === 404) {
-								geoAttribute.iconSize = [ 0, 0 ];
-								me.iconCache[style.externalGraphic] = geoAttribute.iconSize;
-								callback.apply(callbackScope, []);
-								return;
-
-							}
-							var img = new Image;
-							img.onload = function() {
-								geoAttribute.iconSize = [ this.width, this.height ];
-								me.iconCache[style.externalGraphic] = geoAttribute.iconSize;
-								callback.apply(callbackScope, []);
-							}
-							img.src = style.externalGraphic;
+							var icon = CMDBuild.view.management.classes.map.proxy.Icon.readIcon(style.externalGraphic, function(iconSize, icon) {
+								this.iconCache[style.externalGraphic] = iconSize;								
+							}, this);
 
 						},
 						completeStyle : function(layers, index, callback, callbackScope) {
@@ -248,38 +234,38 @@
 						},
 						selectCard : function(card) {
 							var geoLayers = this.getLayers();
-							geoLayers.forEach(function(geoLayer) {
-								var adapter = geoLayer.get("adapter");
+							geoLayers.forEach(function(olLayer) {
+								var adapter = olLayer.get("adapter");
 								if (adapter && adapter.selectCard) {
 									adapter.selectCard(card);
 								}
 							});
 						},
 						showLayer : function(layer, currentClassName, currentCardId) {
-							var geoLayer = this.getLayerByClassAndName(layer.masterTableName, layer.name);
-							if (!geoLayer) {
-								geoLayer = this.makeLayer(layer.geoAttribute, true);
+							var olLayer = this.getLayerByClassAndName(layer.masterTableName, layer.name);
+							if (!olLayer) {
+								olLayer = this.makeLayer(layer.geoAttribute, true);
 							}
-							geoLayer.set("cmdbuildLayer", layer);
+							olLayer.set("cmdbuildLayer", layer);
 							var index = CMDBuild.gis.constants.layers.GIS_MIN_ZINDEX + layer.index;
 							if (layer.geoAttribute.masterTableName === CMDBuild.gis.constants.layers.GEOSERVER_LAYER) {
 								index = CMDBuild.gis.constants.layers.GEO_MIN_ZINDEX;
 							}
-							geoLayer.setZIndex(index);
-							var adapter = geoLayer.get("adapter");
+							olLayer.setZIndex(index);
+							var adapter = olLayer.get("adapter");
 							if (adapter && adapter.refresh) {
 								adapter.refresh();
 							}
 
 						},
 						clearHideLayer : function(className, nameLayer) {
-							var geoLayer = this.getLayerByClassAndName(className, nameLayer);
-							if (geoLayer) {
-								var adapter = geoLayer.get("adapter");
+							var olLayer = this.getLayerByClassAndName(className, nameLayer);
+							if (olLayer) {
+								var adapter = olLayer.get("adapter");
 								if (adapter && adapter.clearAllFeatures) {
 									adapter.clearAllFeatures();
 								}
-								this.map.removeLayer(geoLayer);
+								this.map.removeLayer(olLayer);
 							}
 						},
 						setSelections : function() {

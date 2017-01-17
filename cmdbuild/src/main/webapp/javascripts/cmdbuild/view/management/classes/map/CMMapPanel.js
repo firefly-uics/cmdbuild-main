@@ -82,6 +82,11 @@
 		thematismButton : undefined,
 
 		/**
+		 * CMDBuild.core.buttons.gis.PrintMap
+		 */
+		printMapButton : undefined,
+
+		/**
 		 * CMDBuild.view.management.classes.map.geoextension.InteractionDocument
 		 */
 		interactionDocument : undefined,
@@ -111,12 +116,13 @@
 			thematicDocument.setThematismButton(this.thematismButton);
 			this.interactionDocument = Ext
 					.create('CMDBuild.view.management.classes.map.geoextension.InteractionDocument');
+			this.geoExtension.interactionDocument = this.interactionDocument;
 			this.thematismButton.interactionDocument = this.interactionDocument;
 			var thematicColors = Ext.create('CMDBuild.view.management.classes.map.thematism.ThematicColors');
 			thematicDocument.init(this.interactionDocument, thematicColors)
 			this.interactionDocument.setThematicDocument(thematicDocument);
-			this.thematicView = Ext.create(
-					'CMDBuild.controller.management.classes.map.thematism.ThematismMainWindow', {
+			this.thematicView = Ext.create('CMDBuild.controller.management.classes.map.thematism.ThematismMainWindow',
+					{
 						interactionDocument : this.interactionDocument
 					});
 			this.mapPanel = Ext.create('CMDBuild.Management.CMMap', {
@@ -124,12 +130,12 @@
 				interactionDocument : this.interactionDocument,
 				thematicView : this.thematicView
 			});
-			//_CMMap = this.mapPanel; can be forget?
+			// _CMMap = this.mapPanel; can be forget?
 
 			var tabs = [];
 
-			if (CMDBuild.configuration.gis.get('cardBrowserByDomainConfiguration')['root']) { 
-				var root = CMDBuild.configuration.gis.get('cardBrowserByDomainConfiguration')['root']; 
+			if (CMDBuild.configuration.gis.get('cardBrowserByDomainConfiguration')['root']) {
+				var root = CMDBuild.configuration.gis.get('cardBrowserByDomainConfiguration')['root'];
 				this.interactionDocument.setStarted(false);
 				this.cardBrowser = new CMDBuild.view.management.classes.map.NavigationTree({
 					title : CMDBuild.Translation.management.modcard.gis.gisNavigation,
@@ -181,6 +187,9 @@
 
 			this.callParent(arguments);
 		},
+		print : function(command, data) {
+			this.geoExtension.print();
+		},
 		executeThematism : function(command, data) {
 			var currentCard = this.interactionDocument.getCurrentCard();
 			var className = currentCard.className;
@@ -200,8 +209,7 @@
 				var mapPanel = this.interactionDocument.getMapPanel();
 				if (data.checked) {
 					mapPanel.legend.hide();
-				}
-				else {
+				} else {
 					mapPanel.legend.show();
 				}
 				break;

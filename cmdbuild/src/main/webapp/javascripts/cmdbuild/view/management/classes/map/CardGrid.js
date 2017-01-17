@@ -29,7 +29,7 @@
 		/**
 		 * @property {Object} oldCard
 		 * @property {Id} oldCard.cardId
-		 * @property {String} oldCard.cardId
+		 * @property {String} oldCard.className
 		 */
 		oldCard : undefined,
 

@@ -179,9 +179,12 @@
 				}
 			});
 		},
-
-		getGeometry : function(feature) {
+		getThematismAnalysisType : function() {
 			var analysis = this.thematism.configuration.thematismConfiguration.analysis;
+			return analysis;
+		},
+		getGeometry : function(feature) {
+			var analysis = this.getThematismAnalysisType();
 			if (analysis === CMDBuild.gis.constants.layers.GRADUATE_ANALYSIS) {
 				var type = toCMDBuildType(feature.getGeometry().getType());
 				var coordinates = feature.getGeometry().getCoordinates();
