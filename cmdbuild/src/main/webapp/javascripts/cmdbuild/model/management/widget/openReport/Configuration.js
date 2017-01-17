@@ -2,7 +2,7 @@
 
 	Ext.require('CMDBuild.core.constants.Proxy');
 
-	Ext.define('CMDBuild.model.management.widget.openReport.Configuration', { // FIXME: waiting for refactor (rename alwaysenabled)
+	Ext.define('CMDBuild.model.management.widget.openReport.Configuration', { // TODO: waiting for refactor (rename)
 		extend: 'Ext.data.Model',
 
 		fields: [

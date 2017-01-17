@@ -90,6 +90,22 @@ FIXES
 
  * GIS navigation tree is not showing all elements
 
+ * Wrong reference id on tab email create/update actions on classes
+
+ * Process instance stuck on advancement doing a lot of SOAP requests
+
+ * ForeignKey report's attribute shows card's id in place of description
+
+ * GetCard endpoint invoked with empty className parameter
+
+ * Cannot download design of demo report
+
+ * Dashboards uses class id
+
+ * Empty login panel while login with user that haven't associated groups
+
+ * CustomForm widget form/grid modes returns data with incongruent format
+
 
 
 

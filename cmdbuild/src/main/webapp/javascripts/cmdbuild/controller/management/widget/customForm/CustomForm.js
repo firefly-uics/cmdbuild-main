@@ -58,7 +58,6 @@
 			'widgetCustomFormGetData = getData',
 			'widgetCustomFormIsValid = isValid',
 			'widgetCustomFormLayoutDataGet -> controllerLayout',
-			'widgetCustomFormLayoutIsValid -> controllerLayout',
 			'widgetCustomFormModelStoreBuilder',
 			'widgetCustomFormViewSetLoading'
 		],
@@ -267,6 +266,7 @@
 
 				CMDBuild.proxy.management.widget.customForm.CustomForm.readFromFunctions({
 					params: params,
+					loadMask: this.view,
 					scope: Ext.isEmpty(parameters.scope) ? this : parameters.scope,
 					callback: Ext.isFunction(parameters.callback) ? parameters.callback : Ext.emptyFn,
 					success: Ext.isFunction(parameters.success) ? parameters.success : Ext.emptyFn
@@ -468,7 +468,7 @@
 		 * @override
 		 */
 		widgetCustomFormIsValid: function () {
-			return Ext.isEmpty(this.controllerLayout) ? this.isValid() : this.cmfg('widgetCustomFormLayoutIsValid');
+			return Ext.isEmpty(this.controllerLayout) ? this.isValid() : this.controllerLayout.cmfg('widgetCustomFormLayoutIsValid');
 		},
 
 		/**

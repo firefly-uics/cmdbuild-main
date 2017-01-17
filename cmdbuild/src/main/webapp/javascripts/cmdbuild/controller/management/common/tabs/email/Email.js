@@ -1012,7 +1012,10 @@
 							},
 							callback: parameters.callbackFunction
 						});
-					} else if (Ext.isEmpty(parameters.selectedEntity.get(CMDBuild.core.constants.Proxy.ID))) {
+					} else if (
+						Ext.isEmpty(parameters.selectedEntity.get(CMDBuild.core.constants.Proxy.ID))
+						&& Ext.isEmpty(parameters.selectedEntity.get('Id'))
+					) {
 						var params = {};
 						params[CMDBuild.core.constants.Proxy.NOT_POSITIVES] = true;
 
@@ -1037,7 +1040,7 @@
 						serviceParams[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.common.tabs.email.SelectedEntity';
 						serviceParams[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedEntity';
 						serviceParams[CMDBuild.core.constants.Proxy.VALUE] = {
-							id: parameters.selectedEntity.get(CMDBuild.core.constants.Proxy.ID),
+							id: parameters.selectedEntity.get(CMDBuild.core.constants.Proxy.ID) || parameters.selectedEntity.get('Id'),
 							entity: parameters.selectedEntity
 						};
 

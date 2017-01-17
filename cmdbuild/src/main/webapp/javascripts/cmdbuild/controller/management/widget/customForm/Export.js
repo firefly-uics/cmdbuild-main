@@ -90,7 +90,10 @@
 				params[CMDBuild.core.constants.Proxy.DATA] = Ext.encode(gridData);
 				params[CMDBuild.core.constants.Proxy.HEADERS] = Ext.encode(params[CMDBuild.core.constants.Proxy.HEADERS].split(','));
 
-				CMDBuild.proxy.management.widget.customForm.Csv.exports({ params: params });
+				CMDBuild.proxy.management.widget.customForm.Csv.exports({
+					params: params,
+					loadMask: this.view
+				});
 
 				this.cmfg('onWidgetCustomFormExportAbortButtonClick');
 			}
