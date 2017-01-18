@@ -1,11 +1,11 @@
 (function () {
 
 	Ext.define('CMDBuild.controller.administration.userAndGroup.user.User', {
-		extend: 'CMDBuild.controller.common.abstract.Base',
+		extend: 'CMDBuild.controller.common.panel.gridAndForm.GridAndForm',
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.userAndGroup.user.User'
+			'CMDBuild.proxy.administration.userAndGroup.user.User'
 		],
 
 		/**
@@ -41,7 +41,7 @@
 		grid: undefined,
 
 		/**
-		 * @property {CMDBuild.model.userAndGroup.user.User}
+		 * @property {CMDBuild.model.administration.userAndGroup.user.User}
 		 *
 		 * @private
 		 */
@@ -106,7 +106,7 @@
 			this.form.reset();
 			this.form.setDisabledModify(false, true);
 			this.form.defaultGroupCombo.setDisabled(true);
-			this.form.loadRecord(Ext.create('CMDBuild.model.userAndGroup.user.User'));
+			this.form.loadRecord(Ext.create('CMDBuild.model.administration.userAndGroup.user.User'));
 		},
 
 		/**
@@ -114,7 +114,6 @@
 		 */
 		onUserAndGroupUserChangePasswordButtonClick: function () {
 			this.form.setDisabledFieldSet(this.form.userPasswordFieldSet, false);
-
 			this.form.setDisabledTopBar(true);
 			this.form.setDisabledBottomBar(false);
 		},
@@ -124,10 +123,10 @@
 		 */
 		onUserAndGroupUserDisableButtonClick: function () {
 			var params = {};
-			params['userid'] = this.userAndGroupUserSelectedUserGet('userid');
-			params[CMDBuild.core.constants.Proxy.DISABLE] = this.userAndGroupUserSelectedUserGet(CMDBuild.core.constants.Proxy.IS_ACTIVE);
+			params[CMDBuild.core.constants.Proxy.ID] = this.userAndGroupUserSelectedUserGet(CMDBuild.core.constants.Proxy.ID);
+			params[CMDBuild.core.constants.Proxy.DISABLE] = this.userAndGroupUserSelectedUserGet(CMDBuild.core.constants.Proxy.ACTIVE);
 
-			CMDBuild.proxy.userAndGroup.user.User.disable({
+			CMDBuild.proxy.administration.userAndGroup.user.User.disable({
 				params: params,
 				scope: this,
 				success: this.success
@@ -163,11 +162,11 @@
 				this.form.reset();
 				this.form.setDisabledModify(true, true);
 
-				// Update toggleEnableDisableButton button
-				this.form.toggleEnableDisableButton.setActiveState(this.userAndGroupUserSelectedUserGet(CMDBuild.core.constants.Proxy.IS_ACTIVE));
+				// Update buttonToggleEnableDisable button
+				this.form.buttonToggleEnableDisable.setActiveState(this.userAndGroupUserSelectedUserGet(CMDBuild.core.constants.Proxy.ACTIVE));
 
 				var params = {};
-				params['userid'] = this.userAndGroupUserSelectedUserGet('userid');
+				params[CMDBuild.core.constants.Proxy.ID] = this.userAndGroupUserSelectedUserGet(CMDBuild.core.constants.Proxy.ID);
 
 				this.form.defaultGroupCombo.getStore().load({
 					params: params,
@@ -184,6 +183,7 @@
 						this.form.getForm().loadRecord(this.userAndGroupUserSelectedUserGet());
 					}
 				});
+
 			}
 		},
 
@@ -193,19 +193,19 @@
 		 * TODO: waiting for a refactor (new CRUD standards)
 		 */
 		onUserAndGroupUserSaveButtonClick: function () {
-			if (this.validate(this.form)) { // Validate before save
+			if (this.validate(this.form)) {
 				var params = this.form.getData(true);
 
-				if (Ext.isEmpty(params['userid'])) {
-					params['userid'] = -1;
+				if (Ext.isEmpty(params[CMDBuild.core.constants.Proxy.ID])) {
+					params[CMDBuild.core.constants.Proxy.ID] = -1;
 
-					CMDBuild.proxy.userAndGroup.user.User.create({
+					CMDBuild.proxy.administration.userAndGroup.user.User.create({
 						params: params,
 						scope: this,
 						success: this.success
 					});
 				} else {
-					CMDBuild.proxy.userAndGroup.user.User.update({
+					CMDBuild.proxy.administration.userAndGroup.user.User.update({
 						params: params,
 						scope: this,
 						success: this.success
@@ -228,11 +228,7 @@
 		 * @returns {Void}
 		 */
 		onUserAndGroupUserShow: function () {
-			var params = {};
-			params[CMDBuild.core.constants.Proxy.ACTIVE] = this.view.includeDisabledUsers.getValue();
-
-			this.grid.getStore().load({
-				params: params,
+			this.storeLoad({
 				scope: this,
 				callback: function (records, operation, success) {
 					if (!this.grid.getSelectionModel().hasSelection())
@@ -290,12 +286,38 @@
 			 */
 			userAndGroupUserSelectedUserSet: function (parameters) {
 				if (!Ext.Object.isEmpty(parameters)) {
-					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.userAndGroup.user.User';
+					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.administration.userAndGroup.user.User';
 					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedUser';
 
 					this.propertyManageSet(parameters);
 				}
 			},
+
+		/**
+		 * @param {Object} parameters
+		 * @param {Function} parameters.callback
+		 * @param {Object} parameters.scope
+		 *
+		 * @returns {Void}
+		 *
+		 * @private
+		 */
+		storeLoad: function (parameters) {
+			parameters = Ext.isObject(parameters) ? parameters : {};
+			parameters.callback = Ext.isFunction(parameters.callback) ? parameters.callback : Ext.emptyFn;
+			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
+
+			this.grid.getSelectionModel().deselectAll();
+
+			var params = {};
+			params[CMDBuild.core.constants.Proxy.ACTIVE_ONLY] = this.view.includeDisabledUsers.getValue();
+
+			this.grid.getStore().load({
+				params: params,
+				scope: parameters.scope,
+				callback: parameters.callback
+			});
+		},
 
 		/**
 		 * @param {Object} response
@@ -307,7 +329,7 @@
 		 * @private
 		 */
 		success: function (response, options, decodedResponse) {
-			decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.ROWS];
+			decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.RESPONSE];
 
 			// Error handling
 				if (!Ext.isObject(decodedResponse) || Ext.Object.isEmpty(decodedResponse))
@@ -316,16 +338,13 @@
 
 			this.view.includeDisabledUsers.reset(); // Reset checkbox value to load all users on save
 
-			var params = {};
-			params[CMDBuild.core.constants.Proxy.ACTIVE] = this.view.includeDisabledUsers.getValue();
-
-			this.grid.getStore().load({
-				params: params,
+			this.storeLoad({
 				scope: this,
 				callback: function (records, operation, success) {
-					var rowIndex = this.grid.getStore().find('userid', decodedResponse['userid']);
+					this.grid.getSelectionModel().select(
+						this.grid.getStore().find(CMDBuild.core.constants.Proxy.ID, decodedResponse[CMDBuild.core.constants.Proxy.ID])
+					);
 
-					this.grid.getSelectionModel().select(rowIndex, true);
 					this.form.setDisabledModify(true);
 				}
 			});

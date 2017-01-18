@@ -72,9 +72,12 @@
 		onUserAndGroupGroupTabUsersSaveButtonClick: function () {
 			var usersIdArray = [];
 
-			Ext.Array.each(this.selectedGrid.getStore().getRange(), function (record, i, allRecords) {
+			Ext.Array.forEach(this.selectedGrid.getStore().getRange(), function (record, i, allRecords) {
 				usersIdArray.push(record.get(CMDBuild.core.constants.Proxy.ID));
 			}, this);
+
+			usersIdArray = Ext.Array.unique(usersIdArray);
+			usersIdArray = Ext.Array.clean(usersIdArray);
 
 			var params = {};
 			params[CMDBuild.core.constants.Proxy.GROUP_ID] = this.cmfg('userAndGroupGroupSelectedGroupGet', CMDBuild.core.constants.Proxy.ID);

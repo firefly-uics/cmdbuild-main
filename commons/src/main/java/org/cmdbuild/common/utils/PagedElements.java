@@ -45,7 +45,7 @@ public class PagedElements<T> implements Iterable<T> {
 		if (!(obj instanceof PagedElements)) {
 			return false;
 		}
-		final PagedElements<T> other = PagedElements.class.cast(obj);
+		final PagedElements<?> other = PagedElements.class.cast(obj);
 		return new EqualsBuilder() //
 				.append(this.elements, other.elements) //
 				.append(this.totalSize, other.totalSize) //

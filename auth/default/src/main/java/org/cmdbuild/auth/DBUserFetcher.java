@@ -4,6 +4,7 @@ import static com.google.common.collect.FluentIterable.from;
 import static org.apache.commons.lang3.StringUtils.defaultString;
 import static org.cmdbuild.dao.guava.Functions.toCard;
 import static org.cmdbuild.dao.query.clause.AnyAttribute.anyAttribute;
+import static org.cmdbuild.dao.query.clause.OrderByClause.Direction.ASC;
 import static org.cmdbuild.dao.query.clause.QueryAliasAttribute.attribute;
 import static org.cmdbuild.dao.query.clause.alias.Aliases.as;
 import static org.cmdbuild.dao.query.clause.alias.Aliases.canonical;
@@ -18,11 +19,13 @@ import static org.cmdbuild.dao.query.clause.where.WhereClauses.or;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.cmdbuild.auth.logging.LoggingSupport;
 import org.cmdbuild.auth.user.CMUser;
 import org.cmdbuild.auth.user.UserImpl;
 import org.cmdbuild.auth.user.UserImpl.UserImplBuilder;
+import org.cmdbuild.common.utils.PagedElements;
 import org.cmdbuild.dao.Const.Role;
 import org.cmdbuild.dao.Const.User;
 import org.cmdbuild.dao.Const.UserRole;
@@ -38,7 +41,6 @@ import org.cmdbuild.dao.query.clause.alias.EntryTypeAlias;
 import org.cmdbuild.dao.query.clause.where.WhereClause;
 import org.cmdbuild.dao.view.CMDataView;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
 /**
@@ -80,6 +82,17 @@ public abstract class DBUserFetcher implements UserFetcher, LoggingSupport {
 				.run() //
 				.getOnlyRow();
 		return buildUserFromCard(row.getCard(userClass()));
+	}
+
+	@Override
+	public Optional<Long> fetchUserPosition(final long userId) {
+		final Long output = view().select(anyAttribute(userClass())) //
+				.from(userClass()) //
+				.numbered(condition(attribute(userClass(), userClass().getKeyAttributeName()), eq(userId))) //
+				.run() //
+				.getOnlyRow() //
+				.getNumber();
+		return Optional.of(output);
 	}
 
 	@Override
@@ -145,6 +158,8 @@ public abstract class DBUserFetcher implements UserFetcher, LoggingSupport {
 	protected abstract boolean extendedInformation();
 
 	/**
+	 * .
+	 *
 	 * @param userBuilder
 	 * @param groupName
 	 */
@@ -249,21 +264,20 @@ public abstract class DBUserFetcher implements UserFetcher, LoggingSupport {
 	}
 
 	@Override
-	public Iterable<CMUser> fetchAllUsers(final boolean activeOnly) {
+	public PagedElements<CMUser> fetchAllUsers(final int offset, final int limit, final boolean activeOnly) {
 		final Alias userClassAlias = canonical(userClass());
-		return from(view().select(anyAttribute(userClass())) //
+		final CMQueryResult result = view().select(anyAttribute(userClass())) //
 				.from(userClass(), as(userClassAlias)) //
 				.where(activeOnly ? activeCondition(userClassAlias) : alwaysTrue()) //
-				.run()) //
-						.transform(toCard(userClassAlias)) //
-						.transform(new Function<CMCard, CMUser>() {
-
-							@Override
-							public CMUser apply(final CMCard input) {
-								return buildUserFromCard(input);
-							}
-
-						});
+				.orderBy(attribute(userClassAlias, userNameAttribute()), ASC) //
+				.offset(offset) //
+				.limit(limit) //
+				.count() //
+				.run();
+		final Iterable<CMUser> users = from(result) //
+				.transform(toCard(userClassAlias)) //
+				.transform(input -> buildUserFromCard(input));
+		return new PagedElements<>(users, result.totalSize());
 	}
 
 	@Override

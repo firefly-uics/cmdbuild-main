@@ -308,6 +308,7 @@ public class CommunicationConstants {
 			TIME = "time", //
 			TITLE = "title", //
 			TO = "to", //
+			TOTAL = "total", //
 			TRANSLATIONS = "translations", //
 			TRANSLATION_UUID = "translationUuid", //
 			TYPE_CAPITAL = "Type", //

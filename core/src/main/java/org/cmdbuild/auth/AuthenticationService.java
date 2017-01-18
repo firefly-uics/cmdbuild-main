@@ -3,12 +3,14 @@ package org.cmdbuild.auth;
 import static org.cmdbuild.auth.user.AuthenticatedUserImpl.ANONYMOUS_USER;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.Validate;
 import org.cmdbuild.auth.ClientRequestAuthenticator.ClientRequest;
 import org.cmdbuild.auth.acl.CMGroup;
 import org.cmdbuild.auth.user.AuthenticatedUser;
 import org.cmdbuild.auth.user.CMUser;
+import org.cmdbuild.common.utils.PagedElements;
 import org.cmdbuild.logic.auth.GroupDTO;
 import org.cmdbuild.logic.auth.UserDTO;
 
@@ -24,8 +26,8 @@ public interface AuthenticationService {
 		private final AuthenticatedUser user;
 		private final String redirectUrl;
 
-		public static final ClientAuthenticatorResponse EMTPY_RESPONSE = new ClientAuthenticatorResponse(ANONYMOUS_USER,
-				null);
+		public static final ClientAuthenticatorResponse EMTPY_RESPONSE =
+				new ClientAuthenticatorResponse(ANONYMOUS_USER, null);
 
 		public ClientAuthenticatorResponse(final AuthenticatedUser user, final String redirectUrl) {
 			Validate.notNull(user);
@@ -53,7 +55,7 @@ public interface AuthenticationService {
 	/**
 	 * Actively checks the user credentials and returns the authenticated user
 	 * on success.
-	 * 
+	 *
 	 * @param login
 	 * @param password
 	 *            unencrypted password
@@ -63,10 +65,10 @@ public interface AuthenticationService {
 
 	/**
 	 * Extracts the unencrypted password for the user and sets it in the
-	 * 
+	 *
 	 * @param passwordCallback
 	 *            for further processing.
-	 * 
+	 *
 	 * @param login
 	 * @param passwordCallback
 	 *            object where to set the unencrypted password
@@ -76,7 +78,7 @@ public interface AuthenticationService {
 
 	/**
 	 * Tries to authenticate the user with a ClientRequestAuthenticator
-	 * 
+	 *
 	 * @param request
 	 *            object representing a client request
 	 * @return response object with the authenticated user or a redirect URL
@@ -89,7 +91,7 @@ public interface AuthenticationService {
 
 	/**
 	 * Given a user identifier, it returns the user with that id
-	 * 
+	 *
 	 * @param userId
 	 * @return the user with id = userId, null if there is no user with that id
 	 */
@@ -97,16 +99,18 @@ public interface AuthenticationService {
 
 	/**
 	 * Given a username, it returns the user with that username
-	 * 
+	 *
 	 * @param username
 	 * @return the user with the provided username, null if there is no user
 	 *         with that username
 	 */
 	CMUser fetchUserByUsername(String username);
 
+	Optional<Long> fetchUserPosition(Long id);
+
 	/**
 	 * Creates a new user in the database
-	 * 
+	 *
 	 * @param userDTO
 	 *            a DTO that contains some details about new user (username,
 	 *            password, active flag, email ...)
@@ -116,7 +120,7 @@ public interface AuthenticationService {
 
 	/**
 	 * Updates an existent user in the database
-	 * 
+	 *
 	 * @param userDTO
 	 *            a DTO that contains some details about the user that will be
 	 *            updated (username, password, active flag, email ...)
@@ -126,7 +130,7 @@ public interface AuthenticationService {
 
 	/**
 	 * Creates a new group in the database
-	 * 
+	 *
 	 * @param groupDTO
 	 *            a DTO that contains some details about new user (name, active
 	 *            flag, email ...)
@@ -136,7 +140,7 @@ public interface AuthenticationService {
 
 	/**
 	 * Updates an existent group in the database
-	 * 
+	 *
 	 * @param groupDTO
 	 *            a DTO that contains some details about the group that will be
 	 *            updated (name, active flag, email, groupId ...)
@@ -146,30 +150,25 @@ public interface AuthenticationService {
 
 	/**
 	 * Use it to activate/deactivate an existing group
-	 * 
+	 *
 	 * @param active
 	 * @return
 	 */
 	CMGroup setGroupActive(Long groupId, boolean active);
 
 	/**
-	 * 
+	 *
 	 * @return a collection of all groups stored in the database
 	 */
 	Iterable<CMGroup> fetchAllGroups();
 
-	/**
-	 * @param activeOnly
-	 * 
-	 * @return a collection of all users stored in the database
-	 */
-	Iterable<CMUser> fetchAllUsers(boolean activeOnly);
+	PagedElements<CMUser> fetchAllUsers(int offset, int limit, boolean activeOnly);
 
 	Iterable<CMUser> fetchServiceOrPrivilegedUsers();
 
 	/**
 	 * Retrieves a group with the specified id
-	 * 
+	 *
 	 * @param groupId
 	 *            the id of the group that will be retrieved
 	 * @return
@@ -178,7 +177,7 @@ public interface AuthenticationService {
 
 	/**
 	 * Retrieves a group with the specified name
-	 * 
+	 *
 	 * @param groupName
 	 *            the name of the group that will be retrieved
 	 * @return
@@ -188,7 +187,7 @@ public interface AuthenticationService {
 	/**
 	 * Enable the user with the current user id. If already enabled it does
 	 * nothing
-	 * 
+	 *
 	 * @param userId
 	 * @return
 	 */
@@ -197,7 +196,7 @@ public interface AuthenticationService {
 	/**
 	 * Disable the user with the current user id. If already disabled it does
 	 * nothing
-	 * 
+	 *
 	 * @param userId
 	 * @return
 	 */
@@ -205,7 +204,7 @@ public interface AuthenticationService {
 
 	/**
 	 * It changes the status of the role with id = groupId
-	 * 
+	 *
 	 * @param groupId
 	 *            the id of the group whose state will be changed
 	 * @param isActive

@@ -6,10 +6,9 @@
 		extend: 'Ext.data.Model',
 
 		fields: [
-			{ name: 'userid',  type: 'string' },
 			{ name: CMDBuild.core.constants.Proxy.DESCRIPTION, type: 'string' },
-			{ name: CMDBuild.core.constants.Proxy.ID, type: 'string', mapping: 'userid' }, // TODO: waiting for refactor
-			{ name: CMDBuild.core.constants.Proxy.USERNAME, type: 'string' }
+			{ name: CMDBuild.core.constants.Proxy.ID, type: 'int', useNull: true },
+			{ name: CMDBuild.core.constants.Proxy.NAME, type: 'string' }
 		]
 	});
 

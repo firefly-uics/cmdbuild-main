@@ -27,7 +27,7 @@
 				columns: [
 					{
 						text: CMDBuild.Translation.username,
-						dataIndex: CMDBuild.core.constants.Proxy.USERNAME,
+						dataIndex: CMDBuild.core.constants.Proxy.NAME,
 						flex: 1
 					},
 					{

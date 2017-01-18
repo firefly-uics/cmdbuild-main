@@ -1,12 +1,12 @@
 (function () {
 
 	Ext.define('CMDBuild.view.administration.userAndGroup.user.FormPanel', {
-		extend: 'Ext.form.Panel',
+		extend: 'CMDBuild.view.common.panel.gridAndForm.panel.form.FormPanel',
 
 		requires: [
 			'CMDBuild.core.constants.FieldWidths',
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.userAndGroup.user.User'
+			'CMDBuild.proxy.administration.userAndGroup.user.User'
 		],
 
 		mixins: ['CMDBuild.view.common.PanelFunctions'],
@@ -19,7 +19,7 @@
 		/**
 		 * @property {CMDBuild.core.buttons.iconized.state.Double}
 		 */
-		toggleEnableDisableButton: undefined,
+		buttonToggleEnableDisable: undefined,
 
 		/**
 		 * @property {CMDBuild.view.common.field.CMErasableCombo}
@@ -52,11 +52,8 @@
 		wrapper: undefined,
 
 		bodyCls: 'cmdb-gray-panel',
-		border: false,
-		cls: 'cmdb-border-top',
-		frame: false,
+		height: '70%',
 		overflowY: 'auto',
-		split: true,
 
 		layout: {
 			type: 'hbox',
@@ -92,7 +89,7 @@
 									this.delegate.cmfg('onUserAndGroupUserChangePasswordButtonClick');
 								}
 							}),
-							this.toggleEnableDisableButton = Ext.create('CMDBuild.core.buttons.iconized.state.Double', {
+							this.buttonToggleEnableDisable = Ext.create('CMDBuild.core.buttons.iconized.state.Double', {
 								state1text: CMDBuild.Translation.disableUser,
 								state2text: CMDBuild.Translation.enableUser,
 								scope: this,
@@ -145,7 +142,7 @@
 
 						items: [
 							Ext.create('Ext.form.field.Text', {
-								name: CMDBuild.core.constants.Proxy.USERNAME,
+								name: CMDBuild.core.constants.Proxy.NAME,
 								fieldLabel: CMDBuild.Translation.username,
 								labelWidth: CMDBuild.core.constants.FieldWidths.LABEL,
 								maxWidth: CMDBuild.core.constants.FieldWidths.ADMINISTRATION_BIG,
@@ -178,11 +175,11 @@
 								editable: false,
 								allowBlank: true,
 
-								store: CMDBuild.proxy.userAndGroup.user.User.getStoreDefaultGroup(),
+								store: CMDBuild.proxy.administration.userAndGroup.user.User.getStoreDefaultGroup(),
 								queryMode: 'local'
 							}),
 							Ext.create('Ext.form.field.Checkbox', {
-								name: CMDBuild.core.constants.Proxy.IS_ACTIVE,
+								name: CMDBuild.core.constants.Proxy.ACTIVE,
 								fieldLabel: CMDBuild.Translation.enabled,
 								labelWidth: CMDBuild.core.constants.FieldWidths.LABEL
 							}),
@@ -210,7 +207,7 @@
 									}
 								}
 							}),
-							Ext.create('Ext.form.field.Hidden', { name: 'userid' })
+							Ext.create('Ext.form.field.Hidden', { name: CMDBuild.core.constants.Proxy.ID })
 						]
 					}),
 					{ xtype: 'splitter' },

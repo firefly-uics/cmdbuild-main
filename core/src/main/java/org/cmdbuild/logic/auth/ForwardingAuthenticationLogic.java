@@ -1,11 +1,13 @@
 package org.cmdbuild.logic.auth;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.cmdbuild.auth.ClientRequestAuthenticator.ClientRequest;
 import org.cmdbuild.auth.UserStore;
 import org.cmdbuild.auth.acl.CMGroup;
 import org.cmdbuild.auth.user.CMUser;
+import org.cmdbuild.common.utils.PagedElements;
 
 import com.google.common.collect.ForwardingObject;
 
@@ -61,6 +63,11 @@ public abstract class ForwardingAuthenticationLogic extends ForwardingObject imp
 	}
 
 	@Override
+	public Optional<Long> getUserPosition(final Long id) {
+		return delegate().getUserPosition(id);
+	}
+
+	@Override
 	public CMUser createUser(final UserDTO userDTO) {
 		return delegate().createUser(userDTO);
 	}
@@ -91,8 +98,8 @@ public abstract class ForwardingAuthenticationLogic extends ForwardingObject imp
 	}
 
 	@Override
-	public Iterable<CMUser> getAllUsers(final boolean activeOnly) {
-		return delegate().getAllUsers(activeOnly);
+	public PagedElements<CMUser> getAllUsers(final int offset, final int limit, final boolean activeOnly) {
+		return delegate().getAllUsers(offset, limit, activeOnly);
 	}
 
 	@Override

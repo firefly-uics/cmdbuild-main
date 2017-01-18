@@ -94,8 +94,6 @@
 
 				this.cmfg('onUserAndGroupAccordionSelected');
 
-				this.view.getLayout().getActiveItem().fireEvent('show'); // Manual show event fire because was already selected
-
 				this.onModuleInit(node); // Custom callParent() implementation
 			}
 		},

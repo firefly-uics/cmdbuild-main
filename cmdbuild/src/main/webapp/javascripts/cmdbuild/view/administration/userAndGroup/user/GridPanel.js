@@ -1,21 +1,17 @@
 (function () {
 
 	Ext.define('CMDBuild.view.administration.userAndGroup.user.GridPanel', {
-		extend: 'Ext.grid.Panel',
+		extend: 'CMDBuild.view.common.panel.gridAndForm.panel.grid.GridPanel',
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.userAndGroup.user.User'
+			'CMDBuild.proxy.administration.userAndGroup.user.User'
 		],
 
 		/**
 		 * @cfg {CMDBuild.controller.administration.userAndGroup.user.User}
 		 */
 		delegate: undefined,
-
-		border: false,
-		cls: 'cmdb-border-bottom',
-		frame: false,
 
 		/**
 		 * @returns {Void}
@@ -24,36 +20,47 @@
 		 */
 		initComponent: function () {
 			Ext.apply(this, {
+				store: CMDBuild.proxy.administration.userAndGroup.user.User.getStore()
+			});
+
+			Ext.apply(this, {
+				dockedItems: [
+					Ext.create('Ext.toolbar.Paging', {
+						dock: 'bottom',
+						itemId: CMDBuild.core.constants.Proxy.TOOLBAR_BOTTOM,
+						store: this.getStore(),
+						displayInfo: true,
+						displayMsg: '{0} - {1} ' + CMDBuild.Translation.of + ' {2}',
+						emptyMsg: CMDBuild.Translation.noTopicsToDisplay
+					})
+				],
 				columns: [
 					{
-						dataIndex: CMDBuild.core.constants.Proxy.USERNAME,
-						text: CMDBuild.Translation.username,
-						flex: 1
+						dataIndex: CMDBuild.core.constants.Proxy.NAME,
+						text: CMDBuild.Translation.username
 					},
 					{
 						dataIndex: CMDBuild.core.constants.Proxy.DESCRIPTION,
-						text: CMDBuild.Translation.descriptionLabel,
-						flex: 1
+						text: CMDBuild.Translation.descriptionLabel
 					},
 					Ext.create('Ext.ux.grid.column.Active', {
-						dataIndex: CMDBuild.core.constants.Proxy.IS_ACTIVE,
+						dataIndex: CMDBuild.core.constants.Proxy.ACTIVE,
 						text: CMDBuild.Translation.enabled,
-						width: 60,
+						maxWidth: 60,
 						align: 'center',
 						sortable: false,
 						hideable: false,
 						menuDisabled: true,
 						fixed: true
 					})
-				],
-				store: CMDBuild.proxy.userAndGroup.user.User.getStore()
+				]
 			});
 
 			this.callParent(arguments);
 		},
 
 		listeners: {
-			itemdblclick: function (grid, record, item, index, e, eOpts) {
+			itemdblclick: function (panel, record, item, index, e, eOpts) {
 				this.delegate.cmfg('onUserAndGroupUserItemDoubleClick');
 			},
 			select: function (row, record, index) {

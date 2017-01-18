@@ -2,11 +2,13 @@ package org.cmdbuild.logic.auth;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.cmdbuild.auth.ClientRequestAuthenticator.ClientRequest;
 import org.cmdbuild.auth.UserStore;
 import org.cmdbuild.auth.acl.CMGroup;
 import org.cmdbuild.auth.user.CMUser;
+import org.cmdbuild.common.utils.PagedElements;
 import org.cmdbuild.logic.Logic;
 
 /**
@@ -59,6 +61,8 @@ public interface AuthenticationLogic extends Logic {
 
 	CMUser getUserWithId(Long userId);
 
+	Optional<Long> getUserPosition(Long id);
+
 	CMUser createUser(UserDTO userDTO);
 
 	CMUser updateUser(UserDTO userDTO);
@@ -71,7 +75,7 @@ public interface AuthenticationLogic extends Logic {
 
 	Iterable<CMGroup> getAllGroups();
 
-	Iterable<CMUser> getAllUsers(boolean activeOnly);
+	PagedElements<CMUser> getAllUsers(int offset, int limit, boolean activeOnly);
 
 	Iterable<CMUser> getServiceOrPrivilegedUsers();
 

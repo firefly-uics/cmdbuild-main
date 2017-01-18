@@ -621,6 +621,7 @@
 		TOKEN: 'token',
 		TOOLBAR_BOTTOM: 'toolbarBottom',
 		TOOLBAR_TOP: 'toolbarTop',
+		TOTAL: 'total',
 		TRANSLATION_UUID: 'translationUuid',
 		TRANSLATIONS: 'translations',
 		TREE_NAME: 'treeName',

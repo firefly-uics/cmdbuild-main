@@ -2,19 +2,10 @@ package org.cmdbuild.servlets.json.serializers;
 
 import static java.util.Collections.emptyList;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.cmdbuild.auth.acl.CMGroup.GroupType.admin;
 import static org.cmdbuild.auth.acl.CMGroup.GroupType.normal;
 import static org.cmdbuild.auth.acl.CMGroup.GroupType.restrictedAdmin;
-import static org.cmdbuild.servlets.json.CommunicationConstants.DEFAULT_GROUP;
-import static org.cmdbuild.servlets.json.CommunicationConstants.DESCRIPTION;
-import static org.cmdbuild.servlets.json.CommunicationConstants.EMAIL;
-import static org.cmdbuild.servlets.json.CommunicationConstants.IS_ACTIVE;
 import static org.cmdbuild.servlets.json.CommunicationConstants.META;
-import static org.cmdbuild.servlets.json.CommunicationConstants.PRIVILEGED;
-import static org.cmdbuild.servlets.json.CommunicationConstants.SERVICE;
-import static org.cmdbuild.servlets.json.CommunicationConstants.USER_ID;
-import static org.cmdbuild.servlets.json.CommunicationConstants.USER_NAME;
 import static org.cmdbuild.spring.SpringIntegrationUtils.applicationContext;
 
 import java.text.SimpleDateFormat;
@@ -178,30 +169,6 @@ public class Serializer {
 			jsonGroupList.put(row);
 		}
 		return jsonGroupList;
-	}
-
-	public JSONObject serialize(final CMUser user) throws JSONException {
-		final JSONObject row = new JSONObject();
-		row.put(USER_ID, user.getId());
-		row.put(USER_NAME, user.getUsername());
-		row.put(DESCRIPTION, user.getDescription());
-		row.put(EMAIL, user.getEmail());
-		row.put(IS_ACTIVE, user.isActive());
-		row.put(SERVICE, user.isService());
-		row.put(PRIVILEGED, user.isPrivileged());
-		final String defaultGroupName = user.getDefaultGroupName();
-		if (isNotBlank(defaultGroupName)) {
-			row.put(DEFAULT_GROUP, authenticationLogic.getGroupInfoForGroup(defaultGroupName).getId());
-		}
-		return row;
-	}
-
-	public JSONArray serializeUsers(final Iterable<CMUser> users) throws JSONException {
-		final JSONArray userList = new JSONArray();
-		for (final CMUser user : users) {
-			userList.put(serialize(user));
-		}
-		return userList;
 	}
 
 	public void addAttachmentsData(final JSONObject jsonTable, final CMClass cmClass, final DmsLogic dmsLogic,

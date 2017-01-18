@@ -12,6 +12,7 @@ import static org.cmdbuild.dao.query.clause.where.SimpleWhereClause.condition;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import org.cmdbuild.auth.AuthenticationService;
 import org.cmdbuild.auth.AuthenticationService.ClientAuthenticatorResponse;
@@ -27,6 +28,7 @@ import org.cmdbuild.auth.context.NullPrivilegeContext;
 import org.cmdbuild.auth.user.AuthenticatedUser;
 import org.cmdbuild.auth.user.CMUser;
 import org.cmdbuild.auth.user.OperationUser;
+import org.cmdbuild.common.utils.PagedElements;
 import org.cmdbuild.dao.entrytype.CMClass;
 import org.cmdbuild.dao.query.CMQueryRow;
 import org.cmdbuild.dao.view.CMDataView;
@@ -331,6 +333,11 @@ public class DefaultAuthenticationLogic implements AuthenticationLogic {
 	}
 
 	@Override
+	public Optional<Long> getUserPosition(final Long id) {
+		return authService.fetchUserPosition(id);
+	}
+
+	@Override
 	@Transactional
 	public CMUser createUser(final UserDTO userDTO) {
 		final ModelValidator<UserDTO> validator = new UserDTOCreationValidator();
@@ -389,8 +396,8 @@ public class DefaultAuthenticationLogic implements AuthenticationLogic {
 	}
 
 	@Override
-	public Iterable<CMUser> getAllUsers(final boolean activeOnly) {
-		return authService.fetchAllUsers(activeOnly);
+	public PagedElements<CMUser> getAllUsers(final int offset, final int limit, final boolean activeOnly) {
+		return authService.fetchAllUsers(offset, limit, activeOnly);
 	}
 
 	@Override

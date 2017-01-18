@@ -1,7 +1,7 @@
 (function () {
 
 	Ext.define('CMDBuild.view.administration.userAndGroup.user.UserView', {
-		extend: 'Ext.panel.Panel',
+		extend: 'CMDBuild.view.common.panel.gridAndForm.GridAndFormView',
 
 		requires: ['CMDBuild.core.constants.Proxy'],
 
@@ -9,6 +9,11 @@
 		 * @cfg {CMDBuild.controller.administration.userAndGroup.user.User}
 		 */
 		delegate: undefined,
+
+		/**
+		 * @cfg {Boolean}
+		 */
+		enableTools: false,
 
 		/**
 		 * @property {CMDBuild.view.administration.userAndGroup.user.FormPanel}
@@ -28,7 +33,6 @@
 		baseTitle: CMDBuild.Translation.users,
 		bodyCls: 'cmdb-gray-panel-no-padding',
 		border: false,
-		frame: false,
 		layout: 'border',
 
 		/**
@@ -68,16 +72,8 @@
 					})
 				],
 				items: [
-					this.grid = Ext.create('CMDBuild.view.administration.userAndGroup.user.GridPanel', {
-						delegate: this.delegate,
-						region: 'north',
-						split: true,
-						height: '30%'
-					}),
-					this.form = Ext.create('CMDBuild.view.administration.userAndGroup.user.FormPanel', {
-						delegate: this.delegate,
-						region: 'center'
-					})
+					this.grid = Ext.create('CMDBuild.view.administration.userAndGroup.user.GridPanel', { delegate: this.delegate }),
+					this.form = Ext.create('CMDBuild.view.administration.userAndGroup.user.FormPanel', { delegate: this.delegate })
 				]
 			});
 

@@ -2,7 +2,7 @@
 
 	Ext.require('CMDBuild.core.constants.Proxy');
 
-	Ext.define('CMDBuild.model.userAndGroup.user.DefaultGroup', {
+	Ext.define('CMDBuild.model.administration.userAndGroup.user.DefaultGroup', {
 		extend: 'Ext.data.Model',
 
 		fields: [

@@ -1,9 +1,12 @@
 package org.cmdbuild.auth;
 
+import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.cmdbuild.auth.user.AuthenticatedUserImpl.ANONYMOUS_USER;
 import static org.cmdbuild.common.Constants.ROLE_CLASS_NAME;
+import static org.cmdbuild.common.utils.PagedElements.empty;
 import static org.cmdbuild.dao.query.clause.AnyAttribute.anyAttribute;
 import static org.cmdbuild.dao.query.clause.QueryAliasAttribute.attribute;
 import static org.cmdbuild.dao.query.clause.alias.Utils.as;
@@ -11,9 +14,11 @@ import static org.cmdbuild.dao.query.clause.join.Over.over;
 import static org.cmdbuild.dao.query.clause.where.EqualsOperatorAndValue.eq;
 import static org.cmdbuild.dao.query.clause.where.SimpleWhereClause.condition;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.apache.commons.lang3.Validate;
 import org.cmdbuild.auth.ClientRequestAuthenticator.ClientRequest;
@@ -26,6 +31,7 @@ import org.cmdbuild.auth.user.CMUser;
 import org.cmdbuild.auth.user.OperationUser;
 import org.cmdbuild.common.digest.Base64Digester;
 import org.cmdbuild.common.digest.Digester;
+import org.cmdbuild.common.utils.PagedElements;
 import org.cmdbuild.dao.Const.Role;
 import org.cmdbuild.dao.Const.User;
 import org.cmdbuild.dao.Const.UserRole;
@@ -50,7 +56,7 @@ public class DefaultAuthenticationService implements AuthenticationService {
 
 	private static final String ID = "Id";
 
-	public interface Configuration {
+	public static interface Configuration {
 
 		/**
 		 * Returns the names of the authenticators that should be activated, or
@@ -62,14 +68,17 @@ public class DefaultAuthenticationService implements AuthenticationService {
 
 	}
 
-	private interface FetchCallback {
+	private static interface FetchCallback {
 
 		void foundUser(AuthenticatedUser authUser);
 	}
 
+	private static final UserFetcher[] NO_USER_FETCHERS = new UserFetcher[0];
+	private static final PagedElements<CMUser> NO_USERS = empty();
+
 	private PasswordAuthenticator[] passwordAuthenticators;
 	private ClientRequestAuthenticator[] clientRequestAuthenticators;
-	private UserFetcher[] userFetchers;
+	private final Collection<UserFetcher> userFetchers;
 	private GroupFetcher groupFetcher;
 	private final CMDataView view;
 	private final Supplier<OperationUser> currentUser;
@@ -92,7 +101,7 @@ public class DefaultAuthenticationService implements AuthenticationService {
 		this.authenticatorNames = conf.getActiveAuthenticators();
 		passwordAuthenticators = new PasswordAuthenticator[0];
 		clientRequestAuthenticators = new ClientRequestAuthenticator[0];
-		userFetchers = new UserFetcher[0];
+		userFetchers = new ArrayList<>();
 		view = dataView;
 		this.currentUser = currentUser;
 	}
@@ -112,7 +121,8 @@ public class DefaultAuthenticationService implements AuthenticationService {
 	@Override
 	public void setUserFetchers(final UserFetcher... userFetchers) {
 		Validate.noNullElements(userFetchers);
-		this.userFetchers = userFetchers;
+		this.userFetchers.clear();
+		this.userFetchers.addAll(asList(defaultIfNull(userFetchers, NO_USER_FETCHERS)));
 	}
 
 	@Override
@@ -256,6 +266,14 @@ public class DefaultAuthenticationService implements AuthenticationService {
 	}
 
 	@Override
+	public Optional<Long> fetchUserPosition(final Long id) {
+		return userFetchers.stream() //
+				.findFirst() //
+				.map(input -> input.fetchUserPosition(id)) //
+				.orElse(Optional.empty());
+	}
+
+	@Override
 	public CMUser createUser(final UserDTO userDTO) {
 		final Digester digester = new Base64Digester();
 		final CMCard createdUserCard = view.createCardFor(userClass()) //
@@ -376,11 +394,11 @@ public class DefaultAuthenticationService implements AuthenticationService {
 	}
 
 	@Override
-	public Iterable<CMUser> fetchAllUsers(final boolean activeOnly) {
-		for (final UserFetcher uf : userFetchers) {
-			return uf.fetchAllUsers(activeOnly);
-		}
-		return Lists.newArrayList();
+	public PagedElements<CMUser> fetchAllUsers(final int offset, final int limit, final boolean activeOnly) {
+		return userFetchers.stream() //
+				.findFirst() //
+				.map(input -> input.fetchAllUsers(offset, limit, activeOnly)) //
+				.orElse(NO_USERS);
 	}
 
 	@Override
