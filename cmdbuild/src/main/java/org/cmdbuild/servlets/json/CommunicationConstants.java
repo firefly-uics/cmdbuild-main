@@ -73,7 +73,8 @@ public class CommunicationConstants {
 			DB_TYPE = "db_type", //
 			DEFAULT = "Default", //
 			DEFAULT_ACCOUNT = "defaultAccount", //
-			DEFAULT_GROUP = "defaultgroup", //
+			DEFAULT_GROUP = "defaultGroup", //
+			DEFAULT_GROUP_ID = "defaultGroupId", //
 			DEFAULT_VALUE = "defaultvalue", //
 			DELAY = "delay", //
 			DELETE = "delete", //
@@ -257,6 +258,7 @@ public class CommunicationConstants {
 			REPORT_PARAMETERS = "reportParameters", //
 			RESULT = "result", //
 			RESULTS = "results", //
+			RESPONSE = "response", //
 			ROOT_REFERENCE = "rootreference", //
 			ROOT = "root", //
 			ROWS = "rows", //

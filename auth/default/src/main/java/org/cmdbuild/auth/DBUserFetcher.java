@@ -88,10 +88,11 @@ public abstract class DBUserFetcher implements UserFetcher, LoggingSupport {
 	public Optional<Long> fetchUserPosition(final long userId) {
 		final Long output = view().select(anyAttribute(userClass())) //
 				.from(userClass()) //
+				.orderBy(attribute(userClass(), userNameAttribute()), ASC) //
 				.numbered(condition(attribute(userClass(), userClass().getKeyAttributeName()), eq(userId))) //
 				.run() //
 				.getOnlyRow() //
-				.getNumber();
+				.getNumber() - 1L;
 		return Optional.of(output);
 	}
 

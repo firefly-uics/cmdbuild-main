@@ -14,7 +14,7 @@ import static org.cmdbuild.servlets.json.CommunicationConstants.ACTIVE_ONLY;
 import static org.cmdbuild.servlets.json.CommunicationConstants.ALREADY_ASSOCIATED;
 import static org.cmdbuild.servlets.json.CommunicationConstants.ATTRIBUTES;
 import static org.cmdbuild.servlets.json.CommunicationConstants.CLASS_ID;
-import static org.cmdbuild.servlets.json.CommunicationConstants.DEFAULT_GROUP;
+import static org.cmdbuild.servlets.json.CommunicationConstants.DEFAULT_GROUP_ID;
 import static org.cmdbuild.servlets.json.CommunicationConstants.DESCRIPTION;
 import static org.cmdbuild.servlets.json.CommunicationConstants.DISABLE;
 import static org.cmdbuild.servlets.json.CommunicationConstants.ELEMENTS;
@@ -35,7 +35,7 @@ import static org.cmdbuild.servlets.json.CommunicationConstants.PRIVILEGE_MODE;
 import static org.cmdbuild.servlets.json.CommunicationConstants.PRIVILEGE_OBJ_ID;
 import static org.cmdbuild.servlets.json.CommunicationConstants.PRIVILEGE_READ;
 import static org.cmdbuild.servlets.json.CommunicationConstants.PRIVILEGE_WRITE;
-import static org.cmdbuild.servlets.json.CommunicationConstants.RESULT;
+import static org.cmdbuild.servlets.json.CommunicationConstants.RESPONSE;
 import static org.cmdbuild.servlets.json.CommunicationConstants.SERVICE;
 import static org.cmdbuild.servlets.json.CommunicationConstants.START;
 import static org.cmdbuild.servlets.json.CommunicationConstants.STARTING_CLASS;
@@ -459,7 +459,7 @@ public class ModSecurity extends JSONBaseWithSpringContext {
 			return delegate.getDescription();
 		}
 
-		@JsonProperty(DEFAULT_GROUP)
+		@JsonProperty(DEFAULT_GROUP_ID)
 		public Long getDefaultGroup() {
 			final String value = delegate.getDefaultGroupName();
 			return isBlank(value) ? null : authenticationLogic.getGroupInfoForGroup(value).getId();
@@ -558,7 +558,7 @@ public class ModSecurity extends JSONBaseWithSpringContext {
 			@Parameter(value = PASSWORD, required = false) final String password, //
 			@Parameter(value = EMAIL, required = false) final String email, //
 			@Parameter(ACTIVE) final boolean isActive, //
-			@Parameter(DEFAULT_GROUP) final Long defaultGroupId, //
+			@Parameter(DEFAULT_GROUP_ID) final Long defaultGroupId, //
 			@Parameter(value = SERVICE, required = false) final boolean service, //
 			@Parameter(value = PRIVILEGED, required = false) final boolean privileged //
 	) throws AuthException {
@@ -606,7 +606,7 @@ public class ModSecurity extends JSONBaseWithSpringContext {
 		final JSONArray jsonGroupList = new Serializer(authLogic()).serializeGroupsForUser(user, groupsForLogin);
 
 		final JSONObject out = new JSONObject();
-		out.put(RESULT, jsonGroupList);
+		out.put(RESPONSE, jsonGroupList);
 		return out;
 	}
 
