@@ -172,7 +172,7 @@ public class ModSecurity extends JSONBaseWithSpringContext {
 	public JsonResponse getGroupUserList( //
 			@Parameter(START) final int offset, //
 			@Parameter(LIMIT) final int limit, //
-			@Parameter(GROUP_ID) final Long groupId, //
+			@Parameter(ID) final Long groupId, //
 			@Parameter(ALREADY_ASSOCIATED) final boolean associated) {
 
 		final AuthenticationLogic authLogic = authLogic();
@@ -206,7 +206,7 @@ public class ModSecurity extends JSONBaseWithSpringContext {
 	@JSONExported
 	public void saveGroupUserList( //
 			@Parameter(value = USERS, required = false) final String users, //
-			@Parameter(GROUP_ID) final Long groupId) { //
+			@Parameter(ID) final Long groupId) { //
 
 		final List<Long> newUserIds = Lists.newArrayList();
 		if (!users.isEmpty()) {
