@@ -5,7 +5,7 @@
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.userAndGroup.group.tabs.privileges.Filter'
+			'CMDBuild.proxy.administration.userAndGroup.group.tabs.privileges.Filter'
 		],
 
 		/**
@@ -78,7 +78,7 @@
 						}
 					})
 				],
-				store: CMDBuild.proxy.userAndGroup.group.tabs.privileges.Filter.getStore()
+				store: CMDBuild.proxy.administration.userAndGroup.group.tabs.privileges.Filter.getStore()
 			});
 
 			this.callParent(arguments);

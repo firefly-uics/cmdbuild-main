@@ -6,8 +6,8 @@
 		requires: [
 			'CMDBuild.core.Message',
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.userAndGroup.group.Group',
-			'CMDBuild.proxy.userAndGroup.group.tabs.UserInterface'
+			'CMDBuild.proxy.administration.userAndGroup.group.Group',
+			'CMDBuild.proxy.administration.userAndGroup.group.tabs.UserInterface'
 		],
 
 		/**
@@ -27,7 +27,7 @@
 		],
 
 		/**
-		 * @property {CMDBuild.model.userAndGroup.group.userInterface.UserInterface}
+		 * @property {CMDBuild.model.administration.userAndGroup.group.userInterface.UserInterface}
 		 *
 		 * @private
 		 */
@@ -101,7 +101,7 @@
 			 */
 			configurationSet: function (parameters) {
 				if (!Ext.Object.isEmpty(parameters)) {
-					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.userAndGroup.group.userInterface.UserInterface';
+					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.administration.userAndGroup.group.userInterface.UserInterface';
 					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'configuration';
 
 					this.propertyManageSet(parameters);
@@ -132,7 +132,7 @@
 		 * TODO: waiting for refactor (crud)
 		 */
 		onUserAndGroupGroupTabUserInterfaceGroupSelected: function () {
-			CMDBuild.proxy.userAndGroup.group.Group.read({
+			CMDBuild.proxy.administration.userAndGroup.group.Group.read({
 				scope: this,
 				success: function (response, options, decodedResponse) {
 					decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.GROUPS];
@@ -164,7 +164,7 @@
 			params[CMDBuild.core.constants.Proxy.ID] = this.cmfg('userAndGroupGroupSelectedGroupGet', CMDBuild.core.constants.Proxy.ID);
 			params[CMDBuild.core.constants.Proxy.UI_CONFIGURATION] = Ext.encode(this.configurationGet().getData());
 
-			CMDBuild.proxy.userAndGroup.group.tabs.UserInterface.update({
+			CMDBuild.proxy.administration.userAndGroup.group.tabs.UserInterface.update({
 				params: params,
 				scope: this,
 				success: function (response, options, decodedResponse) {
@@ -185,7 +185,7 @@
 				var params = {};
 				params[CMDBuild.core.constants.Proxy.ID] = this.cmfg('userAndGroupGroupSelectedGroupGet', CMDBuild.core.constants.Proxy.ID);
 
-				CMDBuild.proxy.userAndGroup.group.tabs.UserInterface.read({
+				CMDBuild.proxy.administration.userAndGroup.group.tabs.UserInterface.read({
 					params: params,
 					scope: this,
 					success: function (response, options, decodedResponse) {

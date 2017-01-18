@@ -1,11 +1,11 @@
 (function () {
 
-	Ext.define('CMDBuild.proxy.userAndGroup.group.tabs.privileges.Classes', {
+	Ext.define('CMDBuild.proxy.administration.userAndGroup.group.tabs.privileges.Classes', {
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.proxy.index.Json',
-			'CMDBuild.model.userAndGroup.group.privileges.GridRecord'
+			'CMDBuild.model.administration.userAndGroup.group.privileges.GridRecord'
 		],
 
 		singleton: true,
@@ -16,7 +16,7 @@
 		getStore: function () {
 			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.GROUP, {
 				autoLoad: false,
-				model: 'CMDBuild.model.userAndGroup.group.privileges.GridRecord',
+				model: 'CMDBuild.model.administration.userAndGroup.group.privileges.GridRecord',
 				proxy: {
 					type: 'ajax',
 					url: CMDBuild.proxy.index.Json.privilege.classes.readAll,

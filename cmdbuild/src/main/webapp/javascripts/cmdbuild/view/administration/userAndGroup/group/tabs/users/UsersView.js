@@ -11,12 +11,12 @@
 		delegate: undefined,
 
 		/**
-		 * @property {CMDBuild.view.administration.userAndGroup.group.tabs.users.GridPanel}
+		 * @property {CMDBuild.view.administration.userAndGroup.group.tabs.users.AvailableGridPanel}
 		 */
 		availableGrid: undefined,
 
 		/**
-		 * @property {CMDBuild.view.administration.userAndGroup.group.tabs.users.GridPanel}
+		 * @property {CMDBuild.view.administration.userAndGroup.group.tabs.users.SelectedGridPanel}
 		 */
 		selectedGrid: undefined,
 
@@ -63,9 +63,8 @@
 					})
 				],
 				items: [
-					this.availableGrid = Ext.create('CMDBuild.view.administration.userAndGroup.group.tabs.users.GridPanel', {
+					this.availableGrid = Ext.create('CMDBuild.view.administration.userAndGroup.group.tabs.users.AvailableGridPanel', {
 						delegate: this.delegate,
-						title: CMDBuild.Translation.availableUsers,
 
 						viewConfig: {
 							plugins: {
@@ -76,9 +75,8 @@
 						}
 					}),
 					{ xtype: 'splitter' },
-					this.selectedGrid = Ext.create('CMDBuild.view.administration.userAndGroup.group.tabs.users.GridPanel', {
+					this.selectedGrid = Ext.create('CMDBuild.view.administration.userAndGroup.group.tabs.users.SelectedGridPanel', {
 						delegate: this.delegate,
-						title: CMDBuild.Translation.selectedUsers,
 
 						viewConfig: {
 							plugins: {

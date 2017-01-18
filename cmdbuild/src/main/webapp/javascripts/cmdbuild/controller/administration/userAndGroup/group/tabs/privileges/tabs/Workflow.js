@@ -6,7 +6,7 @@
 		requires: [
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.core.Message',
-			'CMDBuild.proxy.userAndGroup.group.tabs.privileges.Workflow'
+			'CMDBuild.proxy.administration.userAndGroup.group.tabs.privileges.Workflow'
 		],
 
 		mixins: ['CMDBuild.controller.common.field.filter.advanced.Advanced'], // Import fieldConfiguration, filter, selectedClass property methods
@@ -103,7 +103,7 @@
 				params[CMDBuild.core.constants.Proxy.FILTER] = Ext.encode(resultObject.filter);
 				params[CMDBuild.core.constants.Proxy.GROUP_ID] = this.cmfg('userAndGroupGroupSelectedGroupGet', CMDBuild.core.constants.Proxy.ID);
 
-				CMDBuild.proxy.userAndGroup.group.tabs.privileges.Workflow.setRowAndColumn({
+				CMDBuild.proxy.administration.userAndGroup.group.tabs.privileges.Workflow.setRowAndColumn({
 					params: params,
 					scope: this,
 					success: function (response, options, decodedResponse) {
@@ -120,7 +120,7 @@
 		},
 
 		/**
-		 * @param {CMDBuild.model.userAndGroup.group.privileges.GridRecord} record
+		 * @param {CMDBuild.model.administration.userAndGroup.group.privileges.GridRecord} record
 		 *
 		 * @returns {Void}
 		 */
@@ -139,7 +139,7 @@
 		},
 
 		/**
-		 * @param {CMDBuild.model.userAndGroup.group.privileges.GridRecord} record
+		 * @param {CMDBuild.model.administration.userAndGroup.group.privileges.GridRecord} record
 		 *
 		 * @returns {Void}
 		 */
@@ -171,7 +171,7 @@
 				params['privilegedObjectId'] = this.view.store.getAt(parameters.rowIndex).get(CMDBuild.core.constants.Proxy.ID);
 				params[CMDBuild.core.constants.Proxy.GROUP_ID] = this.cmfg('userAndGroupGroupSelectedGroupGet', CMDBuild.core.constants.Proxy.ID);
 
-				CMDBuild.proxy.userAndGroup.group.tabs.privileges.Workflow.update({
+				CMDBuild.proxy.administration.userAndGroup.group.tabs.privileges.Workflow.update({
 					params: params,
 					scope: this,
 					success: function (response, options, decodedResponse) {
@@ -194,7 +194,7 @@
 		},
 
 		/**
-		 * @param {CMDBuild.model.userAndGroup.group.privileges.GridRecord} record
+		 * @param {CMDBuild.model.administration.userAndGroup.group.privileges.GridRecord} record
 		 *
 		 * @returns {Void}
 		 *
@@ -209,7 +209,7 @@
 				params[CMDBuild.core.constants.Proxy.GROUP_ID] = this.cmfg('userAndGroupGroupSelectedGroupGet', CMDBuild.core.constants.Proxy.ID);
 
 				// Set empty filter to clear value
-				CMDBuild.proxy.userAndGroup.group.tabs.privileges.Workflow.setRowAndColumn({
+				CMDBuild.proxy.administration.userAndGroup.group.tabs.privileges.Workflow.setRowAndColumn({
 					params: params,
 					scope: this,
 					success: function (response, options, decodedResponse) {

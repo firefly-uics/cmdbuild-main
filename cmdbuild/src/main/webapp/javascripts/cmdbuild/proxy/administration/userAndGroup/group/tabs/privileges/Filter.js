@@ -1,11 +1,11 @@
 (function () {
 
-	Ext.define('CMDBuild.proxy.userAndGroup.group.tabs.privileges.Workflow', {
+	Ext.define('CMDBuild.proxy.administration.userAndGroup.group.tabs.privileges.Filter', {
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.proxy.index.Json',
-			'CMDBuild.model.userAndGroup.group.privileges.GridRecord'
+			'CMDBuild.model.administration.userAndGroup.group.privileges.GridRecord'
 		],
 
 		singleton: true,
@@ -16,10 +16,10 @@
 		getStore: function () {
 			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.GROUP, {
 				autoLoad: false,
-				model: 'CMDBuild.model.userAndGroup.group.privileges.GridRecord',
+				model: 'CMDBuild.model.administration.userAndGroup.group.privileges.GridRecord',
 				proxy: {
 					type: 'ajax',
-					url: CMDBuild.proxy.index.Json.privilege.workflow.readAll,
+					url: CMDBuild.proxy.index.Json.privilege.filter.readAll,
 					reader: {
 						type: 'json',
 						root: CMDBuild.core.constants.Proxy.PRIVILEGES
@@ -41,23 +41,10 @@
 		 *
 		 * @returns {Void}
 		 */
-		setRowAndColumn: function (parameters) {
-			parameters = Ext.isEmpty(parameters) ? {} : parameters;
-
-			Ext.apply(parameters, { url: CMDBuild.proxy.index.Json.privilege.workflow.setRowAndColumnPrivileges });
-
-			CMDBuild.global.Cache.request(CMDBuild.core.constants.Proxy.GROUP, parameters);
-		},
-
-		/**
-		 * @param {Object} parameters
-		 *
-		 * @returns {Void}
-		 */
 		update: function (parameters) {
 			parameters = Ext.isEmpty(parameters) ? {} : parameters;
 
-			Ext.apply(parameters, { url: CMDBuild.proxy.index.Json.privilege.workflow.update });
+			Ext.apply(parameters, { url: CMDBuild.proxy.index.Json.privilege.filter.update });
 
 			CMDBuild.global.Cache.request(CMDBuild.core.constants.Proxy.GROUP, parameters, true);
 		}

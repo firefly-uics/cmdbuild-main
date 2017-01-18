@@ -5,7 +5,7 @@
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.userAndGroup.group.tabs.privileges.Classes'
+			'CMDBuild.proxy.administration.userAndGroup.group.tabs.privileges.Classes'
 		],
 
 		/**
@@ -29,7 +29,7 @@
 		form: undefined,
 
 		/**
-		 * @cfg {CMDBuild.model.userAndGroup.group.privileges.GridRecord}
+		 * @cfg {CMDBuild.model.administration.userAndGroup.group.privileges.GridRecord}
 		 */
 		record: undefined,
 
@@ -70,7 +70,7 @@
 			params[CMDBuild.core.constants.Proxy.CLASS_ID] = this.record.get(CMDBuild.core.constants.Proxy.ID);;
 			params[CMDBuild.core.constants.Proxy.GROUP_ID] = this.cmfg('userAndGroupGroupSelectedGroupGet', CMDBuild.core.constants.Proxy.ID);
 
-			CMDBuild.proxy.userAndGroup.group.tabs.privileges.Classes.updateUIConfiguration({
+			CMDBuild.proxy.administration.userAndGroup.group.tabs.privileges.Classes.updateUIConfiguration({
 				params: params,
 				scope: this,
 				success: function (response, options, decodedResponse) {
@@ -91,7 +91,7 @@
 			params[CMDBuild.core.constants.Proxy.CLASS_ID] = this.record.get(CMDBuild.core.constants.Proxy.ID);;
 			params[CMDBuild.core.constants.Proxy.GROUP_ID] = this.cmfg('userAndGroupGroupSelectedGroupGet', CMDBuild.core.constants.Proxy.ID);
 
-			CMDBuild.proxy.userAndGroup.group.tabs.privileges.Classes.readUIConfiguration({
+			CMDBuild.proxy.administration.userAndGroup.group.tabs.privileges.Classes.readUIConfiguration({
 				params: params,
 				scope: this,
 				success: function (response, options, decodedResponse) {
@@ -103,7 +103,7 @@
 		},
 
 		/**
-		 * @param {CMDBuild.model.userAndGroup.group.privileges.GridRecord} record
+		 * @param {CMDBuild.model.administration.userAndGroup.group.privileges.GridRecord} record
 		 *
 		 * @returns {Void}
 		 */

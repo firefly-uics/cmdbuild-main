@@ -5,7 +5,7 @@
 	/**
 	 * @link CMDBuild.model.core.configuration.builder.userInterface.DisabledModules
 	 */
-	Ext.define('CMDBuild.model.userAndGroup.group.userInterface.DisabledModules', {
+	Ext.define('CMDBuild.model.administration.userAndGroup.group.userInterface.DisabledModules', {
 		extend: 'Ext.data.Model',
 
 		fields: [

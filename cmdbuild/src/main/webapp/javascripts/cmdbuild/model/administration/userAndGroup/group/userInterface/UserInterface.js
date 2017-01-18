@@ -2,14 +2,14 @@
 
 	Ext.require('CMDBuild.core.constants.Proxy');
 
-	Ext.define('CMDBuild.model.userAndGroup.group.userInterface.UserInterface', {
+	Ext.define('CMDBuild.model.administration.userAndGroup.group.userInterface.UserInterface', {
 		extend: 'Ext.data.Model',
 
 		fields: [
 			{ name: CMDBuild.core.constants.Proxy.CLOUD_ADMIN, type: 'boolean' },
-			{ name: CMDBuild.core.constants.Proxy.DISABLED_CARD_TABS, type: 'auto', defaultValue: [] }, // {CMDBuild.model.userAndGroup.group.userInterface.DisabledCardTabs}
-			{ name: CMDBuild.core.constants.Proxy.DISABLED_MODULES, type: 'auto', defaultValue: [] }, // {CMDBuild.model.userAndGroup.group.userInterface.DisabledModules}
-			{ name: CMDBuild.core.constants.Proxy.DISABLED_PROCESS_TABS, type: 'auto', defaultValue: [] }, // {CMDBuild.model.userAndGroup.group.userInterface.DisabledProcessTabs}
+			{ name: CMDBuild.core.constants.Proxy.DISABLED_CARD_TABS, type: 'auto', defaultValue: [] }, // {CMDBuild.model.administration.userAndGroup.group.userInterface.DisabledCardTabs}
+			{ name: CMDBuild.core.constants.Proxy.DISABLED_MODULES, type: 'auto', defaultValue: [] }, // {CMDBuild.model.administration.userAndGroup.group.userInterface.DisabledModules}
+			{ name: CMDBuild.core.constants.Proxy.DISABLED_PROCESS_TABS, type: 'auto', defaultValue: [] }, // {CMDBuild.model.administration.userAndGroup.group.userInterface.DisabledProcessTabs}
 			{ name: CMDBuild.core.constants.Proxy.FULL_SCREEN_MODE, type: 'boolean' },
 			{ name: CMDBuild.core.constants.Proxy.HIDE_SIDE_PANEL, type: 'boolean' },
 			{ name: CMDBuild.core.constants.Proxy.PROCESS_WIDGET_ALWAYS_ENABLED, type: 'boolean' },

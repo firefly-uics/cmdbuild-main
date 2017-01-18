@@ -73,7 +73,7 @@
 					url: CMDBuild.proxy.index.Json.user.readAllGroups,
 					reader: {
 						type: 'json',
-						root: CMDBuild.core.constants.Proxy.RESULT
+						root: CMDBuild.core.constants.Proxy.RESPONSE
 					},
 					extraParams: {
 						limitParam: undefined,
@@ -98,6 +98,19 @@
 			Ext.apply(parameters, { url: CMDBuild.proxy.index.Json.user.read });
 
 			CMDBuild.global.Cache.request(CMDBuild.core.constants.Proxy.USER, parameters);
+		},
+
+		/**
+		 * @param {Object} parameters
+		 *
+		 * @returns {Void}
+		 */
+		readPosition: function (parameters) {
+			parameters = Ext.isEmpty(parameters) ? {} : parameters;
+
+			Ext.apply(parameters, { url: CMDBuild.proxy.index.Json.user.getPosition });
+
+			CMDBuild.global.Cache.request(CMDBuild.core.constants.Proxy.UNCACHED, parameters);
 		},
 
 		/**

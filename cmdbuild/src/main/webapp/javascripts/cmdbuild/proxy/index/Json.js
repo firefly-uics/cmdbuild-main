@@ -625,14 +625,15 @@
 
 		user: {
 			create: 'services/json/schema/modsecurity/saveuser', // TODO: waiting for refactor (crud)
-			read: 'services/json/schema/modsecurity/getgrouplist', // TODO: waiting for refactor (crud)
+			read: 'services/json/schema/modsecurity/readuser',
 			update: 'services/json/schema/modsecurity/saveuser', // TODO: waiting for refactor (crud)
 			remove: '',
 
 			readAll: 'services/json/schema/modsecurity/getuserlist',
 			readAllGroups: 'services/json/schema/modsecurity/getusergrouplist',
 
-			disable: 'services/json/schema/modsecurity/disableuser'
+			disable: 'services/json/schema/modsecurity/disableuser',
+			getPosition: 'services/json/schema/modsecurity/getuserposition'
 		},
 
 		utility: {

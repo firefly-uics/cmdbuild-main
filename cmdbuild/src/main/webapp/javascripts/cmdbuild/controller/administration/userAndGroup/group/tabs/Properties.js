@@ -5,7 +5,7 @@
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.userAndGroup.group.Group'
+			'CMDBuild.proxy.administration.userAndGroup.group.Group'
 		],
 
 		/**
@@ -73,7 +73,7 @@
 			params[CMDBuild.core.constants.Proxy.GROUP_ID] = this.cmfg('userAndGroupGroupSelectedGroupGet', CMDBuild.core.constants.Proxy.ID);
 			params[CMDBuild.core.constants.Proxy.IS_ACTIVE] = !this.cmfg('userAndGroupGroupSelectedGroupGet', CMDBuild.core.constants.Proxy.IS_ACTIVE);
 
-			CMDBuild.proxy.userAndGroup.group.Group.enableDisable({
+			CMDBuild.proxy.administration.userAndGroup.group.Group.enableDisable({
 				params: params,
 				scope: this,
 				success: this.success
@@ -85,7 +85,7 @@
 		 */
 		onUserAndGroupGroupTabPropertiesAddButtonClick: function () {
 			this.form.reset();
-			this.form.loadRecord(Ext.create('CMDBuild.model.userAndGroup.group.Group'));
+			this.form.loadRecord(Ext.create('CMDBuild.model.administration.userAndGroup.group.Group'));
 			this.form.setDisabledModify(false, true);
 		},
 
@@ -119,13 +119,13 @@
 				if (Ext.isEmpty(params[CMDBuild.core.constants.Proxy.ID])) {
 					params[CMDBuild.core.constants.Proxy.ID] = -1;
 
-					CMDBuild.proxy.userAndGroup.group.Group.create({
+					CMDBuild.proxy.administration.userAndGroup.group.Group.create({
 						params: params,
 						scope: this,
 						success: this.success
 					});
 				} else {
-					CMDBuild.proxy.userAndGroup.group.Group.update({
+					CMDBuild.proxy.administration.userAndGroup.group.Group.update({
 						params: params,
 						scope: this,
 						success: this.success

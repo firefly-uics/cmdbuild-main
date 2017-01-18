@@ -5,7 +5,7 @@
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.userAndGroup.group.Group',
+			'CMDBuild.proxy.administration.menu.Menu',
 			'CMDBuild.core.Utils'
 		],
 
@@ -53,7 +53,7 @@
 			parameters = Ext.isObject(parameters) ? parameters : {};
 			parameters.selectionId = Ext.isNumber(parameters.selectionId) ? parameters.selectionId : null;
 
-			CMDBuild.proxy.userAndGroup.group.Group.readAll({
+			CMDBuild.proxy.administration.menu.Menu.readAllGroups({
 				loadMask: Ext.isBoolean(parameters.loadMask) ? parameters.loadMask : false,
 				scope: this,
 				success: function (result, options, decodedResult) {

@@ -1,11 +1,11 @@
 (function () {
 
-	Ext.define('CMDBuild.proxy.userAndGroup.group.tabs.DefaultFilters', {
+	Ext.define('CMDBuild.proxy.administration.userAndGroup.group.tabs.DefaultFilters', {
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.proxy.index.Json',
-			'CMDBuild.model.userAndGroup.group.defaultFilters.Filter'
+			'CMDBuild.model.administration.userAndGroup.group.defaultFilters.Filter'
 		],
 
 		singleton: true,
@@ -16,7 +16,7 @@
 		getStoreClassFilters: function () {
 			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.FILTER, {
 				autoLoad: false,
-				model: 'CMDBuild.model.userAndGroup.group.defaultFilters.Filter',
+				model: 'CMDBuild.model.administration.userAndGroup.group.defaultFilters.Filter',
 				proxy: {
 					type: 'ajax',
 					url: CMDBuild.proxy.index.Json.filter.group.readAll,

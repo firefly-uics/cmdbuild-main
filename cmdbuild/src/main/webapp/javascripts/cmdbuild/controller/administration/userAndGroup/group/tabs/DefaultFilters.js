@@ -7,7 +7,7 @@
 			'CMDBuild.core.constants.Global',
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.core.constants.Server',
-			'CMDBuild.proxy.userAndGroup.group.tabs.DefaultFilters',
+			'CMDBuild.proxy.administration.userAndGroup.group.tabs.DefaultFilters',
 			'CMDBuild.core.Utils'
 		],
 
@@ -78,7 +78,7 @@
 		 * @private
 		 */
 		filtersBufferBuild: function () {
-			CMDBuild.proxy.userAndGroup.group.tabs.DefaultFilters.readAllGroupFilters({
+			CMDBuild.proxy.administration.userAndGroup.group.tabs.DefaultFilters.readAllGroupFilters({
 				loadMask: false,
 				scope: this,
 				success: function (response, options, decodedResponse) {
@@ -153,7 +153,7 @@
 				params[CMDBuild.core.constants.Proxy.FILTERS] = Ext.encode(defaultFiltersIds);
 				params[CMDBuild.core.constants.Proxy.GROUP] = this.cmfg('userAndGroupGroupSelectedGroupGet', CMDBuild.core.constants.Proxy.NAME);
 
-				CMDBuild.proxy.userAndGroup.group.tabs.DefaultFilters.update({
+				CMDBuild.proxy.administration.userAndGroup.group.tabs.DefaultFilters.update({
 					params: params,
 					scope: this,
 					success: function (response, options, decodedResponse) {
@@ -178,7 +178,7 @@
 
 				this.filtersBufferBuild();
 
-				CMDBuild.proxy.userAndGroup.group.tabs.DefaultFilters.readAllEntryTypes({
+				CMDBuild.proxy.administration.userAndGroup.group.tabs.DefaultFilters.readAllEntryTypes({
 					params: params,
 					scope: this,
 					success: function (response, options, decodedResponse) {
@@ -187,7 +187,7 @@
 						params = {};
 						params[CMDBuild.core.constants.Proxy.GROUP] = this.cmfg('userAndGroupGroupSelectedGroupGet', CMDBuild.core.constants.Proxy.NAME);
 
-						CMDBuild.proxy.userAndGroup.group.tabs.DefaultFilters.read({
+						CMDBuild.proxy.administration.userAndGroup.group.tabs.DefaultFilters.read({
 							params: params,
 							scope: this,
 							success: function (response, options, decodedResponse) {

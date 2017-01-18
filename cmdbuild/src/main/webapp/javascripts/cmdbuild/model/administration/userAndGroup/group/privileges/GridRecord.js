@@ -2,7 +2,7 @@
 
 	Ext.require('CMDBuild.core.constants.Proxy');
 
-	Ext.define('CMDBuild.model.userAndGroup.group.privileges.GridRecord', {
+	Ext.define('CMDBuild.model.administration.userAndGroup.group.privileges.GridRecord', {
 		extend: 'Ext.data.Model',
 
 		fields: [

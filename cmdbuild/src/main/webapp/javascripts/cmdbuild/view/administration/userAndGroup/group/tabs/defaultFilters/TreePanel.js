@@ -5,8 +5,8 @@
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.userAndGroup.group.tabs.DefaultFilters',
-			'CMDBuild.model.userAndGroup.group.defaultFilters.TreeNode',
+			'CMDBuild.proxy.administration.userAndGroup.group.tabs.DefaultFilters',
+			'CMDBuild.model.administration.userAndGroup.group.defaultFilters.TreeNode',
 			'CMDBuild.view.common.field.comboBox.Erasable'
 		],
 
@@ -65,7 +65,7 @@
 							editable: false,
 							forceSelection: true,
 
-							store: CMDBuild.proxy.userAndGroup.group.tabs.DefaultFilters.getStoreClassFilters(),
+							store: CMDBuild.proxy.administration.userAndGroup.group.tabs.DefaultFilters.getStoreClassFilters(),
 							queryMode: 'local'
 						},
 
@@ -75,7 +75,7 @@
 					})
 				],
 				store: Ext.create('Ext.data.TreeStore', {
-					model: 'CMDBuild.model.userAndGroup.group.defaultFilters.TreeNode',
+					model: 'CMDBuild.model.administration.userAndGroup.group.defaultFilters.TreeNode',
 					root: {
 						text: 'ROOT',
 						expanded: true,

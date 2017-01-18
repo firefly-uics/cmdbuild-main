@@ -29,7 +29,7 @@
 		identifier: undefined,
 
 		/**
-		 * @parameter {CMDBuild.model.userAndGroup.SelectedAccordion}
+		 * @parameter {CMDBuild.model.administration.userAndGroup.SelectedAccordion}
 		 *
 		 * @private
 		 */
@@ -134,7 +134,7 @@
 			 */
 			userAndGroupSelectedAccordionSet: function (parameters) {
 				if (!Ext.Object.isEmpty(parameters)) {
-					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.userAndGroup.SelectedAccordion';
+					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.administration.userAndGroup.SelectedAccordion';
 					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedAccordion';
 
 					this.propertyManageSet(parameters);

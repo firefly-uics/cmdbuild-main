@@ -5,7 +5,7 @@
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.userAndGroup.group.tabs.privileges.Classes'
+			'CMDBuild.proxy.administration.userAndGroup.group.tabs.privileges.Classes'
 		],
 
 		/**
@@ -143,7 +143,7 @@
 						]
 					})
 				],
-				store: CMDBuild.proxy.userAndGroup.group.tabs.privileges.Classes.getStore()
+				store: CMDBuild.proxy.administration.userAndGroup.group.tabs.privileges.Classes.getStore()
 			});
 
 			this.callParent(arguments);

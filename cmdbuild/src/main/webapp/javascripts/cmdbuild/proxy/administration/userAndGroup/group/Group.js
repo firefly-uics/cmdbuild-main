@@ -1,11 +1,11 @@
 (function () {
 
-	Ext.define('CMDBuild.proxy.userAndGroup.group.Group', {
+	Ext.define('CMDBuild.proxy.administration.userAndGroup.group.Group', {
 
 		requires: [
 			'CMDBuild.core.constants.Global',
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.model.userAndGroup.group.StartingClass',
+			'CMDBuild.model.administration.userAndGroup.group.StartingClass',
 			'CMDBuild.proxy.index.Json'
 		],
 
@@ -43,7 +43,7 @@
 		getStoreStartingClass: function () {
 			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.ENTRY_TYPE, {
 				autoLoad: false,
-				model: 'CMDBuild.model.userAndGroup.group.StartingClass',
+				model: 'CMDBuild.model.administration.userAndGroup.group.StartingClass',
 				proxy: {
 					type: 'ajax',
 					url: CMDBuild.proxy.index.Json.entryType.readAll,

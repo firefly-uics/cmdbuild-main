@@ -26,12 +26,25 @@
 			Ext.apply(this, {
 				dockedItems: [
 					Ext.create('Ext.toolbar.Paging', {
+						delegate: this.delegate,
+
 						dock: 'bottom',
 						itemId: CMDBuild.core.constants.Proxy.TOOLBAR_BOTTOM,
 						store: this.getStore(),
 						displayInfo: true,
 						displayMsg: '{0} - {1} ' + CMDBuild.Translation.of + ' {2}',
-						emptyMsg: CMDBuild.Translation.noTopicsToDisplay
+						emptyMsg: CMDBuild.Translation.noTopicsToDisplay,
+
+						/**
+						 * @param {Number} page
+						 *
+						 * @returns {Void}
+						 *
+						 * @override
+						 */
+						customLoadMethod: function (page) {
+							return this.delegate.cmfg('userAndGroupUserStoreLoad', { page: page });
+						}
 					})
 				],
 				columns: [

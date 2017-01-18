@@ -1,6 +1,6 @@
 (function () {
 
-	Ext.define('CMDBuild.proxy.userAndGroup.group.tabs.UserInterface', {
+	Ext.define('CMDBuild.proxy.administration.userAndGroup.group.tabs.UserInterface', {
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',

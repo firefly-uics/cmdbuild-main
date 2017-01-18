@@ -13,7 +13,6 @@
 			'CMDBuild.proxy.core.Administration',
 			'CMDBuild.proxy.dashboard.Dashboard',
 			'CMDBuild.proxy.lookup.Type',
-			'CMDBuild.proxy.userAndGroup.group.Group',
 			'CMDBuild.proxy.widget.Widget',
 			'CMDBuild.core.Splash'
 		],
@@ -89,7 +88,7 @@
 			/**
 			 * Groups
 			 */
-			CMDBuild.proxy.userAndGroup.group.Group.readAll({
+			CMDBuild.proxy.core.Administration.readAllGroups({
 				loadMask: false,
 				scope: this,
 				callback: requestBarrier.getCallback('administrationBuildCacheBarrier')

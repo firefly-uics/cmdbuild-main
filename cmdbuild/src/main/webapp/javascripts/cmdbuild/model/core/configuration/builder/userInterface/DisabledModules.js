@@ -3,7 +3,7 @@
 	Ext.require('CMDBuild.core.constants.Proxy');
 
 	/**
-	 * @link CMDBuild.model.userAndGroup.group.userInterface.DisabledModules
+	 * @link CMDBuild.model.administration.userAndGroup.group.userInterface.DisabledModules
 	 */
 	Ext.define('CMDBuild.model.core.configuration.builder.userInterface.DisabledModules', {
 		extend: 'Ext.data.Model',

@@ -5,7 +5,7 @@
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.userAndGroup.group.Group'
+			'CMDBuild.proxy.administration.userAndGroup.group.Group'
 		],
 
 		/**
@@ -116,7 +116,7 @@
 				!this.cmfg('userAndGroupSelectedAccordionIsEmpty')
 				&& this.cmfg('userAndGroupSelectedAccordionGet', CMDBuild.core.constants.Proxy.SECTION_HIERARCHY)[0] == 'group'
 			) {
-				CMDBuild.proxy.userAndGroup.group.Group.read({
+				CMDBuild.proxy.administration.userAndGroup.group.Group.read({
 					scope: this,
 					success: function (response, options, decodedResponse) {
 						decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.GROUPS];
@@ -232,7 +232,7 @@
 			 */
 			userAndGroupGroupSelectedGroupSet: function (parameters) {
 				if (!Ext.Object.isEmpty(parameters)) {
-					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.userAndGroup.group.Group';
+					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.administration.userAndGroup.group.Group';
 					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedGroup';
 
 					this.propertyManageSet(parameters);

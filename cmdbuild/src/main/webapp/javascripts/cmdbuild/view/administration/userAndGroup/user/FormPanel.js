@@ -166,7 +166,7 @@
 								vtype: 'emailOrBlank'
 							}),
 							this.defaultGroupCombo = Ext.create('CMDBuild.view.common.field.comboBox.Erasable', {
-								name: 'defaultgroup',
+								name: CMDBuild.core.constants.Proxy.DEFAULT_GROUP_ID,
 								fieldLabel: CMDBuild.Translation.defaultGroup,
 								labelWidth: CMDBuild.core.constants.FieldWidths.LABEL,
 								maxWidth: CMDBuild.core.constants.FieldWidths.ADMINISTRATION_BIG,
