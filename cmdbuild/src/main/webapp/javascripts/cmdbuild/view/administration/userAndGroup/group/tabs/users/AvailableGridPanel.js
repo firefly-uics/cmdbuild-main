@@ -28,12 +28,6 @@
 				ptype: 'gridviewdragdrop',
 				dragGroup: 'availableGridDDGroup',
 				dropGroup: 'selectedGridDDGroup'
-			},
-
-			listeners: {
-				drop: function (node, data, overModel, dropPosition, eOpts) {
-					this.panel.delegate.cmfg('onUserAndGroupGroupTabUsersDropAction');
-				}
 			}
 		},
 
@@ -54,7 +48,7 @@
 						dataIndex: CMDBuild.core.constants.Proxy.DESCRIPTION
 					}
 				],
-				store: CMDBuild.proxy.administration.userAndGroup.group.tabs.Users.getStoreAvailable()
+				store: CMDBuild.proxy.administration.userAndGroup.group.tabs.Users.getStoreAvailable({ delegate: this.delegate })
 			});
 
 			this.callParent(arguments);

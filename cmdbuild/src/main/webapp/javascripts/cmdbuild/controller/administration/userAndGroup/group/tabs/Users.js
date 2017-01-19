@@ -18,7 +18,6 @@
 		 */
 		cmfgCatchedFunctions: [
 			'onUserAndGroupGroupTabUsersAddButtonClick',
-			'onUserAndGroupGroupTabUsersDropAction',
 			'onUserAndGroupGroupTabUsersGroupSelected = onUserAndGroupGroupTabGroupSelected',
 			'onUserAndGroupGroupTabUsersSaveButtonClick',
 			'onUserAndGroupGroupTabUsersShow',
@@ -85,27 +84,6 @@
 		 */
 		onUserAndGroupGroupTabUsersAddButtonClick: function () {
 			this.view.disable();
-		},
-
-		/**
-		 * Update gridAvailable store's extraParams to works also with column click store load
-		 *
-		 * @returns {Void}
-		 *
-		 * FIXME: column click action with relative store load action should works with regular store load action
-		 */
-		onUserAndGroupGroupTabUsersDropAction: function () {
-			// Remove users that are already in gridSelected store
-			var selectedUsersIds = [];
-
-			this.gridSelected.getStore().each(function (record) {
-				if (Ext.isObject(record) && !Ext.Object.isEmpty(record))
-					selectedUsersIds.push(record.get(CMDBuild.core.constants.Proxy.ID));
-			}, this)
-
-			selectedUsersIds = Ext.Array.unique(Ext.Array.clean(selectedUsersIds));
-
-			this.cmfg('userAndGroupGroupTabUsersGridAvailableStoreGet').getProxy().extraParams[CMDBuild.core.constants.Proxy.EXCLUDE] = Ext.encode(selectedUsersIds);
 		},
 
 		/**

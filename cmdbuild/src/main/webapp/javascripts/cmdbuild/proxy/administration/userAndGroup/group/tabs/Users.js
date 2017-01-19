@@ -11,9 +11,14 @@
 		singleton: true,
 
 		/**
+		 * @param {Object} parameters
+		 * @param {CMDBuild.controller.administration.userAndGroup.group.tabs.Users} parameters.delegate
+		 *
 		 * @returns {Ext.data.Store or CMDBuild.core.cache.Store}
 		 */
-		getStoreAvailable: function () {
+		getStoreAvailable: function (parameters) {
+			parameters = Ext.isObject(parameters) ? parameters : {};
+
 			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.GROUP, {
 				autoLoad: false,
 				model: 'CMDBuild.model.administration.userAndGroup.group.UsersGrid',
@@ -30,7 +35,11 @@
 				},
 				sorters: [
 					{ property: CMDBuild.core.constants.Proxy.NAME, direction: 'ASC' }
-				]
+				],
+
+				customLoadMethod: function () {
+					parameters.delegate.cmfg('userAndGroupGroupTabUsersGridAvailableStoreLoad');
+				}
 			});
 		},
 
