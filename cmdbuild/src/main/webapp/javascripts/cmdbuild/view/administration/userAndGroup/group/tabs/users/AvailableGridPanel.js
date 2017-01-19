@@ -22,7 +22,13 @@
 
 		viewConfig: {
 			loadMask: true,
-			stripeRows: true
+			stripeRows: true,
+
+			plugins: {
+				ptype: 'gridviewdragdrop',
+				dragGroup: 'availableGridDDGroup',
+				dropGroup: 'selectedGridDDGroup'
+			}
 		},
 
 		/**
@@ -32,7 +38,7 @@
 		 */
 		initComponent: function () {
 			Ext.apply(this, {
-				store: CMDBuild.proxy.administration.userAndGroup.group.tabs.Users.getStoreGroupsUser()
+				store: CMDBuild.proxy.administration.userAndGroup.group.tabs.Users.getStoreAvailable()
 			});
 
 			Ext.apply(this, {
@@ -55,7 +61,7 @@
 						 * @override
 						 */
 						customLoadMethod: function (page) {
-							return this.delegate.cmfg('userAndGroupGroupTabUsersAvailableGridStoreLoad', { page: page });
+							return this.delegate.cmfg('userAndGroupGroupTabUsersGridAvailableStoreLoad', { page: page });
 						}
 					})
 				],

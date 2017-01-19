@@ -22,7 +22,13 @@
 
 		viewConfig: {
 			loadMask: true,
-			stripeRows: true
+			stripeRows: true,
+
+			plugins: {
+				ptype: 'gridviewdragdrop',
+				dragGroup: 'selectedGridDDGroup',
+				dropGroup: 'availableGridDDGroup'
+			}
 		},
 
 		/**
@@ -42,7 +48,7 @@
 						dataIndex: CMDBuild.core.constants.Proxy.DESCRIPTION
 					}
 				],
-				store: CMDBuild.proxy.administration.userAndGroup.group.tabs.Users.getStoreGroupsUser()
+				store: CMDBuild.proxy.administration.userAndGroup.group.tabs.Users.getStoreSelected()
 			});
 
 			this.callParent(arguments);

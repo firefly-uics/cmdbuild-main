@@ -63,29 +63,9 @@
 					})
 				],
 				items: [
-					this.availableGrid = Ext.create('CMDBuild.view.administration.userAndGroup.group.tabs.users.AvailableGridPanel', {
-						delegate: this.delegate,
-
-						viewConfig: {
-							plugins: {
-								ptype: 'gridviewdragdrop',
-								dragGroup: 'firstGridDDGroup',
-								dropGroup: 'secondGridDDGroup'
-							}
-						}
-					}),
+					this.availableGrid = Ext.create('CMDBuild.view.administration.userAndGroup.group.tabs.users.AvailableGridPanel', { delegate: this.delegate }),
 					{ xtype: 'splitter' },
-					this.selectedGrid = Ext.create('CMDBuild.view.administration.userAndGroup.group.tabs.users.SelectedGridPanel', {
-						delegate: this.delegate,
-
-						viewConfig: {
-							plugins: {
-								ptype: 'gridviewdragdrop',
-								dragGroup: 'secondGridDDGroup',
-								dropGroup: 'firstGridDDGroup'
-							}
-						}
-					})
+					this.selectedGrid = Ext.create('CMDBuild.view.administration.userAndGroup.group.tabs.users.SelectedGridPanel', { delegate: this.delegate })
 				]
 			});
 

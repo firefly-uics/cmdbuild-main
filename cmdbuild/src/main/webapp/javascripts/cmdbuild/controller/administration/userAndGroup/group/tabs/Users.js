@@ -26,8 +26,8 @@
 			'onUserAndGroupGroupTabUsersGroupSelected = onUserAndGroupGroupTabGroupSelected',
 			'onUserAndGroupGroupTabUsersSaveButtonClick',
 			'onUserAndGroupGroupTabUsersShow',
-			'userAndGroupGroupTabUsersAvailableGridStoreLoad',
-			'userAndGroupGroupTabUsersSelectedGridStoreLoad'
+			'userAndGroupGroupTabUsersGridAvailableStoreLoad',
+			'userAndGroupGroupTabUsersGridSelectedStoreLoad'
 		],
 
 		/**
@@ -79,7 +79,7 @@
 		/**
 		 * @returns {Void}
 		 *
-		 * TODO: waiting for refactor (use an array of id not a string)
+		 * TODO: waiting for refactor (use a JsonArray of id not a string)
 		 */
 		onUserAndGroupGroupTabUsersSaveButtonClick: function () {
 			// Error handling
@@ -104,9 +104,8 @@
 				params: params,
 				scope: this,
 				success: function (response, options, decodedResponse) {
-					CMDBuild.core.Message.success();
-
-					this.cmfg('onUserAndGroupGroupTabUsersShow');
+					this.cmfg('userAndGroupGroupTabUsersGridAvailableStoreLoad');
+					this.cmfg('userAndGroupGroupTabUsersGridSelectedStoreLoad');
 				}
 			});
 		},
@@ -115,10 +114,8 @@
 		 * @returns {Void}
 		 */
 		onUserAndGroupGroupTabUsersShow: function () {
-			if (!this.cmfg('userAndGroupGroupSelectedGroupIsEmpty')) {
-				this.cmfg('userAndGroupGroupTabUsersAvailableGridStoreLoad');
-				this.cmfg('userAndGroupGroupTabUsersSelectedGridStoreLoad');
-			}
+			this.cmfg('userAndGroupGroupTabUsersGridAvailableStoreLoad');
+			this.cmfg('userAndGroupGroupTabUsersGridSelectedStoreLoad');
 		},
 
 		/**
@@ -129,7 +126,7 @@
 		 *
 		 * @returns {Void}
 		 */
-		userAndGroupGroupTabUsersAvailableGridStoreLoad: function (parameters) {
+		userAndGroupGroupTabUsersGridAvailableStoreLoad: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
 			parameters.callback = Ext.isFunction(parameters.callback) ? parameters.callback : Ext.emptyFn;
 			parameters.page = Ext.isNumber(parameters.page) ? parameters.page : 1;
@@ -137,44 +134,59 @@
 
 			// Error handling
 				if (this.cmfg('userAndGroupGroupSelectedGroupIsEmpty'))
-					return _error('userAndGroupGroupTabUsersAvailableGridStoreLoad(): empty selectedGroup property', this, this.cmfg('userAndGroupGroupSelectedGroupGet'));
+					return _error('userAndGroupGroupTabUsersGridAvailableStoreLoad(): empty selectedGroup property', this, this.cmfg('userAndGroupGroupSelectedGroupGet'));
 			// END: Error handling
+
+			// Remove users that are already in selectedGrid store
+			var selectedUsersIds = [];
+
+			this.selectedGrid.getStore().each(function (record) {
+				if (Ext.isObject(record) && !Ext.Object.isEmpty(record))
+					selectedUsersIds.push(record.get(CMDBuild.core.constants.Proxy.ID));
+			}, this)
+
+			selectedUsersIds = Ext.Array.unique(Ext.Array.clean(selectedUsersIds));
 
 			var params = {};
 			params[CMDBuild.core.constants.Proxy.ALREADY_ASSOCIATED] = false;
+			params[CMDBuild.core.constants.Proxy.EXCLUDE] = Ext.encode(selectedUsersIds);
 			params[CMDBuild.core.constants.Proxy.ID] = this.cmfg('userAndGroupGroupSelectedGroupGet', CMDBuild.core.constants.Proxy.ID);
 
 			this.availableGrid.getStore().getProxy().extraParams = params; // Setup extraParams to work also with column header click
 
-			this.availableGrid.getStore().loadPage(parameters.page, { params: params });
+			this.availableGrid.getStore().loadPage(parameters.page, {
+				params: params,
+				scope: parameters.scope,
+				callback: parameters.callback
+			});
 		},
 
 		/**
 		 * @param {Object} parameters
 		 * @param {Function} parameters.callback
-		 * @param {Number} parameters.page
 		 * @param {Object} parameters.scope
 		 *
 		 * @returns {Void}
 		 */
-		userAndGroupGroupTabUsersSelectedGridStoreLoad: function (parameters) {
+		userAndGroupGroupTabUsersGridSelectedStoreLoad: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
 			parameters.callback = Ext.isFunction(parameters.callback) ? parameters.callback : Ext.emptyFn;
-			parameters.page = Ext.isNumber(parameters.page) ? parameters.page : 1;
 			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
 
 			// Error handling
 				if (this.cmfg('userAndGroupGroupSelectedGroupIsEmpty'))
-					return _error('userAndGroupGroupTabUsersSelectedGridStoreLoad(): empty selectedGroup property', this, this.cmfg('userAndGroupGroupSelectedGroupGet'));
+					return _error('userAndGroupGroupTabUsersGridSelectedStoreLoad(): empty selectedGroup property', this, this.cmfg('userAndGroupGroupSelectedGroupGet'));
 			// END: Error handling
 
 			var params = {};
 			params[CMDBuild.core.constants.Proxy.ALREADY_ASSOCIATED] = true;
 			params[CMDBuild.core.constants.Proxy.ID] = this.cmfg('userAndGroupGroupSelectedGroupGet', CMDBuild.core.constants.Proxy.ID);
 
-			this.selectedGrid.getStore().getProxy().extraParams = params; // Setup extraParams to work also with column header click
-
-			this.selectedGrid.getStore().load({ params: params });
+			this.selectedGrid.getStore().load({
+				params: params,
+				scope: parameters.scope,
+				callback: parameters.callback
+			});
 		}
 	});
 
