@@ -29,8 +29,16 @@
 			'onUserAndGroupUserSaveButtonClick',
 			'onUserAndGroupUserServiceChange',
 			'onUserAndGroupUserShow',
-			'userAndGroupUserStoreLoad'
+			'userAndGroupUserGridFilterApply = panelGridAndFormGridFilterApply',
+			'userAndGroupUserGridFilterClear = panelGridAndFormGridFilterClear',
+			'userAndGroupUserGridStoreGet = panelGridAndFormListPanelStoreGet',
+			'userAndGroupUserGridStoreLoad = panelGridAndFormListPanelStoreLoad'
 		],
+
+		/**
+		 * @property {CMDBuild.controller.common.panel.gridAndForm.panel.common.toolbar.Paging}
+		 */
+		controllerToolbarPaging: undefined,
 
 		/**
 		 * @property {CMDBuild.view.administration.userAndGroup.user.FormPanel}
@@ -70,6 +78,17 @@
 			// Shorthands
 			this.form = this.view.form;
 			this.grid = this.view.grid;
+
+			// Build sub-controllers
+			this.controllerToolbarPaging = Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.toolbar.Paging', {
+				parentDelegate: this,
+				enableFilterBasic: true
+			});
+
+			// Add docked
+			this.grid.addDocked([
+				this.controllerToolbarPaging.getView()
+			]);
 		},
 
 		/**
@@ -232,7 +251,9 @@
 		 * @returns {Void}
 		 */
 		onUserAndGroupUserShow: function () {
-			this.cmfg('userAndGroupUserStoreLoad', {
+			this.controllerToolbarPaging.cmfg('panelGridAndFormCommonToolbarPagingFilterBasicReset');
+
+			this.cmfg('userAndGroupUserGridStoreLoad', {
 				scope: this,
 				callback: function (records, operation, success) {
 					if (!this.grid.getSelectionModel().hasSelection())
@@ -260,7 +281,7 @@
 					return _error('readPosition(): unmanaged id parameter', this, parameters.id);
 			// END: Error handling
 
-			var sort = this.grid.getStore().getSorters()
+			var sort = this.cmfg('userAndGroupUserGridStoreGet').getSorters()
 
 			var params = {};
 			params[CMDBuild.core.constants.Proxy.ID] = parameters.id;
@@ -308,7 +329,7 @@
 				id: decodedResponse[CMDBuild.core.constants.Proxy.ID],
 				scope: this,
 				callback: function (position) {
-					this.cmfg('userAndGroupUserStoreLoad', {
+					this.cmfg('userAndGroupUserGridStoreLoad', {
 						page: CMDBuild.core.Utils.getPageNumber(position),
 						scope: this,
 						callback: function (records, operation, success) {
@@ -382,24 +403,69 @@
 
 		/**
 		 * @param {Object} parameters
+		 * @param {CMDBuild.model.common.field.filter.basic.Filter} parameters.filter
+		 *
+		 * @returns {Void}
+		 */
+		userAndGroupUserGridFilterApply: function (parameters) {
+			parameters = Ext.isObject(parameters) ? parameters : {};
+
+			// Error handling
+				if (!Ext.isObject(parameters.filter) || Ext.Object.isEmpty(parameters.filter))
+					return _error('userAndGroupUserGridFilterApply(): unmanaged filter parameter', this, parameters.filter);
+			// END: Error handling
+
+			this.cmfg('userAndGroupUserGridStoreLoad', {
+				params: {
+					filter: Ext.encode(parameters.filter.get(CMDBuild.core.constants.Proxy.CONFIGURATION))
+				}
+			});
+		},
+
+		/**
+		 * @param {Object} parameters
+		 * @param {Boolean} parameters.disableStoreLoad
+		 *
+		 * @returns {Void}
+		 */
+		userAndGroupUserGridFilterClear: function (parameters) {
+			parameters = Ext.isObject(parameters) ? parameters : {};
+			parameters.disableStoreLoad = Ext.isBoolean(parameters.disableStoreLoad) ? parameters.disableStoreLoad : false;
+
+			if (!parameters.disableStoreLoad)
+				this.cmfg('userAndGroupUserGridStoreLoad');
+		},
+
+		/**
+		 * @returns {Ext.data.Store}
+		 */
+		userAndGroupUserGridStoreGet: function () {
+			return this.grid.getStore();
+		},
+
+		/**
+		 * @param {Object} parameters
 		 * @param {Function} parameters.callback
+		 * @param {Object} parameters.params
+		 * @param {String} parameters.params.filter
 		 * @param {Number} parameters.page
 		 * @param {Object} parameters.scope
 		 *
 		 * @returns {Void}
 		 */
-		userAndGroupUserStoreLoad: function (parameters) {
+		userAndGroupUserGridStoreLoad: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
 			parameters.callback = Ext.isFunction(parameters.callback) ? parameters.callback : Ext.emptyFn;
 			parameters.page = Ext.isNumber(parameters.page) ? parameters.page : 1;
+			parameters.params = Ext.isObject(parameters.params) ? parameters.params : {};
 			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
 
-			var params = {};
+			var params = parameters.params;
 			params[CMDBuild.core.constants.Proxy.ACTIVE_ONLY] = this.view.includeDisabledUsers.getValue();
 
-			this.grid.getStore().getProxy().extraParams = params; // Setup extraParams to work also with column header click
+			this.cmfg('userAndGroupUserGridStoreGet').getProxy().extraParams = params; // Setup extraParams to work also with column header click
 
-			this.grid.getStore().loadPage(parameters.page, {
+			this.cmfg('userAndGroupUserGridStoreGet').loadPage(parameters.page, {
 				params: params,
 				scope: parameters.scope,
 				callback: parameters.callback

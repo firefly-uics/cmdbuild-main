@@ -28,6 +28,12 @@
 				ptype: 'gridviewdragdrop',
 				dragGroup: 'availableGridDDGroup',
 				dropGroup: 'selectedGridDDGroup'
+			},
+
+			listeners: {
+				drop: function (node, data, overModel, dropPosition, eOpts) {
+					this.panel.delegate.cmfg('onUserAndGroupGroupTabUsersDropAction');
+				}
 			}
 		},
 
@@ -38,33 +44,6 @@
 		 */
 		initComponent: function () {
 			Ext.apply(this, {
-				store: CMDBuild.proxy.administration.userAndGroup.group.tabs.Users.getStoreAvailable()
-			});
-
-			Ext.apply(this, {
-				dockedItems: [
-					Ext.create('Ext.toolbar.Paging', {
-						delegate: this.delegate,
-
-						dock: 'bottom',
-						itemId: CMDBuild.core.constants.Proxy.TOOLBAR_BOTTOM,
-						store: this.getStore(),
-						displayInfo: true,
-						displayMsg: '{0} - {1} ' + CMDBuild.Translation.of + ' {2}',
-						emptyMsg: CMDBuild.Translation.noTopicsToDisplay,
-
-						/**
-						 * @param {Number} page
-						 *
-						 * @returns {Void}
-						 *
-						 * @override
-						 */
-						customLoadMethod: function (page) {
-							return this.delegate.cmfg('userAndGroupGroupTabUsersGridAvailableStoreLoad', { page: page });
-						}
-					})
-				],
 				columns: [
 					{
 						text: CMDBuild.Translation.username,
@@ -74,7 +53,8 @@
 						text: CMDBuild.Translation.descriptionLabel,
 						dataIndex: CMDBuild.core.constants.Proxy.DESCRIPTION
 					}
-				]
+				],
+				store: CMDBuild.proxy.administration.userAndGroup.group.tabs.Users.getStoreAvailable()
 			});
 
 			this.callParent(arguments);

@@ -13,12 +13,12 @@
 		/**
 		 * @property {CMDBuild.view.administration.userAndGroup.group.tabs.users.AvailableGridPanel}
 		 */
-		availableGrid: undefined,
+		gridAvailable: undefined,
 
 		/**
 		 * @property {CMDBuild.view.administration.userAndGroup.group.tabs.users.SelectedGridPanel}
 		 */
-		selectedGrid: undefined,
+		gridSelected: undefined,
 
 		bodyCls: 'cmdb-gray-panel',
 		cls: 'cmdb-gray-panel-no-padding',
@@ -63,9 +63,9 @@
 					})
 				],
 				items: [
-					this.availableGrid = Ext.create('CMDBuild.view.administration.userAndGroup.group.tabs.users.AvailableGridPanel', { delegate: this.delegate }),
+					this.gridAvailable = Ext.create('CMDBuild.view.administration.userAndGroup.group.tabs.users.AvailableGridPanel', { delegate: this.delegate }),
 					{ xtype: 'splitter' },
-					this.selectedGrid = Ext.create('CMDBuild.view.administration.userAndGroup.group.tabs.users.SelectedGridPanel', { delegate: this.delegate })
+					this.gridSelected = Ext.create('CMDBuild.view.administration.userAndGroup.group.tabs.users.SelectedGridPanel', { delegate: this.delegate })
 				]
 			});
 

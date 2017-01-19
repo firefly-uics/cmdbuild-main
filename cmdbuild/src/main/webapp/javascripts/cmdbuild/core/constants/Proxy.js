@@ -261,6 +261,7 @@
 		ERRORS: 'errors',
 		EVENT_CLASS: 'eventClass',
 		EVENT_TITLE: 'eventTitle',
+		EXCLUDE: 'exclude',
 		EXCLUDE_PROCESSES: 'excludeProcesses',
 		EXECUTABLE: 'executable',
 		EXISTING: 'existing',

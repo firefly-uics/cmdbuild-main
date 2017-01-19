@@ -28,6 +28,12 @@
 				ptype: 'gridviewdragdrop',
 				dragGroup: 'selectedGridDDGroup',
 				dropGroup: 'availableGridDDGroup'
+			},
+
+			listeners: {
+				drop: function (node, data, overModel, dropPosition, eOpts) {
+					this.panel.delegate.cmfg('onUserAndGroupGroupTabUsersDropAction');
+				}
 			}
 		},
 

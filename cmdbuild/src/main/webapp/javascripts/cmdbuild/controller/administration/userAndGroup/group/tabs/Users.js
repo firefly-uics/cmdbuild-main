@@ -14,26 +14,35 @@
 		parentDelegate: undefined,
 
 		/**
-		 * @property {CMDBuild.view.administration.userAndGroup.group.tabs.users.AvailableGridPanel}
-		 */
-		availableGrid: undefined,
-
-		/**
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
 			'onUserAndGroupGroupTabUsersAddButtonClick',
+			'onUserAndGroupGroupTabUsersDropAction',
 			'onUserAndGroupGroupTabUsersGroupSelected = onUserAndGroupGroupTabGroupSelected',
 			'onUserAndGroupGroupTabUsersSaveButtonClick',
 			'onUserAndGroupGroupTabUsersShow',
-			'userAndGroupGroupTabUsersGridAvailableStoreLoad',
+			'userAndGroupGroupTabUsersGridAvailableFilterApply = panelGridAndFormGridFilterApply',
+			'userAndGroupGroupTabUsersGridAvailableFilterClear = panelGridAndFormGridFilterClear',
+			'userAndGroupGroupTabUsersGridAvailableStoreGet = panelGridAndFormListPanelStoreGet',
+			'userAndGroupGroupTabUsersGridAvailableStoreLoad = panelGridAndFormListPanelStoreLoad',
 			'userAndGroupGroupTabUsersGridSelectedStoreLoad'
 		],
 
 		/**
+		 * @property {CMDBuild.controller.common.panel.gridAndForm.panel.common.toolbar.Paging}
+		 */
+		controllerGridAvailableToolbarPaging: undefined,
+
+		/**
+		 * @property {CMDBuild.view.administration.userAndGroup.group.tabs.users.AvailableGridPanel}
+		 */
+		gridAvailable: undefined,
+
+		/**
 		 * @property {CMDBuild.view.administration.userAndGroup.group.tabs.users.SelectedGridPanel}
 		 */
-		selectedGrid: undefined,
+		gridSelected: undefined,
 
 		/**
 		 * @property {CMDBuild.view.administration.userAndGroup.group.tabs.users.UsersView}
@@ -54,8 +63,19 @@
 			this.view = Ext.create('CMDBuild.view.administration.userAndGroup.group.tabs.users.UsersView', { delegate: this });
 
 			// Shorthands
-			this.availableGrid = this.view.availableGrid;
-			this.selectedGrid = this.view.selectedGrid;
+			this.gridAvailable = this.view.gridAvailable;
+			this.gridSelected = this.view.gridSelected;
+
+			// Build sub-controllers
+			this.controllerGridAvailableToolbarPaging = Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.toolbar.Paging', {
+				parentDelegate: this,
+				enableFilterBasic: true
+			});
+
+			// Add docked
+			this.gridAvailable.addDocked([
+				this.controllerGridAvailableToolbarPaging.getView()
+			]);
 		},
 
 		/**
@@ -65,6 +85,27 @@
 		 */
 		onUserAndGroupGroupTabUsersAddButtonClick: function () {
 			this.view.disable();
+		},
+
+		/**
+		 * Update gridAvailable store's extraParams to works also with column click store load
+		 *
+		 * @returns {Void}
+		 *
+		 * FIXME: column click action with relative store load action should works with regular store load action
+		 */
+		onUserAndGroupGroupTabUsersDropAction: function () {
+			// Remove users that are already in gridSelected store
+			var selectedUsersIds = [];
+
+			this.gridSelected.getStore().each(function (record) {
+				if (Ext.isObject(record) && !Ext.Object.isEmpty(record))
+					selectedUsersIds.push(record.get(CMDBuild.core.constants.Proxy.ID));
+			}, this)
+
+			selectedUsersIds = Ext.Array.unique(Ext.Array.clean(selectedUsersIds));
+
+			this.cmfg('userAndGroupGroupTabUsersGridAvailableStoreGet').getProxy().extraParams[CMDBuild.core.constants.Proxy.EXCLUDE] = Ext.encode(selectedUsersIds);
 		},
 
 		/**
@@ -89,7 +130,7 @@
 
 			var usersIdArray = [];
 
-			Ext.Array.forEach(this.selectedGrid.getStore().getRange(), function (record, i, allRecords) {
+			Ext.Array.forEach(this.gridSelected.getStore().getRange(), function (record, i, allRecords) {
 				usersIdArray.push(record.get(CMDBuild.core.constants.Proxy.ID));
 			}, this);
 
@@ -114,8 +155,52 @@
 		 * @returns {Void}
 		 */
 		onUserAndGroupGroupTabUsersShow: function () {
+			this.controllerGridAvailableToolbarPaging.cmfg('panelGridAndFormCommonToolbarPagingFilterBasicReset');
+
 			this.cmfg('userAndGroupGroupTabUsersGridAvailableStoreLoad');
 			this.cmfg('userAndGroupGroupTabUsersGridSelectedStoreLoad');
+		},
+
+		/**
+		 * @param {Object} parameters
+		 * @param {CMDBuild.model.common.field.filter.basic.Filter} parameters.filter
+		 *
+		 * @returns {Void}
+		 */
+		userAndGroupGroupTabUsersGridAvailableFilterApply: function (parameters) {
+			parameters = Ext.isObject(parameters) ? parameters : {};
+
+			// Error handling
+				if (!Ext.isObject(parameters.filter) || Ext.Object.isEmpty(parameters.filter))
+					return _error('userAndGroupGroupTabUsersGridAvailableFilterApply(): unmanaged filter parameter', this, parameters.filter);
+			// END: Error handling
+
+			this.cmfg('userAndGroupGroupTabUsersGridAvailableStoreLoad', {
+				params: {
+					filter: Ext.encode(parameters.filter.get(CMDBuild.core.constants.Proxy.CONFIGURATION))
+				}
+			});
+		},
+
+		/**
+		 * @param {Object} parameters
+		 * @param {Boolean} parameters.disableStoreLoad
+		 *
+		 * @returns {Void}
+		 */
+		userAndGroupGroupTabUsersGridAvailableFilterClear: function (parameters) {
+			parameters = Ext.isObject(parameters) ? parameters : {};
+			parameters.disableStoreLoad = Ext.isBoolean(parameters.disableStoreLoad) ? parameters.disableStoreLoad : false;
+
+			if (!parameters.disableStoreLoad)
+				this.cmfg('userAndGroupGroupTabUsersGridAvailableStoreLoad');
+		},
+
+		/**
+		 * @returns {Ext.data.Store}
+		 */
+		userAndGroupGroupTabUsersGridAvailableStoreGet: function () {
+			return this.gridAvailable.getStore();
 		},
 
 		/**
@@ -130,6 +215,7 @@
 			parameters = Ext.isObject(parameters) ? parameters : {};
 			parameters.callback = Ext.isFunction(parameters.callback) ? parameters.callback : Ext.emptyFn;
 			parameters.page = Ext.isNumber(parameters.page) ? parameters.page : 1;
+			parameters.params = Ext.isObject(parameters.params) ? parameters.params : {};
 			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
 
 			// Error handling
@@ -137,24 +223,26 @@
 					return _error('userAndGroupGroupTabUsersGridAvailableStoreLoad(): empty selectedGroup property', this, this.cmfg('userAndGroupGroupSelectedGroupGet'));
 			// END: Error handling
 
-			// Remove users that are already in selectedGrid store
+			// Remove users that are already in gridSelected store
 			var selectedUsersIds = [];
 
-			this.selectedGrid.getStore().each(function (record) {
+			this.gridSelected.getStore().each(function (record) {
 				if (Ext.isObject(record) && !Ext.Object.isEmpty(record))
 					selectedUsersIds.push(record.get(CMDBuild.core.constants.Proxy.ID));
 			}, this)
 
 			selectedUsersIds = Ext.Array.unique(Ext.Array.clean(selectedUsersIds));
 
-			var params = {};
+			var params = parameters.params;
 			params[CMDBuild.core.constants.Proxy.ALREADY_ASSOCIATED] = false;
-			params[CMDBuild.core.constants.Proxy.EXCLUDE] = Ext.encode(selectedUsersIds);
 			params[CMDBuild.core.constants.Proxy.ID] = this.cmfg('userAndGroupGroupSelectedGroupGet', CMDBuild.core.constants.Proxy.ID);
 
-			this.availableGrid.getStore().getProxy().extraParams = params; // Setup extraParams to work also with column header click
+			if (Ext.isArray(selectedUsersIds) && !Ext.isEmpty(selectedUsersIds))
+				params[CMDBuild.core.constants.Proxy.EXCLUDE] = Ext.encode(selectedUsersIds);
 
-			this.availableGrid.getStore().loadPage(parameters.page, {
+			this.cmfg('userAndGroupGroupTabUsersGridAvailableStoreGet').getProxy().extraParams = params; // Setup extraParams to work also with column header click
+
+			this.cmfg('userAndGroupGroupTabUsersGridAvailableStoreGet').loadPage(parameters.page, {
 				params: params,
 				scope: parameters.scope,
 				callback: parameters.callback
@@ -182,7 +270,7 @@
 			params[CMDBuild.core.constants.Proxy.ALREADY_ASSOCIATED] = true;
 			params[CMDBuild.core.constants.Proxy.ID] = this.cmfg('userAndGroupGroupSelectedGroupGet', CMDBuild.core.constants.Proxy.ID);
 
-			this.selectedGrid.getStore().load({
+			this.gridSelected.getStore().load({
 				params: params,
 				scope: parameters.scope,
 				callback: parameters.callback
