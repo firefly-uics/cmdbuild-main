@@ -92,7 +92,10 @@
 					return this.view.disable();
 
 				default:
-					return this.view.setDisabled(this.parentDelegate.cmfg('dataViewFilterSelectedCardIsEmpty'));
+					return this.view.setDisabled(
+						!CMDBuild.configuration.dms.get(CMDBuild.core.constants.Proxy.ENABLED)
+						|| this.parentDelegate.cmfg('dataViewFilterSelectedCardIsEmpty')
+					);
 			}
 		},
 

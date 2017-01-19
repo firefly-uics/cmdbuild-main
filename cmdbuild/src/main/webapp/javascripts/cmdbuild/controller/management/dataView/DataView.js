@@ -149,7 +149,7 @@
 				this.cmfg('dataViewUiUpdate', {
 					enableFilterReset: true,
 					entityId: parameters.node.get(CMDBuild.core.constants.Proxy.ENTITY_ID),
-					resetSorters: true
+					sortersReset: true
 				});
 
 			this.onModuleInit(parameters); // Custom callParent() implementation
@@ -161,8 +161,8 @@
 		 * @param {Number} parameters.cardId
 		 * @param {Boolean} parameters.enableFilterReset
 		 * @param {Number} parameters.entityId
-		 * @param {Boolean} parameters.resetSorters
 		 * @param {Object} parameters.scope
+		 * @param {Boolean} parameters.sortersReset
 		 * @param {Object} parameters.tabToSelect
 		 * @param {String} parameters.viewMode
 		 *
@@ -178,6 +178,7 @@
 					return _error('dataViewUiUpdate(): unmanaged entityId parameter', this, parameters.entityId);
 			// END: Error handling
 
+			// Local variables reset
 			this.dataViewSelectedDataViewReset();
 
 			CMDBuild.proxy.management.dataView.DataView.readAll({
@@ -199,7 +200,7 @@
 							this.controllerFilter.cmfg('dataViewFilterUiUpdate', {
 								cardId: parameters.cardId,
 								enableFilterReset: parameters.enableFilterReset,
-								resetSorters: parameters.resetSorters,
+								sortersReset: parameters.sortersReset,
 								tabToSelect: parameters.tabToSelect,
 								viewMode: parameters.viewMode,
 								scope: parameters.scope,
@@ -208,7 +209,7 @@
 							this.controllerSql.cmfg('dataViewSqlUiUpdate', {
 								cardId: parameters.cardId,
 								enableFilterReset: parameters.enableFilterReset,
-								resetSorters: parameters.resetSorters,
+								sortersReset: parameters.sortersReset,
 								tabToSelect: parameters.tabToSelect,
 								viewMode: parameters.viewMode,
 								scope: parameters.scope,

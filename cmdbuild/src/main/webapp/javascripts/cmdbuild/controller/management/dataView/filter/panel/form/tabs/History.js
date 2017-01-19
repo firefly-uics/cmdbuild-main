@@ -121,7 +121,7 @@
 		 */
 		dataViewFilterFormTabHistoryUiUpdate: function () {
 			// Ui view mode manage
-			switch (this.parentDelegate.cmfg('dataViewFilterUiViewModeGet')) {
+			switch (this.cmfg('dataViewFilterUiViewModeGet')) {
 				case 'add':
 					return this.view.disable();
 

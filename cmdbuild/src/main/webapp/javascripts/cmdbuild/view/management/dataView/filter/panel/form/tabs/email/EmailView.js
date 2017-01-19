@@ -5,14 +5,14 @@
 	 *
 	 * @legacy
 	 */
-	Ext.define('CMDBuild.view.management.workflow.panel.form.tabs.email.Email', {
+	Ext.define('CMDBuild.view.management.dataView.filter.panel.form.tabs.email.EmailView', {
 		extend: 'CMDBuild.view.management.common.tabs.email.EmailView',
 
 		requires: ['CMDBuild.core.constants.Proxy'],
 
 
 		/**
-		 * @cfg {CMDBuild.controller.management.workflow.panel.form.tabs.Email}
+		 * @cfg {CMDBuild.controller.management.dataView.filter.panel.form.tabs.Email}
 		 */
 		delegate: undefined,
 

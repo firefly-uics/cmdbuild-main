@@ -35,7 +35,7 @@
 						itemId: CMDBuild.core.constants.Proxy.TOOLBAR_TOP,
 
 						items: [
-							Ext.create('CMDBuild.core.buttons.icon.modify.Modify', {
+							this.buttonModify = Ext.create('CMDBuild.core.buttons.icon.modify.Modify', {
 								text: CMDBuild.Translation.modifyNote,
 								scope: this,
 
@@ -69,6 +69,14 @@
 
 								handler: function (button, e) {
 									this.delegate.cmfg('onDataViewFilterAbortButtonClick');
+								}
+							}),
+							this.buttonBack = Ext.create('CMDBuild.core.buttons.text.Back', {
+								hidden: true,
+								scope: this,
+
+								handler: function (button, e) {
+									this.delegate.cmfg('onDataViewFilterFormTabNoteBackButtonClick');
 								}
 							})
 						]

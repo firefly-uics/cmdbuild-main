@@ -129,7 +129,7 @@
 		},
 
 		listeners: {
-			show: function(panel, eOpts) {
+			show: function (panel, eOpts) {
 				this.delegate.panelListenerManagerShow();
 			}
 		},

@@ -536,17 +536,17 @@
 		 * @param {Function} parameters.callback
 		 * @param {Boolean} parameters.enableFilterReset
 		 * @param {Number} parameters.position
-		 * @param {Boolean} parameters.resetSorters
 		 * @param {Object} parameters.scope
+		 * @param {Boolean} parameters.sortersReset
 		 *
 		 * @returns {Void}
 		 */
 		dataViewSqlGridUiUpdate: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
 			parameters.enableFilterReset = Ext.isBoolean(parameters.enableFilterReset) ? parameters.enableFilterReset : false;
-			parameters.resetSorters = Ext.isBoolean(parameters.resetSorters) ? parameters.resetSorters : false;
 			parameters.page = Ext.isNumber(parameters.page) ? parameters.page : null;
 			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
+			parameters.sortersReset = Ext.isBoolean(parameters.sortersReset) ? parameters.sortersReset : false;
 
 			var data = this.cmfg('dataViewSqlGridStoreGet').getRange(); // Clear store and reload data to fix row break on reconfigure
 
@@ -562,7 +562,7 @@
 
 			var store = this.cmfg('dataViewSqlGridStoreGet');
 
-			if (parameters.resetSorters)
+			if (parameters.sortersReset)
 				store = this.storeSortersSet(store);
 
 			this.view.reconfigure(store, this.dataViewSqlGridBuildColumns());

@@ -40,8 +40,8 @@
 			'onDataViewFilterModifyButtonClick = onDataViewFilterRecordDoubleClick',
 			'panelGridAndFormFullScreenUiSetup = dataViewFilterFullScreenUiSetup',
 			'panelGridAndFormToolsArrayBuild',
+			'panelGridAndFormViewModeEquals = dataViewFilterUiViewModeEquals',
 			'panelGridAndFormViewModeGet = dataViewFilterUiViewModeGet',
-			'panelGridAndFormViewModeIsEdit = dataViewFilterUiViewModeIsEdit',
 			'panelGridAndFormViewModeSet = dataViewFilterUiViewModeSet'
 		],
 
@@ -226,7 +226,7 @@
 		 * @param {Boolean} parameters.enableFilterReset
 		 * @param {Boolean} parameters.forceStoreLoad
 		 * @param {Number} parameters.position
-		 * @param {Boolean} parameters.resetSorters
+		 * @param {Boolean} parameters.sortersReset
 		 * @param {Object} parameters.scope
 		 * @param {Object} parameters.tabToSelect
 		 * @param {String} parameters.viewMode
@@ -245,10 +245,13 @@
 					return _error('dataViewFilterUiUpdate(): empty selected dataView', this, this.cmfg('dataViewSelectedDataViewGet'));
 			// END: Error handling
 
+			// Ui reset
 			this.cmfg('dataViewFilterFullScreenUiSetup', { maximize: 'top' });
+			this.cmfg('dataViewFilterUiViewModeSet', parameters.viewMode);
+
+			// Local variables reset
 			this.cmfg('dataViewFilterPreviousCardReset');
 			this.cmfg('dataViewFilterSelectedCardReset');
-			this.cmfg('dataViewFilterUiViewModeSet', parameters.viewMode);
 
 			if (this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.TYPE) == 'filter') {
 				CMDBuild.core.LoadMask.show(); // Manual loadMask manage
@@ -265,7 +268,7 @@
 							enableFilterReset: parameters.enableFilterReset,
 							forceStoreLoad: parameters.forceStoreLoad,
 							position: parameters.position,
-							resetSorters: parameters.resetSorters,
+							sortersReset: parameters.sortersReset,
 							scope: parameters.scope,
 							callback: parameters.callback
 						});
@@ -305,7 +308,7 @@
 											enableFilterReset: parameters.enableFilterReset,
 											forceStoreLoad: parameters.forceStoreLoad,
 											position: parameters.position,
-											resetSorters: parameters.resetSorters,
+											sortersReset: parameters.sortersReset,
 											scope: parameters.scope,
 											callback: parameters.callback
 										});
@@ -424,6 +427,8 @@
 		 * @returns {Void}
 		 */
 		onDataViewFilterAddButtonClick: function (id) {
+			id = Ext.isNumber(id) && !Ext.isEmpty(id) ? id : this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.ID);
+
 			this.cmfg('dataViewFilterFullScreenUiSetup', { maximize: 'bottom' });
 			this.cmfg('dataViewFilterSelectedCardReset');
 			this.cmfg('dataViewFilterUiViewModeSet', 'add');

@@ -38,7 +38,7 @@
 		entryType: undefined,
 
 		/**
-		 * @property {CMDBuild.view.management.common.tabs.email.EmailView}
+		 * @property {CMDBuild.view.management.dataView.filter.panel.form.tabs.email.EmailView}
 		 */
 		view: undefined,
 
@@ -55,7 +55,7 @@
 
 			this.callParent(arguments);
 
-			this.view = Ext.create('CMDBuild.view.management.common.tabs.email.EmailView', { delegate: this });
+			this.view = Ext.create('CMDBuild.view.management.dataView.filter.panel.form.tabs.email.EmailView', { delegate: this });
 			this.view.add(this.grid);
 		},
 

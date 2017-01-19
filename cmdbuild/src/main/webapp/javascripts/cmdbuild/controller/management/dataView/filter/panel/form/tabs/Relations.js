@@ -11,7 +11,7 @@
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.management.workflow.panel.form.tabs.Relations'
+			'CMDBuild.proxy.management.dataView.filter.panel.form.tabs.Relations'
 		],
 
 		mixins: {
@@ -163,7 +163,7 @@
 				parameters[CMDBuild.core.constants.Proxy.SRC] = node.get('src');
 
 				this.view.setLoading(true);
-				CMDBuild.proxy.Relation.readAll({
+				CMDBuild.proxy.management.dataView.filter.panel.form.tabs.Relations.readAll({
 					params: parameters,
 					scope: this,
 					success: function (response, options, decodedResponse) {
@@ -272,7 +272,7 @@
 				parameters[CMDBuild.core.constants.Proxy.CLASS_NAME] = _CMCache.getEntryTypeNameById(this.getClassId());
 				parameters['domainlimit'] = CMDBuild.configuration.instance.get(CMDBuild.core.constants.Proxy.RELATION_LIMIT);
 
-				CMDBuild.proxy.Relation.readAll({
+				CMDBuild.proxy.management.dataView.filter.panel.form.tabs.Relations.readAll({
 					params: parameters,
 					scope: this,
 					success: function(result, options, decodedResult) {

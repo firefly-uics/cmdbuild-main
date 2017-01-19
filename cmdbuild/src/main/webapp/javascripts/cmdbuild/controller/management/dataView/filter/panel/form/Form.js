@@ -133,6 +133,8 @@
 
 		/**
 		 * @returns {CMDBuild.controller.management.dataView.filter.panel.form.tabs.card.Card} controllerTabCard
+		 *
+		 * @private
 		 */
 		buildTabControllerCard: function () {
 			var controllerTabCard = Ext.create('CMDBuild.controller.management.dataView.filter.panel.form.tabs.card.Card', { parentDelegate: this });

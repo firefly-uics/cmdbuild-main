@@ -133,7 +133,7 @@
 		 * Custom renderer to work with "CMDBuild.model.management.dataView.filter.panel.grid.Record" custom get method
 		 *
 		 * @param {Object} column
-		 * @param {CMDBuild.model.management.workflow.Attribute} columnModel
+		 * @param {CMDBuild.model.management.dataView.filter.Attribute} columnModel
 		 *
 		 * @returns {Object} column
 		 *
@@ -609,16 +609,16 @@
 		 * @param {Boolean} parameters.enableFilterReset
 		 * @param {Boolean} parameters.forceStoreLoad
 		 * @param {Number} parameters.position
-		 * @param {Boolean} parameters.resetSorters
 		 * @param {Object} parameters.scope
+		 * @param {Boolean} parameters.sortersReset
 		 *
 		 * @returns {Void}
 		 */
 		dataViewFilterGridUiUpdate: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
 			parameters.enableFilterReset = Ext.isBoolean(parameters.enableFilterReset) ? parameters.enableFilterReset : false;
-			parameters.resetSorters = Ext.isBoolean(parameters.resetSorters) ? parameters.resetSorters : false;
 			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
+			parameters.sortersReset = Ext.isBoolean(parameters.sortersReset) ? parameters.sortersReset : false;
 
 			if (parameters.enableFilterReset)
 				this.dataViewFilterGridAppliedFilterReset();
@@ -636,7 +636,7 @@
 				default: {
 					var store = this.cmfg('dataViewFilterGridStoreGet');
 
-					if (parameters.resetSorters)
+					if (parameters.sortersReset)
 						store = this.storeSortersSet(store);
 
 					this.view.reconfigure(store, this.dataViewFilterGridBuildColumns());

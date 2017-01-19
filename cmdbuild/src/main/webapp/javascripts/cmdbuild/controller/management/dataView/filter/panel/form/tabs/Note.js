@@ -19,6 +19,7 @@
 		cmfgCatchedFunctions: [
 			'dataViewFilterFormTabNoteReset',
 			'dataViewFilterFormTabNoteUiUpdate',
+			'onDataViewFilterFormTabNoteBackButtonClick',
 			'onDataViewFilterFormTabNoteSaveButtonClick',
 			'onDataViewFilterFormTabNoteShow'
 		],
@@ -51,7 +52,7 @@
 		 * @private
 		 */
 		buildForm: function () {
-			if (this.cmfg('dataViewFilterUiViewModeIsEdit'))
+			if (this.cmfg('dataViewFilterUiViewModeEquals', 'edit'))
 				return this.buildFormModeEdit();
 
 			return this.buildFormModeRead();
@@ -112,7 +113,7 @@
 		 */
 		dataViewFilterFormTabNoteUiUpdate: function () {
 			// Ui view mode manage
-			switch (this.parentDelegate.cmfg('dataViewFilterUiViewModeGet')) {
+			switch (this.cmfg('dataViewFilterUiViewModeGet')) {
 				case 'add':
 					return this.view.disable();
 
@@ -187,6 +188,13 @@
 		/**
 		 * @returns {Void}
 		 */
+		onDataViewFilterFormTabNoteBackButtonClick: function () {
+			this.cmfg('dataViewFilterFormTabActiveSet');
+		},
+
+		/**
+		 * @returns {Void}
+		 */
 		onDataViewFilterFormTabNoteSaveButtonClick: function () {
 			if (this.validate(this.form)) {
 				CMDBuild.core.LoadMask.show();
@@ -253,7 +261,7 @@
 			});
 
 			// Ui view mode manage
-			switch (this.parentDelegate.cmfg('dataViewFilterUiViewModeGet')) {
+			switch (this.cmfg('dataViewFilterUiViewModeGet')) {
 				case 'add':
 					return this.view.disable();
 
@@ -284,15 +292,18 @@
 
 			this.form.getForm().setValues(this.cmfg('dataViewFilterSelectedCardGet', [CMDBuild.core.constants.Proxy.VALUES]));
 
+			// Buttons setup
+			this.view.buttonBack.setVisible(this.cmfg('dataViewFilterFormWidgetExists', CMDBuild.core.constants.WidgetType.getOpenNote()));
+
 			this.view.panelFunctionModifyStateSet({
 				forceToolbarTopState: !(
-					!this.cmfg('dataViewFilterUiViewModeIsEdit')
+					!this.cmfg('dataViewFilterUiViewModeEquals', 'edit')
 					&& this.cmfg('dataViewFilterSourceEntryTypeGet', [
 						CMDBuild.core.constants.Proxy.PERMISSIONS,
 						CMDBuild.core.constants.Proxy.WRITE
 					])
 				),
-				state: this.cmfg('dataViewFilterUiViewModeIsEdit')
+				state: this.cmfg('dataViewFilterUiViewModeEquals', 'edit')
 			});
 		}
 	});

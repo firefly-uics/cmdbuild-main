@@ -51,7 +51,7 @@
 		 * @private
 		 */
 		buildForm: function () {
-			if (this.cmfg('dataViewSqlUiViewModeIsEdit'))
+			if (this.cmfg('dataViewSqlUiViewModeEquals', 'edit'))
 				return this.buildFormModeEdit();
 
 			return this.buildFormModeRead();

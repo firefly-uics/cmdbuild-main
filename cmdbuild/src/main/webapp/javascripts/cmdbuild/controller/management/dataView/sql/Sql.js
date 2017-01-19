@@ -27,8 +27,8 @@
 			'onDataViewSqlAddButtonClick',
 			'panelGridAndFormFullScreenUiSetup = dataViewSqlFullScreenUiSetup',
 			'panelGridAndFormToolsArrayBuild',
+			'panelGridAndFormViewModeEquals = dataViewSqlUiViewModeEquals',
 			'panelGridAndFormViewModeGet = dataViewSqlUiViewModeGet',
-			'panelGridAndFormViewModeIsEdit = dataViewSqlUiViewModeIsEdit',
 			'panelGridAndFormViewModeSet = dataViewSqlUiViewModeSet'
 		],
 
@@ -115,8 +115,8 @@
 		 * @param {Number} parameters.page
 		 * @param {Number} parameters.position
 		 * @param {CMDBuild.model.management.dataView.sql.panel.grid.Record} parameters.record
-		 * @param {Boolean} parameters.resetSorters
 		 * @param {Object} parameters.scope
+		 * @param {Boolean} parameters.sortersReset
 		 * @param {String} parameters.viewMode
 		 *
 		 * @returns {Void}
@@ -163,7 +163,7 @@
 									enableFilterReset: parameters.enableFilterReset,
 									page: parameters.page,
 									position: parameters.position,
-									resetSorters: parameters.resetSorters,
+									sortersReset: parameters.sortersReset,
 									scope: parameters.scope,
 									callback: parameters.callback
 								});
