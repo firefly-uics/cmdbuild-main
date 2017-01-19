@@ -3,6 +3,7 @@ package org.cmdbuild.auth;
 import static org.cmdbuild.auth.user.AuthenticatedUserImpl.ANONYMOUS_USER;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.apache.commons.lang3.Validate;
@@ -162,7 +163,7 @@ public interface AuthenticationService {
 	 */
 	Iterable<CMGroup> fetchAllGroups();
 
-	PagedElements<CMUser> fetchAllUsers(int offset, int limit, boolean activeOnly);
+	PagedElements<CMUser> fetchAllUsers(int offset, int limit, Map<String, Boolean> sort, boolean activeOnly);
 
 	Iterable<CMUser> fetchServiceOrPrivilegedUsers();
 

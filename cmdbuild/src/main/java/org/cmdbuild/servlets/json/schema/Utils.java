@@ -47,7 +47,13 @@ public class Utils {
 		}
 	}
 
-	public static enum JsonParser {
+	public static interface _JsonParser {
+
+		Object serialize(JSONArray json, int index) throws JSONException;
+
+	}
+
+	public static enum JsonParser implements _JsonParser {
 
 		AS_STRING {
 
@@ -74,8 +80,6 @@ public class Utils {
 
 		}, //
 		;
-
-		abstract Object serialize(JSONArray json, int index) throws JSONException;
 
 	}
 
@@ -105,7 +109,7 @@ public class Utils {
 	 * @param json
 	 *            can be {@code null}.
 	 */
-	public static <T> Iterable<T> toIterable(final JSONArray json, final JsonParser parser) {
+	public static <T> Iterable<T> toIterable(final JSONArray json, final _JsonParser parser) {
 		try {
 			final List<T> values = newArrayList();
 			if (json != null && json.length() > 0) {

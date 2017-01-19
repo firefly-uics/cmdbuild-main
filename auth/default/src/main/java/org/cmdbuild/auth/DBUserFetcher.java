@@ -1,10 +1,12 @@
 package org.cmdbuild.auth;
 
 import static com.google.common.collect.FluentIterable.from;
+import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.defaultString;
 import static org.cmdbuild.dao.guava.Functions.toCard;
 import static org.cmdbuild.dao.query.clause.AnyAttribute.anyAttribute;
 import static org.cmdbuild.dao.query.clause.OrderByClause.Direction.ASC;
+import static org.cmdbuild.dao.query.clause.OrderByClause.Direction.DESC;
 import static org.cmdbuild.dao.query.clause.QueryAliasAttribute.attribute;
 import static org.cmdbuild.dao.query.clause.alias.Aliases.as;
 import static org.cmdbuild.dao.query.clause.alias.Aliases.canonical;
@@ -17,7 +19,9 @@ import static org.cmdbuild.dao.query.clause.where.WhereClauses.condition;
 import static org.cmdbuild.dao.query.clause.where.WhereClauses.or;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -265,20 +269,37 @@ public abstract class DBUserFetcher implements UserFetcher, LoggingSupport {
 	}
 
 	@Override
-	public PagedElements<CMUser> fetchAllUsers(final int offset, final int limit, final boolean activeOnly) {
-		final Alias userClassAlias = canonical(userClass());
-		final CMQueryResult result = view().select(anyAttribute(userClass())) //
-				.from(userClass(), as(userClassAlias)) //
-				.where(activeOnly ? activeCondition(userClassAlias) : alwaysTrue()) //
-				.orderBy(attribute(userClassAlias, userNameAttribute()), ASC) //
+	public PagedElements<CMUser> fetchAllUsers(final int offset, final int limit, final Map<String, Boolean> sort,
+			final boolean activeOnly) {
+		final Alias USER = canonical(userClass());
+		final CMQueryResult result = view().select(anyAttribute(USER)) //
+				.from(userClass(), as(USER)) //
+				.where(activeOnly ? activeCondition(USER) : alwaysTrue()) //
+				.orderBy(safe(sort).entrySet() //
+						.stream() //
+						.collect(toMap(input -> attribute(USER, input.getKey()),
+								input -> input.getValue() ? ASC : DESC))) //
 				.offset(offset) //
 				.limit(limit) //
 				.count() //
 				.run();
 		final Iterable<CMUser> users = from(result) //
-				.transform(toCard(userClassAlias)) //
+				.transform(toCard(USER)) //
 				.transform(input -> buildUserFromCard(input));
 		return new PagedElements<>(users, result.totalSize());
+	}
+
+	private Map<String, Boolean> safe(final Map<String, Boolean> sort) {
+		final Map<String, Boolean> output;
+		if (sort == null) {
+			output = new LinkedHashMap<>();
+		} else {
+			output = new LinkedHashMap<>(sort);
+		}
+		if (output.isEmpty()) {
+			output.put(userNameAttribute(), true);
+		}
+		return output;
 	}
 
 	@Override

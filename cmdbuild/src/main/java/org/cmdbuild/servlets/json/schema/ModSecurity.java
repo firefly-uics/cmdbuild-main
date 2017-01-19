@@ -37,6 +37,7 @@ import static org.cmdbuild.servlets.json.CommunicationConstants.PRIVILEGE_READ;
 import static org.cmdbuild.servlets.json.CommunicationConstants.PRIVILEGE_WRITE;
 import static org.cmdbuild.servlets.json.CommunicationConstants.RESPONSE;
 import static org.cmdbuild.servlets.json.CommunicationConstants.SERVICE;
+import static org.cmdbuild.servlets.json.CommunicationConstants.SORT;
 import static org.cmdbuild.servlets.json.CommunicationConstants.START;
 import static org.cmdbuild.servlets.json.CommunicationConstants.STARTING_CLASS;
 import static org.cmdbuild.servlets.json.CommunicationConstants.TOTAL;
@@ -45,7 +46,10 @@ import static org.cmdbuild.servlets.json.CommunicationConstants.UI_CONFIGURATION
 import static org.cmdbuild.servlets.json.CommunicationConstants.USERS;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 
 import org.cmdbuild.auth.acl.CMGroup;
@@ -55,6 +59,7 @@ import org.cmdbuild.auth.privileges.constants.PrivilegeMode;
 import org.cmdbuild.auth.user.CMUser;
 import org.cmdbuild.auth.user.OperationUser;
 import org.cmdbuild.common.utils.PagedElements;
+import org.cmdbuild.dao.Const;
 import org.cmdbuild.exception.AuthException;
 import org.cmdbuild.exception.ORMException;
 import org.cmdbuild.logic.auth.AuthenticationLogic;
@@ -84,6 +89,7 @@ import org.json.JSONObject;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 public class ModSecurity extends JSONBaseWithSpringContext {
 
@@ -172,6 +178,7 @@ public class ModSecurity extends JSONBaseWithSpringContext {
 	public JsonResponse getGroupUserList( //
 			@Parameter(START) final int offset, //
 			@Parameter(LIMIT) final int limit, //
+			@Parameter(value = SORT, required = false) final JSONArray sort, //
 			@Parameter(ID) final Long groupId, //
 			@Parameter(ALREADY_ASSOCIATED) final boolean associated) {
 
@@ -181,7 +188,7 @@ public class ModSecurity extends JSONBaseWithSpringContext {
 
 		if (!associated) {
 			final List<CMUser> notAssociatedUsers = Lists.newArrayList();
-			for (final CMUser user : authLogic.getAllUsers(offset, limit, false)) {
+			for (final CMUser user : authLogic.getAllUsers(offset, limit, map(sort), false)) {
 				if (associatedUsers.contains(user)) {
 					continue;
 				}
@@ -515,10 +522,53 @@ public class ModSecurity extends JSONBaseWithSpringContext {
 	public JsonResponse getUserList( //
 			@Parameter(START) final int offset, //
 			@Parameter(LIMIT) final int limit, //
-			@Parameter(value = ACTIVE_ONLY, required = false) final boolean activeOnly //
+			@Parameter(value = ACTIVE_ONLY, required = false) final boolean activeOnly, //
+			@Parameter(value = SORT, required = false) final JSONArray sort //
 	) throws AuthException {
-		final PagedElements<CMUser> output = authLogic().getAllUsers(offset, limit, activeOnly);
+		final PagedElements<CMUser> output = authLogic().getAllUsers(offset, limit, map(sort), activeOnly);
 		return success(new UserList(output, authLogic()));
+	}
+
+	/**
+	 * @deprecated Map in another way because it's bad to have database
+	 *             information at this level.
+	 */
+	@Deprecated
+	private Map<String, Boolean> map(final JSONArray sort) {
+		final Map<String, Boolean> output = new LinkedHashMap<>();
+		Utils.<Entry<String, Boolean>> toIterable(sort, new Utils._JsonParser() {
+
+			@Override
+			public Object serialize(final JSONArray json, final int index) throws JSONException {
+				final JSONObject object = json.getJSONObject(index);
+				final String key = object.getString("property");
+				final boolean ascending = object.getString("direction").equals("ASC");
+				final String _key;
+				switch (key) {
+				case NAME:
+					_key = Const.User.USERNAME;
+					break;
+
+				case DESCRIPTION:
+					_key = Const.User.DESCRIPTION;
+					break;
+
+				case ACTIVE:
+					_key = Const.User.ACTIVE;
+					break;
+
+				default:
+					_key = null;
+				}
+				return Maps.immutableEntry(_key, ascending);
+			}
+
+		}).forEach(input -> {
+			if (input.getKey() != null) {
+				output.put(input.getKey(), input.getValue());
+			}
+		});
+		return output;
 	}
 
 	@JSONExported

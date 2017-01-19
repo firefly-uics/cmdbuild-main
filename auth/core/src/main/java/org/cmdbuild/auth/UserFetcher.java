@@ -1,6 +1,7 @@
 package org.cmdbuild.auth;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.cmdbuild.auth.user.CMUser;
@@ -18,7 +19,7 @@ public interface UserFetcher {
 
 	Optional<Long> fetchUserPosition(long userId);
 
-	PagedElements<CMUser> fetchAllUsers(int offset, int limit, boolean activeOnly);
+	PagedElements<CMUser> fetchAllUsers(int offset, int limit, Map<String, Boolean> sort, boolean activeOnly);
 
 	Iterable<CMUser> fetchServiceOrPrivilegedUsers();
 

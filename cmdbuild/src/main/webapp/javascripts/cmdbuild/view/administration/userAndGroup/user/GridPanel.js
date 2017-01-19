@@ -61,7 +61,6 @@
 						text: CMDBuild.Translation.enabled,
 						maxWidth: 60,
 						align: 'center',
-						sortable: false,
 						hideable: false,
 						menuDisabled: true,
 						fixed: true

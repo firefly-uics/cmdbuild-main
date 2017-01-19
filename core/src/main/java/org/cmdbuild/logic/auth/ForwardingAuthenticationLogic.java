@@ -1,6 +1,7 @@
 package org.cmdbuild.logic.auth;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.cmdbuild.auth.ClientRequestAuthenticator.ClientRequest;
@@ -98,8 +99,9 @@ public abstract class ForwardingAuthenticationLogic extends ForwardingObject imp
 	}
 
 	@Override
-	public PagedElements<CMUser> getAllUsers(final int offset, final int limit, final boolean activeOnly) {
-		return delegate().getAllUsers(offset, limit, activeOnly);
+	public PagedElements<CMUser> getAllUsers(final int offset, final int limit, final Map<String, Boolean> sort,
+			final boolean activeOnly) {
+		return delegate().getAllUsers(offset, limit, sort, activeOnly);
 	}
 
 	@Override

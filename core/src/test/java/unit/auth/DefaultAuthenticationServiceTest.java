@@ -8,6 +8,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyMapOf;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -41,7 +42,7 @@ public class DefaultAuthenticationServiceTest {
 				new DefaultAuthenticationService(UNUSED_DATAVIEW, UNUSED_CURRENTUSER);
 
 		// when
-		final PagedElements<CMUser> output = underTest.fetchAllUsers(123, 456, true);
+		final PagedElements<CMUser> output = underTest.fetchAllUsers(123, 456, SORT, true);
 
 		// then
 		assertThat(output, equalTo(empty()));
@@ -53,17 +54,17 @@ public class DefaultAuthenticationServiceTest {
 		final UserFetcher first = mock(UserFetcher.class);
 		final PagedElements<?> outputFromFetcher = mock(PagedElements.class);
 		doReturn(outputFromFetcher) //
-				.when(first).fetchAllUsers(anyInt(), anyInt(), anyBoolean());
+				.when(first).fetchAllUsers(anyInt(), anyInt(), anyMapOf(String.class, Boolean.class), anyBoolean());
 		final UserFetcher second = newProxy(UserFetcher.class, unsupported("should not be used"));
 		final DefaultAuthenticationService underTest =
 				new DefaultAuthenticationService(UNUSED_DATAVIEW, UNUSED_CURRENTUSER);
 		underTest.setUserFetchers(first, second);
 
 		// when
-		final Iterable<CMUser> output = underTest.fetchAllUsers(123, 456, true);
+		final Iterable<CMUser> output = underTest.fetchAllUsers(123, 456, SORT, true);
 
 		// then
-		verify(first).fetchAllUsers(eq(123), eq(456), eq(true));
+		verify(first).fetchAllUsers(eq(123), eq(456), eq(SORT), eq(true));
 		verifyNoMoreInteractions(first);
 
 		assertThat(output, equalTo(outputFromFetcher));

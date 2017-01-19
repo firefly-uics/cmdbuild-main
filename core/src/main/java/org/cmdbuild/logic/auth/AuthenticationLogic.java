@@ -2,6 +2,7 @@ package org.cmdbuild.logic.auth;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.cmdbuild.auth.ClientRequestAuthenticator.ClientRequest;
@@ -75,7 +76,7 @@ public interface AuthenticationLogic extends Logic {
 
 	Iterable<CMGroup> getAllGroups();
 
-	PagedElements<CMUser> getAllUsers(int offset, int limit, boolean activeOnly);
+	PagedElements<CMUser> getAllUsers(int offset, int limit, Map<String, Boolean> sort, boolean activeOnly);
 
 	Iterable<CMUser> getServiceOrPrivilegedUsers();
 

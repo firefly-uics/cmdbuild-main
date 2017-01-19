@@ -17,6 +17,7 @@ import static org.cmdbuild.dao.query.clause.where.SimpleWhereClause.condition;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -394,10 +395,11 @@ public class DefaultAuthenticationService implements AuthenticationService {
 	}
 
 	@Override
-	public PagedElements<CMUser> fetchAllUsers(final int offset, final int limit, final boolean activeOnly) {
+	public PagedElements<CMUser> fetchAllUsers(final int offset, final int limit, final Map<String, Boolean> sort,
+			final boolean activeOnly) {
 		return userFetchers.stream() //
 				.findFirst() //
-				.map(input -> input.fetchAllUsers(offset, limit, activeOnly)) //
+				.map(input -> input.fetchAllUsers(offset, limit, sort, activeOnly)) //
 				.orElse(NO_USERS);
 	}
 

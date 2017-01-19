@@ -1,5 +1,7 @@
 package org.cmdbuild.dao.query;
 
+import java.util.Map;
+
 import org.apache.commons.lang3.builder.Builder;
 import org.cmdbuild.dao.entrytype.CMClass;
 import org.cmdbuild.dao.entrytype.CMEntryType;
@@ -48,6 +50,8 @@ public interface QuerySpecsBuilder extends Builder<QuerySpecs> {
 	QuerySpecsBuilder limit(Number limit);
 
 	QuerySpecsBuilder orderBy(QueryAttribute attribute, Direction direction);
+
+	QuerySpecsBuilder orderBy(Map<QueryAttribute, Direction> order);
 
 	QuerySpecsBuilder numbered();
 

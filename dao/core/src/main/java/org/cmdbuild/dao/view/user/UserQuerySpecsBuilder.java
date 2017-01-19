@@ -1,5 +1,7 @@
 package org.cmdbuild.dao.view.user;
 
+import java.util.Map;
+
 import org.cmdbuild.dao.entrytype.CMClass;
 import org.cmdbuild.dao.entrytype.CMEntryType;
 import org.cmdbuild.dao.query.CMQueryResult;
@@ -18,7 +20,8 @@ import org.cmdbuild.dao.query.clause.where.WhereClause;
  */
 public class UserQuerySpecsBuilder implements QuerySpecsBuilder {
 
-	static UserQuerySpecsBuilder newInstance(final QuerySpecsBuilder querySpecsBuilder, final UserDataView userDataView) {
+	static UserQuerySpecsBuilder newInstance(final QuerySpecsBuilder querySpecsBuilder,
+			final UserDataView userDataView) {
 		return new UserQuerySpecsBuilder(querySpecsBuilder, userDataView);
 	}
 
@@ -113,6 +116,12 @@ public class UserQuerySpecsBuilder implements QuerySpecsBuilder {
 	@Override
 	public QuerySpecsBuilder orderBy(final QueryAttribute attribute, final Direction direction) {
 		delegate.orderBy(attribute, direction);
+		return this;
+	}
+
+	@Override
+	public QuerySpecsBuilder orderBy(final Map<QueryAttribute, Direction> order) {
+		delegate.orderBy(order);
 		return this;
 	}
 

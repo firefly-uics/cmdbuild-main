@@ -12,6 +12,7 @@ import static org.cmdbuild.dao.query.clause.where.SimpleWhereClause.condition;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.cmdbuild.auth.AuthenticationService;
@@ -396,8 +397,9 @@ public class DefaultAuthenticationLogic implements AuthenticationLogic {
 	}
 
 	@Override
-	public PagedElements<CMUser> getAllUsers(final int offset, final int limit, final boolean activeOnly) {
-		return authService.fetchAllUsers(offset, limit, activeOnly);
+	public PagedElements<CMUser> getAllUsers(final int offset, final int limit, final Map<String, Boolean> sort,
+			final boolean activeOnly) {
+		return authService.fetchAllUsers(offset, limit, sort, activeOnly);
 	}
 
 	@Override

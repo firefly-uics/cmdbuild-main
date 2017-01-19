@@ -1,5 +1,7 @@
 package org.cmdbuild.dao.query;
 
+import static java.util.Collections.emptyMap;
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.cmdbuild.common.Constants.LOOKUP_CLASS_NAME;
 import static org.cmdbuild.dao.constants.Cardinality.CARDINALITY_1N;
@@ -128,6 +130,7 @@ public class QuerySpecsBuilderImpl implements QuerySpecsBuilder {
 	}
 
 	private static final Alias DEFAULT_ANYCLASS_ALIAS = name("_*");
+	private static final Map<QueryAttribute, Direction> NO_ORDER = emptyMap();
 
 	private Collection<QueryAttribute> attributes;
 	private final Collection<JoinClause> joinClauses;
@@ -427,6 +430,12 @@ public class QuerySpecsBuilderImpl implements QuerySpecsBuilder {
 	@Override
 	public QuerySpecsBuilder orderBy(final QueryAttribute attribute, final Direction direction) {
 		orderings.put(attribute, direction);
+		return this;
+	}
+
+	@Override
+	public QuerySpecsBuilder orderBy(final Map<QueryAttribute, Direction> order) {
+		orderings.putAll(defaultIfNull(order, NO_ORDER));
 		return this;
 	}
 
