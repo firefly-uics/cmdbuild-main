@@ -61,7 +61,7 @@
 			if (!Ext.isEmpty(message))
 				CMDBuild.log.error.apply(
 					CMDBuild.log,
-					Ext.Array.insert(Ext.Array.slice(arguments, 2), 0, [classWithError + ': ' + message]) // Slice arguments and prepend custom error message
+					Ext.Array.insert(Ext.Array.slice(arguments, 2), 0, [classWithError + ' - ' + message]) // Slice arguments and prepend custom error message
 				);
 		};
 

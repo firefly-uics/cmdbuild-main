@@ -9,7 +9,7 @@
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.management.workflow.panel.tree.filter.advanced.Manager'
+			'CMDBuild.proxy.common.panel.gridAndForm.panel.common.filter.advanced.Manager'
 		],
 
 		/**
@@ -239,7 +239,7 @@
 				var params = {};
 				params[CMDBuild.core.constants.Proxy.ID] = filter.get(CMDBuild.core.constants.Proxy.ID);
 
-				CMDBuild.proxy.management.workflow.panel.tree.filter.advanced.Manager.remove({
+				CMDBuild.proxy.common.panel.gridAndForm.panel.common.filter.advanced.Manager.remove({
 					params: params,
 					scope: this,
 					success: function (response, options, decodedResponse) {
@@ -277,7 +277,7 @@
 			params[CMDBuild.core.constants.Proxy.NAME] = filter.get(CMDBuild.core.constants.Proxy.NAME);
 
 			if (Ext.isEmpty(filter.get(CMDBuild.core.constants.Proxy.ID))) {
-				CMDBuild.proxy.management.workflow.panel.tree.filter.advanced.Manager.create({
+				CMDBuild.proxy.common.panel.gridAndForm.panel.common.filter.advanced.Manager.create({
 					params: params,
 					scope: this,
 					success: function (response, options, decodedResponse) {
@@ -302,7 +302,7 @@
 			} else {
 				params[CMDBuild.core.constants.Proxy.ID] = filter.get(CMDBuild.core.constants.Proxy.ID);
 
-				CMDBuild.proxy.management.workflow.panel.tree.filter.advanced.Manager.update({
+				CMDBuild.proxy.common.panel.gridAndForm.panel.common.filter.advanced.Manager.update({
 					params: params,
 					scope: this,
 					success: function (response, options, decodedResponse) {

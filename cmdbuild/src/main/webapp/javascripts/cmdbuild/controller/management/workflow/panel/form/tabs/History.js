@@ -14,11 +14,6 @@
 			'CMDBuild.proxy.management.workflow.panel.form.tabs.History'
 		],
 
-		mixins: {
-			observable: 'Ext.util.Observable',
-			wfStateDelegate: 'CMDBuild.state.CMWorkflowStateDelegate'
-		},
-
 		/**
 		 * @cfg {CMDBuild.controller.management.workflow.panel.form.Form}
 		 */
@@ -44,12 +39,12 @@
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
-			'onWorkflowFormTabHistoryAddWorkflowButtonClick',
 			'onWorkflowTabHistoryIncludeSystemActivitiesCheck',
 			'onWorkflowTabHistoryPanelShow = onWorkflowTabHistoryIncludeRelationCheck', // Reloads store to be consistent with includeRelationsCheckbox state
 			'onWorkflowTabHistoryRowExpand',
-			'workflowTabHistorySelectedEntityGet',
+			'workflowFormTabHistoryUiUpdate',
 			'workflowHistorySelectedEntityIsEmpty',
+			'workflowTabHistorySelectedEntityGet',
 			'workflowTabHistorySelectedEntitySet'
 		],
 
@@ -108,8 +103,6 @@
 		 * @override
 		 */
 		constructor: function (configurationObject) {
-			this.mixins.observable.constructor.call(this, arguments);
-
 			this.callParent(arguments);
 
 			this.view = Ext.create('CMDBuild.view.management.workflow.panel.form.tabs.history.HistoryView', { delegate: this });
@@ -118,8 +111,6 @@
 			this.grid = this.view.grid;
 
 			this.statusBuildTranslationObject( ); // Build status translation object from lookup
-
-			_CMWFState.addDelegate(this);
 		},
 
 		/**
@@ -288,15 +279,6 @@
 		},
 
 		/**
-		 * @param {Number} id
-		 *
-		 * @returns {Void}
-		 */
-		onWorkflowFormTabHistoryAddWorkflowButtonClick: function (id) {
-			this.view.disable();
-		},
-
-		/**
 		 * Equals to onCardSelected in classes
 		 *
 		 * @param {CMDBuild.model.CMProcessInstance} processInstance
@@ -342,28 +324,6 @@
 		 */
 		onWorkflowTabHistoryPanelShow: function () {
 			if (this.view.isVisible()) {
-				// History record save
-				if (!Ext.isEmpty(_CMWFState.getProcessClassRef()) && !Ext.isEmpty( _CMWFState.getProcessInstance()))
-					CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
-						moduleId: 'workflow',
-						entryType: {
-							description: _CMWFState.getProcessClassRef().get(CMDBuild.core.constants.Proxy.TEXT),
-							id: _CMWFState.getProcessClassRef().get(CMDBuild.core.constants.Proxy.ID),
-							object: _CMWFState.getProcessClassRef()
-						},
-						item: {
-							description: _CMWFState.getProcessInstance().get(CMDBuild.core.constants.Proxy.TEXT),
-							id: _CMWFState.getProcessInstance().get(CMDBuild.core.constants.Proxy.ID),
-							object: _CMWFState.getProcessInstance()
-						},
-						section: {
-							description: this.view.title,
-							object: this.view
-						}
-					});
-
-				this.grid.getStore().removeAll(); // Clear store before load new one
-
 				if (!Ext.isEmpty(this.selectedEntity)) {
 					var params = {};
 					params[CMDBuild.core.constants.Proxy.ACTIVE] = true;
@@ -390,6 +350,32 @@
 								scope: this,
 								callback: function (records, operation, success) {
 									this.getRowExpanderPlugin().collapseAll();
+
+									// History record save
+									if (!Ext.isEmpty(_CMWFState.getProcessClassRef()) && !Ext.isEmpty( _CMWFState.getProcessInstance()))
+										CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
+											moduleId: 'workflow',
+											entryType: {
+												description: _CMWFState.getProcessClassRef().get(CMDBuild.core.constants.Proxy.TEXT),
+												id: _CMWFState.getProcessClassRef().get(CMDBuild.core.constants.Proxy.ID),
+												object: _CMWFState.getProcessClassRef()
+											},
+											item: {
+												description: _CMWFState.getProcessInstance().get(CMDBuild.core.constants.Proxy.TEXT),
+												id: _CMWFState.getProcessInstance().get(CMDBuild.core.constants.Proxy.ID),
+												object: _CMWFState.getProcessInstance()
+											},
+											section: {
+												description: this.view.title,
+												object: this.view
+											}
+										});
+
+									// Ui view mode manage
+									switch (this.parentDelegate.cmfg('workflowUiViewModeGet')) {
+										case 'add':
+											return this.view.disable();
+									}
 
 									if (this.grid.includeRelationsCheckbox.getValue()) {
 										CMDBuild.proxy.management.workflow.panel.form.tabs.History.readRelations({
@@ -487,6 +473,27 @@
 						}
 					});
 				}
+			}
+		},
+
+		/**
+		 * Enable/Disable tab selection based
+		 *
+		 * @returns {Void}
+		 *
+		 * @legacy
+		 */
+		workflowFormTabHistoryUiUpdate: function () {
+			// Ui view mode manage
+			switch (this.cmfg('workflowUiViewModeGet')) {
+				case 'add':
+					return this.view.disable();
+
+				default:
+					return this.view.setDisabled(
+						this.cmfg('workflowSelectedInstanceIsEmpty')
+						&& this.cmfg('workflowSelectedActivityIsEmpty')
+					);
 			}
 		},
 

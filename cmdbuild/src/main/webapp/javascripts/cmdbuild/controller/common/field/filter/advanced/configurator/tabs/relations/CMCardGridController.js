@@ -139,7 +139,7 @@
 				params[CMDBuild.core.constants.Proxy.SORT] = Ext.encode(this.view.getStore().getSorters());
 				params[CMDBuild.core.constants.Proxy.TYPE] = format;
 
-				this.controllerPrintWindow = Ext.create('CMDBuild.controller.management.workflow.panel.tree.print.Window', { parentDelegate: this });
+				this.controllerPrintWindow = Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.print.Window', { parentDelegate: this });
 				this.controllerPrintWindow.cmfg('panelGridAndFormCommonPrintWindowShow', {
 					format: format,
 					mode: 'view',

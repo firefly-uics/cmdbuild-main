@@ -139,10 +139,10 @@
 						eventName: 'load',
 						fn: function () {
 							var params = {};
-							params['enableForceFlowStatus'] = true;
+							params.flowStatusForceEnabled = true;
 							params[CMDBuild.core.constants.Proxy.INSTANCE_ID] = instanceIdentifier;
 
-							moduleController.cmfg('workflowTreeActivitySelect', params);
+							moduleController.cmfg('applySelection', params);
 						},
 						scope: this,
 						options: { single: true }

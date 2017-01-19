@@ -103,7 +103,7 @@
 		 */
 		accordionBuildId: function (components) {
 			if (!Ext.isEmpty(components)) {
-				components = Ext.isArray(components) ? Ext.Array.clean(components) : [components];
+				components = Ext.isArray(components) ? Ext.Array.clean(components) : Ext.Array.clean([components]);
 				components = Ext.Array.push([CMDBuild.core.constants.Proxy.ACCORDION, this.cmfg('accordionIdentifierGet')], components);
 
 				Ext.Array.each(components, function (component, i, allComponents) {

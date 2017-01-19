@@ -5,11 +5,10 @@
 	 * 	- onPanelGridAndFormCommonToolbarPrintButtonClick
 	 * 	- panelGridAndFormListPanelAppliedFilterGet
 	 * 	- panelGridAndFormListPanelAppliedFilterIsEmpty
-	 * 	- panelGridAndFormListPanelFilterApply
-	 * 	- panelGridAndFormListPanelFilterClear
 	 * 	- panelGridAndFormListPanelStoreGet
 	 * 	- panelGridAndFormListPanelStoreLoad
 	 * 	- panelGridAndFormSelectedEntityGet
+	 * 	- panelGridAndFormUiUpdate
 	 */
 	Ext.define('CMDBuild.controller.common.panel.gridAndForm.panel.common.toolbar.Paging', {
 		extend: 'CMDBuild.controller.common.abstract.Base',
@@ -108,16 +107,14 @@
 		 * @returns {Void}
 		 */
 		panelGridAndFormCommonToolbarPagingFilterAdvancedReset: function () {
-			if (Ext.isObject(this.controllerFilterAdvanced) && !Ext.Object.isEmpty(this.controllerFilterAdvanced))
-				this.controllerFilterAdvanced.cmfg('onPanelGridAndFormCommonFilterAdvancedClearButtonClick', { disableStoreLoad: true });
+			this.controllerFilterAdvanced.cmfg('onPanelGridAndFormCommonFilterAdvancedClearButtonClick', { disableStoreLoad: true });
 		},
 
 		/**
 		 * @returns {Void}
 		 */
 		panelGridAndFormCommonToolbarPagingFilterBasicReset: function () {
-			if (Ext.isObject(this.controllerFilterBasic) && !Ext.Object.isEmpty(this.controllerFilterBasic))
-				this.controllerFilterBasic.cmfg('onFieldFilterBasicReset', true);
+			this.controllerFilterBasic.cmfg('fieldFilterBasicReset', true);
 		},
 
 		/**
@@ -126,13 +123,14 @@
 		panelGridAndFormCommonToolbarPagingUiUpdate: function () {
 			this.cmfg('panelGridAndFormCommonToolbarPagingFilterBasicReset');
 
-			// Setup enable/disable state
+			// Setup enable/disable states
 			this.controllerFilterAdvanced.cmfg('panelGridAndFormCommonFilterAdvancedSetDisabled', this.disableFilterAdvanced);
 			this.controllerFilterBasic.cmfg('fieldFilterBasicSetDisabled', this.disableFilterBasic);
 			this.printButton.setDisabled(this.disableButtonPrint);
 
 			// Forward to sub-controllers
 			this.controllerFilterAdvanced.cmfg('panelGridAndFormCommonFilterAdvancedUiUpdate');
+			this.controllerFilterBasic.cmfg('fieldFilterBasicUiUpdate');
 		}
 	});
 

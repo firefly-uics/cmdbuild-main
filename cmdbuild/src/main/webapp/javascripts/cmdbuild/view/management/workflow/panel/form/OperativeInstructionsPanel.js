@@ -4,7 +4,7 @@
 		extend: 'Ext.panel.Panel',
 
 		/**
-		 * @cfg {CMDBuild.controller.management.workflow.panel.form.Form}
+		 * @cfg {CMDBuild.controller.management.workflow.panel.form.OperativeInstructions}
 		 */
 		delegate: undefined,
 

@@ -8,7 +8,7 @@
 	 *
 	 * Available functionalities:
 	 * 	- viewMode manage
-	 * 		Methods: panelGridAndFormViewModeGet, panelGridAndFormViewModeIsEdit, panelGridAndFormViewModeIsRead, panelGridAndFormViewModeSet
+	 * 		Methods: panelGridAndFormViewModeEquals, panelGridAndFormViewModeGet, panelGridAndFormViewModeSet
 	 *
 	 * NOTE: "form" and "grid" (or "tree") pointers are required to work with UI state module
 	 *
@@ -227,31 +227,26 @@
 
 		// ViewMode manage methods
 			/**
+			 * Mode parameter could be also an array to check if current viewMode is present in array
+			 *
+			 * @param {String or Array} mode
+			 *
+			 * @returns {Boolean}
+			 */
+			panelGridAndFormViewModeEquals: function (mode) {
+				mode = Ext.isArray(mode) ? Ext.Array.clean(mode) : Ext.Array.clean([mode]);
+
+				if (Ext.isArray(mode) && !Ext.isEmpty(mode))
+					return Ext.Array.contains(mode, this.viewMode);
+
+				return false;
+			},
+
+			/**
 			 * @returns {String}
 			 */
 			panelGridAndFormViewModeGet: function () {
 				return this.viewMode;
-			},
-
-			/**
-			 * @returns {Boolean}
-			 */
-			panelGridAndFormViewModeIsAdd: function () {
-				return this.viewMode == 'add';
-			},
-
-			/**
-			 * @returns {Boolean}
-			 */
-			panelGridAndFormViewModeIsEdit: function () {
-				return this.viewMode == 'edit';
-			},
-
-			/**
-			 * @returns {Boolean}
-			 */
-			panelGridAndFormViewModeIsRead: function () {
-				return this.viewMode == 'read';
 			},
 
 			/**

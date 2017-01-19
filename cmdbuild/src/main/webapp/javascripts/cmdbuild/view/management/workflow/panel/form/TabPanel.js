@@ -47,7 +47,7 @@
 			},
 
 			/**
-			 * @returns {CMDBuild.view.management.workflow.panel.form.tabs.email.Email}
+			 * @returns {CMDBuild.view.management.workflow.panel.form.tabs.email.EmailView}
 			 */
 			getEmailPanel: function() {
 				if (!Ext.isEmpty(this.delegate) && !Ext.isEmpty(this.delegate.controllerTabEmail))
@@ -75,7 +75,7 @@
 						if (!Ext.isEmpty(widgetRelatedPanel) && Ext.isFunction(widgetRelatedPanel.cmActivate))
 							widgetRelatedPanel.cmActivate();
 					},
-					'CMDBuild.view.management.workflow.panel.form.tabs.email.Email': function (me) {
+					'CMDBuild.view.management.workflow.panel.form.tabs.email.EmailView': function (me) {
 						var widgetRelatedPanel = me.getEmailPanel();
 
 						if (!Ext.isEmpty(widgetRelatedPanel) && Ext.isFunction(widgetRelatedPanel.cmActivate))

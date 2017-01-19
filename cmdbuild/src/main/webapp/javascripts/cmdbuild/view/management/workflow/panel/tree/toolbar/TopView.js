@@ -51,8 +51,8 @@
 
 						listeners: {
 							scope: this,
-							change: function (field, newValue, oldValue, eOpts) {
-								this.delegate.cmfg('onWorkflowTreeToolbarTopStateComboChange');
+							select: function (field, records, eOpts) {
+								this.delegate.cmfg('onWorkflowTreeToolbarTopStateComboSelect');
 							}
 						}
 					})

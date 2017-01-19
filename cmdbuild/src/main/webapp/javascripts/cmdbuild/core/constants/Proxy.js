@@ -671,6 +671,7 @@
 		WORKFLOW_ACTIVE: 'workflowActive',
 		WORKFLOW_ATTRIBUTES: 'workflowAttributes',
 		WORKFLOW_CLASS_NAME: 'workflowClassName',
+		WORKFLOW_DESCRIPTION: 'workflowDescription',
 		WORKFLOW_ID: 'workflowId',
 		WORKFLOW_NAME: 'workflowName',
 		WORKSPACE: 'workspace',

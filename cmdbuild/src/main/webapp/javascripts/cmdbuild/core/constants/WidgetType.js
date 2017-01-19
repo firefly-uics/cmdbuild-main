@@ -5,6 +5,7 @@
 		singleton: true,
 
 		config: {
+			manageEmail: '.ManageEmail',
 			openNote: '.OpenNote'
 		}
 	});

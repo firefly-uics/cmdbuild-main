@@ -2,8 +2,9 @@
 
 	/**
 	 * Required managed functions from upper structure:
-	 * 	- panelGridAndFormListPanelFilterApply
-	 * 	- panelGridAndFormGridFilterClear
+	 * 	- panelGridAndFormListPanelAppliedFilterGet
+	 * 	- panelGridAndFormSelectedEntityGet
+	 * 	- panelGridAndFormUiUpdate
 	 */
 	Ext.define('CMDBuild.controller.common.field.filter.runtimeParameters.RuntimeParameters', {
 		extend: 'CMDBuild.controller.common.abstract.Base',
@@ -105,7 +106,7 @@
 				if (!Ext.isObject(filter) || Ext.Object.isEmpty(filter))
 					return _error('fieldFilterRuntimeParametersShow(): unmanaged filter parameter', this, filter);
 
-				if (!Ext.isBoolean(filter.isFilterAdvancedCompatible) || filter.isFilterAdvancedCompatible)
+				if (!Ext.isBoolean(filter.isFilterAdvancedCompatible) || !filter.isFilterAdvancedCompatible)
 					return _error('fieldFilterRuntimeParametersShow(): filter parameter not compatible', this, filter);
 			// END: Error handling
 
@@ -162,7 +163,10 @@
 		 * @returns {Void}
 		 */
 		onFieldFilterRuntimeParametersAbortButtonClick: function () {
-			this.cmfg('panelGridAndFormGridFilterClear');
+			this.cmfg('panelGridAndFormUiUpdate', {
+				filterReset: true,
+				workflowId: this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.ID)
+			});
 
 			this.view.close();
 		},
@@ -174,9 +178,9 @@
 			if (this.form.getForm().isValid()) {
 				this.filter.setRuntimeParameterValue(this.form.getValues());
 
-				this.cmfg('panelGridAndFormListPanelFilterApply', {
+				this.cmfg('panelGridAndFormUiUpdate', {
 					filter: this.filter,
-					type: 'advanced'
+					workflowId: this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.ID)
 				});
 
 				this.view.close();

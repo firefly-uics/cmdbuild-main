@@ -413,8 +413,8 @@
 					moduleController.cmfg('workflowTreeApplyStoreEvent', {
 						eventName: 'load',
 						fn: function (store, node, records, successful, eOpts) {
-							moduleController.cmfg('workflowTreeActivitySelect', {
-								enableForceFlowStatus: true,
+							moduleController.cmfg('applySelection', {
+								flowStatusForceEnabled: true,
 								instanceId: parameters[CMDBuild.core.constants.Proxy.INSTANCE_ID]
 							});
 						},

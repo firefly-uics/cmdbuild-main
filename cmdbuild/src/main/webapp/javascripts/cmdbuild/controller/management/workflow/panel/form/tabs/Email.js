@@ -8,18 +8,13 @@
 	Ext.define('CMDBuild.controller.management.workflow.panel.form.tabs.Email', {
 		extend: 'CMDBuild.controller.management.common.tabs.email.Email',
 
-		mixins: {
-			observable: 'Ext.util.Observable',
-			wfStateDelegate: 'CMDBuild.state.CMWorkflowStateDelegate'
-		},
-
 		/**
 		 * @cfg {CMDBuild.controller.management.workflow.panel.form.Form}
 		 */
 		parentDelegate: undefined,
 
 		/**
-		 * @property {CMDBuild.view.management.workflow.panel.form.tabs.email.Email}
+		 * @property {CMDBuild.view.management.workflow.panel.form.tabs.email.EmailView}
 		 */
 		view: undefined,
 
@@ -32,14 +27,37 @@
 		 * @override
 		 */
 		constructor: function (configurationObject) {
-			this.mixins.observable.constructor.call(this, arguments);
+			this.cmfgCatchedFunctions.push('workflowFormTabEmailUiUpdate');
 
 			this.callParent(arguments);
 
-			this.view = Ext.create('CMDBuild.view.management.workflow.panel.form.tabs.email.Email', { delegate: this });
+			this.view = Ext.create('CMDBuild.view.management.workflow.panel.form.tabs.email.EmailView', { delegate: this });
 			this.view.add(this.grid);
+		},
 
-			_CMWFState.addDelegate(this);
+		/**
+		 * @returns {Void}
+		 *
+		 * @legacy
+		 */
+		workflowFormTabEmailUiUpdate: function () {
+			if (!this.cmfg('workflowSelectedWorkflowIsEmpty'))
+				this.onProcessClassRefChange(Ext.create('CMDBuild.cache.CMEntryTypeModel', this.cmfg('workflowSelectedWorkflowGet', 'rawData')));
+
+			if (!this.cmfg('workflowSelectedInstanceIsEmpty'))
+				this.onProcessInstanceChange(Ext.create('CMDBuild.model.CMProcessInstance', this.cmfg('workflowSelectedInstanceGet', 'rawData')));
+
+			if (!this.cmfg('workflowSelectedActivityIsEmpty'))
+				this.onActivityInstanceChange(Ext.create('CMDBuild.model.CMActivityInstance', this.cmfg('workflowSelectedActivityGet', 'rawData')));
+
+			// Ui view mode manage
+			switch (this.cmfg('workflowUiViewModeGet')) {
+				case 'add':
+					return this.view.enable();
+
+				default:
+					return this.view.setDisabled(this.cmfg('workflowSelectedInstanceIsEmpty'));
+			}
 		},
 
 		/**
@@ -55,47 +73,25 @@
 		},
 
 		/**
-		 * Enable action shouldn't be needed but on addCardButtoClick is fired also onProcessInstanceChange event
-		 *
-		 * @override
-		 */
-		onAddCardButtonClick: function () {
-			this.callParent(arguments);
-
-			// Reset selected entity, regenerate email and load store
-			this.cmfg('tabEmailSelectedEntitySet', {
-				selectedEntity: Ext.create('CMDBuild.model.CMProcessInstance', this.cmfg('workflowSelectedWorkflowGet', 'rawData')),
-				scope: this,
-				callbackFunction: function (options, success, response) {
-					this.cmfg('tabEmailRegenerateAllEmailsSet', true);
-
-					this.forceRegenerationSet(true);
-
-					this.cmfg('onTabEmailPanelShow');
-				}
-			});
-		},
-
-		/**
 		 * Equals to onEntryTypeSelected in classes
 		 *
 		 * @param {CMDBuild.cache.CMEntryTypeModel} entryType
 		 */
 		onProcessClassRefChange: function (entryType) {
 			this.cmfg('tabEmailEditModeSet', false);
+
+			// FIXME: ugly hack to make it works
+			if (this.parentDelegate.cmfg('workflowSelectedInstanceIsEmpty'))
+				this.onProcessInstanceChange(Ext.create('CMDBuild.model.CMProcessInstance', { flowStatus: 'OPEN' }));
 		},
 
 		/**
-		 * Equals to onCardSelected in classes.
-		 * N.B. Enable/Disable email tab is done by widget configurationSet
+		 * Equals to onCardSelected in classes
 		 *
 		 * @param {CMDBuild.model.CMProcessInstance} processInstance
 		 */
 		onProcessInstanceChange: function (processInstance) {
 			if (!Ext.isEmpty(processInstance) && processInstance.isStateOpen()) {
-				if (!processInstance.isNew())
-					this.parentDelegate.controllerTabActivity.ensureEditPanel(); // Creates editPanel with relative form fields
-
 				this.cmfg('tabEmailConfigurationReset');
 				this.cmfg('tabEmailSelectedEntitySet', {
 					selectedEntity: processInstance,
@@ -153,9 +149,34 @@
 							object: this.view
 						}
 					});
-			}
 
-			this.callParent(arguments);
+				this.callParent(arguments);
+
+				// Ui view mode manage
+				switch (this.cmfg('workflowUiViewModeGet')) {
+					case 'add': {
+						this.view.enable();
+
+						this.cmfg('tabEmailEditModeSet', false);
+
+						// Reset selected entity, regenerate email and load store
+						this.cmfg('tabEmailSelectedEntitySet', {
+							scope: this,
+							callbackFunction: function (options, success, response) {
+								this.cmfg('tabEmailRegenerateAllEmailsSet', true);
+
+								this.forceRegenerationSet(true);
+							}
+						});
+					} break;
+
+					case 'edit':
+						return this.onModifyCardClick();
+
+					default:
+						return this.onAbortCardClick();
+				}
+			}
 		},
 
 		/**
@@ -165,6 +186,8 @@
 		 */
 		reset: function () {
 			this.grid.getStore().removeAll();
+
+			this.view.disable();
 		}
 	});
 

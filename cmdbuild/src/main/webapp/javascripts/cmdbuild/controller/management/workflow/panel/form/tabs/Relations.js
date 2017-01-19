@@ -16,8 +16,7 @@
 		],
 
 		mixins: {
-			observable: "Ext.util.Observable",
-			wfStateDelegate: 'CMDBuild.state.CMWorkflowStateDelegate'
+			observable: "Ext.util.Observable"
 		},
 
 		/**
@@ -70,13 +69,73 @@
 
 			this.addEvents(this.CMEVENTS.serverOperationSuccess);
 
-			_CMWFState.addDelegate(this);
-
 			// Build sub-controllers
 			this.controllerWindowGraph = Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.graph.Window', { parentDelegate: this });
 		},
 
-		onAddCardClick: function () {},
+		/**
+		 * Enable/Disable tab selection based
+		 *
+		 * @returns {Void}
+		 *
+		 * @legacy
+		 */
+		workflowFormTabRelationsUiUpdate: function () {
+			if (!this.parentDelegate.cmfg('workflowSelectedWorkflowIsEmpty'))
+				this.onProcessClassRefChange(Ext.create('CMDBuild.cache.CMEntryTypeModel', this.parentDelegate.cmfg('workflowSelectedWorkflowGet', 'rawData')));
+
+			if (!this.parentDelegate.cmfg('workflowSelectedInstanceIsEmpty'))
+				this.onProcessInstanceChange(Ext.create('CMDBuild.model.CMProcessInstance', this.parentDelegate.cmfg('workflowSelectedInstanceGet', 'rawData')));
+
+			if (!this.parentDelegate.cmfg('workflowSelectedActivityIsEmpty'))
+				this.onActivityInstanceChange(Ext.create('CMDBuild.model.CMActivityInstance', this.parentDelegate.cmfg('workflowSelectedActivityGet', 'rawData')));
+
+			// Ui view mode manage
+			switch (this.parentDelegate.cmfg('workflowUiViewModeGet')) {
+				case 'add':
+					return this.view.disable();
+
+				default:
+					return this.view.setDisabled(
+						this.parentDelegate.cmfg('workflowSelectedInstanceIsEmpty')
+						&& this.parentDelegate.cmfg('workflowSelectedActivityIsEmpty')
+					);
+			}
+		},
+
+		/**
+		 * @returns {Void}
+		 *
+		 * @private
+		 * @legacy
+		 */
+		panelListenerManagerShow: function () {
+			// History record save
+			if (!Ext.isEmpty(_CMWFState.getProcessClassRef()) && !Ext.isEmpty( _CMWFState.getProcessInstance()))
+				CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
+					moduleId: 'workflow',
+					entryType: {
+						description: _CMWFState.getProcessClassRef().get(CMDBuild.core.constants.Proxy.TEXT),
+						id: _CMWFState.getProcessClassRef().get(CMDBuild.core.constants.Proxy.ID),
+						object: _CMWFState.getProcessClassRef()
+					},
+					item: {
+						description: _CMWFState.getProcessInstance().get(CMDBuild.core.constants.Proxy.TEXT),
+						id: _CMWFState.getProcessInstance().get(CMDBuild.core.constants.Proxy.ID),
+						object: _CMWFState.getProcessInstance()
+					},
+					section: {
+						description: this.view.title,
+						object: this.view
+					}
+				});
+
+			// Ui view mode manage
+			switch (this.parentDelegate.cmfg('workflowUiViewModeGet')) {
+				case 'add':
+					return this.view.disable();
+			}
+		},
 
 		/**
 		 * @param {Object} pi

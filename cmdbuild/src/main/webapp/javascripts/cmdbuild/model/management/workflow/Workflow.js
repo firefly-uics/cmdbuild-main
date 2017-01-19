@@ -39,20 +39,20 @@
 			this.callParent(arguments);
 		},
 
-		get: function (name) {
-			/**
-			 * Legacy code for retro compatibility
-			 *
-			 * @legacy
-			 *
-			 * TODO: could be deleted????
-			 */
-			name = name == 'Id' ? CMDBuild.core.constants.Proxy.ID : name;
-			name = name == 'IdClass' ? CMDBuild.core.constants.Proxy.CLASS_ID : name;
-			name = name == 'IdClass_value' ? CMDBuild.core.constants.Proxy.CLASS_DESCRIPTION : name;
-
-			return this.callParent(arguments);
-		}
+//		get: function (name) { // TODO: remove
+//			/**
+//			 * Legacy code for retro compatibility
+//			 *
+//			 * @legacy
+//			 *
+//			 * TODO: could be deleted????
+//			 */
+//			name = name == 'Id' ? CMDBuild.core.constants.Proxy.ID : name;
+//			name = name == 'IdClass' ? CMDBuild.core.constants.Proxy.ID : name;
+//			name = name == 'IdClass_value' ? CMDBuild.core.constants.Proxy.DESCRIPTION : name;
+//
+//			return this.callParent(arguments);
+//		}
 	});
 
 })();

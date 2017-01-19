@@ -40,6 +40,19 @@
 		 *
 		 * @returns {Void}
 		 */
+		readById: function (parameters) {
+			parameters = Ext.isEmpty(parameters) ? {} : parameters;
+
+			Ext.apply(parameters, { url: CMDBuild.proxy.index.Json.workflow.readById });
+
+			CMDBuild.global.Cache.request(CMDBuild.core.constants.Proxy.WORKFLOW, parameters);
+		},
+
+		/**
+		 * @param {Object} parameters
+		 *
+		 * @returns {Void}
+		 */
 		readDefaultFilter: function (parameters) {
 			parameters = Ext.isEmpty(parameters) ? {} : parameters;
 

@@ -199,7 +199,7 @@
 
 			me.value = value;
 
-			if (me.rendered)
+//			if (me.rendered) // FIXME: this is a fix for a problem on set value in note editors
 				me.withEd(function() {
 					me.editor.undoManager.clear();
 					me.editor.setContent(value === null || value === undefined ? '' : value);

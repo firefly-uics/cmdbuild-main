@@ -69,7 +69,7 @@
 
 					/**
 					 * @param {Object} widget
-					 * @param {CMDBuild.model.CMActivityInstance} activity
+					 * @param {CMDBuild.model.CMActivityInstance} card
 					 *
 					 * @returns {Void}
 					 */
@@ -83,7 +83,7 @@
 
 					/**
 					 * @param {Object} widget
-					 * @param {Ext.data.Model or CMDBuild.model.CMActivityInstance} card or activity
+					 * @param {Ext.data.Model or CMDBuild.model.CMActivityInstance} card
 					 */
 					'.Calendar': function(widget, card) {
 						var w = new CMDBuild.view.management.common.widgets.CMCalendar();

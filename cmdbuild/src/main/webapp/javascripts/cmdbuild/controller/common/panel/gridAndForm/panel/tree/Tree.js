@@ -1,13 +1,6 @@
 (function () {
 
 	/**
-	 * Required managed functions from upper structure:
-	 * 	- panelGridAndFormListPanelAppliedFilterGet
-	 * 	- panelGridAndFormListPanelFilterApply
-	 * 	- panelGridAndFormListPanelFilterClear
-	 * 	- panelGridAndFormListPanelStoreGet
-	 * 	- panelGridAndFormListPanelStoreLoad
-	 *
 	 * @abstract
 	 */
 	Ext.define('CMDBuild.controller.common.panel.gridAndForm.panel.tree.Tree', {

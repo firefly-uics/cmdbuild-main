@@ -136,6 +136,28 @@
 		},
 
 		/**
+		 * @returns {Boolean}
+		 */
+		isEmptyAdvanced: function () {
+			var configuration = this.get(CMDBuild.core.constants.Proxy.CONFIGURATION);
+
+			return (
+				Ext.isEmpty(configuration[CMDBuild.core.constants.Proxy.ATTRIBUTE])
+				&& Ext.isEmpty(configuration[CMDBuild.core.constants.Proxy.RELATION])
+				&& Ext.isEmpty(configuration[CMDBuild.core.constants.Proxy.FUNCTIONS])
+			);
+		},
+
+		/**
+		 * @returns {Boolean}
+		 */
+		isEmptyBasic: function () {
+			var configuration = this.get(CMDBuild.core.constants.Proxy.CONFIGURATION);
+
+			return Ext.isEmpty(configuration[CMDBuild.core.constants.Proxy.QUERY]);
+		},
+
+		/**
 		 * Extract all simple objects from both filters (local and to be merged one) and rebuild merged filter
 		 *
 		 * @param {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter} filter

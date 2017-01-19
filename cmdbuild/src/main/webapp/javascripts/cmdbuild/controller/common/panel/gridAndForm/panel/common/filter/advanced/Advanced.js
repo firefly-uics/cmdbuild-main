@@ -4,9 +4,8 @@
 	 * Required managed functions from upper structure:
 	 * 	- panelGridAndFormListPanelAppliedFilterGet
 	 * 	- panelGridAndFormListPanelAppliedFilterIsEmpty
-	 * 	- panelGridAndFormListPanelFilterApply
-	 * 	- panelGridAndFormListPanelFilterClear
 	 * 	- panelGridAndFormSelectedEntityGet
+	 * 	- panelGridAndFormUiUpdate
 	 */
 	Ext.define('CMDBuild.controller.common.panel.gridAndForm.panel.common.filter.advanced.Advanced', {
 		extend: 'CMDBuild.controller.common.abstract.Base',
@@ -42,6 +41,11 @@
 		controllerManager: undefined,
 
 		/**
+		 * @property {CMDBuild.controller.common.field.filter.runtimeParameters.RuntimeParameters}
+		 */
+		controllerRuntimeParameters: undefined,
+
+		/**
 		 * @property {Object}
 		 *
 		 * @private
@@ -68,6 +72,7 @@
 
 			// Build sub-controllers
 			this.controllerManager = Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.filter.advanced.Manager', { parentDelegate: this });
+			this.controllerRuntimeParameters = Ext.create('CMDBuild.controller.common.field.filter.runtimeParameters.RuntimeParameters', { parentDelegate: this });
 		},
 
 		/**
@@ -84,8 +89,29 @@
 
 			this.view.clearButton.disable();
 
-			if (!parameters.disableStoreLoad)
-				this.cmfg('panelGridAndFormListPanelFilterClear', { type: 'advanced' });
+			if (!parameters.disableStoreLoad) {
+				if (
+					this.cmfg('panelGridAndFormListPanelAppliedFilterIsEmpty')
+					|| this.cmfg('panelGridAndFormListPanelAppliedFilterGet').isEmptyBasic()
+				) {
+					this.cmfg('panelGridAndFormUiUpdate', {
+						filterReset: true,
+						workflowId: this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.ID)
+					});
+				} else {
+					var appliedFilterModel = this.cmfg('panelGridAndFormListPanelAppliedFilterGet'),
+						appliedFilterConfigurationObject = appliedFilterModel.get(CMDBuild.core.constants.Proxy.CONFIGURATION);
+
+					delete appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.ATTRIBUTE];
+					delete appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.RELATION];
+					delete appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.FUNCTIONS];
+
+					this.cmfg('panelGridAndFormUiUpdate', {
+						filter: Ext.create('CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter', { configuration: appliedFilterConfigurationObject }),
+						workflowId: this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.ID)
+					});
+				}
+			}
 		},
 
 		/**
@@ -120,9 +146,28 @@
 				filter.resetRuntimeParametersValue();
 
 				this.cmfg('panelGridAndFormCommonFilterAdvancedManageToggleButtonLabelSet', filter.get(CMDBuild.core.constants.Proxy.DESCRIPTION));
-				this.cmfg('panelGridAndFormListPanelFilterApply', {
+
+				var emptyRuntimeParameters = filter.getEmptyRuntimeParameters(),
+					filterConfigurationObject = filter.get(CMDBuild.core.constants.Proxy.CONFIGURATION);
+
+				if (Ext.isArray(emptyRuntimeParameters) && !Ext.isEmpty(emptyRuntimeParameters))
+					return this.controllerRuntimeParameters.cmfg('fieldFilterRuntimeParametersShow', filter);
+
+				filter.resolveCalculatedParameters();
+
+				// Merge applied filter query parameter to filter object
+				if (!this.cmfg('panelGridAndFormListPanelAppliedFilterIsEmpty')) {
+					var appliedFilterConfigurationObject = this.cmfg('panelGridAndFormListPanelAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION);
+
+					if (!Ext.isEmpty(appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.QUERY]))
+						filter.set(CMDBuild.core.constants.Proxy.CONFIGURATION, Ext.apply(filterConfigurationObject, {
+							query: appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.QUERY]
+						}));
+				}
+
+				this.cmfg('panelGridAndFormUiUpdate', {
 					filter: filter,
-					type: 'advanced'
+					workflowId: this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.ID)
 				});
 			} else {
 				this.cmfg('onPanelGridAndFormCommonFilterAdvancedClearButtonClick');
@@ -182,6 +227,7 @@
 			if (
 				this.cmfg('panelGridAndFormListPanelAppliedFilterIsEmpty')
 				|| this.cmfg('panelGridAndFormListPanelAppliedFilterGet', CMDBuild.core.constants.Proxy.DEFAULT)
+				|| this.cmfg('panelGridAndFormListPanelAppliedFilterGet').isEmptyAdvanced()
 			) {
 				this.cmfg('onPanelGridAndFormCommonFilterAdvancedClearButtonClick', { disableStoreLoad: true });
 			} else {

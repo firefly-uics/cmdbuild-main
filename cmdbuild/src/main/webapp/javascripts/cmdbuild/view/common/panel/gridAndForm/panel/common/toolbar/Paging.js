@@ -28,7 +28,7 @@
 		customLoadMethod: function (page) {
 			return this.delegate.cmfg('panelGridAndFormListPanelStoreLoad', {
 				page: page,
-				params: this.getStore().getProxy().extraParams
+				params: this.delegate.cmfg('panelGridAndFormListPanelStoreGet').getProxy().extraParams
 			});
 		}
 	});
