@@ -14,6 +14,13 @@
 		parentDelegate: undefined,
 
 		/**
+		 * @property {CMDBuild.model.common.field.filter.basic.Filter}
+		 *
+		 * @private
+		 */
+		appliedFilter: undefined,
+
+		/**
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
@@ -108,7 +115,7 @@
 
 			var usersIdArray = [];
 
-			Ext.Array.forEach(this.gridSelected.getStore().getRange(), function (record, i, allRecords) {
+			Ext.Array.forEach(this.userAndGroupGroupTabUsersGridSelectedStoreGet().getRange(), function (record, i, allRecords) {
 				usersIdArray.push(record.get(CMDBuild.core.constants.Proxy.ID));
 			}, this);
 
@@ -123,10 +130,17 @@
 				params: params,
 				scope: this,
 				success: function (response, options, decodedResponse) {
+					this.gridAvailable.setLoading(true);
+
 					this.cmfg('userAndGroupGroupTabUsersGridSelectedStoreLoad', {
 						scope: this,
 						callback: function (records, operation, success) {
-							this.cmfg('userAndGroupGroupTabUsersGridAvailableStoreLoad')
+							this.cmfg('userAndGroupGroupTabUsersGridAvailableStoreLoad', {
+								scope: this,
+								callback: function (records, operation, success) {
+									this.gridAvailable.setLoading(false);
+								}
+							});
 						}
 					});
 				}
@@ -139,13 +153,84 @@
 		onUserAndGroupGroupTabUsersShow: function () {
 			this.controllerGridAvailableToolbarPaging.cmfg('panelGridAndFormCommonToolbarPagingFilterBasicReset');
 
+			this.userAndGroupGroupTabUsersGridAppliedAppliedFilterReset();
+
+			// Store reset
+			this.cmfg('userAndGroupGroupTabUsersGridAvailableStoreGet').removeAll();
+			this.userAndGroupGroupTabUsersGridSelectedStoreGet().removeAll();
+
+			this.gridAvailable.setLoading(true);
+
 			this.cmfg('userAndGroupGroupTabUsersGridSelectedStoreLoad', {
 				scope: this,
 				callback: function (records, operation, success) {
-					this.cmfg('userAndGroupGroupTabUsersGridAvailableStoreLoad')
+					this.cmfg('userAndGroupGroupTabUsersGridAvailableStoreLoad', {
+						scope: this,
+						callback: function (records, operation, success) {
+							this.gridAvailable.setLoading(false);
+						}
+					});
 				}
 			});
 		},
+
+		// AppliedFilter on appliedGrid property functions
+			/**
+			 * @param {Array or String} attributePath
+			 *
+			 * @returns {Mixed or undefined}
+			 *
+			 * @private
+			 */
+			userAndGroupGroupTabUsersGridAppliedAppliedFilterGet: function (attributePath) {
+				var parameters = {};
+				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'appliedFilter';
+				parameters[CMDBuild.core.constants.Proxy.ATTRIBUTE_PATH] = attributePath;
+
+				return this.propertyManageGet(parameters);
+			},
+
+			/**
+			 * @param {Array or String} attributePath
+			 *
+			 * @returns {Mixed or undefined}
+			 *
+			 * @private
+			 */
+			userAndGroupGroupTabUsersGridAppliedAppliedFilterIsEmpty: function (attributePath) {
+				var parameters = {};
+				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'appliedFilter';
+				parameters[CMDBuild.core.constants.Proxy.ATTRIBUTE_PATH] = attributePath;
+
+				return this.propertyManageIsEmpty(parameters);
+			},
+
+			/**
+			 * @param {Object} parameters
+			 *
+			 * @returns {Void}
+			 *
+			 * @private
+			 */
+			userAndGroupGroupTabUsersGridAppliedAppliedFilterReset: function () {
+				this.propertyManageReset('appliedFilter');
+			},
+
+			/**
+			 * @param {Object} parameters
+			 *
+			 * @returns {Void}
+			 *
+			 * @private
+			 */
+			userAndGroupGroupTabUsersGridAppliedAppliedFilterSet: function (parameters) {
+				if (Ext.isObject(parameters) && !Ext.Object.isEmpty(parameters)) {
+					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.common.field.filter.basic.Filter';
+					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'appliedFilter';
+
+					this.propertyManageSet(parameters);
+				}
+			},
 
 		/**
 		 * @param {Object} parameters
@@ -161,10 +246,9 @@
 					return _error('userAndGroupGroupTabUsersGridAvailableFilterApply(): unmanaged filter parameter', this, parameters.filter);
 			// END: Error handling
 
-			var params = {};
-			params[CMDBuild.core.constants.Proxy.FILTER] = Ext.encode(parameters.filter.get(CMDBuild.core.constants.Proxy.CONFIGURATION));
+			this.userAndGroupGroupTabUsersGridAppliedAppliedFilterSet({ value: parameters.filter });
 
-			this.cmfg('userAndGroupGroupTabUsersGridAvailableStoreLoad', { params: params });
+			this.cmfg('userAndGroupGroupTabUsersGridAvailableStoreLoad');
 		},
 
 		/**
@@ -176,6 +260,8 @@
 		userAndGroupGroupTabUsersGridAvailableFilterClear: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
 			parameters.disableStoreLoad = Ext.isBoolean(parameters.disableStoreLoad) ? parameters.disableStoreLoad : false;
+
+			this.userAndGroupGroupTabUsersGridAppliedAppliedFilterReset();
 
 			if (!parameters.disableStoreLoad)
 				this.cmfg('userAndGroupGroupTabUsersGridAvailableStoreLoad');
@@ -212,7 +298,7 @@
 			// Remove users that are already in gridSelected store
 			var selectedUsersIds = [];
 
-			this.gridSelected.getStore().each(function (record) {
+			this.userAndGroupGroupTabUsersGridSelectedStoreGet().each(function (record) {
 				if (Ext.isObject(record) && !Ext.Object.isEmpty(record))
 					selectedUsersIds.push(record.get(CMDBuild.core.constants.Proxy.ID));
 			}, this)
@@ -226,6 +312,9 @@
 			if (Ext.isArray(selectedUsersIds) && !Ext.isEmpty(selectedUsersIds))
 				params[CMDBuild.core.constants.Proxy.EXCLUDE] = Ext.encode(selectedUsersIds);
 
+			if (!this.userAndGroupGroupTabUsersGridAppliedAppliedFilterIsEmpty(CMDBuild.core.constants.Proxy.CONFIGURATION))
+				params[CMDBuild.core.constants.Proxy.FILTER] = Ext.encode(this.userAndGroupGroupTabUsersGridAppliedAppliedFilterGet(CMDBuild.core.constants.Proxy.CONFIGURATION));
+
 			this.cmfg('userAndGroupGroupTabUsersGridAvailableStoreGet').getProxy().extraParams = params; // Setup extraParams to work also with column header click
 
 			this.cmfg('userAndGroupGroupTabUsersGridAvailableStoreGet').loadPage(parameters.page, {
@@ -233,6 +322,13 @@
 				scope: parameters.scope,
 				callback: parameters.callback
 			});
+		},
+
+		/**
+		 * @returns {Ext.data.Store}
+		 */
+		userAndGroupGroupTabUsersGridSelectedStoreGet: function () {
+			return this.gridSelected.getStore();
 		},
 
 		/**
@@ -258,7 +354,7 @@
 			params[CMDBuild.core.constants.Proxy.ALREADY_ASSOCIATED] = true;
 			params[CMDBuild.core.constants.Proxy.ID] = this.cmfg('userAndGroupGroupSelectedGroupGet', CMDBuild.core.constants.Proxy.ID);
 
-			this.gridSelected.getStore().load({
+			this.userAndGroupGroupTabUsersGridSelectedStoreGet().load({
 				params: params,
 				scope: parameters.scope,
 				callback: parameters.callback
