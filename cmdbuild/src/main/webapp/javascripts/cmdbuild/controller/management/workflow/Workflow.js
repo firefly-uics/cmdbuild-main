@@ -30,7 +30,6 @@
 			'onWorkflowAddButtonClick',
 			'onWorkflowExternalServicesNavigationChronologyRecordSelect', // From mixins
 			'onWorkflowExternalServicesTreePrintButtonClick', // From mixins
-//			'onWorkflowTreePrintButtonClick -> controllerTree', // TODO: external services
 			'onWorkflowModifyButtonClick = onWorkflowActivityItemDoubleClick',
 			'onWorkflowModuleInit = onModuleInit',
 			'panelGridAndFormFullScreenUiSetup = workflowFullScreenUiSetup',
@@ -1098,7 +1097,7 @@
 			parameters.metadata = Ext.isArray(parameters.metadata) ? parameters.metadata : [];
 			parameters.viewMode = Ext.isString(parameters.viewMode) ? parameters.viewMode : 'read';
 			parameters.workflowId = Ext.isNumber(parameters.workflowId) ? parameters.workflowId : null;
-_debug('workflowUiUpdate', parameters);
+
 			// Error handling
 				if (!Ext.isNumber(parameters.workflowId) || Ext.isEmpty(parameters.workflowId))
 					return _error('workflowUiUpdate(): unmanaged workflowId parameter', this, parameters.workflowId);
@@ -1125,8 +1124,6 @@ _debug('workflowUiUpdate', parameters);
 						this.readInstance(parameters.instanceId, function () {
 							this.readActivity(parameters.activityId, parameters.metadata, function () {
 								CMDBuild.core.LoadMask.hide();
-
-								// History record save // TODO
 
 								this.setViewTitle(this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.DESCRIPTION));
 

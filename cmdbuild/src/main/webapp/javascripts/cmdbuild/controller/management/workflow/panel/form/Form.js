@@ -215,7 +215,7 @@
 		 */
 		workflowFormUiUpdate: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
-_debug('workflowFormUiUpdate', parameters);
+
 			// Forward to sub-controllers
 			this.controllerOperativeInstructions.cmfg('workflowFormOperativeInstructionsUiUpdate');
 

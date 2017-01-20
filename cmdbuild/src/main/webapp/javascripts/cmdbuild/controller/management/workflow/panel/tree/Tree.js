@@ -984,7 +984,7 @@
 			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
 			parameters.sortersReset = Ext.isBoolean(parameters.sortersReset) ? parameters.sortersReset : false;
 			parameters.storeLoadDisabled = Ext.isBoolean(parameters.storeLoadDisabled) ? parameters.storeLoadDisabled : false;
-_debug('workflowTreeUiUpdate', parameters);
+
 			// Error handling
 				if (this.cmfg('workflowSelectedWorkflowIsEmpty'))
 					return _error('workflowTreeUiUpdate(): empty selected workflow', this, this.cmfg('workflowSelectedWorkflowGet'));
