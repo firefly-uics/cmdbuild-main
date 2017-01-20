@@ -5,10 +5,12 @@ import static org.cmdbuild.common.utils.PagedElements.empty;
 import static org.cmdbuild.common.utils.Reflection.unsupported;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyMapOf;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -34,6 +36,7 @@ public class DefaultAuthenticationServiceTest {
 	private static final Supplier<OperationUser> UNUSED_CURRENTUSER =
 			newProxy(Supplier.class, unsupported("should not be used"));
 	private static final Map<String, Boolean> SORT = newProxy(Map.class, unsupported("should not be used"));
+	private static final Iterable<Long> EXCLUDE_USER = newProxy(Iterable.class, unsupported("should not be used"));
 
 	@Test
 	public void emptyUsersListWhenNoUserFetchers() throws Exception {
@@ -42,7 +45,7 @@ public class DefaultAuthenticationServiceTest {
 				new DefaultAuthenticationService(UNUSED_DATAVIEW, UNUSED_CURRENTUSER);
 
 		// when
-		final PagedElements<CMUser> output = underTest.fetchAllUsers(123, 456, SORT, true);
+		final PagedElements<CMUser> output = underTest.fetchAllUsers(123, 456, SORT, EXCLUDE_USER, "query", true);
 
 		// then
 		assertThat(output, equalTo(empty()));
@@ -54,17 +57,18 @@ public class DefaultAuthenticationServiceTest {
 		final UserFetcher first = mock(UserFetcher.class);
 		final PagedElements<?> outputFromFetcher = mock(PagedElements.class);
 		doReturn(outputFromFetcher) //
-				.when(first).fetchAllUsers(anyInt(), anyInt(), anyMapOf(String.class, Boolean.class), anyBoolean());
+				.when(first).fetchAllUsers(anyInt(), anyInt(), anyMapOf(String.class, Boolean.class),
+						any(Iterable.class), anyString(), anyBoolean());
 		final UserFetcher second = newProxy(UserFetcher.class, unsupported("should not be used"));
 		final DefaultAuthenticationService underTest =
 				new DefaultAuthenticationService(UNUSED_DATAVIEW, UNUSED_CURRENTUSER);
 		underTest.setUserFetchers(first, second);
 
 		// when
-		final Iterable<CMUser> output = underTest.fetchAllUsers(123, 456, SORT, true);
+		final Iterable<CMUser> output = underTest.fetchAllUsers(123, 456, SORT, EXCLUDE_USER, "query", true);
 
 		// then
-		verify(first).fetchAllUsers(eq(123), eq(456), eq(SORT), eq(true));
+		verify(first).fetchAllUsers(eq(123), eq(456), eq(SORT), eq(EXCLUDE_USER), eq("query"), eq(true));
 		verifyNoMoreInteractions(first);
 
 		assertThat(output, equalTo(outputFromFetcher));

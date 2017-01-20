@@ -76,7 +76,8 @@ public interface AuthenticationLogic extends Logic {
 
 	Iterable<CMGroup> getAllGroups();
 
-	PagedElements<CMUser> getAllUsers(int offset, int limit, Map<String, Boolean> sort, boolean activeOnly);
+	PagedElements<CMUser> getAllUsers(int offset, int limit, Map<String, Boolean> sort, Iterable<Long> exclude,
+			String query, boolean activeOnly);
 
 	Iterable<CMUser> getServiceOrPrivilegedUsers();
 

@@ -100,8 +100,8 @@ public abstract class ForwardingAuthenticationLogic extends ForwardingObject imp
 
 	@Override
 	public PagedElements<CMUser> getAllUsers(final int offset, final int limit, final Map<String, Boolean> sort,
-			final boolean activeOnly) {
-		return delegate().getAllUsers(offset, limit, sort, activeOnly);
+			final Iterable<Long> exclude, final String query, final boolean activeOnly) {
+		return delegate().getAllUsers(offset, limit, sort, exclude, query, activeOnly);
 	}
 
 	@Override

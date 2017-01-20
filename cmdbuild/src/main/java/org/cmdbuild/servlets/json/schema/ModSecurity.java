@@ -1,12 +1,16 @@
 package org.cmdbuild.servlets.json.schema;
 
+import static com.google.common.collect.Iterables.concat;
 import static com.google.common.reflect.Reflection.newProxy;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.StreamSupport.stream;
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.cmdbuild.auth.acl.CMGroup.GroupType.admin;
 import static org.cmdbuild.auth.acl.CMGroup.GroupType.restrictedAdmin;
 import static org.cmdbuild.common.utils.Reflection.unsupported;
+import static org.cmdbuild.logic.mapping.json.Constants.Filters.FULL_TEXT_QUERY_KEY;
 import static org.cmdbuild.services.json.dto.JsonResponse.failure;
 import static org.cmdbuild.services.json.dto.JsonResponse.success;
 import static org.cmdbuild.servlets.json.CommunicationConstants.ACTIVE;
@@ -19,6 +23,7 @@ import static org.cmdbuild.servlets.json.CommunicationConstants.DESCRIPTION;
 import static org.cmdbuild.servlets.json.CommunicationConstants.DISABLE;
 import static org.cmdbuild.servlets.json.CommunicationConstants.ELEMENTS;
 import static org.cmdbuild.servlets.json.CommunicationConstants.EMAIL;
+import static org.cmdbuild.servlets.json.CommunicationConstants.EXCLUDE;
 import static org.cmdbuild.servlets.json.CommunicationConstants.FILTER;
 import static org.cmdbuild.servlets.json.CommunicationConstants.GROUP;
 import static org.cmdbuild.servlets.json.CommunicationConstants.GROUPS;
@@ -44,6 +49,9 @@ import static org.cmdbuild.servlets.json.CommunicationConstants.TOTAL;
 import static org.cmdbuild.servlets.json.CommunicationConstants.TYPE;
 import static org.cmdbuild.servlets.json.CommunicationConstants.UI_CONFIGURATION;
 import static org.cmdbuild.servlets.json.CommunicationConstants.USERS;
+import static org.cmdbuild.servlets.json.schema.Utils.toIterable;
+import static org.cmdbuild.servlets.json.schema.Utils.toMap;
+import static org.cmdbuild.servlets.json.schema.Utils.JsonParser.AS_LONG;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -97,9 +105,13 @@ public class ModSecurity extends JSONBaseWithSpringContext {
 	private static final String CLONE = "clone";
 	private static final String MODIFY = "modify";
 	private static final String CREATE = "create";
+
 	public static final String CARD_EDIT_MODE_JSON_FORMAT =
 			"{\"modify\": %b, \"clone\": %b, \"remove\": %b, \"create\": %b}";
+
 	private static final ObjectMapper mapper = new UIConfigurationObjectMapper();
+
+	private static final Iterable<Long> NO_EXCLUSIONS = emptyList();
 
 	/*
 	 * Group management
@@ -180,26 +192,22 @@ public class ModSecurity extends JSONBaseWithSpringContext {
 			@Parameter(LIMIT) final int limit, //
 			@Parameter(value = SORT, required = false) final JSONArray sort, //
 			@Parameter(ID) final Long groupId, //
-			@Parameter(ALREADY_ASSOCIATED) final boolean associated) {
-
+			@Parameter(value = EXCLUDE, required = false) final JSONArray exclude, //
+			@Parameter(value = FILTER, required = false) final JSONObject filter, //
+			@Parameter(ALREADY_ASSOCIATED) final boolean associated //
+	) {
 		final AuthenticationLogic authLogic = authLogic();
-		final List<CMUser> output;
-		final List<CMUser> associatedUsers = authLogic.getUsersForGroupWithId(groupId);
-
+		final PagedElements<CMUser> output;
 		if (!associated) {
-			final List<CMUser> notAssociatedUsers = Lists.newArrayList();
-			for (final CMUser user : authLogic.getAllUsers(offset, limit, map(sort), false)) {
-				if (associatedUsers.contains(user)) {
-					continue;
-				}
-				notAssociatedUsers.add(user);
-			}
-			output = notAssociatedUsers;
+			final Iterable<Long> _exclude = concat(defaultIfNull(toIterable(exclude, AS_LONG), NO_EXCLUSIONS),
+					authLogic.getUserIdsForGroupWithId(groupId));
+			final String query = toMap(filter).get(FULL_TEXT_QUERY_KEY);
+			output = authLogic.getAllUsers(offset, limit, map(sort), _exclude, query, false);
 		} else {
-			output = associatedUsers;
+			final List<CMUser> associatedUsers = authLogic.getUsersForGroupWithId(groupId);
+			output = new PagedElements<>(associatedUsers, associatedUsers.size());
 		}
-
-		return success(new UserList(new PagedElements<>(output, output.size()), authLogic()));
+		return success(new UserList(output, authLogic()));
 	}
 
 	/**
@@ -522,10 +530,13 @@ public class ModSecurity extends JSONBaseWithSpringContext {
 	public JsonResponse getUserList( //
 			@Parameter(START) final int offset, //
 			@Parameter(LIMIT) final int limit, //
+			@Parameter(value = FILTER, required = false) final JSONObject filter, //
 			@Parameter(value = ACTIVE_ONLY, required = false) final boolean activeOnly, //
 			@Parameter(value = SORT, required = false) final JSONArray sort //
 	) throws AuthException {
-		final PagedElements<CMUser> output = authLogic().getAllUsers(offset, limit, map(sort), activeOnly);
+		final String query = toMap(filter).get(FULL_TEXT_QUERY_KEY);
+		final PagedElements<CMUser> output =
+				authLogic().getAllUsers(offset, limit, map(sort), NO_EXCLUSIONS, query, activeOnly);
 		return success(new UserList(output, authLogic()));
 	}
 

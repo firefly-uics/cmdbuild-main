@@ -1,8 +1,20 @@
 package org.cmdbuild.auth;
 
 import static com.google.common.collect.FluentIterable.from;
+import static com.google.common.collect.Iterables.isEmpty;
+import static com.google.common.collect.Iterables.toArray;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toMap;
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import static org.apache.commons.lang3.StringUtils.defaultString;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.cmdbuild.dao.Const.User.ACTIVE;
+import static org.cmdbuild.dao.Const.User.DESCRIPTION;
+import static org.cmdbuild.dao.Const.User.PRIVILEGED;
+import static org.cmdbuild.dao.Const.User.SERVICE;
+import static org.cmdbuild.dao.Const.User.USERNAME;
 import static org.cmdbuild.dao.guava.Functions.toCard;
 import static org.cmdbuild.dao.query.clause.AnyAttribute.anyAttribute;
 import static org.cmdbuild.dao.query.clause.OrderByClause.Direction.ASC;
@@ -11,11 +23,14 @@ import static org.cmdbuild.dao.query.clause.QueryAliasAttribute.attribute;
 import static org.cmdbuild.dao.query.clause.alias.Aliases.as;
 import static org.cmdbuild.dao.query.clause.alias.Aliases.canonical;
 import static org.cmdbuild.dao.query.clause.join.Over.over;
+import static org.cmdbuild.dao.query.clause.where.OperatorAndValues.contains;
 import static org.cmdbuild.dao.query.clause.where.OperatorAndValues.eq;
 import static org.cmdbuild.dao.query.clause.where.OperatorAndValues.equalsIgnoreCase;
+import static org.cmdbuild.dao.query.clause.where.OperatorAndValues.in;
 import static org.cmdbuild.dao.query.clause.where.WhereClauses.alwaysTrue;
 import static org.cmdbuild.dao.query.clause.where.WhereClauses.and;
 import static org.cmdbuild.dao.query.clause.where.WhereClauses.condition;
+import static org.cmdbuild.dao.query.clause.where.WhereClauses.not;
 import static org.cmdbuild.dao.query.clause.where.WhereClauses.or;
 
 import java.util.ArrayList;
@@ -31,7 +46,6 @@ import org.cmdbuild.auth.user.UserImpl;
 import org.cmdbuild.auth.user.UserImpl.UserImplBuilder;
 import org.cmdbuild.common.utils.PagedElements;
 import org.cmdbuild.dao.Const.Role;
-import org.cmdbuild.dao.Const.User;
 import org.cmdbuild.dao.Const.UserRole;
 import org.cmdbuild.dao.entry.CMCard;
 import org.cmdbuild.dao.entry.CMRelation;
@@ -148,9 +162,9 @@ public abstract class DBUserFetcher implements UserFetcher, LoggingSupport {
 				.withEmail(defaultString(email)) //
 				.withDescription(defaultString(userDescription)) //
 				.withDefaultGroupName(defaultGroupName) //
-				.withActiveStatus(extendedInformation() ? userCard.get(User.ACTIVE, Boolean.class) : null) //
-				.withServiceStatus(extendedInformation() ? userCard.get(User.SERVICE, Boolean.class) : null) //
-				.withPrivilegedStatus(extendedInformation() ? userCard.get(User.PRIVILEGED, Boolean.class) : null);
+				.withActiveStatus(extendedInformation() ? userCard.get(ACTIVE, Boolean.class) : null) //
+				.withServiceStatus(extendedInformation() ? userCard.get(SERVICE, Boolean.class) : null) //
+				.withPrivilegedStatus(extendedInformation() ? userCard.get(PRIVILEGED, Boolean.class) : null);
 
 		final List<String> userGroups = fetchGroupNamesForUser(userId);
 		for (final String groupName : userGroups) {
@@ -245,7 +259,7 @@ public abstract class DBUserFetcher implements UserFetcher, LoggingSupport {
 	}
 
 	protected WhereClause activeCondition(final Alias userClassAlias) {
-		return condition(attribute(userClassAlias, User.ACTIVE), eq(true));
+		return condition(attribute(userClassAlias, ACTIVE), eq(true));
 	}
 
 	private List<String> fetchGroupNamesForUser(final Long userId) {
@@ -270,11 +284,15 @@ public abstract class DBUserFetcher implements UserFetcher, LoggingSupport {
 
 	@Override
 	public PagedElements<CMUser> fetchAllUsers(final int offset, final int limit, final Map<String, Boolean> sort,
-			final boolean activeOnly) {
+			final Iterable<Long> exclude, final String query, final boolean activeOnly) {
 		final Alias USER = canonical(userClass());
 		final CMQueryResult result = view().select(anyAttribute(USER)) //
 				.from(userClass(), as(USER)) //
-				.where(activeOnly ? activeCondition(USER) : alwaysTrue()) //
+				.where(and( //
+						exclude(USER, userClass().getKeyAttributeName(), requireNonNull(exclude)), //
+						query(USER, asList(USERNAME, DESCRIPTION), query), //
+						activeOnly ? activeCondition(USER) : alwaysTrue()) //
+				) //
 				.orderBy(safe(sort).entrySet() //
 						.stream() //
 						.collect(toMap(input -> attribute(USER, input.getKey()),
@@ -287,6 +305,17 @@ public abstract class DBUserFetcher implements UserFetcher, LoggingSupport {
 				.transform(toCard(USER)) //
 				.transform(input -> buildUserFromCard(input));
 		return new PagedElements<>(users, result.totalSize());
+	}
+
+	private static <T> WhereClause exclude(final Alias alias, final String name, final Iterable<T> values) {
+		final Iterable<T> _values = defaultIfNull(values, emptyList());
+		return isEmpty(_values) ? alwaysTrue()
+				: not(condition(attribute(alias, name), in(toArray(_values, Object.class))));
+	}
+
+	private static WhereClause query(final Alias alias, final Iterable<String> names, final String query) {
+		return isBlank(query) || isEmpty(names) ? alwaysTrue() : and(from(names) //
+				.transform(input -> condition(attribute(alias, input), contains(query))));
 	}
 
 	private Map<String, Boolean> safe(final Map<String, Boolean> sort) {
@@ -308,8 +337,8 @@ public abstract class DBUserFetcher implements UserFetcher, LoggingSupport {
 		final CMQueryResult result = view().select(anyAttribute(target)) //
 				.from(target) //
 				.where(or( //
-						condition(attribute(target, User.SERVICE), eq(true)), //
-						condition(attribute(target, User.PRIVILEGED), eq(true))) //
+						condition(attribute(target, SERVICE), eq(true)), //
+						condition(attribute(target, PRIVILEGED), eq(true))) //
 				) //
 				.run();
 		final List<CMUser> allUsers = Lists.newArrayList();

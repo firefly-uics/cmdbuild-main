@@ -396,10 +396,10 @@ public class DefaultAuthenticationService implements AuthenticationService {
 
 	@Override
 	public PagedElements<CMUser> fetchAllUsers(final int offset, final int limit, final Map<String, Boolean> sort,
-			final boolean activeOnly) {
+			final Iterable<Long> exclude, final String query, final boolean activeOnly) {
 		return userFetchers.stream() //
 				.findFirst() //
-				.map(input -> input.fetchAllUsers(offset, limit, sort, activeOnly)) //
+				.map(input -> input.fetchAllUsers(offset, limit, sort, exclude, query, activeOnly)) //
 				.orElse(NO_USERS);
 	}
 

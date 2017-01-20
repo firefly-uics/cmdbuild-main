@@ -163,7 +163,8 @@ public interface AuthenticationService {
 	 */
 	Iterable<CMGroup> fetchAllGroups();
 
-	PagedElements<CMUser> fetchAllUsers(int offset, int limit, Map<String, Boolean> sort, boolean activeOnly);
+	PagedElements<CMUser> fetchAllUsers(int offset, int limit, Map<String, Boolean> sort, Iterable<Long> exclude,
+			String query, boolean activeOnly);
 
 	Iterable<CMUser> fetchServiceOrPrivilegedUsers();
 

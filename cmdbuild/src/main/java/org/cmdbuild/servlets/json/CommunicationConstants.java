@@ -117,6 +117,7 @@ public class CommunicationConstants {
 			END_DATE = "endDate", //
 			ENTRIES = "entries", //
 			ENTRY_TYPE = "entryType", //
+			EXCLUDE = "exclude", //
 			EXCLUDE_PROCESSES = "excludeProcesses", //
 			EXECUTABLE = "executable", //
 			EXPORTED = "exported", //
