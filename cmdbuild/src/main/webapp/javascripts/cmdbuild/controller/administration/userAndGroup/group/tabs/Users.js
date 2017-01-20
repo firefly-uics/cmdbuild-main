@@ -123,8 +123,12 @@
 				params: params,
 				scope: this,
 				success: function (response, options, decodedResponse) {
-					this.cmfg('userAndGroupGroupTabUsersGridAvailableStoreLoad');
-					this.cmfg('userAndGroupGroupTabUsersGridSelectedStoreLoad');
+					this.cmfg('userAndGroupGroupTabUsersGridSelectedStoreLoad', {
+						scope: this,
+						callback: function (records, operation, success) {
+							this.cmfg('userAndGroupGroupTabUsersGridAvailableStoreLoad')
+						}
+					});
 				}
 			});
 		},
@@ -135,8 +139,12 @@
 		onUserAndGroupGroupTabUsersShow: function () {
 			this.controllerGridAvailableToolbarPaging.cmfg('panelGridAndFormCommonToolbarPagingFilterBasicReset');
 
-			this.cmfg('userAndGroupGroupTabUsersGridAvailableStoreLoad');
-			this.cmfg('userAndGroupGroupTabUsersGridSelectedStoreLoad');
+			this.cmfg('userAndGroupGroupTabUsersGridSelectedStoreLoad', {
+				scope: this,
+				callback: function (records, operation, success) {
+					this.cmfg('userAndGroupGroupTabUsersGridAvailableStoreLoad')
+				}
+			});
 		},
 
 		/**
@@ -153,11 +161,10 @@
 					return _error('userAndGroupGroupTabUsersGridAvailableFilterApply(): unmanaged filter parameter', this, parameters.filter);
 			// END: Error handling
 
-			this.cmfg('userAndGroupGroupTabUsersGridAvailableStoreLoad', {
-				params: {
-					filter: Ext.encode(parameters.filter.get(CMDBuild.core.constants.Proxy.CONFIGURATION))
-				}
-			});
+			var params = {};
+			params[CMDBuild.core.constants.Proxy.FILTER] = Ext.encode(parameters.filter.get(CMDBuild.core.constants.Proxy.CONFIGURATION));
+
+			this.cmfg('userAndGroupGroupTabUsersGridAvailableStoreLoad', { params: params });
 		},
 
 		/**
@@ -185,6 +192,7 @@
 		 * @param {Object} parameters
 		 * @param {Function} parameters.callback
 		 * @param {Number} parameters.page
+		 * @param {Object} parameters.params
 		 * @param {Object} parameters.scope
 		 *
 		 * @returns {Void}
@@ -230,6 +238,7 @@
 		/**
 		 * @param {Object} parameters
 		 * @param {Function} parameters.callback
+		 * @param {Object} parameters.params
 		 * @param {Object} parameters.scope
 		 *
 		 * @returns {Void}
@@ -237,6 +246,7 @@
 		userAndGroupGroupTabUsersGridSelectedStoreLoad: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
 			parameters.callback = Ext.isFunction(parameters.callback) ? parameters.callback : Ext.emptyFn;
+			parameters.params = Ext.isObject(parameters.params) ? parameters.params : {};
 			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
 
 			// Error handling
@@ -244,7 +254,7 @@
 					return _error('userAndGroupGroupTabUsersGridSelectedStoreLoad(): empty selectedGroup property', this, this.cmfg('userAndGroupGroupSelectedGroupGet'));
 			// END: Error handling
 
-			var params = {};
+			var params = parameters.params;
 			params[CMDBuild.core.constants.Proxy.ALREADY_ASSOCIATED] = true;
 			params[CMDBuild.core.constants.Proxy.ID] = this.cmfg('userAndGroupGroupSelectedGroupGet', CMDBuild.core.constants.Proxy.ID);
 
