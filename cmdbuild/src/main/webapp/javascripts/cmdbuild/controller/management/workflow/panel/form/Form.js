@@ -189,7 +189,7 @@
 				this.controllerTabEmail.reset();
 
 			if (Ext.isObject(this.controllerTabHistory) && !Ext.Object.isEmpty(this.controllerTabHistory))
-				this.controllerTabHistory.reset();
+				this.controllerTabHistory.cmfg('workflowFormTabHistoryReset');
 
 			if (Ext.isObject(this.controllerTabNote) && !Ext.Object.isEmpty(this.controllerTabNote))
 				this.controllerTabNote.cmfg('workflowFormTabNoteReset');
@@ -209,7 +209,7 @@
 
 		/**
 		 * @param {Object} parameters
-		 * @param {Object} parameters.tabToSelect
+		 * @param {Object or String or Number} parameters.tabToSelect
 		 *
 		 * @returns {Void}
 		 */

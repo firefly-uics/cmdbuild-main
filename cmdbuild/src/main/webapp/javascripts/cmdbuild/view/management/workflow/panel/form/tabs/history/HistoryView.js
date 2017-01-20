@@ -42,17 +42,8 @@
 
 		listeners: {
 			show: function (panel, eOpts) {
-				this.delegate.cmfg('onWorkflowTabHistoryPanelShow');
+				this.delegate.cmfg('onWorkflowFormTabHistoryShow');
 			}
-		},
-
-		/**
-		 * Service function executed from module controller
-		 *
-		 * @returns {Void}
-		 */
-		reset: function () {
-			this.setDisabled(this.delegate.cmfg('workflowHistorySelectedEntityIsEmpty'));
 		}
 	});
 

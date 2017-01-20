@@ -101,7 +101,7 @@
 			if (!this.parentDelegate.cmfg('dataViewFilterSelectedCardIsEmpty'))
 				this.onCardSelected();
 
-			// Ui view mode manage
+			// UI view mode manage
 			switch (this.parentDelegate.cmfg('dataViewFilterUiViewModeGet')) {
 				case 'add':
 					return this.view.disable();
@@ -146,7 +146,7 @@
 					}
 				});
 
-			// Ui view mode manage
+			// UI view mode manage
 			switch (this.parentDelegate.cmfg('dataViewFilterUiViewModeGet')) {
 				case 'add':
 					return this.onAddCardButtonClick();

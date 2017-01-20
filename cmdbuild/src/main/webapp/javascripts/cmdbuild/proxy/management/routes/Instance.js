@@ -40,7 +40,7 @@
 		 *
 		 * @returns {Void}
 		 */
-		readWorkflowByName: function (parameters) {
+		readWorkflow: function (parameters) {
 			parameters = Ext.isEmpty(parameters) ? {} : parameters;
 
 			Ext.apply(parameters, { url: CMDBuild.proxy.index.Json.workflow.readByName });

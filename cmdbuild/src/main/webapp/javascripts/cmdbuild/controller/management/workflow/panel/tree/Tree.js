@@ -37,7 +37,6 @@
 			'onWorkflowTreeSortChange',
 			'workflowTreeAppliedFilterGet = panelGridAndFormListPanelAppliedFilterGet',
 			'workflowTreeAppliedFilterIsEmpty = panelGridAndFormListPanelAppliedFilterIsEmpty',
-//			'workflowTreeApplyStoreEvent', // TODO: probably could be removed - or rename to applyStoreListener
 			'workflowTreeRendererTreeColumn',
 			'workflowTreeReset',
 			'workflowTreeStoreGet = panelGridAndFormListPanelStoreGet',
@@ -158,7 +157,6 @@
 		 * @param {Object} parameters
 		 * @param {Function} parameters.callback
 		 * @param {Boolean} parameters.disableFirstRowSelection
-		 * @param {String} parameters.flowStatusForceEnabled
 		 * @param {String} parameters.filterForceEnabled
 		 * @param {Object} parameters.scope
 		 * @param {Boolean} parameters.storeLoadDisabled
@@ -171,7 +169,6 @@
 		applySelection: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
 			parameters.filterForceEnabled = Ext.isBoolean(parameters.filterForceEnabled) ? parameters.filterForceEnabled : false;
-			parameters.flowStatusForceEnabled = Ext.isBoolean(parameters.flowStatusForceEnabled) ? parameters.flowStatusForceEnabled : false;
 			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
 
 			// Error handling
@@ -195,7 +192,6 @@
 			this.storeLoadSelectionPage({
 				disableFirstRowSelection: parameters.disableFirstRowSelection,
 				filterForceEnabled: parameters.filterForceEnabled,
-				flowStatusForceEnabled: parameters.flowStatusForceEnabled,
 				params: params,
 				storeLoadDisabled: parameters.storeLoadDisabled,
 				storeLoadForce: parameters.storeLoadForce,
@@ -474,7 +470,6 @@
 		 * @param {Function} parameters.callback
 		 * @param {Object} parameters.params
 		 * @param {String} parameters.filterForceEnabled
-		 * @param {String} parameters.flowStatusForceEnabled
 		 * @param {String} parameters.params.filter
 		 * @param {String} parameters.params.flowStatus
 		 * @param {Boolean} parameters.storeLoadDisabled
@@ -487,7 +482,6 @@
 		storeLoadSelectionPage: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
 			parameters.filterForceEnabled = Ext.isBoolean(parameters.filterForceEnabled) ? parameters.filterForceEnabled : false;
-			parameters.flowStatusForceEnabled = Ext.isBoolean(parameters.flowStatusForceEnabled) ? parameters.flowStatusForceEnabled : false;
 			parameters.params = Ext.isObject(parameters.params) ? parameters.params : {};
 			parameters.storeLoadDisabled = Ext.isBoolean(parameters.storeLoadDisabled) ? parameters.storeLoadDisabled : false;
 			parameters.storeLoadForce = Ext.isBoolean(parameters.storeLoadForce) ? parameters.storeLoadForce : false;
@@ -584,14 +578,6 @@
 							delete parameters.params[CMDBuild.core.constants.Proxy.FILTER];
 
 							return this.storeLoadSelectionPage(parameters);
-						} else if (
-							Ext.isString(params[CMDBuild.core.constants.Proxy.FLOW_STATUS]) && !Ext.isEmpty(params[CMDBuild.core.constants.Proxy.FLOW_STATUS])
-							&& params[CMDBuild.core.constants.Proxy.FLOW_STATUS] != CMDBuild.core.constants.WorkflowStates.getAll()
-							&& parameters.flowStatusForceEnabled
-						) { // Retry without flowStatus
-							delete parameters.params[CMDBuild.core.constants.Proxy.FLOW_STATUS];
-
-							return this.storeLoadSelectionPage(parameters);
 						} else { // Failure
 							return this.storeLoadSelectionPageFailure(response, options, decodedResponse);
 						}
@@ -686,7 +672,7 @@
 			 * @private
 			 */
 			storeSortersSet: function (store) {
-				var attributes = CMDBuild.core.Utils.objectArraySort(this.cmfg('workflowSelectedWorkflowAttributesGet'), CMDBuild.core.constants.Proxy.SORT_INDEX, 'DESC');
+				var attributes = CMDBuild.core.Utils.objectArraySort(this.cmfg('workflowSelectedWorkflowAttributesGetAll'), CMDBuild.core.constants.Proxy.SORT_INDEX, 'DESC');
 
 				// Setup store sorters
 				this.storeSortersClear(store);
@@ -761,34 +747,6 @@
 				}
 			},
 
-//		/**
-//		 * @param {Object} parameters
-//		 * @param {String} parameters.eventName
-//		 * @param {Function} parameters.fn
-//		 * @param {Object} parameters.scope
-//		 * @param {Object} parameters.options
-//		 *
-//		 * @returns {Void}
-//		 */
-//		workflowTreeApplyStoreEvent: function (parameters) { // TODO: remove
-//			parameters = Ext.isObject(parameters) ? parameters : {};
-//
-//			// Error handling
-//				if (!Ext.isString(parameters.eventName) || Ext.isEmpty(parameters.eventName))
-//					return _error('workflowTreeApplyStoreEvent(): unmanaged eventName parameter', this, parameters.eventName);
-//
-//				if (!Ext.isFunction(parameters.fn))
-//					return _error('workflowTreeApplyStoreEvent(): unmanaged fn parameter', this, parameters.fn);
-//			// END: Error handling
-//
-//			this.cmfg('workflowTreeStoreGet').on(
-//				parameters.eventName,
-//				parameters.fn,
-//				Ext.isObject(parameters.scope) ? parameters.scope : this,
-//				Ext.isObject(parameters.options) ? parameters.options : {}
-//			);
-//		},
-
 		/**
 		 * @returns {Array} columnsDefinition
 		 *
@@ -804,7 +762,7 @@
 
 			if (!this.cmfg('workflowSelectedWorkflowIsEmpty') && !this.cmfg('workflowSelectedWorkflowAttributesIsEmpty')) {
 				var fieldManager = Ext.create('CMDBuild.core.fieldManager.FieldManager', { parentDelegate: this }),
-					attributes = CMDBuild.core.Utils.objectArraySort(this.cmfg('workflowSelectedWorkflowAttributesGet'), CMDBuild.core.constants.Proxy.INDEX);
+					attributes = CMDBuild.core.Utils.objectArraySort(this.cmfg('workflowSelectedWorkflowAttributesGetAll'), CMDBuild.core.constants.Proxy.INDEX);
 
 				if (this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.IS_SUPER_CLASS))
 					columnsDefinition.push({
@@ -1010,7 +968,6 @@
 		 * @param {Boolean} parameters.filterReset
 		 * @param {Boolean} parameters.filterForceEnabled
 		 * @param {String} parameters.flowStatus
-		 * @param {String} parameters.flowStatusForceEnabled
 		 * @param {Object} parameters.scope
 		 * @param {Boolean} parameters.sortersReset
 		 * @param {Boolean} parameters.storeLoadForce
@@ -1067,7 +1024,6 @@ _debug('workflowTreeUiUpdate', parameters);
 						return this.applySelection({
 							disableFirstRowSelection: parameters.disableFirstRowSelection,
 							filterForceEnabled: parameters.filterForceEnabled,
-							flowStatusForceEnabled: parameters.flowStatusForceEnabled,
 							storeLoadDisabled: parameters.storeLoadDisabled,
 							storeLoadForce: parameters.storeLoadForce,
 							scope: parameters.scope,

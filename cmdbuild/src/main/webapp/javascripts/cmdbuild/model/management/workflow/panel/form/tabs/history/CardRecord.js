@@ -11,7 +11,6 @@
 		fields: [
 			{ name: CMDBuild.core.constants.Proxy.ACTIVITY_NAME, type: 'string' },
 			{ name: CMDBuild.core.constants.Proxy.BEGIN_DATE, type: 'date', dateFormat: CMDBuild.core.configurations.DataFormat.getDateTime() },
-			{ name: CMDBuild.core.constants.Proxy.CLASS_NAME, type: 'string' },
 			{ name: CMDBuild.core.constants.Proxy.END_DATE, type: 'date', dateFormat: CMDBuild.core.configurations.DataFormat.getDateTime() },
 			{ name: CMDBuild.core.constants.Proxy.ID, type: 'int', useNull: true },
 			{ name: CMDBuild.core.constants.Proxy.IS_CARD, type: 'boolean', defaultValue: true },

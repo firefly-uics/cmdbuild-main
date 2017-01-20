@@ -1,10 +1,5 @@
 (function () {
 
-	/**
-	 * @link CMDBuild.controller.management.dataView.filter.panel.form.tabs.History
-	 *
-	 * @legacy
-	 */
 	Ext.define('CMDBuild.controller.management.workflow.panel.form.tabs.History', {
 		extend: 'CMDBuild.controller.common.abstract.Base',
 
@@ -20,7 +15,7 @@
 		parentDelegate: undefined,
 
 		/**
-		 * Attributes to hide from selectedEntity object
+		 * Attributes to hide
 		 *
 		 * @cfg {Array}
 		 *
@@ -39,21 +34,12 @@
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
-			'onWorkflowTabHistoryIncludeSystemActivitiesCheck',
-			'onWorkflowTabHistoryPanelShow = onWorkflowTabHistoryIncludeRelationCheck', // Reloads store to be consistent with includeRelationsCheckbox state
-			'onWorkflowTabHistoryRowExpand',
-			'workflowFormTabHistoryUiUpdate',
-			'workflowHistorySelectedEntityIsEmpty',
-			'workflowTabHistorySelectedEntityGet',
-			'workflowTabHistorySelectedEntitySet'
+			'onWorkflowFormTabHistoryIncludeSystemActivitiesCheck',
+			'onWorkflowFormTabHistoryRowExpand',
+			'onWorkflowFormTabHistoryShow = onWorkflowFormTabHistoryIncludeRelationCheck',
+			'workflowFormTabHistoryReset',
+			'workflowFormTabHistoryUiUpdate'
 		],
-
-		/**
-		 * @property {Object}
-		 *
-		 * @private
-		 */
-		entryTypeAttributes: {},
 
 		/**
 		 * @property {CMDBuild.view.management.workflow.panel.form.tabs.history.GridPanel}
@@ -83,13 +69,6 @@
 		statusTranslationObject: {},
 
 		/**
-		 * @property {CMDBuild.model.CMProcessInstance}
-		 *
-		 * @private
-		 */
-		selectedEntity: undefined,
-
-		/**
 		 * @property {CMDBuild.view.management.workflow.panel.form.tabs.history.HistoryView}
 		 */
 		view: undefined,
@@ -114,61 +93,6 @@
 		},
 
 		/**
-		 * Adds current card to history store for a better visualization of differences from last history record and current one. As last function called on store build
-		 * collapses all rows on store load.
-		 *
-		 * It's implemented with ugly workarounds because of server side ugly code.
-		 *
-		 * @returns {Void}
-		 *
-		 * @private
-		 */
-		addCurrentCardToStore: function () {
-			var selectedEntityAttributes = {};
-			var selectedEntityValues = this.selectedEntity.get(CMDBuild.core.constants.Proxy.VALUES);
-
-			// Filter selectedEntity's attributes values to avoid the display of incorrect data
-			Ext.Object.each(selectedEntityValues, function (key, value, myself) {
-				if (!Ext.Array.contains(this.attributesKeysToFilter, key) && key.indexOf('_') != 0)
-					selectedEntityAttributes[key] = value;
-			}, this);
-
-			selectedEntityValues[CMDBuild.core.constants.Proxy.USER] = this.selectedEntity.get(CMDBuild.core.constants.Proxy.VALUES)[CMDBuild.core.constants.Proxy.USER];
-
-			this.valuesFormattingAndCompare(selectedEntityAttributes); // Formats values only
-
-			this.clearStoreAdd(this.buildCurrentEntityModel(selectedEntityAttributes));
-
-			this.getRowExpanderPlugin().collapseAll();
-		},
-
-		/**
-		 * @param {Object} entityAttributeData
-		 *
-		 * @returns {CMDBuild.model.management.workflow.panel.form.tabs.history.CardRecord} currentEntityModel
-		 *
-		 * @private
-		 */
-		buildCurrentEntityModel: function (entityAttributeData) {
-			var performers = [];
-
-			// Build performers array
-			Ext.Array.forEach(this.selectedEntity.get(CMDBuild.core.constants.Proxy.ACTIVITY_INSTANCE_INFO_LIST), function (activityObject, i, array) {
-				if (!Ext.isEmpty(activityObject[CMDBuild.core.constants.Proxy.PERFORMER_NAME]))
-					performers.push(activityObject[CMDBuild.core.constants.Proxy.PERFORMER_NAME]);
-			}, this);
-
-			var currentEntityModel = Ext.create('CMDBuild.model.management.workflow.panel.form.tabs.history.CardRecord', this.selectedEntity.getData());
-			currentEntityModel.set(CMDBuild.core.constants.Proxy.ACTIVITY_NAME, this.selectedEntity.get(CMDBuild.core.constants.Proxy.VALUES)['Code']);
-			currentEntityModel.set(CMDBuild.core.constants.Proxy.PERFORMERS, performers);
-			currentEntityModel.set(CMDBuild.core.constants.Proxy.STATUS, this.statusTranslationGet(this.selectedEntity.get(CMDBuild.core.constants.Proxy.FLOW_STATUS)));
-			currentEntityModel.set(CMDBuild.core.constants.Proxy.VALUES, entityAttributeData);
-			currentEntityModel.commit();
-
-			return currentEntityModel;
-		},
-
-		/**
 		 * Adds clear and re-apply filters functionalities
 		 *
 		 * @param {Array or Object} itemsToAdd
@@ -178,13 +102,54 @@
 		 * @private
 		 */
 		clearStoreAdd: function (itemsToAdd) {
+			itemsToAdd = Ext.isArray(itemsToAdd) ? Ext.Array.clean(itemsToAdd) : Ext.Array.clean([itemsToAdd]);
+
 			this.grid.getStore().clearFilter();
+			this.grid.getStore().loadData(Ext.Array.merge(this.grid.getStore().getRange(), itemsToAdd));
 
-			var oldStoreDatas = this.grid.getStore().getRange();
+			this.cmfg('onWorkflowFormTabHistoryIncludeSystemActivitiesCheck');
+		},
 
-			this.grid.getStore().loadData(Ext.Array.merge(oldStoreDatas, itemsToAdd));
+		/**
+		 * Adds current card to history store for a better visualization of differences from last history record and current one. As last function called on store build
+		 * collapses all rows on store load.
+		 *
+		 * It's implemented with ugly workarounds because of server side ugly code.
+		 *
+		 * @returns {Void}
+		 *
+		 * @private
+		 */
+		currentInstanceStoreAdd: function () {
+			var performers = [],
+				selectedEntityAttributes = {};
 
-			this.cmfg('onWorkflowTabHistoryIncludeSystemActivitiesCheck');
+			// Filter selectedEntity's attributes values to avoid the display of incorrect data
+			Ext.Object.each(this.cmfg('workflowSelectedInstanceGet', CMDBuild.core.constants.Proxy.VALUES), function (key, value, myself) {
+				if (!Ext.Array.contains(this.attributesKeysToFilter, key) && key.indexOf('_') != 0)
+					selectedEntityAttributes[key] = value;
+			}, this);
+
+			this.valuesFormattingAndCompare(selectedEntityAttributes); // Formats values only
+
+			// Build performers array
+			Ext.Array.forEach(this.cmfg('workflowSelectedInstanceGet', CMDBuild.core.constants.Proxy.ACTIVITY_INSTANCE_INFO_LIST), function (activityObject, i, array) {
+				if (!Ext.isEmpty(activityObject[CMDBuild.core.constants.Proxy.PERFORMER_NAME]))
+					performers.push(activityObject[CMDBuild.core.constants.Proxy.PERFORMER_NAME]);
+			}, this);
+
+			var currentInstanceModel = {};
+			currentInstanceModel[CMDBuild.core.constants.Proxy.ACTIVITY_NAME] = this.cmfg('workflowSelectedInstanceGet', 'Code');
+			currentInstanceModel[CMDBuild.core.constants.Proxy.BEGIN_DATE] = this.cmfg('workflowSelectedInstanceGet', CMDBuild.core.constants.Proxy.BEGIN_DATE);
+			currentInstanceModel[CMDBuild.core.constants.Proxy.ID] = this.cmfg('workflowSelectedInstanceGet', CMDBuild.core.constants.Proxy.ID);
+			currentInstanceModel[CMDBuild.core.constants.Proxy.PERFORMERS] = performers;
+			currentInstanceModel[CMDBuild.core.constants.Proxy.STATUS] = this.statusTranslationGet(this.cmfg('workflowSelectedInstanceGet', CMDBuild.core.constants.Proxy.FLOW_STATUS));
+			currentInstanceModel[CMDBuild.core.constants.Proxy.USER] = this.cmfg('workflowSelectedInstanceGet', CMDBuild.core.constants.Proxy.USER);
+			currentInstanceModel[CMDBuild.core.constants.Proxy.VALUES] = selectedEntityAttributes;
+
+			this.clearStoreAdd(Ext.create('CMDBuild.model.management.workflow.panel.form.tabs.history.CardRecord', currentInstanceModel));
+
+			this.getRowExpanderPlugin().collapseAll();
 		},
 
 		/**
@@ -194,26 +159,23 @@
 		 *
 		 * @private
 		 */
-		currentCardRowExpand: function (record) {
-			var predecessorRecord = this.grid.getStore().getAt(1); // Get expanded record predecessor record
-			var selectedEntityAttributes = {};
-			var selectedEntityValues = this.selectedEntity.get(CMDBuild.core.constants.Proxy.VALUES);
+		currentInstanceRowExpand: function (record) {
+			var predecessorRecord = this.grid.getStore().getAt(1), // Get expanded record predecessor record
+				selectedEntityAttributes = {};
 
 			// Filter selectedEntity's attributes values to avoid the display of incorrect data
-			Ext.Object.each(selectedEntityValues, function (key, value, myself) {
+			Ext.Object.each(this.cmfg('workflowSelectedInstanceGet', CMDBuild.core.constants.Proxy.VALUES), function (key, value, myself) {
 				if (!Ext.Array.contains(this.attributesKeysToFilter, key) && key.indexOf('_') != 0)
 					selectedEntityAttributes[key] = value;
 			}, this);
 
-			selectedEntityValues[CMDBuild.core.constants.Proxy.USER] = this.selectedEntity.get(CMDBuild.core.constants.Proxy.VALUES)[CMDBuild.core.constants.Proxy.USER];
-
 			if (!Ext.isEmpty(predecessorRecord)) {
-				var predecessorParams = {};
-				predecessorParams[CMDBuild.core.constants.Proxy.CARD_ID] = predecessorRecord.get(CMDBuild.core.constants.Proxy.ID); // Historic card ID
-				predecessorParams[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.selectedEntity.get(CMDBuild.core.constants.Proxy.CLASS_NAME);
+				var params = {};
+				params[CMDBuild.core.constants.Proxy.CARD_ID] = predecessorRecord.get(CMDBuild.core.constants.Proxy.ID); // Historic card ID
+				params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.NAME);
 
 				CMDBuild.proxy.management.workflow.panel.form.tabs.History.readHistoric({
-					params: predecessorParams,
+					params: params,
 					scope: this,
 					success: function (response, options, decodedResponse) {
 						this.valuesFormattingAndCompare(selectedEntityAttributes, decodedResponse.response[CMDBuild.core.constants.Proxy.VALUES]);
@@ -235,10 +197,10 @@
 		 * @private
 		 */
 		getRecordPredecessor: function (record) {
-			var i = this.grid.getStore().indexOf(record) + 1;
-			var predecessor = null;
+			var i = this.grid.getStore().indexOf(record) + 1,
+				predecessor = null;
 
-			if (!Ext.isEmpty(record) && !Ext.isEmpty(this.grid.getStore())) {
+			if (Ext.isObject(record) && !Ext.Object.isEmpty(record))
 				while (i < this.grid.getStore().getCount() && Ext.isEmpty(predecessor)) {
 					var inspectedRecord = this.grid.getStore().getAt(i);
 
@@ -252,7 +214,6 @@
 
 					i = i + 1;
 				}
-			}
 
 			return predecessor;
 		},
@@ -265,36 +226,13 @@
 		getRowExpanderPlugin: function () {
 			var rowExpanderPlugin = null;
 
-			if (
-				!Ext.isEmpty(this.grid)
-				&& !Ext.isEmpty(this.grid.plugins) && Ext.isArray(this.grid.plugins)
-			) {
+			if (!Ext.isEmpty(this.grid.plugins) && Ext.isArray(this.grid.plugins))
 				Ext.Array.forEach(this.grid.plugins, function (plugin, i, allPlugins) {
 					if (plugin instanceof Ext.grid.plugin.RowExpander)
 						rowExpanderPlugin = plugin;
 				});
-			}
 
 			return rowExpanderPlugin;
-		},
-
-		/**
-		 * Equals to onCardSelected in classes
-		 *
-		 * @param {CMDBuild.model.CMProcessInstance} processInstance
-		 *
-		 * @returns {Void}
-		 *
-		 * @public
-		 *
-		 * FIXME: use cmfg
-		 */
-		onProcessInstanceChange: function (processInstance) {
-			this.cmfg('workflowTabHistorySelectedEntitySet', processInstance);
-
-			this.view.setDisabled(processInstance.isNew());
-
-			this.cmfg('onWorkflowTabHistoryPanelShow');
 		},
 
 		/**
@@ -302,7 +240,7 @@
 		 *
 		 * @returns {Void}
 		 */
-		onWorkflowTabHistoryIncludeSystemActivitiesCheck: function () {
+		onWorkflowFormTabHistoryIncludeSystemActivitiesCheck: function () {
 			this.getRowExpanderPlugin().collapseAll();
 
 			if (this.grid.includeSystemActivitiesCheckbox.getValue()) { // Checked: Remove any filter from store
@@ -318,194 +256,152 @@
 		},
 
 		/**
-		 * Loads store and if includeRelationsCheckbox is checked fills store with relations rows
-		 *
-		 * @returns {Void}
-		 */
-		onWorkflowTabHistoryPanelShow: function () {
-			if (this.view.isVisible()) {
-				if (!Ext.isEmpty(this.selectedEntity)) {
-					var params = {};
-					params[CMDBuild.core.constants.Proxy.ACTIVE] = true;
-					params[CMDBuild.core.constants.Proxy.CLASS_NAME] = _CMCache.getEntryTypeNameById(this.selectedEntity.get('IdClass'));
-
-					// Request all class attributes
-					CMDBuild.proxy.management.workflow.panel.form.tabs.History.readAttributes({
-						params: params,
-						scope: this,
-						success: function (response, options, decodedResponse) {
-							decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.ATTRIBUTES];
-
-							Ext.Array.forEach(decodedResponse, function (attribute, i, allAttributes) {
-								if (attribute['fieldmode'] != 'hidden')
-									this.entryTypeAttributes[attribute[CMDBuild.core.constants.Proxy.NAME]] = attribute;
-							}, this);
-
-							params = {};
-							params[CMDBuild.core.constants.Proxy.CARD_ID] = this.selectedEntity.get(CMDBuild.core.constants.Proxy.ID);
-							params[CMDBuild.core.constants.Proxy.CLASS_NAME] = _CMCache.getEntryTypeNameById(this.selectedEntity.get('IdClass'));
-
-							this.grid.getStore().load({
-								params: params,
-								scope: this,
-								callback: function (records, operation, success) {
-									this.getRowExpanderPlugin().collapseAll();
-
-									// History record save
-									if (!Ext.isEmpty(_CMWFState.getProcessClassRef()) && !Ext.isEmpty( _CMWFState.getProcessInstance()))
-										CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
-											moduleId: 'workflow',
-											entryType: {
-												description: _CMWFState.getProcessClassRef().get(CMDBuild.core.constants.Proxy.TEXT),
-												id: _CMWFState.getProcessClassRef().get(CMDBuild.core.constants.Proxy.ID),
-												object: _CMWFState.getProcessClassRef()
-											},
-											item: {
-												description: _CMWFState.getProcessInstance().get(CMDBuild.core.constants.Proxy.TEXT),
-												id: _CMWFState.getProcessInstance().get(CMDBuild.core.constants.Proxy.ID),
-												object: _CMWFState.getProcessInstance()
-											},
-											section: {
-												description: this.view.title,
-												object: this.view
-											}
-										});
-
-									// Ui view mode manage
-									switch (this.parentDelegate.cmfg('workflowUiViewModeGet')) {
-										case 'add':
-											return this.view.disable();
-									}
-
-									if (this.grid.includeRelationsCheckbox.getValue()) {
-										CMDBuild.proxy.management.workflow.panel.form.tabs.History.readRelations({
-											params: params,
-											loadMask: false,
-											scope: this,
-											success: function (response, options, decodedResponse) {
-												decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.RESPONSE];
-												decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.ELEMENTS];
-
-												var referenceElementsModels = [];
-
-												// Build reference models
-												Ext.Array.forEach(decodedResponse, function (element, i, allElements) {
-													referenceElementsModels.push(Ext.create('CMDBuild.model.management.workflow.panel.form.tabs.history.RelationRecord', element));
-												});
-
-												this.clearStoreAdd(referenceElementsModels);
-
-												this.addCurrentCardToStore();
-											}
-										});
-									} else {
-										this.addCurrentCardToStore();
-									}
-								}
-							});
-						}
-					});
-				}
-			}
-		},
-
-		/**
 		 * @param {CMDBuild.model.classes.tabs.history.CardRecord or CMDBuild.model.management.workflow.panel.form.tabs.history.RelationRecord} record
 		 *
 		 * @returns {Void}
 		 */
-		onWorkflowTabHistoryRowExpand: function (record) {
-			if (!Ext.isEmpty(record)) {
-				var params = {};
+		onWorkflowFormTabHistoryRowExpand: function (record) {
+			// Error handling
+				if (!Ext.isObject(record) || Ext.Object.isEmpty(record))
+					return _error('onWorkflowFormTabHistoryRowExpand(): unmanaged record parameter', this, record);
+			// END: Error handling
 
-				if (record.get(CMDBuild.core.constants.Proxy.IS_CARD)) { // Card row expand
-					if (this.selectedEntity.get(CMDBuild.core.constants.Proxy.ID) == record.get(CMDBuild.core.constants.Proxy.ID)) { // Expanding current card
-						this.currentCardRowExpand(record);
-					} else {
-						params[CMDBuild.core.constants.Proxy.CARD_ID] = record.get(CMDBuild.core.constants.Proxy.ID); // Historic card ID
-						params[CMDBuild.core.constants.Proxy.CLASS_NAME] = record.get(CMDBuild.core.constants.Proxy.CLASS_NAME);
+			var params = {};
 
-						CMDBuild.proxy.management.workflow.panel.form.tabs.History.readHistoric({ // Get expanded card data
-							params: params,
-							scope: this,
-							success: function (response, options, decodedResponse) {
-								var cardValuesObject = decodedResponse.response[CMDBuild.core.constants.Proxy.VALUES];
-								var predecessorRecord = this.getRecordPredecessor(record);
+			if (record.get(CMDBuild.core.constants.Proxy.IS_CARD)) { // Card row expand
+				if (this.cmfg('workflowSelectedInstanceGet', CMDBuild.core.constants.Proxy.ID) == record.get(CMDBuild.core.constants.Proxy.ID)) { // Expanding current card
+					this.currentInstanceRowExpand(record);
+				} else {
+					params[CMDBuild.core.constants.Proxy.CARD_ID] = record.get(CMDBuild.core.constants.Proxy.ID); // Historic card ID
+					params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.NAME);
 
-								if (!Ext.isEmpty(predecessorRecord)) {
-									var predecessorParams = {};
-									predecessorParams[CMDBuild.core.constants.Proxy.CARD_ID] = predecessorRecord.get(CMDBuild.core.constants.Proxy.ID); // Historic card ID
-									predecessorParams[CMDBuild.core.constants.Proxy.CLASS_NAME] = record.get(CMDBuild.core.constants.Proxy.CLASS_NAME);
-
-									CMDBuild.proxy.management.workflow.panel.form.tabs.History.readHistoric({ // Get expanded predecessor's card data
-										params: predecessorParams,
-										scope: this,
-										success: function (response, options, decodedResponse) {
-											decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.RESPONSE];
-
-											this.valuesFormattingAndCompare(cardValuesObject, decodedResponse[CMDBuild.core.constants.Proxy.VALUES]);
-
-											// Setup record property with historic card details to use XTemplate functionalities to render
-											record.set(CMDBuild.core.constants.Proxy.VALUES, cardValuesObject);
-										}
-									});
-								} else {
-									this.valuesFormattingAndCompare(cardValuesObject); // Formats values only
-
-									// Setup record property with historic card details to use XTemplate functionalities to render
-									record.set(CMDBuild.core.constants.Proxy.VALUES, cardValuesObject);
-								}
-							}
-						});
-					}
-				} else { // Relation row expand
-					params[CMDBuild.core.constants.Proxy.ID] = record.get(CMDBuild.core.constants.Proxy.ID); // Historic relation ID
-					params[CMDBuild.core.constants.Proxy.DOMAIN] = record.get(CMDBuild.core.constants.Proxy.DOMAIN);
-
-					CMDBuild.proxy.management.workflow.panel.form.tabs.History.readHistoricRelation({
+					CMDBuild.proxy.management.workflow.panel.form.tabs.History.readHistoric({ // Get expanded card data
 						params: params,
 						scope: this,
 						success: function (response, options, decodedResponse) {
-							decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.RESPONSE];
+							var cardValuesObject = decodedResponse.response[CMDBuild.core.constants.Proxy.VALUES];
+							var predecessorRecord = this.getRecordPredecessor(record);
 
-							// Setup record property with historic relation details to use XTemplate functionalities to render
-							record.set(CMDBuild.core.constants.Proxy.VALUES, this.valuesFormattingAndCompareRelation(decodedResponse)); // Formats values only
+							if (!Ext.isEmpty(predecessorRecord)) {
+								var predecessorParams = {};
+								predecessorParams[CMDBuild.core.constants.Proxy.CARD_ID] = predecessorRecord.get(CMDBuild.core.constants.Proxy.ID); // Historic card ID
+								predecessorParams[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.NAME);
+
+								CMDBuild.proxy.management.workflow.panel.form.tabs.History.readHistoric({ // Get expanded predecessor's card data
+									params: predecessorParams,
+									scope: this,
+									success: function (response, options, decodedResponse) {
+										decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.RESPONSE];
+
+										this.valuesFormattingAndCompare(cardValuesObject, decodedResponse[CMDBuild.core.constants.Proxy.VALUES]);
+
+										// Setup record property with historic card details to use XTemplate functionalities to render
+										record.set(CMDBuild.core.constants.Proxy.VALUES, cardValuesObject);
+									}
+								});
+							} else {
+								this.valuesFormattingAndCompare(cardValuesObject); // Formats values only
+
+								// Setup record property with historic card details to use XTemplate functionalities to render
+								record.set(CMDBuild.core.constants.Proxy.VALUES, cardValuesObject);
+							}
 						}
 					});
 				}
+			} else { // Relation row expand
+				params[CMDBuild.core.constants.Proxy.ID] = record.get(CMDBuild.core.constants.Proxy.ID); // Historic relation ID
+				params[CMDBuild.core.constants.Proxy.DOMAIN] = record.get(CMDBuild.core.constants.Proxy.DOMAIN);
+
+				CMDBuild.proxy.management.workflow.panel.form.tabs.History.readHistoricRelation({
+					params: params,
+					scope: this,
+					success: function (response, options, decodedResponse) {
+						decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.RESPONSE];
+
+						// Setup record property with historic relation details to use XTemplate functionalities to render
+						record.set(CMDBuild.core.constants.Proxy.VALUES, this.valuesFormattingAndCompareRelation(decodedResponse)); // Formats values only
+					}
+				});
 			}
 		},
 
 		/**
-		 * Enable/Disable tab selection based
+		 * Reloads store to be consistent with includeRelationsCheckbox state
 		 *
 		 * @returns {Void}
-		 *
-		 * @legacy
 		 */
-		workflowFormTabHistoryUiUpdate: function () {
-			// Ui view mode manage
-			switch (this.cmfg('workflowUiViewModeGet')) {
-				case 'add':
-					return this.view.disable();
+		onWorkflowFormTabHistoryShow: function () {
+			// Error handling
+				if (this.cmfg('workflowSelectedWorkflowIsEmpty'))
+					return _error('onWorkflowFormTabHistoryShow(): empty selected workflow property', this, this.cmfg('workflowSelectedWorkflowGet'));
 
-				default:
-					return this.view.setDisabled(
-						this.cmfg('workflowSelectedInstanceIsEmpty')
-						&& this.cmfg('workflowSelectedActivityIsEmpty')
-					);
-			}
-		},
+				if (this.cmfg('workflowSelectedInstanceIsEmpty'))
+					return _error('onWorkflowFormTabHistoryShow(): empty selected instance property', this, this.cmfg('workflowSelectedInstanceGet'));
+			// END: Error handling
 
-		/**
-		 * @returns {Void}
-		 *
-		 * @legacy
-		 */
-		reset: function () {
-			this.grid.getStore().removeAll();
+			var params = {};
+			params[CMDBuild.core.constants.Proxy.CARD_ID] = this.cmfg('workflowSelectedInstanceGet', CMDBuild.core.constants.Proxy.ID);
+			params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.NAME);
 
-			this.view.disable();
+			this.grid.getStore().load({
+				params: params,
+				scope: this,
+				callback: function (records, operation, success) {
+					this.getRowExpanderPlugin().collapseAll();
+
+					// History record save
+					CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
+						moduleId: CMDBuild.core.constants.ModuleIdentifiers.getWorkflow(),
+						entryType: {
+							description: this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.DESCRIPTION),
+							id: this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.ID),
+							object: this.cmfg('workflowSelectedWorkflowGet')
+						},
+						item: {
+							description: null, // Instances hasn't description property so display ID and no description
+							id: this.cmfg('workflowSelectedInstanceGet', CMDBuild.core.constants.Proxy.ID),
+							object: this.cmfg('workflowSelectedInstanceGet')
+						},
+						section: {
+							description: this.view.title,
+							object: this.view
+						}
+					});
+
+					// UI view mode manage
+					switch (this.parentDelegate.cmfg('workflowUiViewModeGet')) {
+						case 'add':
+							return this.view.disable();
+					}
+
+					if (this.grid.includeRelationsCheckbox.getValue()) {
+						CMDBuild.proxy.management.workflow.panel.form.tabs.History.readRelations({
+							params: params,
+							loadMask: false,
+							scope: this,
+							success: function (response, options, decodedResponse) {
+								decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.RESPONSE];
+								decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.ELEMENTS];
+
+								if (Ext.isArray(decodedResponse) && !Ext.isEmpty(decodedResponse)) {
+									var referenceElementsModels = [];
+
+									// Build reference models
+									Ext.Array.forEach(decodedResponse, function (element, i, allElements) {
+										referenceElementsModels.push(Ext.create('CMDBuild.model.management.workflow.panel.form.tabs.history.RelationRecord', element));
+									});
+
+									this.clearStoreAdd(referenceElementsModels);
+								}
+
+								this.currentInstanceStoreAdd();
+							}
+						});
+					} else {
+						this.currentInstanceStoreAdd();
+					}
+				}
+			});
 		},
 
 		// Status translation management
@@ -565,30 +461,6 @@
 				return null;
 			},
 
-		// SelectedEntity property functions
-			/**
-			 * @returns {Mixed}
-			 */
-			workflowTabHistorySelectedEntityGet: function () {
-				return this.selectedEntity;
-			},
-
-			/**
-			 * @returns {Mixed}
-			 */
-			workflowHistorySelectedEntityIsEmpty: function () {
-				return Ext.isEmpty(this.selectedEntity);
-			},
-
-			/**
-			 * @param {Mixed} selectedEntity
-			 *
-			 * @returns {Void}
-			 */
-			workflowTabHistorySelectedEntitySet: function (selectedEntity) {
-				this.selectedEntity = Ext.isEmpty(selectedEntity) ? undefined : selectedEntity;
-			},
-
 		/**
 		 * If value1 is different than value2 modified is true, false otherwise. Strips also HTML tags from "description".
 		 *
@@ -608,8 +480,14 @@
 					var changed = false;
 
 					// Get attribute's index and description
-					var attributeDescription = Ext.isEmpty(this.entryTypeAttributes[key]) ? null : this.entryTypeAttributes[key][CMDBuild.core.constants.Proxy.DESCRIPTION];
-					var attributeIndex = Ext.isEmpty(this.entryTypeAttributes[key]) ? 0 : this.entryTypeAttributes[key][CMDBuild.core.constants.Proxy.INDEX];
+					var attributeDescription = this.cmfg('workflowSelectedWorkflowAttributesGet', {
+							name: key,
+							property: CMDBuild.core.constants.Proxy.DESCRIPTION
+						}),
+						attributeIndex = this.cmfg('workflowSelectedWorkflowAttributesGet', {
+							name: key,
+							property: CMDBuild.core.constants.Proxy.INDEX
+						});
 
 					// Build object1 properties models
 					var attributeValues = Ext.isObject(value) ? value : { description: value };
@@ -671,20 +549,49 @@
 
 				// Merge values property to object
 				Ext.Object.each(relationObject[CMDBuild.core.constants.Proxy.VALUES], function (key, value, myself) {
-					// Get attribute's index and description
-					var attributeDescription = Ext.isEmpty(this.entryTypeAttributes[key]) ? null : this.entryTypeAttributes[key][CMDBuild.core.constants.Proxy.DESCRIPTION];
-					var attributeIndex = Ext.isEmpty(this.entryTypeAttributes[key]) ? 0 : this.entryTypeAttributes[key][CMDBuild.core.constants.Proxy.INDEX];
-
 					// Build object1 properties models
 					var attributeValues = Ext.isObject(value) ? value : { description: value };
-					attributeValues[CMDBuild.core.constants.Proxy.ATTRIBUTE_DESCRIPTION] = attributeDescription;
-					attributeValues[CMDBuild.core.constants.Proxy.INDEX] = attributeIndex;
+					attributeValues[CMDBuild.core.constants.Proxy.ATTRIBUTE_DESCRIPTION] = his.cmfg('workflowSelectedWorkflowAttributesGet', {
+						name: key,
+						property: CMDBuild.core.constants.Proxy.DESCRIPTION
+					});
+					attributeValues[CMDBuild.core.constants.Proxy.INDEX] = this.cmfg('workflowSelectedWorkflowAttributesGet', {
+						name: key,
+						property: CMDBuild.core.constants.Proxy.INDEX
+					});
 
 					formattedObject[key] = Ext.create('CMDBuild.model.common.tabs.history.Attribute', attributeValues);
 				}, this);
 			}
 
 			return Ext.Object.isEmpty(formattedObject) ? relationObject : formattedObject;
+		},
+
+		/**
+		 * @returns {Void}
+		 */
+		workflowFormTabHistoryReset: function () {
+			this.grid.getStore().removeAll();
+
+			this.view.disable();
+		},
+
+		/**
+		 * Enable/Disable tab selection based
+		 *
+		 * @returns {Void}
+		 *
+		 * @legacy
+		 */
+		workflowFormTabHistoryUiUpdate: function () {
+			// UI view mode manage
+			switch (this.cmfg('workflowUiViewModeGet')) {
+				case 'add':
+					return this.view.disable();
+
+				default:
+					return this.view.setDisabled(this.cmfg('workflowSelectedInstanceIsEmpty'));
+			}
 		}
 	});
 

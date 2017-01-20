@@ -19,6 +19,7 @@
 			'CMDBuild.controller.management.workflow.panel.form.tabs.activity.StaticsController',
 			'CMDBuild.core.constants.Global',
 			'CMDBuild.core.constants.Metadata',
+			'CMDBuild.core.constants.ModuleIdentifiers',
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.core.Message',
 			'CMDBuild.core.Utils',
@@ -108,6 +109,7 @@
 		 * @legacy
 		 */
 		workflowFormTabActivityUiUpdate: function (parameters) {
+
 			// FIXME: legacy mode to remove on complete Workflow UI and wofkflowState modules refactor
 				if (!this.parentDelegate.cmfg('workflowSelectedWorkflowIsEmpty'))
 					_CMWFState.setProcessClassRef(Ext.create('CMDBuild.cache.CMEntryTypeModel', this.parentDelegate.cmfg('workflowSelectedWorkflowGet', 'rawData')));
@@ -124,13 +126,19 @@
 			if (!this.parentDelegate.cmfg('workflowSelectedActivityIsEmpty'))
 				this.onActivityInstanceChange(Ext.create('CMDBuild.model.CMActivityInstance', this.parentDelegate.cmfg('workflowSelectedActivityGet', 'rawData')));
 
-			this.view.setDisabled(
+			var state = (
 				this.parentDelegate.cmfg('workflowSelectedInstanceIsEmpty')
 				&& this.parentDelegate.cmfg('workflowSelectedActivityIsEmpty')
 				&& !this.parentDelegate.cmfg('workflowStartActivityGet', CMDBuild.core.constants.Proxy.STATUS)
 			);
 
-			this.changeClassUIConfigurationForGroup(!this.parentDelegate.cmfg('workflowSelectedActivityGet', CMDBuild.core.constants.Proxy.WRITABLE));
+			this.view.enable();
+
+			if (state) {
+				this.changeClassUIConfigurationForGroup(true, true);
+			} else {
+				this.changeClassUIConfigurationForGroup(!this.parentDelegate.cmfg('workflowSelectedActivityGet', CMDBuild.core.constants.Proxy.WRITABLE));
+			}
 		},
 
 		/**
@@ -140,19 +148,19 @@
 		 * @legacy
 		 */
 		panelListenerManagerShow: function () {
-			// History record save
-			if (!Ext.isEmpty(_CMWFState.getProcessClassRef()) && !Ext.isEmpty( _CMWFState.getProcessInstance()))
+			if (!this.parentDelegate.cmfg('workflowSelectedWorkflowIsEmpty') && !this.parentDelegate.cmfg('workflowSelectedInstanceIsEmpty')) {
+				// History record save
 				CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
-					moduleId: 'workflow',
+					moduleId: CMDBuild.core.constants.ModuleIdentifiers.getWorkflow(),
 					entryType: {
-						description: _CMWFState.getProcessClassRef().get(CMDBuild.core.constants.Proxy.TEXT),
-						id: _CMWFState.getProcessClassRef().get(CMDBuild.core.constants.Proxy.ID),
-						object: _CMWFState.getProcessClassRef()
+						description: this.parentDelegate.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.DESCRIPTION),
+						id: this.parentDelegate.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.ID),
+						object: this.parentDelegate.cmfg('workflowSelectedWorkflowGet')
 					},
 					item: {
-						description: _CMWFState.getProcessInstance().get(CMDBuild.core.constants.Proxy.TEXT),
-						id: _CMWFState.getProcessInstance().get(CMDBuild.core.constants.Proxy.ID),
-						object: _CMWFState.getProcessInstance()
+						description: null, // Instances hasn't description property so display ID and no description
+						id: this.parentDelegate.cmfg('workflowSelectedInstanceGet', CMDBuild.core.constants.Proxy.ID),
+						object: this.parentDelegate.cmfg('workflowSelectedInstanceGet')
 					},
 					section: {
 						description: this.view.title,
@@ -160,25 +168,26 @@
 					}
 				});
 
-			// Ui view mode manage
-			switch (this.parentDelegate.cmfg('workflowUiViewModeGet')) {
-				case 'add': {
-					var me = this;
+				// UI view mode manage
+				switch (this.parentDelegate.cmfg('workflowUiViewModeGet')) {
+					case 'add': {
+						var me = this;
 
-					this.view.enable();
+						this.view.enable();
 
-					_CMWFState.setProcessInstance(
-						Ext.create('CMDBuild.model.CMProcessInstance', { classId: this.parentDelegate.cmfg('workflowStartActivityGet', CMDBuild.core.constants.Proxy.WORKFLOW_ID) }),
-						function () {
-							_CMWFState.setActivityInstance(
-								Ext.create('CMDBuild.model.CMActivityInstance', me.parentDelegate.cmfg('workflowSelectedActivityGet', 'rawData'))
-							);
-						}
-					);
-				} break;
+						_CMWFState.setProcessInstance(
+							Ext.create('CMDBuild.model.CMProcessInstance', { classId: this.parentDelegate.cmfg('workflowStartActivityGet', CMDBuild.core.constants.Proxy.WORKFLOW_ID) }),
+							function () {
+								_CMWFState.setActivityInstance(
+									Ext.create('CMDBuild.model.CMActivityInstance', me.parentDelegate.cmfg('workflowSelectedActivityGet', 'rawData'))
+								);
+							}
+						);
+					} break;
 
-				case 'edit':
-					return this.onModifyCardClick();
+					case 'edit':
+						return this.onModifyCardClick();
+				}
 			}
 		},
 
@@ -222,22 +231,6 @@
 			} else {
 				enableStopButtonIfUserCanUseIt(this, processInstance);
 			}
-
-			// History record save
-			if (!Ext.isEmpty(_CMWFState.getProcessClassRef()) && !Ext.isEmpty( _CMWFState.getProcessInstance()))
-				CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
-					moduleId: 'workflow',
-					entryType: {
-						description: _CMWFState.getProcessClassRef().get(CMDBuild.core.constants.Proxy.TEXT),
-						id: _CMWFState.getProcessClassRef().get(CMDBuild.core.constants.Proxy.ID),
-						object: _CMWFState.getProcessClassRef()
-					},
-					item: {
-						description: _CMWFState.getProcessInstance().get(CMDBuild.core.constants.Proxy.TEXT),
-						id: _CMWFState.getProcessInstance().get(CMDBuild.core.constants.Proxy.ID),
-						object: _CMWFState.getProcessInstance()
-					}
-				});
 		},
 
 		// wfStateDelegate

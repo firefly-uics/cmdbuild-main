@@ -5,7 +5,6 @@
 
 		requires: [
 			'CMDBuild.controller.management.workflow.Utils',
-			'CMDBuild.core.configurations.Routes',
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.core.constants.WorkflowStates',
 			'CMDBuild.core.Message',
@@ -33,25 +32,26 @@
 				var params = {};
 				params[CMDBuild.core.constants.Proxy.NAME] = this.parametersModel.get(CMDBuild.core.constants.Proxy.PROCESS_IDENTIFIER);
 
-				CMDBuild.proxy.management.routes.Instance.readWorkflowByName({
+				CMDBuild.proxy.management.routes.Instance.readWorkflow({
 					params: params,
 					scope: this,
 					success: function (response, options, decodedResponse) {
 						decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.RESPONSE];
 
-						if (Ext.isObject(decodedResponse) && !Ext.Object.isEmpty(decodedResponse)) {
-							if (!Ext.isEmpty(this.parametersModel.get(CMDBuild.core.constants.Proxy.INSTANCE_IDENTIFIER))) // Single card selection
-								return this.readInstanceDetails(decodedResponse);
+						// Error handling
+							if (!Ext.isObject(decodedResponse) || Ext.Object.isEmpty(decodedResponse))
+								return CMDBuild.core.Message.error(
+									CMDBuild.Translation.common.failure,
+									CMDBuild.Translation.errors.routesInvalidProcessIdentifier + ' (' + this.parametersModel.get(CMDBuild.core.constants.Proxy.PROCESS_IDENTIFIER) + ')',
+									false
+								);
+						// END: Error handling
 
-							if (!Ext.Object.isEmpty(this.parametersModel.get(CMDBuild.core.constants.Proxy.SIMPLE_FILTER))) // SimpleFilter
-								return this.manageFilterSimple(decodedResponse);
-						} else {
-							return CMDBuild.core.Message.error(
-								CMDBuild.Translation.common.failure,
-								CMDBuild.Translation.errors.routesInvalidProcessIdentifier + ' (' + this.parametersModel.get(CMDBuild.core.constants.Proxy.PROCESS_IDENTIFIER) + ')',
-								false
-							);
-						}
+						if (!Ext.isEmpty(this.parametersModel.get(CMDBuild.core.constants.Proxy.INSTANCE_IDENTIFIER))) // Single card selection
+							return this.readInstanceDetails(decodedResponse);
+
+						if (!Ext.Object.isEmpty(this.parametersModel.get(CMDBuild.core.constants.Proxy.SIMPLE_FILTER))) // SimpleFilter
+							return this.manageFilterSimple(decodedResponse);
 					}
 				});
 			}
@@ -67,14 +67,23 @@
 		 * @private
 		 */
 		manageFilterSimple: function (workflowObject) {
-			var simpleFilterDefinitionObject = this.parametersModel.get(CMDBuild.core.constants.Proxy.SIMPLE_FILTER);
+			var simpleFilterDefinitionObject = this.parametersModel.get(CMDBuild.core.constants.Proxy.SIMPLE_FILTER),
+ 				simpleFilterObject = {
+					"attribute": {
+						"simple": {
+							"attribute": simpleFilterDefinitionObject[CMDBuild.core.constants.Proxy.KEY],
+							"operator": "equal",
+							"value": [
+								simpleFilterDefinitionObject[CMDBuild.core.constants.Proxy.VALUE]
+							]
+						}
+					}
+				};
 
 			var params = {};
 			params[CMDBuild.core.constants.Proxy.ATTRIBUTES] = Ext.encode(['Description']);
 			params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.parametersModel.get(CMDBuild.core.constants.Proxy.PROCESS_IDENTIFIER);
-			params[CMDBuild.core.constants.Proxy.FILTER] = '{"attribute":{"simple":{"attribute":"'
-				+ simpleFilterDefinitionObject[CMDBuild.core.constants.Proxy.KEY] + '","operator":"equal","value":["'
-				+ simpleFilterDefinitionObject[CMDBuild.core.constants.Proxy.VALUE] + '"]}}}';
+			params[CMDBuild.core.constants.Proxy.FILTER] = Ext.encode(simpleFilterObject);
 			params[CMDBuild.core.constants.Proxy.STATE] = CMDBuild.core.constants.WorkflowStates.getAll();
 
 			CMDBuild.proxy.management.routes.Instance.readAll({
@@ -83,21 +92,22 @@
 				success: function (response, options, decodedResponse) {
 					decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.RESPONSE];
 
-					if (decodedResponse[CMDBuild.core.constants.Proxy.RESULTS] == 1) {
-						decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.ROWS][0];
+					// Error handling
+						if (!Ext.isObject(decodedResponse) || Ext.Object.isEmpty(decodedResponse) || decodedResponse[CMDBuild.core.constants.Proxy.RESULTS] > 1)
+							return CMDBuild.core.Message.error(
+								CMDBuild.Translation.common.failure,
+								CMDBuild.Translation.errors.routesInvalidSimpleFilter,
+								false
+							);
+					// END: Error handling
 
-						this.manageIdentifierInstance(
-							workflowObject,
-							decodedResponse[CMDBuild.core.constants.Proxy.ID],
-							decodedResponse[CMDBuild.core.constants.Proxy.FLOW_STATUS]
-						);
-					} else {
-						CMDBuild.core.Message.error(
-							CMDBuild.Translation.common.failure,
-							CMDBuild.Translation.errors.routesInvalidSimpleFilter,
-							false
-						);
-					}
+					decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.ROWS][0];
+
+					this.manageIdentifierInstance(
+						workflowObject,
+						decodedResponse[CMDBuild.core.constants.Proxy.ID],
+						decodedResponse[CMDBuild.core.constants.Proxy.FLOW_STATUS]
+					);
 				}
 			});
 		},
@@ -105,47 +115,47 @@
 		/**
 		 * @param {Object} workflowObject
 		 * @param {Number} instanceIdentifier
+		 * @param {String} flowStatus
 		 *
 		 * @returns {Void}
 		 *
 		 * @private
 		 */
-		manageIdentifierInstance: function (workflowObject, instanceIdentifier) {
-			var accordionController = CMDBuild.global.controller.MainViewport.cmfg('mainViewportAccordionControllerWithNodeWithIdGet', workflowObject[CMDBuild.core.constants.Proxy.ID]),
-				moduleController = CMDBuild.global.controller.MainViewport.cmfg('mainViewportModuleControllerGet', CMDBuild.core.constants.ModuleIdentifiers.getWorkflow());
+		manageIdentifierInstance: function (workflowObject, instanceIdentifier, flowStatus) {
+			var accordionController = CMDBuild.global.controller.MainViewport.cmfg('mainViewportAccordionControllerWithNodeWithIdGet', workflowObject[CMDBuild.core.constants.Proxy.ID]);
 
 			// Error handling
 				if (!Ext.isObject(workflowObject) || Ext.Object.isEmpty(workflowObject))
 					return _error('manageIdentifierInstance(): unmanaged workflowObject parameter', this, workflowObject);
 
-				if (!Ext.isNumber(instanceIdentifier) || Ext.isEmpty(instanceIdentifier))
-					return _error('manageIdentifierInstance(): unmanaged instanceIdentifier parameter', this, instanceIdentifier);
-
 				if (!Ext.isObject(accordionController) || Ext.Object.isEmpty(accordionController) || !Ext.isFunction(accordionController.cmfg))
 					return _error('manageIdentifierInstance(): accordionController not found', this, accordionController);
 
-				if (!Ext.isObject(moduleController) || Ext.Object.isEmpty(moduleController) || !Ext.isFunction(moduleController.cmfg))
-					return _error('manageIdentifierInstance(): moduleController not found', this, moduleController);
+				if (!CMDBuild.global.controller.MainViewport.cmfg('mainViewportModuleControllerExists', CMDBuild.core.constants.ModuleIdentifiers.getWorkflow()))
+					return _error('manageIdentifierInstance(): module controller retriving error', this, CMDBuild.core.constants.ModuleIdentifiers.getWorkflow());
 			// END: Error handling
+
+			var moduleController = CMDBuild.global.controller.MainViewport.cmfg('mainViewportModuleControllerGet', CMDBuild.core.constants.ModuleIdentifiers.getWorkflow());
 
 			Ext.apply(accordionController, {
 				disableSelection: true,
 				scope: this,
 				callback: function () {
 					accordionController.cmfg('accordionDeselect');
-					accordionController.cmfg('accordionNodeByIdSelect', { id: workflowObject[CMDBuild.core.constants.Proxy.ID] });
+					accordionController.cmfg('accordionNodeByIdSelect', {
+						id: workflowObject[CMDBuild.core.constants.Proxy.ID],
+						mode: 'silently'
+					});
 
-					moduleController.cmfg('workflowTreeApplyStoreEvent', {
-						eventName: 'load',
-						fn: function () {
-							var params = {};
-							params.flowStatusForceEnabled = true;
-							params[CMDBuild.core.constants.Proxy.INSTANCE_ID] = instanceIdentifier;
-
-							moduleController.cmfg('applySelection', params);
-						},
-						scope: this,
-						options: { single: true }
+					moduleController.cmfg('workflowUiUpdate', {
+						defaultFilterApplyIfExists: true,
+						disableFirstRowSelection: true,
+						filterReset: true,
+						flowStatus: CMDBuild.controller.management.workflow.Utils.translateStatusFromCapitalizedMode(flowStatus),
+						instanceId: instanceIdentifier,
+						sortersReset: true,
+						storeLoadForce: true,
+						workflowId: workflowObject[CMDBuild.core.constants.Proxy.ID]
 					});
 				}
 			});
@@ -212,19 +222,20 @@
 				success: function (response, options, decodedResponse) {
 					decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.RESPONSE];
 
-					if (Ext.isObject(decodedResponse) && !Ext.Object.isEmpty(decodedResponse)) {
-						this.manageIdentifierInstance(
-							workflowObject,
-							decodedResponse[CMDBuild.core.constants.Proxy.ID],
-							decodedResponse[CMDBuild.core.constants.Proxy.FLOW_STATUS]
-						);
-					} else {
-						CMDBuild.core.Message.error(
-							CMDBuild.Translation.common.failure,
-							CMDBuild.Translation.errors.routesInvalidInstanceIdentifier + ' (' + this.parametersModel.get(CMDBuild.core.constants.Proxy.INSTANCE_IDENTIFIER) + ')',
-							false
-						);
-					}
+					// Error handling
+						if (!Ext.isObject(decodedResponse) || Ext.Object.isEmpty(decodedResponse))
+							return CMDBuild.core.Message.error(
+								CMDBuild.Translation.common.failure,
+								CMDBuild.Translation.errors.routesInvalidInstanceIdentifier + ' (' + this.parametersModel.get(CMDBuild.core.constants.Proxy.INSTANCE_IDENTIFIER) + ')',
+								false
+							);
+					// END: Error handling
+
+					this.manageIdentifierInstance(
+						workflowObject,
+						decodedResponse[CMDBuild.core.constants.Proxy.ID],
+						decodedResponse[CMDBuild.core.constants.Proxy.FLOW_STATUS]
+					);
 				}
 			});
 		}

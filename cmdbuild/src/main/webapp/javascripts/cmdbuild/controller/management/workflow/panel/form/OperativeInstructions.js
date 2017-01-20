@@ -48,7 +48,7 @@
 		 * @returns {Void}
 		 */
 		workflowFormOperativeInstructionsUiUpdate: function () {
-			// Ui view mode manage
+			// UI view mode manage
 			switch (this.cmfg('workflowUiViewModeGet')) {
 				case 'add':
 					return this.view.update('');

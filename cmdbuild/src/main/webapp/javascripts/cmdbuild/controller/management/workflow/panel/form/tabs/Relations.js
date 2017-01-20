@@ -11,6 +11,7 @@
 		extend: 'CMDBuild.controller.common.abstract.Base',
 
 		requires: [
+			'CMDBuild.core.constants.ModuleIdentifiers',
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.proxy.management.workflow.panel.form.tabs.Relations'
 		],
@@ -90,7 +91,7 @@
 			if (!this.parentDelegate.cmfg('workflowSelectedActivityIsEmpty'))
 				this.onActivityInstanceChange(Ext.create('CMDBuild.model.CMActivityInstance', this.parentDelegate.cmfg('workflowSelectedActivityGet', 'rawData')));
 
-			// Ui view mode manage
+			// UI view mode manage
 			switch (this.parentDelegate.cmfg('workflowUiViewModeGet')) {
 				case 'add':
 					return this.view.disable();
@@ -110,27 +111,34 @@
 		 * @legacy
 		 */
 		panelListenerManagerShow: function () {
-			// History record save
-			if (!Ext.isEmpty(_CMWFState.getProcessClassRef()) && !Ext.isEmpty( _CMWFState.getProcessInstance()))
-				CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
-					moduleId: 'workflow',
-					entryType: {
-						description: _CMWFState.getProcessClassRef().get(CMDBuild.core.constants.Proxy.TEXT),
-						id: _CMWFState.getProcessClassRef().get(CMDBuild.core.constants.Proxy.ID),
-						object: _CMWFState.getProcessClassRef()
-					},
-					item: {
-						description: _CMWFState.getProcessInstance().get(CMDBuild.core.constants.Proxy.TEXT),
-						id: _CMWFState.getProcessInstance().get(CMDBuild.core.constants.Proxy.ID),
-						object: _CMWFState.getProcessInstance()
-					},
-					section: {
-						description: this.view.title,
-						object: this.view
-					}
-				});
+			// Error handling
+				if (this.parentDelegate.cmfg('workflowSelectedWorkflowIsEmpty'))
+					return _error('panelListenerManagerShow(): empty selected workflow property', this, this.parentDelegate.cmfg('workflowSelectedWorkflowGet'));
 
-			// Ui view mode manage
+				if (this.parentDelegate.cmfg('workflowSelectedInstanceIsEmpty'))
+					return _error('panelListenerManagerShow(): empty selected instance property', this, this.parentDelegate.cmfg('workflowSelectedInstanceGet'));
+			// END: Error handling
+
+			// History record save
+			CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
+				moduleId: CMDBuild.core.constants.ModuleIdentifiers.getWorkflow(),
+				entryType: {
+					description: this.parentDelegate.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.DESCRIPTION),
+					id: this.parentDelegate.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.ID),
+					object: this.parentDelegate.cmfg('workflowSelectedWorkflowGet')
+				},
+				item: {
+					description: null, // Instances hasn't description property so display ID and no description
+					id: this.parentDelegate.cmfg('workflowSelectedInstanceGet', CMDBuild.core.constants.Proxy.ID),
+					object: this.parentDelegate.cmfg('workflowSelectedInstanceGet')
+				},
+				section: {
+					description: this.view.title,
+					object: this.view
+				}
+			});
+
+			// UI view mode manage
 			switch (this.parentDelegate.cmfg('workflowUiViewModeGet')) {
 				case 'add':
 					return this.view.disable();

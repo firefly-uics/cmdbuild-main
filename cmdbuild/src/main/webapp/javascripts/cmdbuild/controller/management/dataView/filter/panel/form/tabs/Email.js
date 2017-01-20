@@ -233,7 +233,7 @@
 
 			this.callParent(arguments);
 
-			// Ui view mode manage
+			// UI view mode manage
 			switch (this.cmfg('dataViewFilterUiViewModeGet')) {
 				case 'add':
 					return this.onAddCardButtonClick();

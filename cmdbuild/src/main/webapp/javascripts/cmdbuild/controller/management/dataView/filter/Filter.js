@@ -245,7 +245,7 @@
 					return _error('dataViewFilterUiUpdate(): empty selected dataView', this, this.cmfg('dataViewSelectedDataViewGet'));
 			// END: Error handling
 
-			// Ui reset
+			// UI reset
 			this.cmfg('dataViewFilterFullScreenUiSetup', { maximize: 'top' });
 			this.cmfg('dataViewFilterUiViewModeSet', parameters.viewMode);
 

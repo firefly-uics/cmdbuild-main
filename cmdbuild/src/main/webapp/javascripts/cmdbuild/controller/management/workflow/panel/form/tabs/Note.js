@@ -4,6 +4,7 @@
 		extend: 'CMDBuild.controller.common.abstract.Base',
 
 		requires: [
+			'CMDBuild.core.constants.ModuleIdentifiers',
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.core.constants.WidgetType',
 			'CMDBuild.core.Message',
@@ -55,7 +56,7 @@
 		 * @private
 		 */
 		buildForm: function () {
-			// Ui view mode manage
+			// UI view mode manage
 			switch (this.cmfg('workflowUiViewModeGet')) {
 				case 'add': {
 					if (this.cmfg('workflowFormWidgetExists', CMDBuild.core.constants.WidgetType.getOpenNote()))
@@ -204,7 +205,7 @@
 				params[CMDBuild.core.constants.Proxy.ADVANCE] = false;
 				params[CMDBuild.core.constants.Proxy.ATTRIBUTES] = Ext.encode({ Notes: this.cmfg('workflowFormTabNoteValueGet') });
 				params[CMDBuild.core.constants.Proxy.CARD_ID] = this.cmfg('workflowSelectedInstanceGet', CMDBuild.core.constants.Proxy.ID);
-				params[CMDBuild.core.constants.Proxy.CLASS_ID] = this.cmfg('workflowSelectedInstanceGet', CMDBuild.core.constants.Proxy.CLASS_ID);
+				params[CMDBuild.core.constants.Proxy.CLASS_ID] = this.cmfg('workflowSelectedInstanceGet', CMDBuild.core.constants.Proxy.WORKFLOW_ID);
 
 				CMDBuild.proxy.management.workflow.panel.form.tabs.Note.update({
 					params: params,
@@ -244,7 +245,7 @@
 
 			// History record save
 			CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
-				moduleId: 'workflow',
+				moduleId: CMDBuild.core.constants.ModuleIdentifiers.getWorkflow(),
 				entryType: {
 					description: this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.DESCRIPTION),
 					id: this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.ID),
@@ -261,7 +262,7 @@
 				}
 			});
 
-			// Ui view mode manage
+			// UI view mode manage
 			switch (this.cmfg('workflowUiViewModeGet')) {
 				case 'add': {
 					if (this.cmfg('workflowFormWidgetExists', CMDBuild.core.constants.WidgetType.getOpenNote()))
@@ -340,7 +341,7 @@
 		 * @returns {Void}
 		 */
 		workflowFormTabNoteUiUpdate: function () {
-			// Ui view mode manage
+			// UI view mode manage
 			switch (this.cmfg('workflowUiViewModeGet')) {
 				case 'add':
 					return this.view.setDisabled(!this.cmfg('workflowFormWidgetExists', CMDBuild.core.constants.WidgetType.getOpenNote()));

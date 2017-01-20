@@ -10,6 +10,7 @@
 
 		requires: [
 			'CMDBuild.controller.management.common.widgets.CMWidgetController',
+			'CMDBuild.core.constants.ModuleIdentifiers',
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.core.constants.WidgetType',
 			'CMDBuild.core.Message',

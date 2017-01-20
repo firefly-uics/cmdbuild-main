@@ -14,6 +14,8 @@
 			'CMDBuild.proxy.management.workflow.Workflow'
 		],
 
+		mixins: ['CMDBuild.controller.management.workflow.ExternalServices'],
+
 		/**
 		 * @cfg {CMDBuild.controller.common.MainViewport}
 		 */
@@ -26,9 +28,11 @@
 			'onWorkflowAbortButtonClick',
 			'onWorkflowActivityRemoveCallback',
 			'onWorkflowAddButtonClick',
+			'onWorkflowExternalServicesNavigationChronologyRecordSelect', // From mixins
+			'onWorkflowExternalServicesTreePrintButtonClick', // From mixins
+//			'onWorkflowTreePrintButtonClick -> controllerTree', // TODO: external services
 			'onWorkflowModifyButtonClick = onWorkflowActivityItemDoubleClick',
 			'onWorkflowModuleInit = onModuleInit',
-			'onWorkflowTreePrintButtonClick -> controllerTree', // TODO: external services
 			'panelGridAndFormFullScreenUiSetup = workflowFullScreenUiSetup',
 			'panelGridAndFormToolsArrayBuild',
 			'panelGridAndFormViewModeEquals = workflowUiViewModeEquals',
@@ -45,13 +49,13 @@
 			'workflowSelectedPreviousActivityGet', // TODO: rename workflowSelectedPreviousGet
 			'workflowSelectedPreviousActivityIsEmpty',
 			'workflowSelectedWorkflowAttributesGet',
+			'workflowSelectedWorkflowAttributesGetAll',
 			'workflowSelectedWorkflowAttributesIsEmpty',
 			'workflowSelectedWorkflowDefaultFilterGet',
 			'workflowSelectedWorkflowDefaultFilterIsEmpty',
 			'workflowSelectedWorkflowGet = panelGridAndFormSelectedEntityGet',
 			'workflowSelectedWorkflowIsEmpty',
 			'workflowStartActivityGet',
-//			'workflowTreeApplyStoreEvent -> controllerTree', // TODO: remove
 			'workflowUiUpdate = panelGridAndFormUiUpdate'
 		],
 
@@ -116,11 +120,11 @@
 		/**
 		 * Array of attribute models (CMDBuild.model.management.workflow.Attribute)
 		 *
-		 * @property {Array}
+		 * @property {Object}
 		 *
 		 * @private
 		 */
-		selectedWorkflowAttributes: undefined,
+		selectedWorkflowAttributes: {},
 
 		/**
 		 * @property {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter}
@@ -303,7 +307,7 @@
 					return _error('onWorkflowAddButtonClick(): unmanaged id parameter', this, parameters.id);
 			// END: Error handling
 
-			// Ui reset
+			// UI reset
 			this.cmfg('workflowFullScreenUiSetup', { maximize: 'bottom' });
 			this.cmfg('workflowReset');
 			this.cmfg('workflowUiViewModeSet', 'add');
@@ -388,6 +392,7 @@
 								defaultFilterApplyIfExists: true,
 								filterReset: true,
 								sortersReset: true,
+								storeLoadForce: true,
 								workflowId: parameters.node.get(CMDBuild.core.constants.Proxy.ENTITY_ID)
 							});
 						} else {
@@ -910,17 +915,42 @@
 
 		// SelectedWorkflowAttributes property functions
 			/**
-			 * @returns {Array}
+			 * @param {Object} parameters
+			 * @param {String} parameters.name
+			 * @param {String} parameters.property
+			 *
+			 * @returns {Object or null}
 			 */
-			workflowSelectedWorkflowAttributesGet: function () {
-				return this.selectedWorkflowAttributes;
+			workflowSelectedWorkflowAttributesGet: function (parameters) {
+				parameters = Ext.isObject(parameters) ? parameters : {};
+
+				if (Ext.isString(parameters.name) && !Ext.isEmpty(parameters.name)) {
+					if (Ext.isString(parameters.property) && !Ext.isEmpty(parameters.property))
+						return this.selectedWorkflowAttributes[parameters.name].get(parameters.property);
+
+					return this.selectedWorkflowAttributes[parameters.name];
+				}
+
+				return null;
 			},
 
 			/**
+			 * @returns {Array}
+			 */
+			workflowSelectedWorkflowAttributesGetAll: function () {
+				return Ext.Object.getValues(this.selectedWorkflowAttributes);
+			},
+
+			/**
+			 * @param {String} name
+			 *
 			 * @returns {Boolean}
 			 */
-			workflowSelectedWorkflowAttributesIsEmpty: function () {
-				return Ext.isEmpty(this.selectedWorkflowAttributes);
+			workflowSelectedWorkflowAttributesIsEmpty: function (name) {
+				if (Ext.isString(name) && !Ext.isEmpty(name))
+					return Ext.Object.isEmpty(this.selectedWorkflowAttributes[name]);
+
+				return Ext.Object.isEmpty(this.selectedWorkflowAttributes);
 			},
 
 			/**
@@ -931,12 +961,15 @@
 			 * @private
 			 */
 			workflowSelectedWorkflowAttributesSet: function (attributes) {
-				this.selectedWorkflowAttributes = [];
+				this.selectedWorkflowAttributes = {};
 
 				if (Ext.isArray(attributes) && !Ext.isEmpty(attributes))
 					Ext.Array.each(attributes, function (attributeObject, i, allAttributeObjects) {
-						if (Ext.isObject(attributeObject) && !Ext.Object.isEmpty(attributeObject))
-							this.selectedWorkflowAttributes.push(Ext.create('CMDBuild.model.management.workflow.Attribute', attributeObject));
+						if (Ext.isObject(attributeObject) && !Ext.Object.isEmpty(attributeObject)) {
+							var attributeModel = Ext.create('CMDBuild.model.management.workflow.Attribute', attributeObject);
+
+							this.selectedWorkflowAttributes[attributeModel.get(CMDBuild.core.constants.Proxy.NAME)] = attributeModel;
+						}
 					}, this);
 			},
 
@@ -1046,14 +1079,13 @@
 		 * @param {Boolean} parameters.filterReset
 		 * @param {Boolean} parameters.filterForceEnabled
 		 * @param {String} parameters.flowStatus
-		 * @param {String} parameters.flowStatusForceEnabled
 		 * @param {Number} parameters.instanceId
 		 * @param {Object} parameters.metadata
 		 * @param {Object} parameters.scope
 		 * @param {Boolean} parameters.sortersReset
 		 * @param {Boolean} parameters.storeLoadForce
 		 * @param {Boolean} parameters.storeLoadDisabled
-		 * @param {Object} parameters.tabToSelect // TODO
+		 * @param {Object or String or Number} parameters.tabToSelect
 		 * @param {String} parameters.viewMode
 		 * @param {Number} parameters.workflowId
 		 *
@@ -1067,13 +1099,12 @@
 			parameters.viewMode = Ext.isString(parameters.viewMode) ? parameters.viewMode : 'read';
 			parameters.workflowId = Ext.isNumber(parameters.workflowId) ? parameters.workflowId : null;
 _debug('workflowUiUpdate', parameters);
-//debugger;
 			// Error handling
 				if (!Ext.isNumber(parameters.workflowId) || Ext.isEmpty(parameters.workflowId))
 					return _error('workflowUiUpdate(): unmanaged workflowId parameter', this, parameters.workflowId);
 			// END: Error handling
 
-			// Ui reset
+			// UI reset
 			this.cmfg('workflowFullScreenUiSetup', { maximize: 'top' });
 			this.cmfg('workflowReset');
 			this.cmfg('workflowUiViewModeSet', parameters.viewMode);
@@ -1108,7 +1139,6 @@ _debug('workflowUiUpdate', parameters);
 									filterForceEnabled: parameters.filterForceEnabled,
 									filterReset: parameters.filterReset,
 									flowStatus: parameters.flowStatus,
-									flowStatusForceEnabled: parameters.flowStatusForceEnabled,
 									sortersReset: parameters.sortersReset,
 									storeLoadForce: parameters.storeLoadForce,
 									storeLoadDisabled: parameters.storeLoadDisabled,
