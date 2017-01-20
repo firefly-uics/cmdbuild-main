@@ -6,16 +6,25 @@
 		'CMDBuild.core.Utils'
 	]);
 
+	Ext.define("CMDBuild.delegate.common.filter.CMRuntimeParameterWindowDelegate", {
+		/**
+		 * Called by the CMRuntimeParameter when click
+		 * to on the save button
+		 *
+		 * @param {CMDBuild.view.management.common.filter.CMRuntimeParameterWindow} the
+		 * window that calls this method
+		 * @param {object} filter, the filter used to configure the CMRuntimeParameterWindow
+		 */
+		onRuntimeParameterWindowSaveButtonClick: function(runtimeParameterWindow, filter) {}
+	});
+
 	/**
-	 * @link CMDBuild.controller.common.panel.gridAndForm.panel.common.filter.advanced.filterEditor.relations.CMCardGridController
-	 * @link CMDBuild.controller.management.workflow.panel.tree.filter.advanced.filterEditor.relations.CMCardGridController
+	 * @link CMDBuild.controller.common.filter.advanced.filterEditor.relations.CMCardGridController
 	 */
 	Ext.define("CMDBuild.controller.management.common.CMCardGridController", {
 
 		mixins: {
 			observable: "Ext.util.Observable",
-			filterWindow: "CMDBuild.view.management.common.filter.CMFilterWindowDelegate",
-			saveFilterWindow: "CMDBuild.view.management.common.filter.CMSaveFilterWindowDelegate",
 			runtimeFilterParamsWindow: "CMDBuild.delegate.common.filter.CMRuntimeParameterWindowDelegate"
 		},
 
@@ -182,7 +191,7 @@
 				params[CMDBuild.core.constants.Proxy.TYPE] = format;
 
 				this.controllerPrintWindow = Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.print.Window', { parentDelegate: this });
-				this.controllerPrintWindow.cmfg('panelGridAndFormPrintWindowShow', {
+				this.controllerPrintWindow.cmfg('panelGridAndFormCommonPrintWindowShow', {
 					format: format,
 					mode: 'view',
 					params: params
@@ -202,7 +211,7 @@
 
 				if (
 					Ext.isNumber(selected.get('Id')) && !Ext.isEmpty(selected.get('Id'))
-					&& Ext.isString(selected.get('IdClass_value')) && !Ext.isEmpty(selected.get('IdClass_value'))
+					&& Ext.isNumber(selected.get('IdClass')) && !Ext.isEmpty(selected.get('IdClass'))
 				) {
 					CMDBuild.proxy.Card.read({
 						params: {
@@ -329,9 +338,9 @@
 		// protected
 		unApplyFilter: unApplyFilter,
 
-		// As CMDBuild.controller.common.panel.gridAndForm.panel.common.filter.advanced.Advanced delegate
+		// As CMDBuild.controller.common.filter.advanced.Advanced delegate
 		/**
-		 * Called by the CMDBuild.controller.common.panel.gridAndForm.panel.common.filter.advanced.Advanced when click to on the apply icon or on a row of the picker
+		 * Called by the CMDBuild.controller.common.filter.advanced.Advanced when click to on the apply icon or on a row of the picker
 		 *
 		 * @param {object} filter
 		 *
@@ -468,16 +477,6 @@
 		me.view.setFilterButtonLabel();
 		me.view.applyFilterToStore({});
 		me.view.disableClearFilterButton();
-	}
-
-	function showSaveFilterDialog(me, filter, referredFilterWindow) {
-		var saveFilterWindow = new CMDBuild.view.management.common.filter.CMSaveFilterWindow({
-			filter: filter,
-			referredFilterWindow: referredFilterWindow
-		});
-
-		saveFilterWindow.addDelegate(me);
-		saveFilterWindow.show();
 	}
 
 	function updateStoreAndSelectGivenPosition(me, idClass, position) {

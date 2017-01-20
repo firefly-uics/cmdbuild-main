@@ -31,7 +31,6 @@
 			'mainViewportAccordionIsCollapsed',
 			'mainViewportAccordionSetDisabled',
 			'mainViewportAccordionViewsGet',
-			'mainViewportActivitySelect',
 			'mainViewportCardSelect',
 			'mainViewportDanglingCardGet',
 			'mainViewportInstanceNameSet',
@@ -376,28 +375,23 @@
 
 		/**
 		 * @param {Object} parameters
-		 * @param {Boolean or Object} parameters.activateFirstTab - if object selects object as tab otherwise selects first one
 		 * @param {Number} parameters.instanceId
+		 * @param {Object or String or Number} parameters.tabToSelect
 		 * @param {Number} parameters.workflowId
 		 *
 		 * @returns {Void}
+		 *
+		 * @private
 		 */
 		mainViewportActivitySelect: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
 			parameters.activateFirstTab = Ext.isEmpty(parameters.activateFirstTab) ? true : parameters.activateFirstTab;
 
-			var accordionController = this.cmfg('mainViewportAccordionControllerWithNodeWithIdGet', parameters[CMDBuild.core.constants.Proxy.WORKFLOW_ID]),
-				moduleController = this.cmfg('mainViewportModuleControllerGet', CMDBuild.core.constants.ModuleIdentifiers.getWorkflow());
+			var accordionController = this.cmfg('mainViewportAccordionControllerWithNodeWithIdGet', parameters[CMDBuild.core.constants.Proxy.WORKFLOW_ID]);
 
 			// Error handling
-				if (!Ext.isNumber(parameters[CMDBuild.core.constants.Proxy.INSTANCE_ID]) || Ext.isEmpty(parameters[CMDBuild.core.constants.Proxy.INSTANCE_ID]))
-					return _error('mainViewportActivitySelect(): unmanaged instanceId parameter', this, parameters[CMDBuild.core.constants.Proxy.INSTANCE_ID]);
-
-				if (!Ext.isNumber(parameters[CMDBuild.core.constants.Proxy.WORKFLOW_ID]) || Ext.isEmpty(parameters[CMDBuild.core.constants.Proxy.WORKFLOW_ID]))
-					return _error('mainViewportActivitySelect(): unmanaged workflowId parameter', this, parameters[CMDBuild.core.constants.Proxy.WORKFLOW_ID]);
-
-				if (!Ext.isObject(moduleController) || Ext.Object.isEmpty(moduleController) || !Ext.isFunction(moduleController.cmfg))
-					return _error('mainViewportActivitySelect(): module controller retriving error', this, moduleController);
+				if (!this.cmfg('mainViewportModuleControllerExists', CMDBuild.core.constants.ModuleIdentifiers.getWorkflow()))
+					return _error('mainViewportActivitySelect(): module controller retriving error', this, CMDBuild.core.constants.ModuleIdentifiers.getWorkflow());
 
 				if (!Ext.isObject(accordionController) || Ext.Object.isEmpty(accordionController) || !Ext.isFunction(accordionController.cmfg))
 					return CMDBuild.core.Message.warning(CMDBuild.Translation.warning, CMDBuild.Translation.warnings.itemNotAvailable);
@@ -408,18 +402,22 @@
 				scope: this,
 				callback: function () {
 					accordionController.cmfg('accordionDeselect'); // Instruction required or selection doesn't work if exists another selection
-					accordionController.cmfg('accordionNodeByIdSelect', { id: parameters[CMDBuild.core.constants.Proxy.WORKFLOW_ID] });
+					accordionController.cmfg('accordionNodeByIdSelect', {
+						id: parameters[CMDBuild.core.constants.Proxy.WORKFLOW_ID],
+						mode: 'silently'
+					});
 
-					moduleController.cmfg('workflowTreeApplyStoreEvent', {
-						eventName: 'load',
-						fn: function (store, node, records, successful, eOpts) {
-							moduleController.cmfg('workflowTreeActivitySelect', {
-								enableForceFlowStatus: true,
-								instanceId: parameters[CMDBuild.core.constants.Proxy.INSTANCE_ID]
-							});
-						},
-						scope: this,
-						options: { single: true }
+					var moduleController = this.cmfg('mainViewportModuleControllerGet', CMDBuild.core.constants.ModuleIdentifiers.getWorkflow());
+
+					moduleController.cmfg('workflowUiUpdate', {
+						defaultFilterApplyIfExists: true,
+						disableFirstRowSelection: true,
+						filterReset: true,
+						instanceId: parameters.instanceId,
+						sortersReset: true,
+						storeLoadForce: true,
+						tabToSelect: parameters.tabToSelect,
+						workflowId: parameters.workflowId
 					});
 				}
 			});
@@ -443,7 +441,7 @@
 
 			// Error handling
 				if (Ext.isEmpty(parameters['Id']) || Ext.isEmpty(parameters['IdClass']))
-					return _error('mainViewportActivitySelect(): unmanaged parameter', this, parameters);
+					return _error('mainViewportCardSelect(): unmanaged parameter', this, parameters);
 			// END: Error handling
 
 			if (_CMCache.isClassById(parameters['IdClass'])) { /** @legacy */
@@ -468,12 +466,11 @@
 					CMDBuild.core.Message.warning(CMDBuild.Translation.warning, CMDBuild.Translation.warnings.itemNotAvailable);
 				}
 			} else {
-				var params = {};
-				params['activateFirstTab'] = Ext.isEmpty(parameters.activateFirstTab) ? true : parameters.activateFirstTab;
-				params[CMDBuild.core.constants.Proxy.INSTANCE_ID] = parameters['Id'];
-				params[CMDBuild.core.constants.Proxy.WORKFLOW_ID] = parameters['IdClass'];
-
-				this.cmfg('mainViewportActivitySelect', params);
+				this.mainViewportActivitySelect({
+					instanceId: parameters['Id'],
+					tabToSelect: parameters.activateFirstTab,
+					workflowId: parameters['IdClass']
+				});
 			}
 		},
 
@@ -553,7 +550,9 @@
 			if (this.cmfg('mainViewportAccordionIsCollapsed') && !Ext.isEmpty(node))
 				this.cmfg('mainViewportModuleShow', {
 					identifier: node.get('cmName'),
-					parameters: node
+					params: {
+						node: node
+					}
 				});
 		},
 
@@ -584,7 +583,7 @@
 							} else if (
 								!Ext.isEmpty(moduleControllerObject.cmName) && Ext.isString(moduleControllerObject.cmName)
 								&& !Ext.isEmpty(moduleControllerObject.cmfg) && Ext.isFunction(moduleControllerObject.cmfg)
-							) { // @deprecated
+							) { /** @deprecated */
 								if (!Ext.isEmpty(moduleControllerObject.cmfg('identifierGet'))) {
 									moduleControllerObject.parentDelegate = this; // Inject as parentDelegate in module controllers
 
@@ -592,7 +591,7 @@
 
 									this.moduleViewsBuffer.push(moduleControllerObject.getView());
 								}
-							} else if (!Ext.isEmpty(moduleControllerObject.cmName) && Ext.isString(moduleControllerObject.cmName)) { // @deprecated
+							} else if (!Ext.isEmpty(moduleControllerObject.cmName) && Ext.isString(moduleControllerObject.cmName)) { /** @deprecated */
 								this.moduleControllers[moduleControllerObject.cmName] = moduleControllerObject.delegate;
 
 								if (Ext.isFunction(moduleControllerObject.cmControllerType)) {
@@ -652,35 +651,41 @@
 			 *
 			 * @param {Object} parameters
 			 * @param {String} parameters.identifier
-			 * @param {Object} parameters.parameters
+			 * @param {Object} parameters.params
 			 *
 			 * @returns {Boolean}
 			 */
 			mainViewportModuleShow: function (parameters) {
 				parameters = Ext.isObject(parameters) ? parameters : {};
-				parameters.parameters = Ext.isEmpty(parameters.parameters) ? null : parameters.parameters;
+				parameters.params = Ext.isObject(parameters.params) ? parameters.params : {};
 
 				if (this.cmfg('mainViewportModuleControllerExists', parameters.identifier)) {
-					var modulePanel = this.cmfg('mainViewportModuleControllerGet', parameters.identifier);
+					var controllerModule = this.cmfg('mainViewportModuleControllerGet', parameters.identifier);
 
-					if (Ext.isObject(modulePanel) && !Ext.Object.isEmpty(modulePanel)) {
-						if (Ext.isFunction(modulePanel.getView)) {
-							modulePanel = modulePanel.getView();
-						} else if (!Ext.isEmpty(modulePanel.view)) { /** @deprecated */
-							modulePanel = modulePanel.view;
+					if (Ext.isObject(controllerModule) && !Ext.Object.isEmpty(controllerModule)) {
+						var viewModule = undefined;
+
+						if (Ext.isFunction(controllerModule.getView)) {
+							viewModule = controllerModule.getView();
+						} else if (!Ext.isEmpty(controllerModule.view)) { /** @deprecated */
+							viewModule = controllerModule.view;
 						}
 
-						this.view.moduleContainer.getLayout().setActiveItem(modulePanel);
+						this.view.moduleContainer.getLayout().setActiveItem(viewModule);
 
 						/**
 						 * Legacy event
 						 *
 						 * @deprecated
 						 */
-						modulePanel.fireEvent('CM_iamtofront', parameters.parameters);
+						viewModule.fireEvent('CM_iamtofront', parameters.params.node);
 
-						if (Ext.isObject(modulePanel.delegate) && !Ext.Object.isEmpty(modulePanel.delegate) && Ext.isFunction(modulePanel.delegate.cmfg))
-							modulePanel.delegate.cmfg('onModuleInit', parameters.parameters);
+						if (
+							Ext.isObject(controllerModule) && !Ext.Object.isEmpty(controllerModule) && Ext.isFunction(controllerModule.cmfg)
+							&& Ext.isObject(parameters.params) && !Ext.Object.isEmpty(parameters.params) // Avoid useless calls with no parameters
+						) {
+							controllerModule.cmfg('onModuleInit', parameters.params);
+						}
 					}
 
 					return true;
@@ -709,10 +714,8 @@
 			parameters = Ext.isObject(parameters) ? parameters : {};
 
 			if (
-				Ext.isObject(parameters) && !Ext.Object.isEmpty(parameters)
+				Ext.isString(parameters.id) && !Ext.isEmpty(parameters.id) && Ext.Array.contains(this.enableSynchronizationForAccordions, parameters.id)
 				&& Ext.isObject(parameters.node) && !Ext.Object.isEmpty(parameters.node)
-				&& Ext.isString(parameters.id) && !Ext.isEmpty(parameters.id)
-				&& Ext.Array.contains(this.enableSynchronizationForAccordions, parameters.id)
 				&& !this.isAdministration
 			) {
 				var menuAccordionController = this.cmfg('mainViewportAccordionControllerGet', CMDBuild.core.constants.ModuleIdentifiers.getNavigation()),

@@ -19,15 +19,21 @@
 			'CMDBuild.controller.management.workflow.panel.form.tabs.activity.StaticsController',
 			'CMDBuild.core.constants.Global',
 			'CMDBuild.core.constants.Metadata',
+			'CMDBuild.core.constants.ModuleIdentifiers',
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.core.Message',
+			'CMDBuild.core.Utils',
 			'CMDBuild.proxy.management.workflow.panel.form.tabs.Activity'
 		],
 
 		mixins: {
-			wfStateDelegate: "CMDBuild.state.CMWorkflowStateDelegate",
 			observable: "Ext.util.Observable"
 		},
+
+		/**
+		 * @cfg {CMDBuild.controller.management.workflow.panel.form.Form}
+		 */
+		parentDelegate: undefined,
 
 		/**
 		 * @property {Object}
@@ -40,39 +46,23 @@
 		lastSelectedProcessInstance: undefined,
 
 		/**
-		 * @param {CMDBuild.view.management.workflow.panel.form.tabs.activity.ActivityView} view
-		 * @param {CMDBuild.controller.management.workflow.panel.form.Form} supercontroller
-		 * @param {CMDBuild.controller.management.common.CMWidgetManagerController} widgetControllerManager
-		 * @param {???} delegate
+		 * @param {Object} configurationObject
+		 * @param {CMDBuild.controller.management.workflow.panel.form.Form} configurationObject.parentDelegate
 		 *
 		 * @returns {Void}
 		 *
 		 * @override
 		 */
-		constructor: function(view, supercontroller, widgetControllerManager, delegate) {
+		constructor: function (configurationObject) {
+			Ext.apply(this, configurationObject);
+
 			this.mixins.observable.constructor.call(this, arguments);
 
-			if (typeof view == "undefined") {
-				throw ("OOO snap, you have not passed a view to me");
-			} else {
-				this.view = view;
-				this.view.delegate = this; // Delegate injection
-				this.view.form.delegate = this; // Delegate injection
-			}
+			this.view = Ext.create('CMDBuild.view.management.workflow.panel.form.tabs.activity.ActivityView', { delegate: this });
 
-			this.superController = supercontroller;
 			this.entryType = null;
 
 			var ev = this.view.CMEVENTS;
-
-			if (widgetControllerManager) {
-				this.widgetControllerManager = widgetControllerManager;
-			} else {
-				var widgetManager = new CMDBuild.view.management.common.widgets.CMWidgetManager(this.view);
-				this.widgetControllerManager = new CMDBuild.controller.management.common.CMWidgetManagerController(widgetManager);
-			}
-
-			this.widgetControllerManager.setDelegate(this);
 
 			this.CMEVENTS = {
 				cardSaved: "cm-card-saved",
@@ -105,9 +95,100 @@
 			this.mon(this.view, this.view.CMEVENTS.checkEditability, onCheckEditability, this);
 			this.mon(this.view, this.view.CMEVENTS.displayModeDidActivate, onDisplayMode, this);
 
-			_CMWFState.addDelegate(this);
+			this.delegate = Ext.create('CMDBuild.controller.management.workflow.CMActivityPanelControllerDelegate');
 
-			this.setDelegate(delegate || Ext.create('CMDBuild.controller.management.workflow.CMActivityPanelControllerDelegate'));
+			// Build sub-controllers
+			this.controllerWindowGraph = Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.graph.Window', { parentDelegate: this });
+		},
+
+		/**
+		 * Enable/Disable tab selection based
+		 *
+		 * @returns {Void}
+		 *
+		 * @legacy
+		 */
+		workflowFormTabActivityUiUpdate: function (parameters) {
+
+			// FIXME: legacy mode to remove on complete Workflow UI and wofkflowState modules refactor
+				if (!this.parentDelegate.cmfg('workflowSelectedWorkflowIsEmpty'))
+					_CMWFState.setProcessClassRef(Ext.create('CMDBuild.cache.CMEntryTypeModel', this.parentDelegate.cmfg('workflowSelectedWorkflowGet', 'rawData')));
+
+				if (!this.parentDelegate.cmfg('workflowSelectedInstanceIsEmpty'))
+					_CMWFState.setProcessInstanceSynchronous(Ext.create('CMDBuild.model.CMProcessInstance', this.parentDelegate.cmfg('workflowSelectedInstanceGet', 'rawData')));
+
+				if (!this.parentDelegate.cmfg('workflowSelectedActivityIsEmpty'))
+					_CMWFState.setActivityInstance(Ext.create('CMDBuild.model.CMActivityInstance', this.parentDelegate.cmfg('workflowSelectedActivityGet', 'rawData')));
+
+			if (!this.parentDelegate.cmfg('workflowSelectedInstanceIsEmpty'))
+				this.onProcessInstanceChange(Ext.create('CMDBuild.model.CMProcessInstance', this.parentDelegate.cmfg('workflowSelectedInstanceGet', 'rawData')));
+
+			if (!this.parentDelegate.cmfg('workflowSelectedActivityIsEmpty'))
+				this.onActivityInstanceChange(Ext.create('CMDBuild.model.CMActivityInstance', this.parentDelegate.cmfg('workflowSelectedActivityGet', 'rawData')));
+
+			var state = (
+				this.parentDelegate.cmfg('workflowSelectedInstanceIsEmpty')
+				&& this.parentDelegate.cmfg('workflowSelectedActivityIsEmpty')
+				&& !this.parentDelegate.cmfg('workflowStartActivityGet', CMDBuild.core.constants.Proxy.STATUS)
+			);
+
+			this.view.enable();
+
+			if (state) {
+				this.changeClassUIConfigurationForGroup(true, true);
+			} else {
+				this.changeClassUIConfigurationForGroup(!this.parentDelegate.cmfg('workflowSelectedActivityGet', CMDBuild.core.constants.Proxy.WRITABLE));
+			}
+		},
+
+		/**
+		 * @returns {Void}
+		 *
+		 * @private
+		 * @legacy
+		 */
+		panelListenerManagerShow: function () {
+			if (!this.parentDelegate.cmfg('workflowSelectedWorkflowIsEmpty') && !this.parentDelegate.cmfg('workflowSelectedInstanceIsEmpty')) {
+				// History record save
+				CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
+					moduleId: CMDBuild.core.constants.ModuleIdentifiers.getWorkflow(),
+					entryType: {
+						description: this.parentDelegate.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.DESCRIPTION),
+						id: this.parentDelegate.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.ID),
+						object: this.parentDelegate.cmfg('workflowSelectedWorkflowGet')
+					},
+					item: {
+						description: null, // Instances hasn't description property so display ID and no description
+						id: this.parentDelegate.cmfg('workflowSelectedInstanceGet', CMDBuild.core.constants.Proxy.ID),
+						object: this.parentDelegate.cmfg('workflowSelectedInstanceGet')
+					},
+					section: {
+						description: this.view.title,
+						object: this.view
+					}
+				});
+
+				// UI view mode manage
+				switch (this.parentDelegate.cmfg('workflowUiViewModeGet')) {
+					case 'add': {
+						var me = this;
+
+						this.view.enable();
+
+						_CMWFState.setProcessInstance(
+							Ext.create('CMDBuild.model.CMProcessInstance', { classId: this.parentDelegate.cmfg('workflowStartActivityGet', CMDBuild.core.constants.Proxy.WORKFLOW_ID) }),
+							function () {
+								_CMWFState.setActivityInstance(
+									Ext.create('CMDBuild.model.CMActivityInstance', me.parentDelegate.cmfg('workflowSelectedActivityGet', 'rawData'))
+								);
+							}
+						);
+					} break;
+
+					case 'edit':
+						return this.onModifyCardClick();
+				}
+			}
 		},
 
 		/**
@@ -131,11 +212,6 @@
 			this.view.form.deleteCardButton.disable();
 		},
 
-		setDelegate: function(d) {
-			CMDBuild.validateInterface(d, "CMDBuild.controller.management.workflow.CMActivityPanelControllerDelegate");
-			this.delegate = d;
-		},
-
 		// wfStateDelegate
 		onProcessInstanceChange: function(processInstance) {
 			var me = this;
@@ -154,48 +230,6 @@
 				});
 			} else {
 				enableStopButtonIfUserCanUseIt(this, processInstance);
-			}
-
-			// History record save
-			if (!Ext.isEmpty(_CMWFState.getProcessClassRef()) && !Ext.isEmpty( _CMWFState.getProcessInstance()))
-				CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
-					moduleId: 'workflow',
-					entryType: {
-						description: _CMWFState.getProcessClassRef().get(CMDBuild.core.constants.Proxy.TEXT),
-						id: _CMWFState.getProcessClassRef().get(CMDBuild.core.constants.Proxy.ID),
-						object: _CMWFState.getProcessClassRef()
-					},
-					item: {
-						description: _CMWFState.getProcessInstance().get(CMDBuild.core.constants.Proxy.TEXT),
-						id: _CMWFState.getProcessInstance().get(CMDBuild.core.constants.Proxy.ID),
-						object: _CMWFState.getProcessInstance()
-					}
-				});
-		},
-
-		/**
-		 * @param {Number} id
-		 *
-		 * @returns {Void}
-		 */
-		onAddCardClick: function (id) {
-			this.view.setDisabled(!Ext.isNumber(id) || Ext.isEmpty(id));
-
-			if (Ext.isNumber(id) && !Ext.isEmpty(id)) {
-				_CMWFState.setProcessInstance(
-					Ext.create('CMDBuild.model.CMProcessInstance', { classId: id }),
-					function () {
-						CMDBuild.proxy.management.workflow.panel.form.tabs.Activity.readStart({ // FIXME: moved to main module controller
-							params: {
-								classId: id
-							},
-							scope: this,
-							success: function (response, options, decodedResponse) {
-								_CMWFState.setActivityInstance(new CMDBuild.model.CMActivityInstance(decodedResponse.response || {}));
-							}
-						});
-					}
-				);
 			}
 		},
 
@@ -330,7 +364,10 @@
 		},
 
 		isEditable: function(card) {
-			var privileges = _CMUtils.getEntryTypePrivilegesByCard(card);
+			if (!card)
+				return false;
+
+			var privileges = CMDBuild.core.Utils.getEntryTypePrivileges(_CMCache.getEntryTypeById(card.get('IdClass')));
 			return (privileges.create);
 		},
 
@@ -464,8 +501,7 @@
 		onShowGraphClick: function() {
 			var pi = _CMWFState.getProcessInstance();
 
-			Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.graph.Window', {
-				parentDelegate: this,
+			this.controllerWindowGraph.cmfg('onPanelGridAndFormGraphWindowConfigureAndShow', {
 				classId: pi.getClassId(),
 				cardId: pi.getId()
 			});
@@ -506,7 +542,7 @@
 			},
 			scope: this,
 			success: function (response, options, decodedResponse) {
-				this.superController.cmfg('onWorkflowActivityRemoveCallback');
+				this.parentDelegate.cmfg('onWorkflowActivityRemoveCallback');
 			}
 		});
 	}
@@ -549,27 +585,29 @@
 			requestParams = {},
 			pi = _CMWFState.getProcessInstance(),
 			ai = _CMWFState.getActivityInstance(),
-			valid;
+			valid,
+			noteValue = this.parentDelegate.cmfg('workflowFormTabNoteValueGet');
 
 		if (pi) {
 			var formValues = this.view.getValues();
-			// used server side to be sure to update
-			// the last version of the process
+
+			// Used server side to be sure to update the last version of the process
 			formValues.beginDate = pi.get("beginDateAsLong");
+
+			if (Ext.isString(noteValue) && !Ext.isEmpty(noteValue))
+				formValues['Notes'] = noteValue;
 
 			requestParams = {
 				classId: pi.getClassId(),
-				attributes: Ext.JSON.encode(formValues),
+				attributes: Ext.encode(formValues),
 				advance: me.isAdvance
 			};
 
-			if (pi.getId()) {
+			if (pi.getId())
 				requestParams.cardId = pi.getId();
-			}
 
-			if (ai && ai.getId) {
+			if (ai && ai.getId)
 				requestParams.activityInstanceId = ai.getId();
-			}
 
 			// Business rule: Someone want the validation only if advance and not if save only
 			valid = requestParams.advance ? validate(me) : true;
@@ -583,28 +621,55 @@
 					params: requestParams,
 					scope: this,
 					clientValidation: this.isAdvance, // Force save request
-					failure: function(response, options, decodedResponse) {
-						this.superController.cmfg('onWorkflowSaveFailure'); // Reload store also on failure
+					failure: function (response, options, decodedResponse) {
+						this.parentDelegate.cmfg('workflowUiUpdate', {
+							disableFirstRowSelection: true,
+							storeLoadForce: true,
+							workflowId: this.parentDelegate.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.ID)
+						});
 					},
-					success: function(operation, requestConfiguration, decodedResponse) {
-						var savedCardId = decodedResponse.response.Id;
+					success: function (response, options, decodedResponse) {
+						decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.RESPONSE];
+
+						// Error handling
+							if (!Ext.isObject(decodedResponse) || Ext.Object.isEmpty(decodedResponse))
+								return _error('save(): unmanaged response', this, decodedResponse);
+						// END: Error handling
+
+						var flowStatus = decodedResponse[CMDBuild.core.constants.Proxy.FLOW_STATUS];
 
 						this.view.displayMode();
 
 						// To enable the editing for the right processInstance
-						if (me.isAdvance)
-							me.idToAdvance = savedCardId;
+						if (this.isAdvance)
+							this.idToAdvance = decodedResponse['Id'];
 
-						// Metadata manage
-						decodedResponse.response[CMDBuild.core.constants.Proxy.METADATA] = this.superController.cmfg(
-							'workflowSelectedActivityGet',
-							CMDBuild.core.constants.Proxy.METADATA
-						);
-
-						this.superController.cmfg(
-							'onWorkflowActivityUpdateCallback',
-							Ext.create('CMDBuild.model.management.workflow.panel.form.tabs.activity.SaveResponse', decodedResponse.response)
-						);
+						if (
+							Ext.isString(flowStatus) && !Ext.isEmpty(flowStatus)
+							&& (
+								flowStatus == CMDBuild.core.constants.WorkflowStates.getCompletedCapitalized()
+								|| flowStatus == CMDBuild.core.constants.WorkflowStates.getSuspendedCapitalized()
+							)
+						) {
+							this.parentDelegate.cmfg('workflowUiUpdate', {
+								disableFirstRowSelection: true,
+								storeLoadForce: true,
+								workflowId: decodedResponse['IdClass']
+							});
+						} else {
+							this.parentDelegate.cmfg('workflowUiUpdate', {
+								disableFirstRowSelection: true,
+								instanceId: decodedResponse['Id'],
+								metadata: decodedResponse[CMDBuild.core.constants.Proxy.METADATA],
+								storeLoadForce: true,
+								viewMode: this.isAdvance ? 'edit' : 'read',
+								workflowId: decodedResponse['IdClass'],
+								scope: this,
+								callback: function () {
+									this.parentDelegate.cmfg('workflowFullScreenUiSetup', { maximize: 'bottom' });
+								}
+							});
+						}
 					}
 				});
 			}
@@ -666,8 +731,6 @@
 			&& processInstance.getId() == me.idToAdvance
 		) {
 			me.view.editMode();
-
-			me.superController.cmfg('onWorkflowFormModifyButtonClick');  // Call modify event for email tab
 
 			// Lock card on advance action
 			me.lock(function() {

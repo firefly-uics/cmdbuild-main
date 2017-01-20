@@ -8,7 +8,7 @@
 			'CMDBuild.core.constants.Metadata',
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.core.constants.WorkflowStates',
-			'CMDBuild.core.interfaces.service.LoadMask',
+			'CMDBuild.core.LoadMask',
 			'CMDBuild.core.Message',
 			'CMDBuild.core.Utils',
 			'CMDBuild.proxy.management.workflow.panel.tree.Tree'
@@ -20,7 +20,7 @@
 		parentDelegate: undefined,
 
 		/**
-		 * @property {CMDBuild.model.management.workflow.panel.tree.filter.advanced.Filter}
+		 * @property {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter}
 		 *
 		 * @private
 		 */
@@ -31,25 +31,17 @@
 		 */
 		cmfgCatchedFunctions: [
 			'getView = workflowTreeViewGet',
-			'onWorkflowTreeAbortButtonClick',
-			'onWorkflowTreeAddButtonClick',
-			'onWorkflowTreeBeforeItemClick',
 			'onWorkflowTreeColumnChanged',
-			'onWorkflowTreePrintButtonClick',
-			'onWorkflowTreeRecordSelect',
-			'onWorkflowTreeSaveFailure',
+			'onWorkflowTreePrintButtonClick = onPanelGridAndFormCommonToolbarPrintButtonClick',
+			'onWorkflowTreeRecordSelect = onWorkflowTreeBeforeItemClick',
 			'onWorkflowTreeSortChange',
-			'onWorkflowTreeWokflowSelect = onWorkflowWokflowSelect',
-			'workflowTreeActivitySelect',
-			'workflowTreeAppliedFilterGet',
-			'workflowTreeApplyStoreEvent',
-			'workflowTreeFilterApply = panelGridAndFormGridFilterApply',
-			'workflowTreeFilterClear = panelGridAndFormGridFilterClear',
+			'workflowTreeAppliedFilterGet = panelGridAndFormListPanelAppliedFilterGet',
+			'workflowTreeAppliedFilterIsEmpty = panelGridAndFormListPanelAppliedFilterIsEmpty',
 			'workflowTreeRendererTreeColumn',
 			'workflowTreeReset',
-			'workflowTreeStoreGet',
-			'workflowTreeStoreLoad',
-			'workflowTreeToolbarTopStatusValueSet -> controllerToolbarTop'
+			'workflowTreeStoreGet = panelGridAndFormListPanelStoreGet',
+			'workflowTreeStoreLoad = panelGridAndFormListPanelStoreLoad',
+			'workflowTreeUiUpdate'
 		],
 
 		/**
@@ -58,12 +50,7 @@
 		controllerPrintWindow: undefined,
 
 		/**
-		 * @property {CMDBuild.controller.common.field.filter.runtimeParameters.RuntimeParameters}
-		 */
-		controllerRuntimeParameters: undefined,
-
-		/**
-		 * @proeprty {CMDBuild.controller.management.workflow.panel.tree.toolbar.Paging}
+		 * @property {CMDBuild.controller.common.panel.gridAndForm.panel.common.toolbar.Paging}
 		 */
 		controllerToolbarPaging: undefined,
 
@@ -92,18 +79,14 @@
 
 			// Build sub-controllers
 			this.controllerPrintWindow = Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.print.Window', { parentDelegate: this });
-			this.controllerRuntimeParameters = Ext.create('CMDBuild.controller.common.field.filter.runtimeParameters.RuntimeParameters', { parentDelegate: this });
-			this.controllerToolbarPaging = Ext.create('CMDBuild.controller.management.workflow.panel.tree.toolbar.Paging', {
-				parentDelegate: this,
-				enableFilterAdvanced: true,
-				enableFilterBasic: true,
-				enableButtonPrint: true
-			});
+			this.controllerToolbarPaging = Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.toolbar.Paging', { parentDelegate: this });
 			this.controllerToolbarTop = Ext.create('CMDBuild.controller.management.workflow.panel.tree.toolbar.Top', { parentDelegate: this });
 
 			// Add docked
-			this.view.addDocked(this.controllerToolbarTop.getView(), 'top');
-			this.view.addDocked(this.controllerToolbarPaging.getView(), 'bottom');
+			this.view.addDocked([
+				this.controllerToolbarPaging.getView(),
+				this.controllerToolbarTop.getView()
+			]);
 		},
 
 		/**
@@ -169,23 +152,74 @@
 		},
 
 		/**
-		 * Apply interceptor with default store load callback actions, if callback is empty will be replaced with Ext.emptyFn
+		 * Apply instance/activity selection
 		 *
-		 * @param {Function} callback
+		 * @param {Object} parameters
+		 * @param {Function} parameters.callback
+		 * @param {Boolean} parameters.disableFirstRowSelection
+		 * @param {String} parameters.filterForceEnabled
+		 * @param {Object} parameters.scope
+		 * @param {Boolean} parameters.storeLoadDisabled
+		 * @param {Boolean} parameters.storeLoadForce
 		 *
-		 * @returns {Function}
+		 * @returns {Void}
 		 *
 		 * @private
 		 */
-		buildLoadCallback: function (callback) {
-			callback = Ext.isFunction(callback) ? callback : Ext.emptyFn;
+		applySelection: function (parameters) {
+			parameters = Ext.isObject(parameters) ? parameters : {};
+			parameters.filterForceEnabled = Ext.isBoolean(parameters.filterForceEnabled) ? parameters.filterForceEnabled : false;
+			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
 
-			return Ext.Function.createInterceptor(callback, function (records, options, success) {
-				this.cmfg('workflowFormReset');
+			// Error handling
+				if (this.cmfg('workflowSelectedWorkflowIsEmpty'))
+					return _error('applySelection(): no selected workflow found', this);
 
-				if (this.workflowTreeAppliedFilterIsEmpty())
-					this.controllerToolbarPaging.cmfg('workflowTreeToolbarPagingFilterAdvancedReset');
-			}, this);
+				if (this.cmfg('workflowSelectedInstanceIsEmpty'))
+					return _error('applySelection(): no selected instance found', this);
+			// END: Error handling
+
+			var activityId = this.cmfg('workflowSelectedActivityGet', CMDBuild.core.constants.Proxy.ID),
+				instanceId = this.cmfg('workflowSelectedInstanceGet', CMDBuild.core.constants.Proxy.ID);
+
+			var params = {};
+			params[CMDBuild.core.constants.Proxy.FLOW_STATUS] = this.controllerToolbarTop.cmfg('workflowTreeToolbarTopStatusValueGet');
+			params[CMDBuild.core.constants.Proxy.INSTANCE_ID] = this.cmfg('workflowSelectedInstanceGet', CMDBuild.core.constants.Proxy.ID);
+
+			if (!this.cmfg('workflowTreeAppliedFilterIsEmpty', CMDBuild.core.constants.Proxy.CONFIGURATION))
+				params[CMDBuild.core.constants.Proxy.FILTER] = Ext.encode(this.cmfg('workflowTreeAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION));
+
+			this.storeLoadSelectionPage({
+				disableFirstRowSelection: parameters.disableFirstRowSelection,
+				filterForceEnabled: parameters.filterForceEnabled,
+				params: params,
+				storeLoadDisabled: parameters.storeLoadDisabled,
+				storeLoadForce: parameters.storeLoadForce,
+				scope: this,
+				callback: function () {
+					var selectedNode = this.cmfg('workflowTreeStoreGet').getRootNode().findChildBy(function (node) {
+						if (!Ext.isEmpty(activityId))
+							return (
+								instanceId == node.get(CMDBuild.core.constants.Proxy.INSTANCE_ID)
+								&& activityId == node.get(CMDBuild.core.constants.Proxy.ACTIVITY_ID)
+							);
+
+						return instanceId == node.get(CMDBuild.core.constants.Proxy.INSTANCE_ID);
+					}, this, true);
+
+					this.view.getSelectionModel().deselectAll();
+
+					if (Ext.isObject(selectedNode) && !Ext.Object.isEmpty(selectedNode)) {
+						this.nodeModelDataComplete(selectedNode);
+						this.nodeRecursiveAnchestorsExpand(selectedNode);
+
+						this.view.getSelectionModel().select(selectedNode, false, true);
+					}
+
+					if (Ext.isFunction(parameters.callback))
+						Ext.callback(parameters.callback, parameters.scope);
+				}
+			});
 		},
 
 		/**
@@ -209,6 +243,51 @@
 				}, this);
 
 			return visibleColumnNames;
+		},
+
+		/**
+		 * Service method to complete node model data to avoid activity description rendering errors
+		 *
+		 * @param {CMDBuild.model.management.workflow.Node} record
+		 *
+		 * @returns {Void}
+		 *
+		 * @private
+		 */
+		nodeModelDataComplete: function (record) {
+			// Error handling
+				if (!Ext.isObject(record) || Ext.Object.isEmpty(record))
+					return _error('nodeModelDataComplete(): unmanaged record parameter', this, record);
+			// END: Error handling
+
+			var instanceValues = this.cmfg('workflowSelectedInstanceGet', CMDBuild.core.constants.Proxy.VALUES);
+
+			switch (this.nodeTypeOf(record)) {
+				// Complete brother node models with additional values (to correctly manage AdditionalActivityLabel metadata
+				// also if relative column is not displayed)
+				case 'activity': {
+					var parent = record.parentNode;
+
+					if (!parent.isRoot())
+						parent.eachChild(function (childNode) {
+							childNode.set(CMDBuild.core.constants.Proxy.VALUES, instanceValues);
+						}, this);
+				} break;
+
+				// Complete record and children models with additional values (to correctly manage AdditionalActivityLabel metadata
+				// also if relative column is not displayed)
+				case 'instance': {
+					record.set(CMDBuild.core.constants.Proxy.VALUES, instanceValues);
+					record.eachChild(function (childNode) {
+						childNode.set(CMDBuild.core.constants.Proxy.VALUES, instanceValues);
+					}, this);
+				} break;
+
+				default:
+					return _error('nodeModelDataComplete(): unmanaged record type', this, record);
+			}
+
+			CMDBuild.core.LoadMask.hide();
 		},
 
 		/**
@@ -245,20 +324,20 @@
 			// END: Error handling
 
 			var activityId = node.get(CMDBuild.core.constants.Proxy.ACTIVITY_ID),
-				cardId = node.get(CMDBuild.core.constants.Proxy.CARD_ID),
-				classId = node.get(CMDBuild.core.constants.Proxy.CLASS_ID);
+				instanceId = node.get(CMDBuild.core.constants.Proxy.INSTANCE_ID),
+				workflowId = node.get(CMDBuild.core.constants.Proxy.WORKFLOW_ID);
 
 			if (
-				Ext.isString(activityId) && !Ext.isEmpty(activityId)
-				&& Ext.isNumber(cardId) && !Ext.isEmpty(cardId)
-				&& Ext.isNumber(classId) && !Ext.isEmpty(classId)
+				Ext.isNumber(workflowId) && !Ext.isEmpty(workflowId)
+				&& Ext.isNumber(instanceId) && !Ext.isEmpty(instanceId)
+				&& Ext.isString(activityId) && !Ext.isEmpty(activityId)
 			) {
 				return 'activity';
 			}
 
 			if ( // Instance node selected
-				Ext.isNumber(cardId) && !Ext.isEmpty(cardId)
-				&& Ext.isNumber(classId) && !Ext.isEmpty(classId)
+				Ext.isNumber(workflowId) && !Ext.isEmpty(workflowId)
+				&& Ext.isNumber(instanceId) && !Ext.isEmpty(instanceId)
 			) {
 				return 'instance';
 			}
@@ -267,50 +346,16 @@
 		},
 
 		/**
-		 * Manage previous selected activity
+		 * Setup correct selection inside and load store
 		 *
-		 * @returns {Void}
-		 */
-		onWorkflowTreeAbortButtonClick: function () {
-			if (this.cmfg('workflowSelectedActivityIsEmpty') && !this.cmfg('workflowSelectedPreviousActivityIsEmpty'))
-				this.cmfg('workflowTreeActivitySelect', {
-					forceFilter: true,
-					instanceId: this.cmfg('workflowSelectedPreviousActivityGet', CMDBuild.core.constants.Proxy.INSTANCE_ID),
-					metadata: this.cmfg('workflowSelectedPreviousActivityGet', CMDBuild.core.constants.Proxy.METADATA)
-				});
-		},
-
-		/**
-		 * @param {Number} id
-		 *
-		 * @returns {Void}
-		 */
-		onWorkflowTreeAddButtonClick: function (id) {
-			this.view.getSelectionModel().deselectAll();
-			this.view.collapseAll();
-		},
-
-		/**
-		 * Auto-select expanded node (only for graphical behaviour)
-		 *
-		 * @param {CMDBuild.model.management.workflow.Node} record
-		 *
-		 * @returns {Boolean}
-		 */
-		onWorkflowTreeBeforeItemClick: function (record) {
-			// Error handling
-				if (!Ext.isObject(record) || Ext.Object.isEmpty(record))
-					return _error('onWorkflowTreeBeforeItemClick(): unmanaged record parameter', this, record);
-			// END: Error handling
-
-			this.view.getSelectionModel().select(record);
-		},
-
-		/**
 		 * @returns {Void}
 		 */
 		onWorkflowTreeColumnChanged: function () {
-			this.cmfg('workflowTreeStoreLoad');
+			if (!this.cmfg('workflowSelectedInstanceIsEmpty'))
+				this.applySelection({
+					disableFirstRowSelection: true,
+					storeLoadForce: true
+				});
 		},
 
 		/**
@@ -336,7 +381,7 @@
 			delete params[CMDBuild.core.constants.Proxy.PAGE];
 			delete params[CMDBuild.core.constants.Proxy.LIMIT];
 
-			this.controllerPrintWindow.cmfg('panelGridAndFormPrintWindowShow', {
+			this.controllerPrintWindow.cmfg('panelGridAndFormCommonPrintWindowShow', {
 				format: format,
 				mode: 'view',
 				params: params
@@ -344,56 +389,24 @@
 		},
 
 		/**
-		 * @param {CMDBuild.model.management.workflow.Node} record
+		 * @param {CMDBuild.model.management.workflow.Node} node
 		 *
-		 * @returns {Void}
+		 * @returns {Boolean}
 		 */
-		onWorkflowTreeRecordSelect: function (record) {
+		onWorkflowTreeRecordSelect: function (node) {
 			// Error handling
-				if (!Ext.isObject(record) || Ext.Object.isEmpty(record) || !Ext.isFunction(record.get))
-					return _error('onWorkflowTreeRecordSelect(): unmanaged record parameter', this, record);
+				if (!Ext.isObject(node) || Ext.Object.isEmpty(node) || !Ext.isFunction(node.get))
+					return _error('onWorkflowTreeRecordSelect(): unmanaged node parameter', this, node);
 			// END: Error handling
 
-			CMDBuild.core.interfaces.service.LoadMask.manage(true, true); // Manually manage LoadMask (show)
+			this.cmfg('workflowUiUpdate', {
+				activityId: node.get(CMDBuild.core.constants.Proxy.ACTIVITY_ID),
+				instanceId: node.get(CMDBuild.core.constants.Proxy.INSTANCE_ID),
+				storeLoadDisabled: true,
+				workflowId: this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.ID)
+			});
 
-			switch (this.nodeTypeOf(record)) {
-				case 'activity':
-					return this.cmfg('onWorkflowInstanceSelect', {
-						record: record,
-						loadMask: false,
-						scope: this,
-						callback: function () {
-							this.cmfg('onWorkflowActivitySelect', {
-								record: record,
-								loadMask: false,
-								scope: this,
-								callback: Ext.bind(this.recordSelectionCallback, this, [record])
-							});
-						}
-					});
-
-				case 'instance':
-					return this.cmfg('onWorkflowInstanceSelect', {
-						record: record,
-						loadMask: false,
-						scope: this,
-						callback: Ext.bind(this.recordSelectionCallback, this, [record])
-					});
-
-				default:
-					return _error('onWorkflowTreeRecordSelect(): unmanaged record type', this, record);
-			}
-
-			return _error('onWorkflowTreeRecordSelect(): not correctly filled record model', this, record);
-		},
-
-		/**
-		 * Reload store on save failure
-		 *
-		 * @returns {Void}
-		 */
-		onWorkflowTreeSaveFailure: function () {
-			this.cmfg('workflowTreeStoreLoad', { disableFirstRowSelection: true });
+			return false;
 		},
 
 		/**
@@ -402,336 +415,8 @@
 		 * @returns {Void}
 		 */
 		onWorkflowTreeSortChange: function () {
-			this.cmfg('workflowFormReset');
-			this.cmfg('workflowTreeReset');
+			this.cmfg('workflowReset');
 		},
-
-		/**
-		 * Setup store, columns and sorters
-		 *
-		 * NOTE: store loading is called by paging toolbar
-		 *
-		 * @param {CMDBuild.model.common.Accordion} node
-		 *
-		 * @returns {Void}
-		 */
-		onWorkflowTreeWokflowSelect: function (node) {
-			this.view.reconfigure(this.storeSortersSet(this.cmfg('workflowTreeStoreGet')), this.workflowTreeBuildColumns());
-
-			// Forward to sub controllers
-			this.controllerToolbarPaging.cmfg('onWorkflowTreeToolbarPagingWokflowSelect', node.get(CMDBuild.core.constants.Proxy.FILTER));
-			this.controllerToolbarTop.cmfg('onWorkflowTreeToolbarTopWokflowSelect');
-		},
-
-		/**
-		 * @param {Object} parameters
-		 * @param {Function} parameters.failure
-		 * @param {Object} parameters.params
-		 * @param {String} parameters.params.filter
-		 * @param {String} parameters.params.flowStatus
-		 * @param {Number} parameters.params.instanceId
-		 * @param {Object} parameters.scope
-		 * @param {Function} parameters.success
-		 *
-		 * @returns {Void}
-		 *
-		 * @private
-		 */
-		positionActivityGet: function (parameters) {
-			parameters = Ext.isObject(parameters) ? parameters : {};
-			parameters.params = Ext.isObject(parameters.params) ? parameters.params : {};
-
-			var filter = parameters.params[CMDBuild.core.constants.Proxy.FILTER],
-				flowStatus = parameters.params[CMDBuild.core.constants.Proxy.FLOW_STATUS],
-				instanceId = parameters.params[CMDBuild.core.constants.Proxy.INSTANCE_ID],
-				sort = this.cmfg('workflowTreeStoreGet').getSorters();
-
-			// Error handling
-				if (this.cmfg('workflowSelectedWorkflowIsEmpty'))
-					return _error('positionActivityGet(): empty selected workflow', this);
-
-				if (!Ext.isFunction(parameters.failure))
-					return _error('positionActivityGet(): wrong failure function parameter', this, parameters.failure);
-
-				if (!Ext.isFunction(parameters.success))
-					return _error('positionActivityGet(): wrong success function parameter', this, parameters.success);
-
-				if (!Ext.isNumber(instanceId) || Ext.isEmpty(instanceId))
-					return _error('positionActivityGet(): wrong instanceId parameter', this, instanceId);
-			// END: Error handling
-
-			var params = {};
-			params[CMDBuild.core.constants.Proxy.CARD_ID] = instanceId;
-			params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.NAME);
-
-			if (Ext.isString(filter) && !Ext.isEmpty(filter))
-				params[CMDBuild.core.constants.Proxy.FILTER] = filter;
-
-			if (Ext.isString(flowStatus) && !Ext.isEmpty(flowStatus))
-				params[CMDBuild.core.constants.Proxy.FLOW_STATUS] = CMDBuild.controller.management.workflow.Utils.translateStatusFromCapitalizedMode(flowStatus);
-
-			if (Ext.isArray(sort) && !Ext.isEmpty(sort))
-				params[CMDBuild.core.constants.Proxy.SORT] = Ext.encode(sort);
-
-			CMDBuild.proxy.management.workflow.panel.tree.Tree.readPosition({
-				params: params,
-				scope: Ext.isObject(parameters.scope) ? parameters.scope : this,
-				success: function (response, options, decodedResponse) {
-					decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.RESPONSE];
-
-					// Error handling
-					if (!Ext.isObject(decodedResponse) || Ext.Object.isEmpty(decodedResponse))
-						return _error('positionActivityGet(): unmanaged response', this, decodedResponse);
-
-					// Card found
-					if (Ext.isBoolean(decodedResponse[CMDBuild.core.constants.Proxy.HAS_POSITION]) && decodedResponse[CMDBuild.core.constants.Proxy.HAS_POSITION]) {
-						Ext.callback(
-							parameters.success,
-							Ext.isObject(parameters.scope) ? parameters.scope : this,
-							[response, options, decodedResponse]
-						);
-					} else { // Card not found
-						Ext.callback(
-							parameters.failure,
-							Ext.isObject(parameters.scope) ? parameters.scope : this,
-							[response, options, decodedResponse]
-						);
-					}
-				}
-			});
-		},
-
-		/**
-		 * @param {Object} response
-		 * @param {Object} options
-		 * @param {Object} decodedResponse
-		 *
-		 * @returns {Void}
-		 *
-		 * @private
-		 */
-		positionActivityGetFailure: function (response, options, decodedResponse) {
-			// Error handling
-				if (!Ext.isObject(decodedResponse) || Ext.Object.isEmpty(decodedResponse))
-					return _error('positionActivityGetFailure(): unmanaged decodedResponse parameter', this, decodedResponse);
-			// END: Error handling
-
-			var flowStatus = decodedResponse[CMDBuild.core.constants.Proxy.FLOW_STATUS];
-
-			CMDBuild.core.Message.error(
-				CMDBuild.Translation.common.failure,
-				Ext.String.format(
-					CMDBuild.Translation.errors.reasons.CARD_NOTFOUND,
-					this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.DESCRIPTION)
-					+ ' [' +this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.NAME) + ']'
-				)
-			);
-
-			// Sync UI with parameter filter property value
-			if (Ext.isEmpty(options.params[CMDBuild.core.constants.Proxy.FILTER])) {
-				this.controllerToolbarPaging.cmfg('workflowTreeToolbarPagingFilterBasicReset');
-				this.cmfg('workflowTreeFilterClear', { disableStoreLoad: true });
-			}
-
-			// Sync UI with flow status returned value
-			if (Ext.isString(flowStatus) && !Ext.isEmpty(flowStatus) && flowStatus != CMDBuild.core.constants.WorkflowStates.getOpenCapitalized())
-				this.cmfg('workflowTreeToolbarTopStatusValueSet', {
-					silently: true,
-					value: CMDBuild.core.constants.WorkflowStates.getAll()
-				});
-
-			this.cmfg('workflowFormReset');
-			this.cmfg('workflowTreeReset');
-			this.cmfg('workflowTreeStoreLoad', { disableFirstRowSelection: true });
-		},
-
-		/**
-		 * @param {Object} response
-		 * @param {Object} options
-		 * @param {Object} decodedResponse
-		 * @param {Object} metadata
-		 *
-		 * @returns {Void}
-		 *
-		 * @private
-		 */
-		positionActivityGetSuccess: function (response, options, decodedResponse, metadata) {
-			// Error handling
-				if (!Ext.isObject(decodedResponse) || Ext.Object.isEmpty(decodedResponse))
-					return _error('positionActivityGetSuccess(): unmanaged response', this, decodedResponse);
-			// END: Error handling
-
-			var flowStatus = decodedResponse[CMDBuild.core.constants.Proxy.FLOW_STATUS],
-				filter = options.params[CMDBuild.core.constants.Proxy.FILTER],
-				position = decodedResponse[CMDBuild.core.constants.Proxy.POSITION];
-
-			// Sync UI with parameter filter property value
-			if (!Ext.isString(filter) || Ext.isEmpty(filter)) {
-				this.controllerToolbarPaging.cmfg('workflowTreeToolbarPagingFilterBasicReset');
-				this.cmfg('workflowTreeFilterClear', { disableStoreLoad: true });
-			}
-
-			// Sync UI with flowStatus returned value
-			if (Ext.isString(flowStatus) && !Ext.isEmpty(flowStatus) && flowStatus != CMDBuild.core.constants.WorkflowStates.getOpenCapitalized())
-				this.cmfg('workflowTreeToolbarTopStatusValueSet', {
-					silently: true,
-					value: CMDBuild.core.constants.WorkflowStates.getAll()
-				});
-
-			this.cmfg('workflowTreeStoreLoad', {
-				page: CMDBuild.core.Utils.getPageNumber(position),
-				scope: this,
-				callback: function (records, operation, success) {
-					this.view.getSelectionModel().deselectAll();
-
-					this.selectByMetadata(position, metadata);
-					this.selectByPosition(position % CMDBuild.configuration.instance.get(CMDBuild.core.constants.Proxy.ROW_LIMIT));
-				}
-			});
-		},
-
-		/**
-		 * @param {CMDBuild.model.management.workflow.Node} record
-		 *
-		 * @returns {Void}
-		 *
-		 * @private
-		 */
-		recordSelectionCallback: function (record) {
-			// Error handling
-				if (!Ext.isObject(record) || Ext.Object.isEmpty(record))
-					return _error('recordSelectionCallback(): unmanaged record parameter', this, record);
-			// END: Error handling
-
-			var instanceValues = this.cmfg('workflowSelectedInstanceGet', CMDBuild.core.constants.Proxy.VALUES);
-
-			switch (this.nodeTypeOf(record)) {
-				// Complete brother node models with additional values (to correctly manage AdditionalActivityLabel metadata also if relative column is not displayed)
-				case 'activity': {
-					var parent = record.parentNode;
-
-					if (!parent.isRoot())
-						parent.eachChild(function (childNode) {
-							childNode.set(CMDBuild.core.constants.Proxy.VALUES, instanceValues);
-						}, this);
-				} break;
-
-				// Complete record and children models with additional values (to correctly manage AdditionalActivityLabel metadata also if relative column is not displayed)
-				case 'instance': {
-					record.set(CMDBuild.core.constants.Proxy.VALUES, instanceValues);
-					record.eachChild(function (childNode) {
-						childNode.set(CMDBuild.core.constants.Proxy.VALUES, instanceValues);
-					}, this);
-				} break;
-
-				default:
-					return _error('recordSelectionCallback(): unmanaged record type', this, record);
-			}
-
-			CMDBuild.core.interfaces.service.LoadMask.manage(true, false); // Manually manage LoadMask (hide)
-		},
-
-		// Tree selection methods
-			/**
-			 * Select position instance's activity by metadata
-			 *
-			 * @param {Number} position
-			 * @param {String} metadata
-			 *
-			 * @returns {Void}
-			 *
-			 * @private
-			 */
-			selectByMetadata: function (position, metadata) {
-				if (Ext.isArray(metadata) && !Ext.isEmpty(metadata)) {
-					var metadataValueActivitySubsetId = undefined,
-						metadataValueNextActivitySubsetId = undefined;
-
-					// Manual search as optimization to reduce loops number
-					Ext.Array.forEach(metadata, function (metadata, i, allMetadata) {
-						switch (metadata[CMDBuild.core.constants.Proxy.NAME]) {
-							case CMDBuild.core.constants.Metadata.getActivitySubsetId(): {
-								metadataValueActivitySubsetId = metadata[CMDBuild.core.constants.Proxy.VALUE];
-							} break;
-
-							case CMDBuild.core.constants.Metadata.getNextActivitySubsetId(): {
-								metadataValueNextActivitySubsetId = metadata[CMDBuild.core.constants.Proxy.VALUE];
-							} break;
-						}
-					}, this)
-
-					this.selectByMetadataActivitySubsetId(position, metadataValueActivitySubsetId);
-					this.selectByMetadataActivitySubsetId(position, metadataValueNextActivitySubsetId);
-				}
-			},
-
-			/**
-			 * Manage selection by ActivitySubsetId value
-			 *
-			 * @param {Number} position
-			 * @param {String} metadataValue
-			 *
-			 * @returns {Void}
-			 *
-			 * @private
-			 */
-			selectByMetadataActivitySubsetId: function (position, metadataValue) {
-				if (
-					Ext.isString(metadataValue) && !Ext.isEmpty(metadataValue)
-					&& Ext.isNumber(position) && !Ext.isEmpty(position)
-					&& !this.view.getSelectionModel().hasSelection()
-				) {
-					var nodeToSelect = this.cmfg('workflowTreeStoreGet').getRootNode().getChildAt(position).findChildBy(function (node) {
-						var nodeMetadata = node.get(CMDBuild.core.constants.Proxy.ACTIVITY_METADATA),
-							activitySubsetIdObject = Ext.Array.findBy(nodeMetadata, function (metadata, i, allMetadata) {
-								return metadata[CMDBuild.core.constants.Proxy.NAME] == CMDBuild.core.constants.Metadata.getActivitySubsetId();
-							}, this);
-
-						if (Ext.isObject(activitySubsetIdObject) && !Ext.Object.isEmpty(activitySubsetIdObject))
-							return activitySubsetIdObject[CMDBuild.core.constants.Proxy.VALUE] == metadataValue;
-
-						return false;
-					}, this, true);
-
-					if (Ext.isObject(nodeToSelect) && !Ext.Object.isEmpty(nodeToSelect)) {
-						this.view.getSelectionModel().on('selectionchange', function (selectionModel, selected, eOpts) {
-							this.nodeRecursiveAnchestorsExpand(nodeToSelect);
-						}, this, { single: true });
-
-						this.view.getSelectionModel().select(nodeToSelect);
-					}
-				}
-			},
-
-			/**
-			 * @param {Number} position
-			 *
-			 * @returns {Void}
-			 *
-			 * @private
-			 */
-			selectByPosition: function (position) {
-				if (
-					Ext.isNumber(position) && !Ext.isEmpty(position)
-					&& !this.view.getSelectionModel().hasSelection()
-				) {
-					this.view.getSelectionModel().on('selectionchange', function (selectionModel, selected, eOpts) {
-						this.nodeRecursiveAnchestorsExpand(selected[0]);
-					}, this, { single: true });
-
-					this.view.getSelectionModel().select(position);
-				}
-			},
-
-			/**
-			 * @returns {Void}
-			 *
-			 * @private
-			 */
-			selectFirst: function () {
-				if (!this.view.getSelectionModel().hasSelection())
-					this.view.getSelectionModel().select(0);
-			},
 
 		// Store extra params methods
 			/**
@@ -774,6 +459,169 @@
 					this.cmfg('workflowTreeStoreGet').getProxy().extraParams = valueObject;
 			},
 
+		/**
+		 * Load store on selection related page, follows 3 steps:
+		 * 	1. full call
+		 * 	2. without filter
+		 * 	3. without filter and flow status
+		 *
+		 * @param {Object} parameters
+		 * @param {Boolean} parameters.disableFirstRowSelection
+		 * @param {Function} parameters.callback
+		 * @param {Object} parameters.params
+		 * @param {String} parameters.filterForceEnabled
+		 * @param {String} parameters.params.filter
+		 * @param {String} parameters.params.flowStatus
+		 * @param {Boolean} parameters.storeLoadDisabled
+		 * @param {String} parameters.storeLoadForce
+		 *
+		 * @returns {Void}
+		 *
+		 * @private
+		 */
+		storeLoadSelectionPage: function (parameters) {
+			parameters = Ext.isObject(parameters) ? parameters : {};
+			parameters.filterForceEnabled = Ext.isBoolean(parameters.filterForceEnabled) ? parameters.filterForceEnabled : false;
+			parameters.params = Ext.isObject(parameters.params) ? parameters.params : {};
+			parameters.storeLoadDisabled = Ext.isBoolean(parameters.storeLoadDisabled) ? parameters.storeLoadDisabled : false;
+			parameters.storeLoadForce = Ext.isBoolean(parameters.storeLoadForce) ? parameters.storeLoadForce : false;
+
+			// Error handling
+				if (this.cmfg('workflowSelectedWorkflowIsEmpty'))
+					return _error('storeLoadSelectionPage(): empty selected workflow', this);
+
+				if (this.cmfg('workflowSelectedInstanceIsEmpty'))
+					return _error('storeLoadSelectionPage(): no selected instance found', this);
+
+				if (!Ext.isFunction(parameters.callback))
+					return _error('storeLoadSelectionPage(): wrong callback function parameter', this, parameters.callback);
+			// END: Error handling
+
+			var filter = parameters.params[CMDBuild.core.constants.Proxy.FILTER],
+				flowStatus = parameters.params[CMDBuild.core.constants.Proxy.FLOW_STATUS],
+				sort = this.cmfg('workflowTreeStoreGet').getSorters();
+
+			var params = {};
+			params[CMDBuild.core.constants.Proxy.CARD_ID] = this.cmfg('workflowSelectedInstanceGet', CMDBuild.core.constants.Proxy.ID);
+			params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.NAME);
+
+			if (Ext.isString(filter) && !Ext.isEmpty(filter))
+				params[CMDBuild.core.constants.Proxy.FILTER] = filter;
+
+			if (Ext.isString(flowStatus) && !Ext.isEmpty(flowStatus))
+				params[CMDBuild.core.constants.Proxy.FLOW_STATUS] = CMDBuild.controller.management.workflow.Utils.translateStatusFromCapitalizedMode(flowStatus);
+
+			if (Ext.isArray(sort) && !Ext.isEmpty(sort))
+				params[CMDBuild.core.constants.Proxy.SORT] = Ext.encode(sort);
+
+			CMDBuild.proxy.management.workflow.panel.tree.Tree.readPosition({
+				params: params,
+				scope: this,
+				success: function (response, options, decodedResponse) {
+					decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.RESPONSE];
+
+					// Error handling
+						if (!Ext.isObject(decodedResponse) || Ext.Object.isEmpty(decodedResponse))
+							return _error('storeLoadSelectionPage(): unmanaged response', this, decodedResponse);
+					// END: Error handling
+
+					// Card found
+					if (
+						Ext.isBoolean(decodedResponse[CMDBuild.core.constants.Proxy.HAS_POSITION])
+						&& decodedResponse[CMDBuild.core.constants.Proxy.HAS_POSITION]
+					) {
+						var position = decodedResponse[CMDBuild.core.constants.Proxy.POSITION];
+
+						// Error handling
+							if (!Ext.isNumber(position) || Ext.isEmpty(position))
+								return _error('storeLoadSelectionPage(): unmanaged position parameter', this, position);
+						// END: Error handling
+
+						var pageNumber = CMDBuild.core.Utils.getPageNumber(position);
+
+						// Sync UI with parameter filter property value
+						if (!Ext.isString(filter) || Ext.isEmpty(filter)) {
+							this.workflowTreeAppliedFilterReset();
+
+							// Forward to sub-controllers
+							this.controllerToolbarPaging.cmfg('panelGridAndFormCommonToolbarPagingUiUpdate');
+						}
+
+						// Sync UI with flow status returned value
+						if (!Ext.isString(flowStatus) || Ext.isEmpty(flowStatus))
+							this.controllerToolbarTop.cmfg('workflowTreeToolbarTopStatusValueSet', CMDBuild.core.constants.WorkflowStates.getAll());
+
+						if (
+							!parameters.storeLoadDisabled
+							&& (
+								this.cmfg('workflowTreeStoreGet').currentPage != pageNumber
+								|| parameters.storeLoadForce
+							)
+						) {
+							return this.cmfg('workflowTreeStoreLoad', {
+								disableFirstRowSelection: parameters.disableFirstRowSelection,
+								page: pageNumber,
+								scope: this,
+								callback: parameters.callback
+							});
+						}
+
+						if (Ext.isFunction(parameters.callback))
+							return Ext.callback(parameters.callback, this);
+
+						return null;
+					} else { // Card not found
+						if (
+							Ext.isString(params[CMDBuild.core.constants.Proxy.FILTER]) && !Ext.isEmpty(params[CMDBuild.core.constants.Proxy.FILTER])
+							&& parameters.filterForceEnabled
+						) { // Retry without filter
+							delete parameters.params[CMDBuild.core.constants.Proxy.FILTER];
+
+							return this.storeLoadSelectionPage(parameters);
+						} else { // Failure
+							return this.storeLoadSelectionPageFailure(response, options, decodedResponse);
+						}
+					}
+				}
+			});
+		},
+
+		/**
+		 * Card not found and store reload
+		 *
+		 * @param {Object} response
+		 * @param {Object} options
+		 * @param {Object} decodedResponse
+		 *
+		 * @returns {Void}
+		 *
+		 * @private
+		 */
+		storeLoadSelectionPageFailure: function (response, options, decodedResponse) {
+			// Error handling
+				if (!Ext.isObject(decodedResponse) || Ext.Object.isEmpty(decodedResponse))
+					return _error('storeLoadSelectionPageFailure(): unmanaged decodedResponse parameter', this, decodedResponse);
+			// END: Error handling
+
+			var flowStatus = decodedResponse[CMDBuild.core.constants.Proxy.FLOW_STATUS];
+
+			CMDBuild.core.Message.error(
+				CMDBuild.Translation.common.failure,
+				Ext.String.format(
+					CMDBuild.Translation.errors.reasons.CARD_NOTFOUND,
+					this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.DESCRIPTION)
+					+ ' [' +this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.NAME) + ']'
+				)
+			);
+
+			this.cmfg('workflowReset');
+			this.cmfg('workflowUiUpdate', {
+				disableFirstRowSelection: true,
+				filterReset: Ext.isEmpty(options.params[CMDBuild.core.constants.Proxy.FILTER]),
+				workflowId: this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.ID)
+			});
+		},
+
 		// Store sorters
 			/**
 			 * @param {Ext.data.TreeStore} store
@@ -815,6 +663,8 @@
 			},
 
 			/**
+			 * Sort array descending because storeSortersAdd() inserts values from the bottom of sorters array, not from top
+			 *
 			 * @param {Ext.data.TreeStore} store
 			 *
 			 * @returns {Ext.data.TreeStore} store
@@ -822,13 +672,13 @@
 			 * @private
 			 */
 			storeSortersSet: function (store) {
-				var attributes = CMDBuild.core.Utils.objectArraySort(this.cmfg('workflowSelectedWorkflowAttributesGet'), CMDBuild.core.constants.Proxy.SORT_INDEX);
+				var attributes = CMDBuild.core.Utils.objectArraySort(this.cmfg('workflowSelectedWorkflowAttributesGetAll'), CMDBuild.core.constants.Proxy.SORT_INDEX, 'DESC');
 
 				// Setup store sorters
 				this.storeSortersClear(store);
 
 				if (Ext.isArray(attributes) && !Ext.isEmpty(attributes))
-					Ext.Array.each(attributes, function (attributeModel, i, allAttributeModels) {
+					Ext.Array.forEach(attributes, function (attributeModel, i, allAttributeModels) {
 						if (
 							Ext.isObject(attributeModel) && !Ext.Object.isEmpty(attributeModel)
 							&& !Ext.isEmpty(attributeModel.get(CMDBuild.core.constants.Proxy.SORT_DIRECTION))
@@ -839,79 +689,9 @@
 							});
 						}
 					}, this);
+
+				return store;
 			},
-
-		/**
-		 * Find an Activity in store and open, follows 3 steps:
-		 * 	1. full call
-		 * 	2. without filter
-		 * 	3. without filter and flow status
-		 *
-		 * @param {Object} parameters
-		 * @param {String} parameters.enableForceFlowStatus
-		 * @param {String} parameters.forceFilter - only for internal use, false as default
-		 * @param {String} parameters.forceFlowStatus - only for internal use, false as default
-		 * @param {Number} parameters.instanceId
-		 * @param {String} parameters.metadata
-		 *
-		 * @returns {Void}
-		 */
-		workflowTreeActivitySelect: function (parameters) {
-			parameters = Ext.isObject(parameters) ? parameters : {};
-			parameters.enableForceFlowStatus = Ext.isBoolean(parameters.enableForceFlowStatus) ? parameters.enableForceFlowStatus : false;
-			parameters.forceFilter = Ext.isBoolean(parameters.forceFilter) ? parameters.forceFilter : false;
-			parameters.forceFlowStatus = Ext.isBoolean(parameters.forceFlowStatus) ? parameters.forceFlowStatus : false;
-			parameters.metadata = Ext.isArray(parameters.metadata) ? parameters.metadata : [];
-
-			// Error handling
-				if (this.cmfg('workflowSelectedWorkflowIsEmpty'))
-					return _error('workflowTreeActivitySelect(): no selected workflow found', this);
-
-				if (!Ext.isNumber(parameters[CMDBuild.core.constants.Proxy.INSTANCE_ID]) || Ext.isEmpty(parameters[CMDBuild.core.constants.Proxy.INSTANCE_ID]))
-					return _error('workflowTreeActivitySelect(): unmanaged instanceId parameter', this, parameters[CMDBuild.core.constants.Proxy.INSTANCE_ID]);
-			// END: Error handling
-
-			var flowStatusComboBoxValue = this.controllerToolbarTop.cmfg('workflowTreeToolbarTopStatusValueGet');
-
-			var params = {};
-			params[CMDBuild.core.constants.Proxy.INSTANCE_ID] = parameters[CMDBuild.core.constants.Proxy.INSTANCE_ID];
-
-			if (!parameters.forceFilter && !this.workflowTreeAppliedFilterIsEmpty())
-				params[CMDBuild.core.constants.Proxy.FILTER] = Ext.encode(this.cmfg('workflowTreeAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION));
-
-			if (parameters.enableForceFlowStatus) {
-				if (!parameters.forceFlowStatus && flowStatusComboBoxValue != CMDBuild.core.constants.WorkflowStates.getAll())
-					params[CMDBuild.core.constants.Proxy.FLOW_STATUS] = flowStatusComboBoxValue;
-			} else {
-				if (flowStatusComboBoxValue != CMDBuild.core.constants.WorkflowStates.getAll())
-					params[CMDBuild.core.constants.Proxy.FLOW_STATUS] = flowStatusComboBoxValue;
-			}
-
-			this.positionActivityGet({ // Full call: with flow status and filter
-				params: params,
-				scope: this,
-				failure: function (response, options, decodedResponse) {
-					if (Ext.isString(params[CMDBuild.core.constants.Proxy.FILTER]) && !Ext.isEmpty(params[CMDBuild.core.constants.Proxy.FILTER])) {
-						parameters.forceFilter = true;
-
-						return this.cmfg('workflowTreeActivitySelect', parameters);
-					} else if (
-						Ext.isString(params[CMDBuild.core.constants.Proxy.FLOW_STATUS]) && !Ext.isEmpty(params[CMDBuild.core.constants.Proxy.FLOW_STATUS])
-						&& params[CMDBuild.core.constants.Proxy.FLOW_STATUS] != CMDBuild.core.constants.WorkflowStates.getAll()
-						&& parameters.enableForceFlowStatus
-					) {
-						parameters.forceFlowStatus = true;
-
-						return this.cmfg('workflowTreeActivitySelect', parameters);
-					} else {
-						return Ext.callback(this.positionActivityGetFailure, this, [response, options, decodedResponse]); // Card not found and store reload
-					}
-				},
-				success: function (response, options, decodedResponse) {
-					Ext.callback(this.positionActivityGetSuccess, this, [response, options, decodedResponse, parameters.metadata]);
-				}
-			});
-		},
 
 		// AppliedFilter property functions
 			/**
@@ -931,8 +711,6 @@
 			 * @param {Array or String} attributePath
 			 *
 			 * @returns {Mixed or undefined}
-			 *
-			 * @private
 			 */
 			workflowTreeAppliedFilterIsEmpty: function (attributePath) {
 				var parameters = {};
@@ -962,40 +740,12 @@
 			 */
 			workflowTreeAppliedFilterSet: function (parameters) {
 				if (Ext.isObject(parameters) && !Ext.Object.isEmpty(parameters)) {
-					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.management.workflow.panel.tree.filter.advanced.Filter';
+					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter';
 					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'appliedFilter';
 
 					this.propertyManageSet(parameters);
 				}
 			},
-
-		/**
-		 * @param {Object} parameters
-		 * @param {String} parameters.eventName
-		 * @param {Function} parameters.fn
-		 * @param {Object} parameters.scope
-		 * @param {Object} parameters.options
-		 *
-		 * @returns {Void}
-		 */
-		workflowTreeApplyStoreEvent: function (parameters) {
-			parameters = Ext.isObject(parameters) ? parameters : {};
-
-			// Error handling
-				if (!Ext.isString(parameters.eventName) || Ext.isEmpty(parameters.eventName))
-					return _error('workflowTreeApplyStoreEvent(): unmanaged eventName parameter', this, parameters.eventName);
-
-				if (!Ext.isFunction(parameters.fn))
-					return _error('workflowTreeApplyStoreEvent(): unmanaged fn parameter', this, parameters.fn);
-			// END: Error handling
-
-			this.cmfg('workflowTreeStoreGet').on(
-				parameters.eventName,
-				parameters.fn,
-				Ext.isObject(parameters.scope) ? parameters.scope : this,
-				Ext.isObject(parameters.options) ? parameters.options : {}
-			);
-		},
 
 		/**
 		 * @returns {Array} columnsDefinition
@@ -1012,18 +762,18 @@
 
 			if (!this.cmfg('workflowSelectedWorkflowIsEmpty') && !this.cmfg('workflowSelectedWorkflowAttributesIsEmpty')) {
 				var fieldManager = Ext.create('CMDBuild.core.fieldManager.FieldManager', { parentDelegate: this }),
-					attributes = CMDBuild.core.Utils.objectArraySort(this.cmfg('workflowSelectedWorkflowAttributesGet'), CMDBuild.core.constants.Proxy.INDEX);
+					attributes = CMDBuild.core.Utils.objectArraySort(this.cmfg('workflowSelectedWorkflowAttributesGetAll'), CMDBuild.core.constants.Proxy.INDEX);
 
 				if (this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.IS_SUPER_CLASS))
 					columnsDefinition.push({
-						dataIndex: CMDBuild.core.constants.Proxy.CLASS_DESCRIPTION,
+						dataIndex: CMDBuild.core.constants.Proxy.WORKFLOW_DESCRIPTION,
 						text: CMDBuild.Translation.subClass
 					});
 
-				Ext.Array.each(attributes, function (attributeModel, i, allAttributeModels) {
+				Ext.Array.forEach(attributes, function (attributeModel, i, allAttributeModels) {
 					if (
 						Ext.isObject(attributeModel) && !Ext.Object.isEmpty(attributeModel)
-						&& attributeModel.get(CMDBuild.core.constants.Proxy.NAME) != CMDBuild.core.constants.Proxy.CLASS_DESCRIPTION
+						&& attributeModel.get(CMDBuild.core.constants.Proxy.NAME) != CMDBuild.core.constants.Proxy.WORKFLOW_DESCRIPTION
 					) {
 						if (fieldManager.isAttributeManaged(attributeModel.get(CMDBuild.core.constants.Proxy.TYPE))) {
 							fieldManager.attributeModelSet(attributeModel);
@@ -1053,158 +803,6 @@
 
 			return columnsDefinition;
 		},
-
-		// Filter management methods
-			/**
-			 * @param {Object} parameters
-			 * @param {CMDBuild.model.management.workflow.panel.tree.filter.advanced.Filter} parameters.filter
-			 * @param {Boolean} parameters.type
-			 *
-			 * @returns {Void}
-			 */
-			workflowTreeFilterApply: function (parameters) {
-				parameters = Ext.isObject(parameters) ? parameters : {};
-
-				// Error handling
-					if (!Ext.isObject(parameters.filter) || Ext.Object.isEmpty(parameters.filter))
-						return _error('workflowTreeFilterApply(): unmanaged filter object parameter', this, parameters.filter);
-				// END: Error handling
-
-				switch (parameters.type) {
-					case 'advanced':
-						return this.workflowTreeFilterApplyAdvanced(parameters.filter);
-
-					case 'basic':
-						return this.workflowTreeFilterApplyBasic(parameters.filter);
-
-					default:
-						return _error('workflowTreeFilterApply(): unmanaged type parameter', this, parameters.type);
-				}
-			},
-
-			/**
-			 * @param {CMDBuild.model.management.workflow.panel.tree.filter.advanced.Filter} filter
-			 *
-			 * @returns {Void}
-			 *
-			 * @private
-			 */
-			workflowTreeFilterApplyAdvanced: function (filter) {
-				// Error handling
-					if (!Ext.isObject(filter) || Ext.Object.isEmpty(filter) || !Ext.isFunction(filter.get) || !Ext.isFunction(filter.set))
-						return _error('workflowTreeFilterApplyAdvanced(): unmanaged filter object parameter', this, filter);
-
-					if (!Ext.isFunction(filter.getEmptyRuntimeParameters) || !Ext.isFunction(filter.resolveCalculatedParameters))
-						return _error('workflowTreeFilterApplyAdvanced(): unsupported filter object functions', this, filter);
-				// END: Error handling
-
-				var emptyRuntimeParameters = filter.getEmptyRuntimeParameters(),
-					filterConfigurationObject = filter.get(CMDBuild.core.constants.Proxy.CONFIGURATION);
-
-				if (Ext.isArray(emptyRuntimeParameters) && !Ext.isEmpty(emptyRuntimeParameters))
-					return this.controllerRuntimeParameters.cmfg('fieldFilterRuntimeParametersShow', filter);
-
-				filter.resolveCalculatedParameters();
-
-				// Merge applied filter query parameter to filter object
-				if (!this.workflowTreeAppliedFilterIsEmpty()) {
-					var appliedFilterConfigurationObject = this.cmfg('workflowTreeAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION);
-
-					if (!Ext.isEmpty(appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.QUERY]))
-						filter.set(CMDBuild.core.constants.Proxy.CONFIGURATION, Ext.apply(filterConfigurationObject, {
-							query: appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.QUERY]
-						}));
-				}
-
-				this.workflowTreeAppliedFilterSet({ value: filter.getData() });
-
-				this.cmfg('workflowTreeStoreLoad');
-			},
-
-			/**
-			 * @param {CMDBuild.model.common.field.filter.basic.Filter} filter
-			 *
-			 * @returns {Void}
-			 *
-			 * @private
-			 */
-			workflowTreeFilterApplyBasic: function (filter) {
-				// Error handling
-					if (!Ext.isObject(filter) || Ext.Object.isEmpty(filter) || !Ext.isFunction(filter.get) || !Ext.isFunction(filter.set))
-						return _error('workflowTreeFilterApplyBasic(): unmanaged filter object parameter', this, filter);
-				// END: Error handling
-
-				var newConfigurationObject = {},
-					filterConfigurationObject = filter.get(CMDBuild.core.constants.Proxy.CONFIGURATION);
-
-				// Merge filters objects
-				if (this.workflowTreeAppliedFilterIsEmpty()) {
-					newConfigurationObject[CMDBuild.core.constants.Proxy.CONFIGURATION] = {};
-					newConfigurationObject[CMDBuild.core.constants.Proxy.CONFIGURATION][CMDBuild.core.constants.Proxy.QUERY] = filterConfigurationObject[CMDBuild.core.constants.Proxy.QUERY];
-
-					this.workflowTreeAppliedFilterSet({ value: newConfigurationObject });
-				} else {
-					newConfigurationObject = this.cmfg('workflowTreeAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION);
-					newConfigurationObject[CMDBuild.core.constants.Proxy.QUERY] = filterConfigurationObject[CMDBuild.core.constants.Proxy.QUERY];
-
-					this.workflowTreeAppliedFilterSet({
-						propertyName: CMDBuild.core.constants.Proxy.CONFIGURATION,
-						value: newConfigurationObject
-					});
-				}
-
-				this.cmfg('workflowTreeStoreLoad');
-			},
-
-			/**
-			 * @param {Object} parameters
-			 * @param {Boolean} parameters.disableStoreLoad
-			 * @param {Boolean} parameters.type
-			 *
-			 * @returns {Void}
-			 */
-			workflowTreeFilterClear: function (parameters) {
-				parameters = Ext.isObject(parameters) ? parameters : {};
-				parameters.disableStoreLoad = Ext.isBoolean(parameters.disableStoreLoad) ? parameters.disableStoreLoad : false;
-
-				if (!this.workflowTreeAppliedFilterIsEmpty()) {
-					var appliedFilterConfigurationObject = Ext.clone(this.cmfg('workflowTreeAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION));
-
-					switch (parameters.type) {
-						case 'advanced': {
-							this.workflowTreeAppliedFilterReset();
-
-							if (!Ext.isEmpty(appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.QUERY])) {
-								var newConfigurationObject = {};
-								newConfigurationObject[CMDBuild.core.constants.Proxy.CONFIGURATION] = {};
-								newConfigurationObject[CMDBuild.core.constants.Proxy.CONFIGURATION][CMDBuild.core.constants.Proxy.QUERY] = appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.QUERY];
-
-								this.workflowTreeAppliedFilterSet({ value: newConfigurationObject });
-							}
-						} break;
-
-						case 'basic': {
-							delete appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.QUERY];
-
-							if (Ext.Object.isEmpty(appliedFilterConfigurationObject)) {
-								this.workflowTreeAppliedFilterReset();
-							} else {
-								this.workflowTreeAppliedFilterSet({
-									propertyName: CMDBuild.core.constants.Proxy.CONFIGURATION,
-									value: appliedFilterConfigurationObject
-								});
-							}
-						} break;
-
-						default: {
-							this.workflowTreeAppliedFilterReset();
-						}
-					}
-				}
-
-				if (!parameters.disableStoreLoad)
-					this.cmfg('workflowTreeStoreLoad');
-			},
 
 		/**
 		 * @param {Object} parameters
@@ -1283,10 +881,6 @@
 		 */
 		workflowTreeReset: function () {
 			this.view.getSelectionModel().deselectAll();
-
-			this.cmfg('workflowSelectedActivityReset');
-
-			_CMWFState.setProcessInstanceSynchronous(Ext.create('CMDBuild.model.CMProcessInstance', this.cmfg('workflowSelectedInstanceGet', 'rawData')));
 		},
 
 		/**
@@ -1298,7 +892,7 @@
 
 		/**
 		 * On load action sends by default node parameter witch isn't managed by server
-		 * Manages store configurations like: filter, sorters, attributes, class name and state (flowStatus)
+		 * Manages store configurations like: filter, sorters, attributes, workflowName and state (flowStatus)
 		 *
 		 * @param {Object} parameters
 		 * @param {Function} parameters.callback
@@ -1311,18 +905,12 @@
 		 */
 		workflowTreeStoreLoad: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
-			parameters.callback = Ext.isFunction(parameters.callback) ? parameters.callback : undefined;
-			parameters.disableFirstRowSelection = Ext.isBoolean(parameters.disableFirstRowSelection) ? parameters.disableFirstRowSelection : false;
 			parameters.page = Ext.isNumber(parameters.page) ? parameters.page : 1;
 
 			// Error handling
 				if (this.cmfg('workflowSelectedWorkflowIsEmpty'))
 					return _error('workflowTreeStoreLoad(): selected workflow object empty', this, this.cmfg('workflowSelectedWorkflowGet'));
 			// END: Error handling
-
-			// Manage callback
-			if (!parameters.disableFirstRowSelection)
-				parameters.callback = Ext.isEmpty(parameters.callback) ? this.selectFirst : parameters.callback;
 
 			this.cmfg('workflowTreeStoreGet').getRootNode().removeAll();
 
@@ -1339,8 +927,119 @@
 			this.cmfg('workflowTreeStoreGet').loadPage(parameters.page, {
 				params: params,
 				scope: Ext.isEmpty(parameters.scope) ? this : parameters.scope,
-				callback: this.buildLoadCallback(parameters.callback)
+				callback: this.workflowTreeStoreLoadCallbackBuild({
+					disableFirstRowSelection: parameters.disableFirstRowSelection,
+					callback: parameters.callback
+				})
 			});
+		},
+
+		/**
+		 * Apply interceptor with default store load callback actions, if callback is empty will be replaced with Ext.emptyFn
+		 *
+		 * @param {Object} parameters
+		 * @param {Function} parameters.callback
+		 * @param {Boolean} parameters.disableFirstRowSelection
+		 *
+		 * @returns {Function}
+		 *
+		 * @private
+		 */
+		workflowTreeStoreLoadCallbackBuild: function (parameters) {
+			parameters = Ext.isObject(parameters) ? parameters : {};
+			parameters.callback = Ext.isFunction(parameters.callback) ? parameters.callback : Ext.emptyFn;
+			parameters.disableFirstRowSelection = Ext.isBoolean(parameters.disableFirstRowSelection) ? parameters.disableFirstRowSelection : false;
+
+			return Ext.Function.createInterceptor(parameters.callback, function (records, options, success) {
+				if (this.workflowTreeAppliedFilterIsEmpty())
+					this.controllerToolbarPaging.cmfg('panelGridAndFormCommonToolbarPagingUiUpdate');
+
+				if (!parameters.disableFirstRowSelection && !this.view.getSelectionModel().hasSelection())
+					this.view.getSelectionModel().select(0);
+			}, this);
+		},
+
+		/**
+		 * @param {Object} parameters
+		 * @param {Function} parameters.callback
+		 * @param {Boolean} parameters.defaultFilterApplyIfExists
+		 * @param {Boolean} parameters.disableFirstRowSelection
+		 * @param {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter} parameters.filter
+		 * @param {Boolean} parameters.filterReset
+		 * @param {Boolean} parameters.filterForceEnabled
+		 * @param {String} parameters.flowStatus
+		 * @param {Object} parameters.scope
+		 * @param {Boolean} parameters.sortersReset
+		 * @param {Boolean} parameters.storeLoadForce
+		 * @param {Boolean} parameters.storeLoadDisabled
+		 *
+		 * @returns {Void}
+		 */
+		workflowTreeUiUpdate: function (parameters) {
+			parameters = Ext.isObject(parameters) ? parameters : {};
+			parameters.callback = Ext.isFunction(parameters.callback) ? parameters.callback : Ext.emptyFn;
+			parameters.defaultFilterApplyIfExists = Ext.isBoolean(parameters.defaultFilterApplyIfExists) ? parameters.defaultFilterApplyIfExists : false;
+			parameters.filter = Ext.isObject(parameters.filter) && parameters.filter.isFilterAdvancedCompatible ? parameters.filter : {};
+			parameters.filterReset = Ext.isBoolean(parameters.filterReset) ? parameters.filterReset : false;
+			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
+			parameters.sortersReset = Ext.isBoolean(parameters.sortersReset) ? parameters.sortersReset : false;
+			parameters.storeLoadDisabled = Ext.isBoolean(parameters.storeLoadDisabled) ? parameters.storeLoadDisabled : false;
+_debug('workflowTreeUiUpdate', parameters);
+			// Error handling
+				if (this.cmfg('workflowSelectedWorkflowIsEmpty'))
+					return _error('workflowTreeUiUpdate(): empty selected workflow', this, this.cmfg('workflowSelectedWorkflowGet'));
+			// END: Error handling
+
+			// Filter setup
+			if (!Ext.Object.isEmpty(parameters.filter)) { // Apply filter
+				this.workflowTreeAppliedFilterSet({ value: parameters.filter.getData() });
+			} else if (parameters.defaultFilterApplyIfExists && !this.cmfg('workflowSelectedWorkflowDefaultFilterIsEmpty')) { // Apply default filter
+				this.workflowTreeAppliedFilterSet({ value: this.cmfg('workflowSelectedWorkflowDefaultFilterGet') });
+			} else if (parameters.filterReset) { // Reset applied filter
+				this.workflowTreeAppliedFilterReset();
+			}
+
+			switch (this.cmfg('workflowUiViewModeGet')) {
+				case 'add': {
+					this.cmfg('workflowTreeReset');
+
+					this.view.collapseAll();
+				} break;
+
+				default: {
+					// Suspend events to avoid sortchange fire that will reset form
+					this.view.suspendEvents(false);
+					this.view.reconfigure(
+						parameters.sortersReset ? this.storeSortersSet(this.cmfg('workflowTreeStoreGet')) : null,
+						this.workflowTreeBuildColumns()
+					);
+					this.view.resumeEvents();
+
+					// Forward to sub-controllers
+					this.controllerToolbarPaging.cmfg('panelGridAndFormCommonToolbarPagingUiUpdate');
+					this.controllerToolbarTop.cmfg('workflowTreeToolbarTopUiUpdate', { flowStatus: parameters.flowStatus });
+
+					// Setup correct selection and load store
+					if (!this.cmfg('workflowSelectedInstanceIsEmpty'))
+						return this.applySelection({
+							disableFirstRowSelection: parameters.disableFirstRowSelection,
+							filterForceEnabled: parameters.filterForceEnabled,
+							storeLoadDisabled: parameters.storeLoadDisabled,
+							storeLoadForce: parameters.storeLoadForce,
+							scope: parameters.scope,
+							callback: parameters.callback
+						});
+
+					if (!parameters.storeLoadDisabled) // Load store and select first card
+						return this.cmfg('workflowTreeStoreLoad', {
+							disableFirstRowSelection: parameters.disableFirstRowSelection,
+							scope: parameters.scope,
+							callback: parameters.callback
+						});
+
+					return Ext.callback(parameters.callback, parameters.scope);
+				}
+			}
 		}
 	});
 

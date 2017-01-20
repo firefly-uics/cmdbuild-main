@@ -1,10 +1,7 @@
 (function () {
 
-	/**
-	 * @link CMDBuild.view.management.workflow.panel.tree.filter.advanced.manager.ManagerWindow
-	 */
 	Ext.define('CMDBuild.view.common.panel.gridAndForm.panel.common.filter.advanced.manager.ManagerWindow', {
-		extend: 'CMDBuild.core.window.AbstractCustomModal',
+		extend: 'CMDBuild.core.window.AbstractModal',
 
 		/**
 		 * @cfg {CMDBuild.controller.common.panel.gridAndForm.panel.common.filter.advanced.Manager}
@@ -50,11 +47,11 @@
 						itemId: CMDBuild.core.constants.Proxy.TOOLBAR_TOP,
 
 						items: [
-							Ext.create('CMDBuild.core.buttons.iconized.add.Add', {
+							Ext.create('CMDBuild.core.buttons.icon.add.Add', {
 								scope: this,
 
 								handler: function (button, e) {
-									this.delegate.cmfg('onPanelGridAndFormFilterAdvancedManagerAddButtonClick');
+									this.delegate.cmfg('onPanelGridAndFormCommonFilterAdvancedManagerAddButtonClick');
 								}
 							})
 						]
@@ -70,7 +67,7 @@
 
 		listeners: {
 			show: function (window, eOpts) {
-				this.delegate.cmfg('onPanelGridAndFormFilterAdvancedManagerViewShow');
+				this.delegate.cmfg('onPanelGridAndFormCommonFilterAdvancedManagerViewShow');
 			}
 		}
 	});

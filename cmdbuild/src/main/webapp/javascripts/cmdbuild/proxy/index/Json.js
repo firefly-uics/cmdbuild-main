@@ -250,6 +250,11 @@
 		},
 
 		entryType: {
+			create: '',
+			read: 'services/json/schema/modclass/getallclasses', // TODO: waiting for refactor (CRUD)
+			update: '',
+			remove: '',
+
 			readAll: 'services/json/schema/modclass/getallclasses'
 		},
 

@@ -7,11 +7,12 @@
 
 		fields: [
 			// Workflow attributes
-			{ name: CMDBuild.core.constants.Proxy.CARD_ID, type: 'int', useNull: true },
-			{ name: CMDBuild.core.constants.Proxy.CLASS_DESCRIPTION, type: 'string' },
-			{ name: CMDBuild.core.constants.Proxy.CLASS_ID, type: 'int', useNull: true },
-			{ name: CMDBuild.core.constants.Proxy.CLASS_NAME, type: 'string' },
-			{ name: CMDBuild.core.constants.Proxy.VALUES, type: 'auto', defaultValue: {} },
+			{ name: CMDBuild.core.constants.Proxy.WORKFLOW_DESCRIPTION, type: 'string' },
+			{ name: CMDBuild.core.constants.Proxy.WORKFLOW_ID, type: 'int', useNull: true },
+			{ name: CMDBuild.core.constants.Proxy.WORKFLOW_NAME, type: 'string' },
+
+			// Instance attributes
+			{ name: CMDBuild.core.constants.Proxy.INSTANCE_ID, type: 'int', useNull: true },
 
 			// Activity attributes
 			{ name: CMDBuild.core.constants.Proxy.ACTIVITY_DESCRIPTION, type: 'string' },
@@ -21,6 +22,7 @@
 			{ name: CMDBuild.core.constants.Proxy.ACTIVITY_WRITABLE, type: 'boolean' },
 
 			// Common
+			{ name: CMDBuild.core.constants.Proxy.VALUES, type: 'auto', defaultValue: {} },
 			{ name: 'iconCls', type: 'string', defaultValue: 'cmdb-tree-no-icon', persist: false }, // ExtJs property to hide icon
 			{ name: 'rawData', type: 'auto', defaultValue: [] }, // FIXME: legacy mode to remove on complete Workflow UI and wofkflowState modules refactor
 		],

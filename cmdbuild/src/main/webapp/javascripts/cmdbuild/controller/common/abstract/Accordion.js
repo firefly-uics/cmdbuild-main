@@ -103,7 +103,7 @@
 		 */
 		accordionBuildId: function (components) {
 			if (!Ext.isEmpty(components)) {
-				components = Ext.isArray(components) ? Ext.Array.clean(components) : [components];
+				components = Ext.isArray(components) ? Ext.Array.clean(components) : Ext.Array.clean([components]);
 				components = Ext.Array.push([CMDBuild.core.constants.Proxy.ACCORDION, this.cmfg('accordionIdentifierGet')], components);
 
 				Ext.Array.each(components, function (component, i, allComponents) {
@@ -124,13 +124,9 @@
 		},
 
 		/**
-		 * @param {Object} parameters
-		 * @param {Function} parameters.callback
-		 * @param {Object} parameters.scope
-		 *
 		 * @returns {Void}
 		 */
-		accordionExpand: function (parameters) {
+		accordionExpand: function () {
 			if (Ext.isObject(this.view) && !Ext.Object.isEmpty(this.view) && Ext.isFunction(this.view.expand)) {
 				var wasExpanded = this.view.getCollapsed() === false && this.view.isVisible();
 
@@ -313,7 +309,9 @@
 				if (
 					!this.cmfg('mainViewportModuleShow', {
 						identifier: selection.get('cmName'),
-						parameters: selection
+						params: {
+							node: selection
+						}
 					})
 				) {
 					// If the panel was not brought to front (report from the navigation menu), select the previous node or deselect the tree

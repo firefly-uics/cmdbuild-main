@@ -2,12 +2,6 @@
 
 	Ext.require('CMDBuild.core.constants.Proxy');
 
-	/**
-	 * Full workflow model
-	 *
-	 * @link CMDBuild.model.CMProcessInstance
-	 * @link CMDBuild.model.classes.Class
-	 */
 	Ext.define('CMDBuild.model.management.workflow.Workflow', { // TODO: waiting for refactor (rename and structure)
 		extend: 'Ext.data.Model',
 
@@ -37,21 +31,6 @@
 			data[CMDBuild.core.constants.Proxy.IS_SUPER_CLASS] = Ext.isBoolean(data['superclass']) ? data['superclass'] : data[CMDBuild.core.constants.Proxy.IS_SUPER_CLASS];
 
 			this.callParent(arguments);
-		},
-
-		get: function (name) {
-			/**
-			 * Legacy code for retro compatibility
-			 *
-			 * @legacy
-			 *
-			 * TODO: could be deleted????
-			 */
-			name = name == 'Id' ? CMDBuild.core.constants.Proxy.ID : name;
-			name = name == 'IdClass' ? CMDBuild.core.constants.Proxy.CLASS_ID : name;
-			name = name == 'IdClass_value' ? CMDBuild.core.constants.Proxy.CLASS_DESCRIPTION : name;
-
-			return this.callParent(arguments);
 		}
 	});
 

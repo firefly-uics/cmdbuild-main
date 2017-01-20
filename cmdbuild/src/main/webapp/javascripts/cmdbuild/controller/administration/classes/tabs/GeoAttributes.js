@@ -240,11 +240,11 @@
 						if (Ext.isArray(decodedResponse) && !Ext.isEmpty(decodedResponse)) {
 							var selectedRecord = this.grid.getSelectionModel().getSelection()[0],
 								layerObject = Ext.Array.findBy(decodedResponse, function (layer, index) {
-								return (
-									layer[CMDBuild.core.constants.Proxy.MASTER_TABLE_NAME] == selectedRecord.get(CMDBuild.core.constants.Proxy.MASTER_TABLE_NAME)
-									&& layer[CMDBuild.core.constants.Proxy.NAME] == selectedRecord.get(CMDBuild.core.constants.Proxy.NAME)
-								);
-							}, this);
+									return (
+										layer[CMDBuild.core.constants.Proxy.MASTER_TABLE_NAME] == selectedRecord.get(CMDBuild.core.constants.Proxy.MASTER_TABLE_NAME)
+										&& layer[CMDBuild.core.constants.Proxy.NAME] == selectedRecord.get(CMDBuild.core.constants.Proxy.NAME)
+									);
+								}, this);
 
 							if (Ext.isObject(layerObject) && !Ext.Object.isEmpty(layerObject)) {
 								this.classesTabGeoAttributesSelectedAttributeSet({ value: layerObject });

@@ -36,7 +36,7 @@
 				cls: "x-panel-body-default-framed"
 			});
 
-			this.addAttachmentButton = Ext.create('CMDBuild.core.buttons.iconized.add.Add', {
+			this.addAttachmentButton = Ext.create('CMDBuild.core.buttons.icon.add.Add', {
 				text: CMDBuild.Translation.management.modcard.add_attachment
 			});
 
@@ -64,26 +64,8 @@
 		},
 
 		listeners: {
-			show: function(panel, eOpts) {
-				// History record save
-				if (!Ext.isEmpty(_CMWFState.getProcessClassRef()) && !Ext.isEmpty( _CMWFState.getProcessInstance()))
-					CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
-						moduleId: 'workflow',
-						entryType: {
-							description: _CMWFState.getProcessClassRef().get(CMDBuild.core.constants.Proxy.TEXT),
-							id: _CMWFState.getProcessClassRef().get(CMDBuild.core.constants.Proxy.ID),
-							object: _CMWFState.getProcessClassRef()
-						},
-						item: {
-							description: _CMWFState.getProcessInstance().get(CMDBuild.core.constants.Proxy.TEXT),
-							id: _CMWFState.getProcessInstance().get(CMDBuild.core.constants.Proxy.ID),
-							object: _CMWFState.getProcessInstance()
-						},
-						section: {
-							description: this.title,
-							object: this
-						}
-					});
+			show: function (panel, eOpts) {
+				this.delegate.panelListenerManagerShow();
 			}
 		},
 

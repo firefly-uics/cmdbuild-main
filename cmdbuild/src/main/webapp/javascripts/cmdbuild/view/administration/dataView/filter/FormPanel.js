@@ -6,7 +6,7 @@
 		requires: [
 			'CMDBuild.core.constants.FieldWidths',
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.dataView.Filter'
+			'CMDBuild.proxy.administration.dataView.Filter'
 		],
 
 		mixins: ['CMDBuild.view.common.PanelFunctions'],
@@ -44,7 +44,7 @@
 				editable: false,
 				allowBlank: false,
 
-				store: CMDBuild.proxy.dataView.Filter.getStoreSourceClass(),
+				store: CMDBuild.proxy.administration.dataView.Filter.getStoreSourceClass(),
 				queryMode: 'local'
 			});
 
@@ -55,7 +55,7 @@
 						itemId: CMDBuild.core.constants.Proxy.TOOLBAR_TOP,
 
 						items: [
-							Ext.create('CMDBuild.core.buttons.iconized.Modify', {
+							Ext.create('CMDBuild.core.buttons.icon.modify.Modify', {
 								text: CMDBuild.Translation.modifyView,
 								scope: this,
 
@@ -63,7 +63,7 @@
 									this.delegate.cmfg('onDataViewFilterModifyButtonClick');
 								}
 							}),
-							Ext.create('CMDBuild.core.buttons.iconized.Remove', {
+							Ext.create('CMDBuild.core.buttons.icon.Remove', {
 								text: CMDBuild.Translation.removeView,
 								scope: this,
 
@@ -112,7 +112,7 @@
 						allowBlank: false,
 						disableEnableFunctions: true
 					}),
-					Ext.create('CMDBuild.view.common.field.translatable.Text', {
+					Ext.create('CMDBuild.view.common.field.translatable.Translatable', {
 						name: CMDBuild.core.constants.Proxy.DESCRIPTION,
 						fieldLabel: CMDBuild.Translation.descriptionLabel,
 						labelWidth: CMDBuild.core.constants.FieldWidths.LABEL,
@@ -120,7 +120,7 @@
 						allowBlank: false,
 						vtype: 'commentextended',
 
-						translationFieldConfig: {
+						config: {
 							type: CMDBuild.core.constants.Proxy.VIEW,
 							identifier: { sourceType: 'form', key: CMDBuild.core.constants.Proxy.NAME, source: this },
 							field: CMDBuild.core.constants.Proxy.DESCRIPTION
@@ -132,8 +132,8 @@
 						fieldLabel: CMDBuild.Translation.filter,
 						labelWidth: CMDBuild.core.constants.FieldWidths.LABEL,
 						fieldConfiguration: {
-							targetClassField: classesCombobox,
-							enabledPanels: ['attribute', 'relation']
+							disabledPanels: ['functions', 'columnPrivileges'],
+							targetClassField: classesCombobox
 						}
 					}),
 					{

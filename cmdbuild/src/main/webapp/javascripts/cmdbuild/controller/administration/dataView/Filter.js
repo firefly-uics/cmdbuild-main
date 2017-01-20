@@ -5,10 +5,9 @@
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.core.Message',
-			'CMDBuild.proxy.dataView.Filter',
+			'CMDBuild.proxy.administration.dataView.Filter',
 			'CMDBuild.core.Utils',
-			'CMDBuild.view.common.field.translatable.Utils'
+			'CMDBuild.controller.common.field.translatable.Utils'
 		],
 
 		/**
@@ -39,7 +38,7 @@
 		grid: undefined,
 
 		/**
-		 * @property {CMDBuild.model.dataView.filter.SelectedView}
+		 * @property {CMDBuild.model.administration.dataView.filter.SelectedView}
 		 *
 		 * @private
 		 */
@@ -82,7 +81,7 @@
 
 			this.form.reset();
 			this.form.setDisabledModify(false, true);
-			this.form.loadRecord(Ext.create('CMDBuild.model.dataView.filter.GridStore'));
+			this.form.loadRecord(Ext.create('CMDBuild.model.administration.dataView.filter.GridStore'));
 		},
 
 		onDataViewFilterModifyButtonClick: function() {
@@ -109,7 +108,7 @@
 			var params = {};
 			params[CMDBuild.core.constants.Proxy.ID] = selectedViewId;
 
-			CMDBuild.proxy.dataView.Filter.read({ // TODO: waiting for refactor (CRUD)
+			CMDBuild.proxy.administration.dataView.Filter.read({ // TODO: waiting for refactor (CRUD)
 				params: params,
 				scope: this,
 				success: function(response, options, decodedResponse) {
@@ -136,19 +135,19 @@
 
 		onDataViewFilterSaveButtonClick: function() {
 			if (this.validate(this.form)) {
-				var formDataModel = Ext.create('CMDBuild.model.dataView.filter.SelectedView', this.form.getData(true));
+				var formDataModel = Ext.create('CMDBuild.model.administration.dataView.filter.SelectedView', this.form.getData(true));
 
 				var params = formDataModel.getData();
 				params[CMDBuild.core.constants.Proxy.FILTER] = Ext.encode(params[CMDBuild.core.constants.Proxy.FILTER]);
 
 				if (Ext.isEmpty(formDataModel.get(CMDBuild.core.constants.Proxy.ID))) {
-					CMDBuild.proxy.dataView.Filter.create({
+					CMDBuild.proxy.administration.dataView.Filter.create({
 						params: params,
 						scope: this,
 						success: this.success
 					});
 				} else {
-					CMDBuild.proxy.dataView.Filter.update({
+					CMDBuild.proxy.administration.dataView.Filter.update({
 						params: params,
 						scope: this,
 						success: this.success
@@ -165,13 +164,11 @@
 				var params = {};
 				params[CMDBuild.core.constants.Proxy.ID] = this.selectedViewGet(CMDBuild.core.constants.Proxy.ID);
 
-				CMDBuild.proxy.dataView.Filter.remove({
+				CMDBuild.proxy.administration.dataView.Filter.remove({
 					params: params,
 					scope: this,
 					success: function(response, options, decodedResponse) {
 						this.form.reset();
-
-						CMDBuild.core.Message.success();
 
 						this.grid.getStore().load({
 							scope: this,
@@ -233,7 +230,7 @@
 			 */
 			selectedViewSet: function(parameters) {
 				if (!Ext.Object.isEmpty(parameters)) {
-					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.dataView.filter.SelectedView';
+					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.administration.dataView.filter.SelectedView';
 					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedView';
 
 					this.propertyManageSet(parameters);
@@ -250,9 +247,7 @@
 		success: function(response, options, decodedResponse) {
 			var me = this;
 
-			CMDBuild.view.common.field.translatable.Utils.commit(this.form);
-
-			CMDBuild.core.Message.success();
+			CMDBuild.controller.common.field.translatable.Utils.commit(this.form);
 
 			this.grid.getStore().load({
 				callback: function(records, operation, success) {

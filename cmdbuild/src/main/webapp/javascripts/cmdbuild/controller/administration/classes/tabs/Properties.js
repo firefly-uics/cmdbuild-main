@@ -9,7 +9,6 @@
 		requires: [
 			'CMDBuild.core.constants.Global',
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.core.Message',
 			'CMDBuild.proxy.administration.classes.Classes'
 		],
 
@@ -172,7 +171,7 @@
 				params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.cmfg('classesSelectedClassGet', CMDBuild.core.constants.Proxy.NAME);
 				params[CMDBuild.core.constants.Proxy.FORMAT] = format;
 
-				this.controllerPrintWindow.cmfg('panelGridAndFormPrintWindowShow', {
+				this.controllerPrintWindow.cmfg('panelGridAndFormCommonPrintWindowShow', {
 					format: format,
 					mode: 'classSchema',
 					params: params
@@ -272,8 +271,6 @@
 
 						this.cmfg('mainViewportAccordionDeselect', this.cmfg('classesIdentifierGet'));
 						this.cmfg('mainViewportAccordionControllerUpdateStore', { identifier: this.cmfg('classesIdentifierGet') });
-
-						CMDBuild.core.Message.success();
 					}
 				});
 			}
@@ -291,7 +288,7 @@
 		success: function (response, options, decodedResponse) {
 			decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.TABLE];
 
-			CMDBuild.view.common.field.translatable.Utils.commit(this.panelProperties);
+			CMDBuild.controller.common.field.translatable.Utils.commit(this.panelProperties);
 
 			this.cmfg('mainViewportAccordionDeselect', this.cmfg('classesIdentifierGet'));
 			this.cmfg('mainViewportAccordionControllerUpdateStore', {
@@ -300,8 +297,6 @@
 					selectionId: decodedResponse[CMDBuild.core.constants.Proxy.ID]
 				}
 			});
-
-			CMDBuild.core.Message.success();
 		}
 	});
 

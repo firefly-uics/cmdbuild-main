@@ -1,10 +1,15 @@
 (function() {
 
 	/**
-	 * @link CMDBuild.view.management.workflow.panel.form.tabs.note.NoteView
+	 * @link CMDBuild.view.management.dataView.filter.panel.form.tabs.note.NoteView
 	 */
 	Ext.define("CMDBuild.view.management.classes.CMCardNotesPanel", {
 		extend: "Ext.panel.Panel",
+
+		requires: [
+			'CMDBuild.core.constants.Global',
+			'CMDBuild.core.Utils'
+		],
 
 		translation: CMDBuild.Translation.management.modcard,
 
@@ -212,9 +217,12 @@
 		onCardSelected: function(card) {
 			_deprecated('onCardSelected', this);
 
-			var idClass = card.raw.IdClass;
+			var table = _CMCache.getEntryTypeById(card.raw['IdClass']);
 
-			if (CMDBuild.Utils.isSimpleTable(idClass)) {
+			if (
+				table
+				&& table.data.tableType == CMDBuild.core.constants.Global.getTableTypeSimpleTable()
+			) {
 				this.disable();
 
 				return;

@@ -1,5 +1,8 @@
 (function () {
 
+	/**
+	 * @link CMDBuild.proxy.management.dataView.filter.panel.form.tabs.History
+	 */
 	Ext.define('CMDBuild.proxy.management.workflow.panel.form.tabs.History', {
 
 		requires: [
@@ -23,6 +26,11 @@
 					reader: {
 						type: 'json',
 						root: CMDBuild.core.constants.Proxy.RESPONSE + '.' + CMDBuild.core.constants.Proxy.ELEMENTS
+					},
+					extraParams: { // Avoid to send limit, page and start parameters in server calls
+						limitParam: undefined,
+						pageParam: undefined,
+						startParam: undefined
 					}
 				},
 				sorters: [ // Setup sorters, also if server returns ordered collection
