@@ -380,6 +380,7 @@
 		LOCAL: 'local',
 		LOCALIZATION: 'localization',
 		LOCALIZED_HEADER_KEY: 'CMDBuild-Localized',
+		LOGOUT_REDIRECT: 'logoutRedirect',
 		LOOKUP: 'lookup',
 		LOOKUP_TYPE: 'lookupType',
 		LOOKUP_VALUE: 'lookupValue',

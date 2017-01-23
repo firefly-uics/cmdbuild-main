@@ -1,6 +1,7 @@
 package org.cmdbuild.config;
 
 import static java.lang.Integer.valueOf;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -31,6 +32,7 @@ public class CmdbuildProperties extends DefaultProperties implements CmdbuildCon
 	private static final String LOCKER_CARD_USER_VISIBLE = "lockcarduservisible";
 	private static final String LOCK_CARD_TIME_OUT = "lockcardtimeout";
 	private static final String ENABLED_LANGUAGES = "enabled_languages";
+	private static final String LOGOUT_REDIRECT = "logout.redirect";
 
 	private static final String DEMO_MODE_ADMIN = "demomode";
 
@@ -42,7 +44,7 @@ public class CmdbuildProperties extends DefaultProperties implements CmdbuildCon
 		super();
 		changeListeners = new HashSet<>();
 		setProperty(REFERENCE_COMBO_LIMIT, "500");
-		setProperty(STARTING_CLASS, "");
+		setProperty(STARTING_CLASS, EMPTY);
 		setProperty(RELATION_LIMIT, "20");
 		setProperty(LANGUAGE, "en");
 		setProperty(POPUP_PERCENTAGE_HEIGHT, "80");
@@ -51,12 +53,13 @@ public class CmdbuildProperties extends DefaultProperties implements CmdbuildCon
 		setProperty(ROW_LIMIT, "20");
 		setProperty(LANGUAGE_PROMPT, String.valueOf(true));
 		setProperty(SESSION_TIMEOUT, Integer.toString(DEFAULT_SESSION_TIMEOUT));
-		setProperty(INSTANCE_NAME, "");
+		setProperty(INSTANCE_NAME, EMPTY);
 		setProperty(TABS_POSITION, "bottom");
 		setProperty(LOCK_CARD, String.valueOf(false));
 		setProperty(LOCKER_CARD_USER_VISIBLE, String.valueOf(true));
 		setProperty(LOCK_CARD_TIME_OUT, "300");
-		setProperty(ENABLED_LANGUAGES, "");
+		setProperty(ENABLED_LANGUAGES, EMPTY);
+		setProperty(LOGOUT_REDIRECT, EMPTY);
 	}
 
 	public static CmdbuildProperties getInstance() {
@@ -122,7 +125,7 @@ public class CmdbuildProperties extends DefaultProperties implements CmdbuildCon
 
 	@Override
 	public String getDemoModeAdmin() {
-		return getProperty(DEMO_MODE_ADMIN, "");
+		return getProperty(DEMO_MODE_ADMIN, EMPTY);
 	}
 
 	@Override
@@ -132,7 +135,7 @@ public class CmdbuildProperties extends DefaultProperties implements CmdbuildCon
 
 	@Override
 	public String getInstanceName() {
-		return getProperty(INSTANCE_NAME, "");
+		return getProperty(INSTANCE_NAME, EMPTY);
 	}
 
 	@Override
@@ -193,6 +196,11 @@ public class CmdbuildProperties extends DefaultProperties implements CmdbuildCon
 	@Override
 	public void setEnabledLanguages(final String enabledLanguages) {
 		setProperty(ENABLED_LANGUAGES, enabledLanguages);
+	}
+
+	@Override
+	public String getRedirectOnLogout() {
+		return getProperty(LOGOUT_REDIRECT, EMPTY);
 	}
 
 }

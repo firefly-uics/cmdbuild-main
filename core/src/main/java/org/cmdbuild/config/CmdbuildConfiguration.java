@@ -55,4 +55,6 @@ public interface CmdbuildConfiguration {
 
 	void setEnabledLanguages(String enabledLanguages);
 
+	String getRedirectOnLogout();
+
 }

@@ -29,9 +29,13 @@
 			Ext.create('CMDBuild.core.interfaces.Init'); // Interfaces configuration
 			Ext.create('CMDBuild.core.Data', { enableLocalized: true }); // Data connections configuration
 			Ext.create('CMDBuild.core.cache.Cache');
-			Ext.create('CMDBuild.core.configurations.builder.Instance'); // CMDBuild instance configuration
 
-			Ext.create('CMDBuild.controller.logout.Logout');
+			// CMDBuild instance configuration read
+			Ext.create('CMDBuild.core.configurations.builder.Instance', {
+				callback: function () {
+					Ext.create('CMDBuild.controller.logout.Logout');
+				}
+			});
 		}
 	});
 

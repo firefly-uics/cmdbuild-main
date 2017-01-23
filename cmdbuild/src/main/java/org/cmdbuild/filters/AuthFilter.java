@@ -66,7 +66,6 @@ public class AuthFilter implements Filter {
 	}
 
 	public static final String LOGIN_URL = "index.jsp";
-	public static final String LOGOUT_URL = "logout.jsp";
 
 	private static boolean isRootPage(final String uri) {
 		return uri.equals("/");
@@ -74,10 +73,6 @@ public class AuthFilter implements Filter {
 
 	private static boolean isLoginPage(final String uri) {
 		return uri.equals("/" + LOGIN_URL);
-	}
-
-	private static boolean isLogoutPage(final String uri) {
-		return uri.equals("/" + LOGOUT_URL);
 	}
 
 	private static boolean isService(final String uri) {
@@ -97,8 +92,8 @@ public class AuthFilter implements Filter {
 
 	private static String sessionId(final HttpServletRequest httpRequest) {
 		final Optional<String> header = ofNullable(defaultIfBlank(httpRequest.getHeader(CMDBUILD_AUTHORIZATION), null));
-		final Optional<String> parameter = ofNullable(
-				defaultIfBlank(httpRequest.getParameter(CMDBUILD_AUTHORIZATION), null));
+		final Optional<String> parameter =
+				ofNullable(defaultIfBlank(httpRequest.getParameter(CMDBUILD_AUTHORIZATION), null));
 		final Optional<String> cookie = stream(defaultIfNull(httpRequest.getCookies(), NO_COOKIES)) //
 				.filter(input -> input.getName().equals(CMDBUILD_AUTHORIZATION)) //
 				.findFirst() //
@@ -147,8 +142,8 @@ public class AuthFilter implements Filter {
 					redirectToManagement(httpResponse);
 				} else {
 					logger.debug(marker, "user is not valid, trying login using HTTP request");
-					final ClientAuthenticationResponse clientAuthenticatorResponse = sessionLogic
-							.create(new ClientRequestWrapper(httpRequest), new Callback() {
+					final ClientAuthenticationResponse clientAuthenticatorResponse =
+							sessionLogic.create(new ClientRequestWrapper(httpRequest), new Callback() {
 
 								@Override
 								public void sessionCreated(final String id) {
@@ -167,8 +162,8 @@ public class AuthFilter implements Filter {
 			} else if (!isService(uri) && !isShark(uri) && !isResouce(uri) && !isLoginPage(uri)) {
 				if (!sessionLogic.isValidUser(sessionId.get())) {
 					logger.debug(marker, "user is not valid, trying login using HTTP request");
-					final ClientAuthenticationResponse clientAuthenticatorResponse = sessionLogic
-							.create(new ClientRequestWrapper(httpRequest), new Callback() {
+					final ClientAuthenticationResponse clientAuthenticatorResponse =
+							sessionLogic.create(new ClientRequestWrapper(httpRequest), new Callback() {
 
 								@Override
 								public void sessionCreated(final String id) {
@@ -180,7 +175,7 @@ public class AuthFilter implements Filter {
 					final String authenticationRedirectUrl = clientAuthenticatorResponse.getRedirectUrl();
 					if (authenticationRedirectUrl != null) {
 						redirectToCustom(authenticationRedirectUrl);
-					} else if (!sessionLogic.isValidUser(sessionId.get()) && !isLogoutPage(uri)) {
+					} else if (!sessionLogic.isValidUser(sessionId.get())) {
 						redirectToLogin(httpResponse);
 					}
 				}

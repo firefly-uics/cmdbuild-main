@@ -28,6 +28,9 @@
 		 * @private
 		 */
 		sessionRemove: function () {
+			var logoutRedirect = Ext.String.trim(CMDBuild.configuration.instance.get(CMDBuild.core.constants.Proxy.LOGOUT_REDIRECT));
+			logoutRedirect = Ext.isEmpty(logoutRedirect) ? 'index.jsp' : logoutRedirect;
+
 			if (!CMDBuild.core.CookiesManager.authorizationIsEmpty()) {
 				var params = {};
 				params[CMDBuild.core.constants.Proxy.SESSION] = CMDBuild.core.CookiesManager.authorizationGet();
@@ -38,11 +41,11 @@
 					success: function (response, options, decodedResponse) {
 						CMDBuild.core.CookiesManager.authorizationClear();
 
-						window.location = 'index.jsp';
+						window.location = logoutRedirect;
 					}
 				});
 			} else {
-				window.location = 'index.jsp';
+				window.location = logoutRedirect;
 			}
 		}
 	});

@@ -15,6 +15,7 @@
 			{ name: CMDBuild.core.constants.Proxy.DISPLAY_CARD_LOCKER_NAME, type: 'boolean' },
 			{ name: CMDBuild.core.constants.Proxy.ENABLE_CARD_LOCK, type: 'boolean' },
 			{ name: CMDBuild.core.constants.Proxy.INSTANCE_NAME, type: 'string' },
+			{ name: CMDBuild.core.constants.Proxy.LOGOUT_REDIRECT, type: 'string' },
 			{ name: CMDBuild.core.constants.Proxy.POPUP_HEIGHT_PERCENTAGE, type: 'int' },
 			{ name: CMDBuild.core.constants.Proxy.POPUP_WIDTH_PERCENTAGE, type: 'int' },
 			{ name: CMDBuild.core.constants.Proxy.REFERENCE_COMBO_STORE_LIMIT, type: 'int' }, // Limit of dropDown displayed relations before force pop-up window show
@@ -37,6 +38,7 @@
 			data[CMDBuild.core.constants.Proxy.DISPLAY_CARD_LOCKER_NAME] = data['lockcarduservisible'];
 			data[CMDBuild.core.constants.Proxy.ENABLE_CARD_LOCK] = data['lockcardenabled'];
 			data[CMDBuild.core.constants.Proxy.INSTANCE_NAME] = data['instance_name'];
+			data[CMDBuild.core.constants.Proxy.LOGOUT_REDIRECT] = data['logout.redirect'];
 			data[CMDBuild.core.constants.Proxy.POPUP_HEIGHT_PERCENTAGE] = data['popuppercentageheight'];
 			data[CMDBuild.core.constants.Proxy.POPUP_WIDTH_PERCENTAGE] = data['popuppercentagewidth'];
 			data[CMDBuild.core.constants.Proxy.REFERENCE_COMBO_STORE_LIMIT] = data['referencecombolimit'];
