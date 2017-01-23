@@ -31,6 +31,8 @@ NEW FEATURES
 
  * Pagination for users list
 
+ * Redirect to custom page or URL on logout
+
 
 FIXES
 
