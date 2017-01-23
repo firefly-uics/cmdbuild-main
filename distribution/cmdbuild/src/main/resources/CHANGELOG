@@ -114,6 +114,8 @@ FIXES
 
  * CustomForm widget form/grid modes returns data with incongruent format
 
+ * Shared already related cards on N:N domains
+
 
 
 
