@@ -245,9 +245,9 @@
 		dataViewFilterGridBuildColumns: function () {
 			var columnsDefinition = [];
 
-			if (!this.cmfg('dataViewSelectedDataViewIsEmpty') && !this.cmfg('dataViewFilterSelectedDataViewAttributesIsEmpty')) {
+			if (!this.cmfg('dataViewSelectedDataViewIsEmpty') && !this.cmfg('dataViewFilterSourceEntryTypeAttributesIsEmpty')) {
 				var fieldManager = Ext.create('CMDBuild.core.fieldManager.FieldManager', { parentDelegate: this }),
-					attributes = CMDBuild.core.Utils.objectArraySort(this.cmfg('dataViewFilterSelectedDataViewAttributesGet'), CMDBuild.core.constants.Proxy.INDEX);
+					attributes = CMDBuild.core.Utils.objectArraySort(this.cmfg('dataViewFilterSourceEntryTypeAttributesGet'), CMDBuild.core.constants.Proxy.INDEX);
 
 				if (this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.IS_SUPER_CLASS))
 					columnsDefinition.push({
@@ -546,8 +546,6 @@
 		 */
 		dataViewFilterGridReset: function () {
 			this.view.getSelectionModel().deselectAll();
-
-			this.cmfg('dataViewFilterSelectedCardReset');
 		},
 
 		/**
@@ -1054,7 +1052,7 @@
 			 * @private
 			 */
 			storeSortersSet: function (store) {
-				var attributes = CMDBuild.core.Utils.objectArraySort(this.cmfg('dataViewFilterSelectedDataViewAttributesGet'), CMDBuild.core.constants.Proxy.SORT_INDEX, 'DESC');
+				var attributes = CMDBuild.core.Utils.objectArraySort(this.cmfg('dataViewFilterSourceEntryTypeAttributesGet'), CMDBuild.core.constants.Proxy.SORT_INDEX, 'DESC');
 
 				// Setup store sorters
 				this.storeSortersClear(store);

@@ -11,6 +11,16 @@
 		delegate: undefined,
 
 		/**
+		 * @property {CMDBuild.core.buttons.text.Back}
+		 */
+		buttonBack: undefined,
+
+		/**
+		 * @property {CMDBuild.core.buttons.icon.modify.Modify}
+		 */
+		buttonModify: undefined,
+
+		/**
 		 * @property {CMDBuild.view.management.dataView.filter.panel.form.tabs.note.FormPanel}
 		 */
 		form: undefined,
@@ -19,7 +29,7 @@
 		cls: 'x-panel-body-default-framed',
 		frame: false,
 		itemId: 'formTabNote',
-		layout: 'card',
+		layout: 'fit',
 		title: CMDBuild.Translation.note,
 
 		/**
@@ -40,7 +50,7 @@
 								scope: this,
 
 								handler: function (button, e) {
-									this.delegate.cmfg('onDataViewFilterModifyButtonClick');
+									this.delegate.cmfg('onDataViewFilterFormTabNoteModifyButtonClick');
 								}
 							})
 						]
@@ -68,7 +78,7 @@
 								scope: this,
 
 								handler: function (button, e) {
-									this.delegate.cmfg('onDataViewFilterAbortButtonClick');
+									this.delegate.cmfg('onDataViewFilterFormTabNoteAbortButtonClick');
 								}
 							}),
 							this.buttonBack = Ext.create('CMDBuild.core.buttons.text.Back', {

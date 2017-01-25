@@ -131,6 +131,7 @@
 		 */
 		itemLock: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
+			parameters.callback = Ext.isFunction(parameters.callback) ? parameters.callback : Ext.emptyFn;
 			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
 
 			if (
@@ -141,14 +142,14 @@
 				params[CMDBuild.core.constants.Proxy.ACTIVITY_INSTANCE_ID] = this.cmfg('workflowSelectedActivityGet', CMDBuild.core.constants.Proxy.ID);
 				params[CMDBuild.core.constants.Proxy.PROCESS_INSTANCE_ID] = this.cmfg('workflowSelectedInstanceGet', CMDBuild.core.constants.Proxy.ID);
 
-				CMDBuild.proxy.management.workflow.panel.form.tabs.Note.lock({
+				return CMDBuild.proxy.management.workflow.panel.form.tabs.Note.lock({
 					params: params,
 					scope: parameters.scope,
-					success: Ext.isFunction(parameters.callback) ? parameters.callback : Ext.emptyFn
+					success: parameters.callback
 				});
-			} else if (Ext.isFunction(parameters.callback)) {
-				Ext.callback(parameters.callback, parameters.scope);
 			}
+
+			return Ext.callback(parameters.callback, parameters.scope);
 		},
 
 		/**
@@ -162,6 +163,7 @@
 		 */
 		itemUnlock: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
+			parameters.callback = Ext.isFunction(parameters.callback) ? parameters.callback : Ext.emptyFn;
 			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
 
 			if (
@@ -172,14 +174,14 @@
 				params[CMDBuild.core.constants.Proxy.ACTIVITY_INSTANCE_ID] = this.cmfg('workflowSelectedActivityGet', CMDBuild.core.constants.Proxy.ID);
 				params[CMDBuild.core.constants.Proxy.PROCESS_INSTANCE_ID] = this.cmfg('workflowSelectedInstanceGet', CMDBuild.core.constants.Proxy.ID);
 
-				CMDBuild.proxy.management.workflow.panel.form.tabs.Note.unlock({
+				return CMDBuild.proxy.management.workflow.panel.form.tabs.Note.unlock({
 					params: params,
 					scope: parameters.scope,
-					success: Ext.isFunction(parameters.callback) ? parameters.callback : Ext.emptyFn
+					success: parameters.callback
 				});
-			} else if (Ext.isFunction(parameters.callback)) {
-				Ext.callback(parameters.callback, parameters.scope);
 			}
+
+			return Ext.callback(parameters.callback, parameters.scope);
 		},
 
 		/**

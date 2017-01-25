@@ -19,9 +19,9 @@
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
-			'dataViewSelectedDataViewGet',
+			'dataViewSelectedDataViewGet = panelGridAndFormSelectedEntityGet',
 			'dataViewSelectedDataViewIsEmpty',
-			'dataViewUiUpdate',
+			'dataViewUiUpdate = panelGridAndFormUiUpdate',
 			'identifierGet = dataViewIdentifierGet',
 			'onDataViewExternalServicesNavigationChronologyRecordSelect', // From mixins
 			'onDataViewModuleInit = onModuleInit'
@@ -159,7 +159,7 @@
 		 * @param {Object} parameters
 		 * @param {Function} parameters.callback
 		 * @param {Number} parameters.cardId
-		 * @param {Boolean} parameters.enableFilterReset
+		 * @param {Boolean} parameters.enableFilterReset // TODO: rename
 		 * @param {Number} parameters.entityId
 		 * @param {Object} parameters.scope
 		 * @param {Boolean} parameters.sortersReset
@@ -172,9 +172,9 @@
 			parameters = Ext.isObject(parameters) ? parameters : {};
 			parameters.cardId = Ext.isNumber(parameters.cardId) ? parameters.cardId : null;
 			parameters.entityId = Ext.isNumber(parameters.entityId) ? parameters.entityId : null;
-
+_debug('dataViewUiUpdate', parameters);
 			// Error handling
-				if (Ext.isEmpty(parameters.entityId))
+				if (!Ext.isNumber(parameters.entityId) || Ext.isEmpty(parameters.entityId))
 					return _error('dataViewUiUpdate(): unmanaged entityId parameter', this, parameters.entityId);
 			// END: Error handling
 
@@ -188,8 +188,8 @@
 
 					if (Ext.isArray(decodedResponse) && !Ext.isEmpty(decodedResponse)) {
 						var viewObject = Ext.Array.findBy(decodedResponse, function (view, index) {
-								return view[CMDBuild.core.constants.Proxy.ID] == parameters.entityId;
-							}, this);
+							return view[CMDBuild.core.constants.Proxy.ID] == parameters.entityId;
+						}, this);
 
 						if (Ext.isObject(viewObject) && !Ext.Object.isEmpty(viewObject)) {
 							this.dataViewSelectedDataViewSet({ value: viewObject });
@@ -215,21 +215,11 @@
 								scope: parameters.scope,
 								callback: parameters.callback
 							});
-
-							// History record save
-							CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
-								moduleId: this.cmfg('dataViewIdentifierGet'),
-								entryType: {
-									description: this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.TEXT),
-									id: this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.ID),
-									object: this.cmfg('dataViewSelectedDataViewGet')
-								}
-							});
 						} else {
-							_error('onDataViewModuleInit(): dataView not found', this, dataViewId);
+							_error('dataViewUiUpdate(): dataView not found', this, viewObject);
 						}
 					} else {
-						_error('onDataViewModuleInit(): unmanaged response', this, decodedResponse);
+						_error('dataViewUiUpdate(): unmanaged response', this, decodedResponse);
 					}
 				}
 			});

@@ -5,6 +5,7 @@
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
+			'CMDBuild.core.constants.WidgetType',
 			'CMDBuild.proxy.management.dataView.filter.panel.form.tabs.Note'
 		],
 
@@ -19,7 +20,10 @@
 		cmfgCatchedFunctions: [
 			'dataViewFilterFormTabNoteReset',
 			'dataViewFilterFormTabNoteUiUpdate',
+			'dataViewFilterFormTabNoteValueGet',
+			'onDataViewFilterFormTabNoteAbortButtonClick',
 			'onDataViewFilterFormTabNoteBackButtonClick',
+			'onDataViewFilterFormTabNoteModifyButtonClick',
 			'onDataViewFilterFormTabNoteSaveButtonClick',
 			'onDataViewFilterFormTabNoteShow'
 		],
@@ -51,19 +55,8 @@
 		 *
 		 * @private
 		 */
-		buildForm: function () {
-			if (this.cmfg('dataViewFilterUiViewModeEquals', 'edit'))
-				return this.buildFormModeEdit();
-
-			return this.buildFormModeRead();
-		},
-
-		/**
-		 * @returns {Void}
-		 *
-		 * @private
-		 */
 		buildFormModeEdit: function () {
+			this.form.removeAll(false);
 			this.form.add(
 				Ext.create('CMDBuild.view.common.field.HtmlEditor', {
 					name: 'Notes',
@@ -79,6 +72,7 @@
 		 * @private
 		 */
 		buildFormModeRead: function () {
+			this.form.removeAll(false);
 			this.form.add(
 				Ext.create('Ext.container.Container', {
 					border: false,
@@ -115,14 +109,62 @@
 			// UI view mode manage
 			switch (this.cmfg('dataViewFilterUiViewModeGet')) {
 				case 'add':
-					return this.view.disable();
+					return this.view.setDisabled(
+						!this.cmfg('dataViewFilterFormWidgetExists', CMDBuild.core.constants.WidgetType.getOpenNote())
+						&& false // NOTE: view disabled because implementation similar to workflow's one
+					);
 
 				case 'clone':
-					return this.view.disable();
+					return this.view.setDisabled(
+						!this.cmfg('dataViewFilterFormWidgetExists', CMDBuild.core.constants.WidgetType.getOpenNote())
+						&& false // NOTE: view disabled because implementation similar to workflow's one
+					);
 
 				default:
 					return this.view.setDisabled(this.cmfg('dataViewFilterSelectedCardIsEmpty'));
 			}
+		},
+
+		/**
+		 * @returns {String}
+		 */
+		dataViewFilterFormTabNoteValueGet: function () {
+			return this.view.panelFunctionValueGet({ propertyName: 'Notes' });
+		},
+
+		/**
+		 * @returns {Void}
+		 *
+		 * @private
+		 */
+		formModeEditSetup: function () {
+			this.buildFormModeEdit();
+
+			this.form.getForm().setValues(this.cmfg('dataViewFilterSelectedCardGet', [CMDBuild.core.constants.Proxy.VALUES]));
+
+			this.view.panelFunctionModifyStateSet({ state: true });
+		},
+
+		/**
+		 * @returns {Void}
+		 *
+		 * @private
+		 */
+		formModeReadSetup: function () {
+			this.buildFormModeRead();
+
+			this.form.getForm().setValues(this.cmfg('dataViewFilterSelectedCardGet', [CMDBuild.core.constants.Proxy.VALUES]));
+
+			this.view.panelFunctionModifyStateSet({
+				forceToolbarTopState: !(
+					this.cmfg('dataViewFilterFormWidgetExists', CMDBuild.core.constants.WidgetType.getOpenNote())
+					&& this.cmfg('dataViewFilterSourceEntryTypeGet', [
+						CMDBuild.core.constants.Proxy.PERMISSIONS,
+						CMDBuild.core.constants.Proxy.WRITE
+					])
+				),
+				state: false
+			});
 		},
 
 		/**
@@ -136,6 +178,7 @@
 		 */
 		itemLock: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
+			parameters.callback = Ext.isFunction(parameters.callback) ? parameters.callback : Ext.emptyFn;
 			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
 
 			if (
@@ -145,14 +188,14 @@
 				var params = {};
 				params[CMDBuild.core.constants.Proxy.ID] = this.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.ID);
 
-				CMDBuild.proxy.management.dataView.filter.panel.form.tabs.Note.lock({
+				return CMDBuild.proxy.management.dataView.filter.panel.form.tabs.Note.lock({
 					params: params,
 					scope: parameters.scope,
-					success: Ext.isFunction(parameters.callback) ? parameters.callback : Ext.emptyFn
+					success: parameters.callback
 				});
-			} else if (Ext.isFunction(parameters.callback)) {
-				Ext.callback(parameters.callback, parameters.scope);
 			}
+
+			return Ext.callback(parameters.callback, parameters.scope);
 		},
 
 		/**
@@ -166,6 +209,7 @@
 		 */
 		itemUnlock: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
+			parameters.callback = Ext.isFunction(parameters.callback) ? parameters.callback : Ext.emptyFn;
 			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
 
 			if (
@@ -175,14 +219,24 @@
 				var params = {};
 				params[CMDBuild.core.constants.Proxy.ID] = this.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.ID);
 
-				CMDBuild.proxy.management.dataView.filter.panel.form.tabs.Note.unlock({
+				return CMDBuild.proxy.management.dataView.filter.panel.form.tabs.Note.unlock({
 					params: params,
 					scope: parameters.scope,
-					success: Ext.isFunction(parameters.callback) ? parameters.callback : Ext.emptyFn
+					success: parameters.callback
 				});
-			} else if (Ext.isFunction(parameters.callback)) {
-				Ext.callback(parameters.callback, parameters.scope);
 			}
+
+			return Ext.callback(parameters.callback, parameters.scope);
+		},
+
+		/**
+		 * @returns {Void}
+		 */
+		onDataViewFilterFormTabNoteAbortButtonClick: function () {
+			this.itemUnlock({
+				scope: this,
+				callback: this.formModeReadSetup
+			});
 		},
 
 		/**
@@ -190,6 +244,22 @@
 		 */
 		onDataViewFilterFormTabNoteBackButtonClick: function () {
 			this.cmfg('dataViewFilterFormTabActiveSet');
+		},
+
+		/**
+		 * @returns {Void}
+		 */
+		onDataViewFilterFormTabNoteModifyButtonClick: function () {
+			if (this.cmfg('dataViewFilterFormWidgetExists', CMDBuild.core.constants.WidgetType.getOpenNote()))
+				return this.itemLock({
+					scope: this,
+					callback: this.formModeEditSetup
+				});
+
+			return this.itemUnlock({
+				scope: this,
+				callback: this.formModeReadSetup
+			});
 		},
 
 		/**
@@ -209,11 +279,9 @@
 					loadMask: false,
 					scope: this,
 					success: function (response, options, decodedResponse) {
-						params[CMDBuild.core.constants.Proxy.ID] = params[CMDBuild.core.constants.Proxy.CARD_ID];
-
-						this.cmfg('dataViewFilterUiUpdate', {
-							cardId: params[CMDBuild.core.constants.Proxy.CARD_ID],
-							className: params[CMDBuild.core.constants.Proxy.CLASS_NAME],
+						this.cmfg('dataViewUiUpdate', {
+							cardId: this.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.ID),
+							entityId: this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.ID),
 							tabToSelect: this.view,
 							callback: function () {
 								CMDBuild.core.LoadMask.hide();
@@ -230,6 +298,8 @@
 		 * @returns {Void}
 		 */
 		onDataViewFilterFormTabNoteShow: function () {
+			var previousValue = this.cmfg('dataViewFilterFormTabNoteValueGet');
+
 			this.form.removeAll(false);
 
 			// Error handling
@@ -260,50 +330,15 @@
 				}
 			});
 
-			// UI view mode manage
-			switch (this.cmfg('dataViewFilterUiViewModeGet')) {
-				case 'add':
-					return this.view.disable();
-
-				case 'clone':
-					return this.view.disable();
-
-				case 'edit':
-					return this.itemLock({
-						scope: this,
-						callback: this.showEventCallback
-					});
-
-				default:
-					return this.itemUnlock({
-						scope: this,
-						callback: this.showEventCallback
-					});
-			}
-		},
-
-		/**
-		 * @returns {Void}
-		 *
-		 * @private
-		 */
-		showEventCallback: function () {
-			this.buildForm();
-
-			this.form.getForm().setValues(this.cmfg('dataViewFilterSelectedCardGet', [CMDBuild.core.constants.Proxy.VALUES]));
-
 			// Buttons setup
-			this.view.buttonBack.setVisible(this.cmfg('dataViewFilterFormWidgetExists', CMDBuild.core.constants.WidgetType.getOpenNote()));
+			this.view.buttonBack.setVisible(
+				this.cmfg('dataViewFilterFormWidgetExists', CMDBuild.core.constants.WidgetType.getOpenNote())
+				&& false // NOTE: button disabled because implementation similar to workflow's one
+			);
 
-			this.view.panelFunctionModifyStateSet({
-				forceToolbarTopState: !(
-					!this.cmfg('dataViewFilterUiViewModeEquals', 'edit')
-					&& this.cmfg('dataViewFilterSourceEntryTypeGet', [
-						CMDBuild.core.constants.Proxy.PERMISSIONS,
-						CMDBuild.core.constants.Proxy.WRITE
-					])
-				),
-				state: this.cmfg('dataViewFilterUiViewModeEquals', 'edit')
+			this.itemUnlock({
+				scope: this,
+				callback: this.formModeReadSetup
 			});
 		}
 	});

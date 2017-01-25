@@ -151,7 +151,7 @@
 
 			if (Ext.isObject(subjectObject) && !Ext.Object.isEmpty(subjectObject))
 				Ext.Object.each(subjectObject, function (key, value, myself) {
-					var attributeModel = this.cmfg('dataViewFilterSelectedCardAttributesGet', key),
+					var attributeModel = this.cmfg('dataViewFilterSourceEntryTypeAttributesGet', key),
 						changed = false;
 
 					// Build subjectObject properties models
@@ -215,7 +215,7 @@
 
 				// Merge values property to object
 				Ext.Object.each(relationObject[CMDBuild.core.constants.Proxy.VALUES], function (key, value, myself) {
-					var attributeModel = this.cmfg('dataViewFilterSelectedCardAttributesGet', key);
+					var attributeModel = this.cmfg('dataViewFilterSourceEntryTypeAttributesGet', key);
 
 					// Build relationObject properties models
 					if (Ext.isObject(attributeModel) && !Ext.Object.isEmpty(attributeModel)) {
@@ -242,7 +242,7 @@
 
 			Ext.Object.each(values, function (name, valueObject, myself) {
 				if (!Ext.Array.contains(this.filteredAttributeNames, name) && name.indexOf('_') != 0)  {
-					var attributeModel = this.cmfg('dataViewFilterSelectedCardAttributesGet', name);
+					var attributeModel = this.cmfg('dataViewFilterSourceEntryTypeAttributesGet', name);
 
 					if (Ext.isObject(attributeModel) && !Ext.Object.isEmpty(attributeModel) && !attributeModel.get(CMDBuild.core.constants.Proxy.HIDDEN))
 						filteredValues[name] = valueObject;

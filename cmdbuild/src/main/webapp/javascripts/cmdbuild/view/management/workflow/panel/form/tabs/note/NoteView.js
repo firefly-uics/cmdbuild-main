@@ -29,7 +29,7 @@
 		cls: 'x-panel-body-default-framed',
 		frame: false,
 		itemId: 'formTabNote',
-		layout: 'card',
+		layout: 'fit',
 		title: CMDBuild.Translation.note,
 
 		/**

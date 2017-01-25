@@ -82,29 +82,26 @@
 		/**
 		 * Enable/Disable tab selection based
 		 *
-		 * @param {Object} parameters
-		 * @param {Number} parameters.classId - Used on create mode
-		 *
 		 * @returns {Void}
 		 *
 		 * @legacy
 		 */
 		dataViewFilterFormTabCardUiUpdate: function (parameters) {
-			parameters = Ext.isObject(parameters) ? parameters : {};
-			parameters.classId = Ext.isNumber(parameters.classId) ? parameters.classId : null;
-
 			if (!this.parentDelegate.cmfg('dataViewFilterSourceEntryTypeIsEmpty'))
 				this.onEntryTypeSelected();
 
 			if (!this.parentDelegate.cmfg('dataViewFilterSelectedCardIsEmpty'))
 				this.onCardSelected();
 
-			this.subjectClassIdForCreation = parameters.classId;
-
-			this.view.setDisabled(
+			var state = (
 				this.parentDelegate.cmfg('dataViewFilterSelectedCardIsEmpty')
-				&& Ext.isEmpty(this.subjectClassIdForCreation)
+				&& !this.parentDelegate.cmfg('dataViewFilterStartCardGet', CMDBuild.core.constants.Proxy.STATUS)
 			);
+
+			this.view.enable();
+
+			if (state)
+				this.changeClassUIConfigurationForGroup(true, true);
 		},
 
 		/**
@@ -145,7 +142,7 @@
 			// UI view mode manage
 			switch (this.parentDelegate.cmfg('dataViewFilterUiViewModeGet')) {
 				case 'add':
-					return this.onAddCardButtonClick(this.subjectClassIdForCreation);
+					return this.onAddCardButtonClick(this.parentDelegate.cmfg('dataViewFilterStartCardGet', CMDBuild.core.constants.Proxy.CLASS_ID));
 
 				case 'clone':
 					return this.onCloneCardClick();

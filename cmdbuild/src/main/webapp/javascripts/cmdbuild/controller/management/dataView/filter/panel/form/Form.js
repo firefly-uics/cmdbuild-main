@@ -10,6 +10,7 @@
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
+			'CMDBuild.core.constants.WidgetType',
 			'CMDBuild.controller.management.dataView.filter.panel.form.tabs.card.Card'
 		],
 
@@ -180,7 +181,6 @@
 
 		/**
 		 * @param {Object} parameters
-		 * @param {Number} parameters.classId - Used on create mode
 		 * @param {Object} parameters.tabToSelect
 		 *
 		 * @returns {Void}
@@ -192,7 +192,7 @@
 
 			// Forward to sub-controllers
 			if (Ext.isObject(this.controllerTabCard) && !Ext.Object.isEmpty(this.controllerTabCard))
-				this.controllerTabCard.dataViewFilterFormTabCardUiUpdate({ classId: parameters.classId });
+				this.controllerTabCard.dataViewFilterFormTabCardUiUpdate();
 
 			if (Ext.isObject(this.controllerTabAttachments) && !Ext.Object.isEmpty(this.controllerTabAttachments))
 				this.controllerTabAttachments.dataViewFilterFormTabAttachmentsUiUpdate();
@@ -224,8 +224,29 @@
 		 *
 		 * @returns {Boolean}
 		 */
-		dataViewFilterFormWidgetExists: function (type) { // TODO: implementation
-			return false
+		dataViewFilterFormWidgetExists: function (type) {
+			switch (type) {
+				case CMDBuild.core.constants.WidgetType.getOpenNote():
+					return true;
+
+				default: {
+					return true; // FIXME: needs full implementation
+
+					var exists = false;
+
+					if (!this.cmfg('dataViewFilterSelectedCardIsEmpty'))
+						Ext.Array.each(this.cmfg('workflowSelectedActivityGet', CMDBuild.core.constants.Proxy.WIDGETS), function (widgetConfigObject, i, allWidgetConfigObjects) {
+							exists = (
+								Ext.isObject(widgetConfigObject) && !Ext.Object.isEmpty(widgetConfigObject)
+								&& widgetConfigObject[CMDBuild.core.constants.Proxy.TYPE] == type
+							);
+
+							return !exists;
+						}, this);
+
+					return exists;
+				}
+			}
 		},
 
 		/**

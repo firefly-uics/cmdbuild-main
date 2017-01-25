@@ -20,19 +20,14 @@
 		cmfgCatchedFunctions: [
 			'dataViewFilterCacheEntryTypeGet',
 			'dataViewFilterCacheEntryTypeGetAll',
-			'dataViewFilterPreviousCardGet',
-			'dataViewFilterPreviousCardIsEmpty',
-			'dataViewFilterPreviousCardReset',
 			'dataViewFilterReset',
-			'dataViewFilterSelectedCardAttributesGet',
-			'dataViewFilterSelectedCardAttributesIsEmpty',
 			'dataViewFilterSelectedCardGet',
 			'dataViewFilterSelectedCardIsEmpty',
-			'dataViewFilterSelectedCardReset',
-			'dataViewFilterSelectedDataViewAttributesGet',
-			'dataViewFilterSelectedDataViewAttributesIsEmpty',
-			'dataViewFilterSourceEntryTypeGet = panelGridAndFormSelectedEntityGet',
+			'dataViewFilterSourceEntryTypeAttributesGet',
+			'dataViewFilterSourceEntryTypeAttributesIsEmpty',
+			'dataViewFilterSourceEntryTypeGet',
 			'dataViewFilterSourceEntryTypeIsEmpty',
+			'dataViewFilterStartCardGet',
 			'dataViewFilterUiUpdate',
 			'onDataViewFilterAbortButtonClick',
 			'onDataViewFilterAddButtonClick',
@@ -80,7 +75,7 @@
 		 *
 		 * @private
 		 */
-		previousCard: undefined,
+		previousSelection: undefined,
 
 		/**
 		 * @property {CMDBuild.model.management.dataView.filter.SelectedCard}
@@ -94,14 +89,14 @@
 		 *
 		 * @private
 		 */
-		selectedCardAttributes: undefined,
+		sourceEntryTypeAttributes: {},
 
 		/**
-		 * @property {Object}
+		 * @property {CMDBuild.model.management.dataView.filter.StartCard}
 		 *
 		 * @private
 		 */
-		selectedDataViewAttributes: {},
+		startCard: undefined,
 
 		/**
 		 * @property {CMDBuild.view.management.dataView.filter.FilterView}
@@ -140,185 +135,61 @@
 		},
 
 		/**
-		 * @param {Function} callback
-		 *
 		 * @returns {Void}
-		 *
-		 * @private
 		 */
-		buildLocalCache: function (callback) {
-			this.buildLocalCacheEntryType(function () {
-				this.buildLocalCacheDataViewAttributes(callback);
-			});
+		onDataViewFilterAbortButtonClick: function () {
+			this.cmfg('dataViewFilterFullScreenUiSetup', { maximize: 'top' });
+			this.cmfg('dataViewFilterReset');
+			this.cmfg('dataViewFilterUiViewModeSet');
+			this.dataViewFilterSelectedCardReset();
+
+			// Forward to sub-controllers
+			if (!this.dataViewFilterPreviousSelectionIsEmpty())
+				return this.cmfg('dataViewFilterUiUpdate', {
+					cardId: this.dataViewFilterPreviousSelectionGet(CMDBuild.core.constants.Proxy.ID),
+					className: this.dataViewFilterPreviousSelectionGet(CMDBuild.core.constants.Proxy.CLASS_NAME)
+				});
+
+			return this.controllerForm.cmfg('dataViewFilterFormUiUpdate');
 		},
 
 		/**
-		 * @param {Function} callback
+		 * Similar to dataViewUiUpdate implementation except for entityId parameter and some other details
 		 *
-		 * @returns {Void}
-		 *
-		 * @private
-		 */
-		buildLocalCacheDataViewAttributes: function (callback) {
-			// Error handling
-				if (this.cmfg('dataViewSelectedDataViewIsEmpty'))
-					return _error('buildLocalCacheDataViewAttributes(): empty selected dataView', this, this.cmfg('dataViewSelectedDataViewGet'));
-			// END: Error handling
-
-			var params = {};
-			params[CMDBuild.core.constants.Proxy.ACTIVE] = true;
-			params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.SOURCE_ENTRY_TYPE_NAME);
-
-			CMDBuild.proxy.management.dataView.filter.Filter.readAttributes({
-				params: params,
-				loadMask: false,
-				scope: this,
-				success: function (response, options, decodedResponse) {
-					decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.ATTRIBUTES];
-
-					if (Ext.isArray(decodedResponse) && !Ext.isEmpty(decodedResponse)) {
-						this.dataViewFilterSelectedDataViewAttributesSet(decodedResponse);
-
-						if (Ext.isFunction(callback))
-							Ext.callback(callback, this);
-					} else {
-						_error('buildLocalCacheDataViewAttributes(): unmanaged response', this, decodedResponse);
-					}
-				}
-			});
-		},
-
-		/**
-		 * @param {Function} callback
-		 *
-		 * @returns {Void}
-		 *
-		 * @private
-		 */
-		buildLocalCacheEntryType: function (callback) {
-			var params = {};
-			params[CMDBuild.core.constants.Proxy.ACTIVE] = true;
-
-			CMDBuild.proxy.management.dataView.filter.Filter.readAllEntryTypes({
-				params: params,
-				loadMask: false,
-				scope: this,
-				success: function (response, options, decodedResponse) {
-					decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.CLASSES];
-
-					if (Ext.isArray(decodedResponse) && !Ext.isEmpty(decodedResponse)) {
-						this.dataViewFilterCacheEntryTypeSet(decodedResponse);
-
-						if (Ext.isFunction(callback))
-							Ext.callback(callback, this);
-					} else {
-						_error('buildLocalCacheEntryType(): unmanaged response', this, decodedResponse);
-					}
-				}
-			});
-		},
-
-		/**
 		 * @param {Object} parameters
-		 * @param {Function} parameters.callback
-		 * @param {Number} parameters.cardId
-		 * @param {String} parameters.className - internal use
-		 * @param {Boolean} parameters.enableFilterReset
-		 * @param {Boolean} parameters.forceStoreLoad
-		 * @param {Number} parameters.position
-		 * @param {Boolean} parameters.sortersReset
-		 * @param {Object} parameters.scope
-		 * @param {Object} parameters.tabToSelect
-		 * @param {String} parameters.viewMode
+		 * @param {Number} parameters.id
 		 *
 		 * @returns {Void}
 		 */
-		dataViewFilterUiUpdate: function (parameters) {
+		onDataViewFilterAddButtonClick: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
-			parameters.cardId = Ext.isNumber(parameters.cardId) ? parameters.cardId : null;
-			parameters.className = Ext.isString(parameters.className) ? parameters.className
-				: this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.SOURCE_ENTRY_TYPE_NAME);
-			parameters.viewMode = Ext.isString(parameters.viewMode) ? parameters.viewMode : 'read';
 
 			// Error handling
-				if (this.cmfg('dataViewSelectedDataViewIsEmpty'))
-					return _error('dataViewFilterUiUpdate(): empty selected dataView', this, this.cmfg('dataViewSelectedDataViewGet'));
+				if (!Ext.isNumber(parameters.id) || Ext.isEmpty(parameters.id))
+					return _error('onDataViewFilterAddButtonClick(): unmanaged id parameter', this, parameters.id);
 			// END: Error handling
 
 			// UI reset
-			this.cmfg('dataViewFilterFullScreenUiSetup', { maximize: 'top' });
-			this.cmfg('dataViewFilterUiViewModeSet', parameters.viewMode);
+			this.cmfg('dataViewFilterFullScreenUiSetup', { maximize: 'bottom' });
+			this.cmfg('dataViewFilterReset');
+			this.cmfg('dataViewFilterUiViewModeSet', 'add');
 
 			// Local variables reset
-			this.cmfg('dataViewFilterPreviousCardReset');
-			this.cmfg('dataViewFilterSelectedCardReset');
+			this.dataViewFilterSelectedCardReset();
+			this.dataViewFilterStartCardReset();
 
-			if (this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.TYPE) == 'filter') {
-				CMDBuild.core.LoadMask.show(); // Manual loadMask manage
+			this.dataViewFilterStartCardSet({
+				value: {
+					status: true,
+					classId: parameters.id
+				}
+			});
 
-				this.buildLocalCache(function () {
-					if (Ext.isEmpty(parameters.cardId)) {
-						CMDBuild.core.LoadMask.hide(); // Manual loadMask manage
+			this.setViewTitle(this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.DESCRIPTION));
 
-						this.setViewTitle(this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.DESCRIPTION));
-
-						// Forward to sub-controllers
-						this.controllerForm.cmfg('dataViewFilterFormUiUpdate', { tabToSelect: parameters.tabToSelect });
-						this.controllerGrid.cmfg('dataViewFilterGridUiUpdate', {
-							enableFilterReset: parameters.enableFilterReset,
-							forceStoreLoad: parameters.forceStoreLoad,
-							position: parameters.position,
-							sortersReset: parameters.sortersReset,
-							scope: parameters.scope,
-							callback: parameters.callback
-						});
-					} else {
-						this.readSelectedCardData({
-							cardId: parameters.cardId,
-							className: parameters.className,
-							scope: this,
-							callback: function () {
-								this.readSelectedCardAttributes({
-									scope: this,
-									callback: function () {
-										CMDBuild.core.LoadMask.hide(); // Manual loadMask manage
-
-										// History record save
-										if (!this.cmfg('dataViewSelectedDataViewIsEmpty') && !this.cmfg('dataViewFilterSelectedCardIsEmpty'))
-											CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
-												moduleId: this.cmfg('dataViewIdentifierGet'),
-												entryType: {
-													description: this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.DESCRIPTION),
-													id: this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.ID),
-													object: this.cmfg('dataViewSelectedDataViewGet')
-												},
-												item: {
-													description: this.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.DESCRIPTION)
-														|| this.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.CODE),
-													id: this.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.ID),
-													object: this.cmfg('dataViewFilterSelectedCardGet')
-												}
-											});
-
-										this.setViewTitle(this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.DESCRIPTION));
-
-										// Forward to sub-controllers
-										this.controllerForm.cmfg('dataViewFilterFormUiUpdate', { tabToSelect: parameters.tabToSelect });
-										this.controllerGrid.cmfg('dataViewFilterGridUiUpdate', {
-											enableFilterReset: parameters.enableFilterReset,
-											forceStoreLoad: parameters.forceStoreLoad,
-											position: parameters.position,
-											sortersReset: parameters.sortersReset,
-											scope: parameters.scope,
-											callback: parameters.callback
-										});
-									}
-								});
-							}
-						});
-					}
-				});
-			}
+			// Forward to sub-controllers
+			this.controllerForm.cmfg('dataViewFilterFormUiUpdate', { tabToSelect: 0 });
+			this.controllerGrid.cmfg('dataViewFilterGridUiUpdate');
 		},
 
 		// LocalCacheEntryType property functions
@@ -405,45 +276,6 @@
 		/**
 		 * @returns {Void}
 		 */
-		onDataViewFilterAbortButtonClick: function () {
-			this.cmfg('dataViewFilterFullScreenUiSetup', { maximize: 'top' });
-			this.cmfg('dataViewFilterSelectedCardReset');
-			this.cmfg('dataViewFilterReset');
-			this.cmfg('dataViewFilterUiViewModeSet');
-
-			// Forward to sub-controllers
-			if (this.cmfg('dataViewFilterSelectedCardIsEmpty') && !this.cmfg('dataViewFilterPreviousCardIsEmpty')) // Manage previous selected Card
-				return this.cmfg('dataViewFilterUiUpdate', {
-					cardId: this.cmfg('dataViewFilterPreviousCardGet', CMDBuild.core.constants.Proxy.ID),
-					className: this.cmfg('dataViewFilterPreviousCardGet', CMDBuild.core.constants.Proxy.CLASS_NAME)
-				});
-
-			return this.controllerForm.cmfg('dataViewFilterFormUiUpdate');
-		},
-
-		/**
-		 * @param {Number} id
-		 *
-		 * @returns {Void}
-		 */
-		onDataViewFilterAddButtonClick: function (id) {
-			id = Ext.isNumber(id) && !Ext.isEmpty(id) ? id : this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.ID);
-
-			this.cmfg('dataViewFilterFullScreenUiSetup', { maximize: 'bottom' });
-			this.cmfg('dataViewFilterSelectedCardReset');
-			this.cmfg('dataViewFilterUiViewModeSet', 'add');
-
-			// Forward to sub-controllers
-			this.controllerForm.cmfg('dataViewFilterFormUiUpdate', {
-				classId: id,
-				tabToSelect: 0
-			});
-			this.controllerGrid.cmfg('dataViewFilterGridUiUpdate');
-		},
-
-		/**
-		 * @returns {Void}
-		 */
 		onDataViewFilterCloneButtonClick: function () {
 			this.cmfg('dataViewFilterFullScreenUiSetup', { maximize: 'bottom' });
 			this.cmfg('dataViewFilterUiViewModeSet', 'clone');
@@ -469,23 +301,17 @@
 			this.controllerForm.cmfg('dataViewFilterFormUiUpdate');
 		},
 
-		/**
-		 * @returns {Void}
-		 */
-		dataViewFilterReset: function () {
-			this.controllerForm.cmfg('dataViewFilterFormReset');
-			this.controllerGrid.cmfg('dataViewFilterGridReset');
-		},
-
-		// PreviousCard property functions
+		// PreviousSelection property functions
 			/**
 			 * @param {Array or String} attributePath
 			 *
 			 * @returns {Mixed or undefined}
+			 *
+			 * @private
 			 */
-			dataViewFilterPreviousCardGet: function (attributePath) {
+			dataViewFilterPreviousSelectionGet: function (attributePath) {
 				var parameters = {};
-				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'previousCard';
+				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'previousSelection';
 				parameters[CMDBuild.core.constants.Proxy.ATTRIBUTE_PATH] = attributePath;
 
 				return this.propertyManageGet(parameters);
@@ -495,10 +321,12 @@
 			 * @param {Array or String} attributePath
 			 *
 			 * @returns {Boolean}
+			 *
+			 * @private
 			 */
-			dataViewFilterPreviousCardIsEmpty: function (attributePath) {
+			dataViewFilterPreviousSelectionIsEmpty: function (attributePath) {
 				var parameters = {};
-				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'previousCard';
+				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'previousSelection';
 				parameters[CMDBuild.core.constants.Proxy.ATTRIBUTE_PATH] = attributePath;
 
 				return this.propertyManageIsEmpty(parameters);
@@ -507,8 +335,8 @@
 			/**
 			 * @returns {Void}
 			 */
-			dataViewFilterPreviousCardReset: function () {
-				return this.propertyManageReset('previousCard');
+			dataViewFilterPreviousSelectionReset: function () {
+				return this.propertyManageReset('previousSelection');
 			},
 
 			/**
@@ -518,14 +346,240 @@
 			 *
 			 * @private
 			 */
-			dataViewFilterPreviousCardSet: function (parameters) {
+			dataViewFilterPreviousSelectionSet: function (parameters) {
 				if (Ext.isObject(parameters) && !Ext.Object.isEmpty(parameters)) {
 					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.management.dataView.filter.PreviousCard';
-					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'previousCard';
+					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'previousSelection';
 
 					this.propertyManageSet(parameters);
 				}
 			},
+
+		/**
+		 * @returns {Void}
+		 */
+		dataViewFilterReset: function () {
+			this.controllerForm.cmfg('dataViewFilterFormReset');
+			this.controllerGrid.cmfg('dataViewFilterGridReset');
+		},
+
+		// StartCard property functions
+			/**
+			 * @param {Array or String} attributePath
+			 *
+			 * @returns {Mixed or undefined}
+			 */
+			dataViewFilterStartCardGet: function (attributePath) {
+				var parameters = {};
+				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'startCard';
+				parameters[CMDBuild.core.constants.Proxy.ATTRIBUTE_PATH] = attributePath;
+
+				return this.propertyManageGet(parameters);
+			},
+
+			/**
+			 * @returns {Void}
+			 *
+			 * @private
+			 */
+			dataViewFilterStartCardReset: function () {
+				this.dataViewFilterStartCardSet({
+					value: {
+						status: false
+					}
+				});
+			},
+
+			/**
+			 * @param {Object} parameters
+			 *
+			 * @returns {Void}
+			 *
+			 * @private
+			 */
+			dataViewFilterStartCardSet: function (parameters) {
+				if (Ext.isObject(parameters) && !Ext.Object.isEmpty(parameters)) {
+					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.management.dataView.filter.StartCard';
+					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'startCard';
+
+					this.propertyManageSet(parameters);
+				}
+			},
+
+		/**
+		 * @param {Object} parameters
+		 * @param {Function} parameters.callback
+		 * @param {Number} parameters.cardId
+//		 * @param {String} parameters.className - internal use // TODO: remove
+		 * @param {Boolean} parameters.enableFilterReset // TODO: rename filterReset or filterForceEnabled
+		 * @param {Boolean} parameters.forceStoreLoad // TODO: rename storeLoadForce
+		 * @param {Number} parameters.position // TODO: remove
+		 * @param {Boolean} parameters.sortersReset
+		 * @param {Object} parameters.scope
+		 * @param {Object} parameters.tabToSelect
+		 * @param {String} parameters.viewMode
+		 *
+		 * @returns {Void}
+		 */
+		dataViewFilterUiUpdate: function (parameters) {
+			parameters = Ext.isObject(parameters) ? parameters : {};
+			parameters.cardId = Ext.isNumber(parameters.cardId) ? parameters.cardId : null;
+//			parameters.className = Ext.isString(parameters.className) ? parameters.className
+//				: this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.SOURCE_ENTRY_TYPE_NAME);
+			parameters.viewMode = Ext.isString(parameters.viewMode) ? parameters.viewMode : 'read';
+
+			// Error handling
+				if (this.cmfg('dataViewSelectedDataViewIsEmpty'))
+					return _error('dataViewFilterUiUpdate(): unmanaged selectedDataView property', this, this.cmfg('dataViewSelectedDataViewGet'));
+			// END: Error handling
+
+			// UI reset
+			this.cmfg('dataViewFilterFullScreenUiSetup', { maximize: 'top' });
+			this.cmfg('dataViewFilterUiViewModeSet', parameters.viewMode);
+
+			// Local variables reset
+			this.dataViewFilterPreviousSelectionReset();
+			this.dataViewFilterSelectedCardReset();
+			this.dataViewFilterStartCardReset();
+
+			if (this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.TYPE) == 'filter') {
+				CMDBuild.core.LoadMask.show(); // Manual loadMask manage
+
+				this.readAllEntryTypes(function () {
+					this.readAttributes(function () {
+						this.readCard(parameters.cardId, function () {
+							CMDBuild.core.LoadMask.hide(); // Manual loadMask manage
+
+							this.setViewTitle(this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.DESCRIPTION));
+
+							// Forward to sub-controllers
+							this.controllerForm.cmfg('dataViewFilterFormUiUpdate', { tabToSelect: parameters.tabToSelect });
+							this.controllerGrid.cmfg('dataViewFilterGridUiUpdate', {
+								enableFilterReset: parameters.enableFilterReset,
+								forceStoreLoad: parameters.forceStoreLoad,
+								position: parameters.position,
+								sortersReset: parameters.sortersReset,
+								scope: parameters.scope,
+								callback: parameters.callback
+							});
+						});
+					});
+				});
+			}
+		},
+
+		/**
+		 * @param {Function} callback
+		 *
+		 * @returns {Void}
+		 *
+		 * @private
+		 */
+		readAllEntryTypes: function (callback) {
+			callback = Ext.isFunction(callback) ? callback : Ext.emptyFn;
+
+			var params = {};
+			params[CMDBuild.core.constants.Proxy.ACTIVE] = true;
+
+			CMDBuild.proxy.management.dataView.filter.Filter.readAllEntryTypes({
+				params: params,
+				loadMask: false,
+				scope: this,
+				success: function (response, options, decodedResponse) {
+					decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.CLASSES];
+
+					if (Ext.isArray(decodedResponse) && !Ext.isEmpty(decodedResponse)) {
+						this.dataViewFilterCacheEntryTypeSet(decodedResponse);
+
+						Ext.callback(callback, this);
+					} else {
+						_error('readAllEntryTypes(): unmanaged response', this, decodedResponse);
+					}
+				}
+			});
+		},
+
+		/**
+		 * @param {Function} callback
+		 *
+		 * @returns {Void}
+		 *
+		 * @private
+		 */
+		readAttributes: function (callback) {
+			callback = Ext.isFunction(callback) ? callback : Ext.emptyFn;
+
+			// Error handling
+				if (this.cmfg('dataViewFilterSourceEntryTypeIsEmpty'))
+					return _error('readAttributes(): unmanaged sourceEntryType property', this, this.cmfg('dataViewFilterSourceEntryTypeGet'));
+			// END: Error handling
+
+			var params = {};
+			params[CMDBuild.core.constants.Proxy.ACTIVE] = true;
+			params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.NAME);
+
+			CMDBuild.proxy.management.dataView.filter.Filter.readAttributes({
+				params: params,
+				loadMask: false,
+				scope: this,
+				success: function (response, options, decodedResponse) {
+					decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.ATTRIBUTES];
+
+					if (Ext.isArray(decodedResponse) && !Ext.isEmpty(decodedResponse)) {
+						this.dataViewFilterSourceEntryTypeAttributesSet(decodedResponse);
+
+						Ext.callback(callback, this);
+					} else {
+						_error('readAttributes(): unmanaged response', this, decodedResponse);
+					}
+				}
+			});
+		},
+
+		/**
+		 * @param {Object} parameters
+		 * @param {Object} parameters.callback
+		 * @param {Number} parameters.cardId
+		 * @param {String} parameters.className
+		 * @param {Object} parameters.scope
+		 *
+		 * @returns {Void}
+		 *
+		 * @private
+		 */
+		readCard: function (id, callback) {
+			callback = Ext.isFunction(callback) ? callback : Ext.emptyFn;
+
+			// Error handling
+				if (this.cmfg('dataViewFilterSourceEntryTypeIsEmpty'))
+					return _error('readCard(): unmanaged sourceEntryType property', this, this.cmfg('dataViewFilterSourceEntryTypeGet'));
+			// END: Error handling
+
+			if (Ext.isNumber(id) && !Ext.isEmpty(id)) {
+				var params = {};
+				params[CMDBuild.core.constants.Proxy.CARD_ID] = id;
+				params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.NAME);
+
+				return CMDBuild.proxy.management.dataView.filter.Filter.readCard({
+					params: params,
+					loadMask: false,
+					scope: this,
+					success: function (response, options, decodedResponse) {
+						decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.CARD];
+
+						if (Ext.isObject(decodedResponse) && !Ext.Object.isEmpty(decodedResponse)) {
+							this.dataViewFilterSelectedCardSet({ value: decodedResponse });
+
+							Ext.callback(callback, this);
+						} else {
+							_error('readCard(): unmanaged response', this, decodedResponse);
+						}
+					}
+				});
+			}
+
+			return Ext.callback(callback, this);
+		},
 
 		// SelectedCard property functions
 			/**
@@ -556,6 +610,8 @@
 
 			/**
 			 * @returns {Void}
+			 *
+			 * @private
 			 */
 			dataViewFilterSelectedCardReset: function () {
 				this.propertyManageReset('selectedCard');
@@ -577,179 +633,8 @@
 
 					// Manage previous selected Card
 					if (!this.cmfg('dataViewFilterSelectedCardIsEmpty'))
-						this.dataViewFilterPreviousCardSet({ value: this.cmfg('dataViewFilterSelectedCardGet').getData() });
+						this.dataViewFilterPreviousSelectionSet({ value: this.cmfg('dataViewFilterSelectedCardGet').getData() });
 				}
-			},
-
-		// SelectedCardAttributes property functions
-			/**
-			 * @param {String} name
-			 *
-			 * @returns {Array or CMDBuild.model.management.dataView.filter.Attribute}
-			 */
-			dataViewFilterSelectedCardAttributesGet: function (name) {
-				if (Ext.isString(name) && !Ext.isEmpty(name))
-					return this.selectedCardAttributes[name];
-
-				return Ext.Object.getValues(this.selectedCardAttributes);
-			},
-
-			/**
-			 * @param {String} name
-			 *
-			 * @returns {Boolean}
-			 */
-			dataViewFilterSelectedCardAttributesIsEmpty: function (name) {
-				if (Ext.isString(name) && !Ext.isEmpty(name))
-					return Ext.isEmpty(this.selectedCardAttributes[name]);
-
-				return Ext.isEmpty(this.selectedCardAttributes);
-			},
-
-			/**
-			 * @param {Array} attributes
-			 *
-			 * @returns {Void}
-			 *
-			 * @private
-			 */
-			dataViewFilterSelectedCardAttributesSet: function (attributes) {
-				this.selectedCardAttributes = {};
-
-				if (Ext.isArray(attributes) && !Ext.isEmpty(attributes))
-					Ext.Array.each(attributes, function (attributeObject, i, allAttributeObjects) {
-						if (Ext.isObject(attributeObject) && !Ext.Object.isEmpty(attributeObject))
-							this.selectedCardAttributes[attributeObject[CMDBuild.core.constants.Proxy.NAME]] = Ext.create('CMDBuild.model.management.dataView.filter.Attribute', attributeObject);
-					}, this);
-			},
-
-		/**
-		 * @param {Object} parameters
-		 * @param {Object} parameters.callback
-		 * @param {Object} parameters.scope
-		 *
-		 * @returns {Void}
-		 *
-		 * @private
-		 */
-		readSelectedCardAttributes: function (parameters) {
-			parameters = Ext.isObject(parameters) ? parameters : {};
-			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
-
-			// Error handling
-				if (this.cmfg('dataViewFilterSelectedCardIsEmpty'))
-					return _error('readSelectedCardAttributes(): unmanaged selectedCard property', this, this.cmfg('dataViewFilterSelectedCardGet'));
-			// END: Error handling
-
-			var params = {};
-			params[CMDBuild.core.constants.Proxy.ACTIVE] = true;
-			params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.CLASS_NAME);
-
-			CMDBuild.proxy.management.dataView.filter.Filter.readAttributes({
-				params: params,
-				loadMask: false,
-				scope: this,
-				success: function (response, options, decodedResponse) {
-					decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.ATTRIBUTES];
-
-					if (Ext.isArray(decodedResponse) && !Ext.isEmpty(decodedResponse)) {
-						this.dataViewFilterSelectedCardAttributesSet(decodedResponse);
-
-						if (Ext.isFunction(parameters.callback))
-							Ext.callback(parameters.callback, parameters.scope);
-					} else {
-						_error('readSelectedCardAttributes(): unmanaged response', this, decodedResponse);
-					}
-				}
-			});
-		},
-
-		/**
-		 * @param {Object} parameters
-		 * @param {Object} parameters.callback
-		 * @param {Number} parameters.cardId
-		 * @param {String} parameters.className
-		 * @param {Object} parameters.scope
-		 *
-		 * @returns {Void}
-		 *
-		 * @private
-		 */
-		readSelectedCardData: function (parameters) {
-			parameters = Ext.isObject(parameters) ? parameters : {};
-			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
-
-			// Error handling
-				if (!Ext.isNumber(parameters.cardId) || Ext.isEmpty(parameters.cardId))
-					return _error('readSelectedCardData(): unmanaged cardId parameter', this, parameters.cardId);
-
-				if (!Ext.isString(parameters.className) || Ext.isEmpty(parameters.className))
-					return _error('readSelectedCardData(): unmanaged className parameter', this, parameters.className);
-			// END: Error handling
-
-			var params = {};
-			params[CMDBuild.core.constants.Proxy.CARD_ID] = parameters.cardId;
-			params[CMDBuild.core.constants.Proxy.CLASS_NAME] = parameters.className;
-
-			CMDBuild.proxy.management.dataView.filter.Filter.readCard({
-				params: params,
-				loadMask: false,
-				scope: this,
-				success: function (response, options, decodedResponse) {
-					decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.CARD];
-
-					if (Ext.isObject(decodedResponse) && !Ext.Object.isEmpty(decodedResponse)) {
-						this.dataViewFilterSelectedCardSet({ value: decodedResponse });
-
-						if (Ext.isFunction(parameters.callback))
-							Ext.callback(parameters.callback, parameters.scope);
-					} else {
-						_error('readSelectedCardData(): unmanaged response', this, decodedResponse);
-					}
-				}
-			});
-		},
-
-		// SelectedDataViewAttributes property functions
-			/**
-			 * @param {String} name
-			 *
-			 * @returns {Array or CMDBuild.model.management.dataView.filter.Attribute}
-			 */
-			dataViewFilterSelectedDataViewAttributesGet: function (name) {
-				if (Ext.isString(name) && !Ext.isEmpty(name))
-					return this.selectedDataViewAttributes[name];
-
-				return Ext.Object.getValues(this.selectedDataViewAttributes);
-			},
-
-			/**
-			 * @param {String} name
-			 *
-			 * @returns {Boolean}
-			 */
-			dataViewFilterSelectedDataViewAttributesIsEmpty: function (name) {
-				if (Ext.isString(name) && !Ext.isEmpty(name))
-					return Ext.isEmpty(this.selectedDataViewAttributes[name]);
-
-				return Ext.isEmpty(this.selectedDataViewAttributes);
-			},
-
-			/**
-			 * @param {Array} attributes
-			 *
-			 * @returns {Void}
-			 *
-			 * @private
-			 */
-			dataViewFilterSelectedDataViewAttributesSet: function (attributes) {
-				this.selectedDataViewAttributes = {};
-
-				if (Ext.isArray(attributes) && !Ext.isEmpty(attributes))
-					Ext.Array.each(attributes, function (attributeObject, i, allAttributeObjects) {
-						if (Ext.isObject(attributeObject) && !Ext.Object.isEmpty(attributeObject))
-							this.selectedDataViewAttributes[attributeObject[CMDBuild.core.constants.Proxy.NAME]] = Ext.create('CMDBuild.model.management.dataView.filter.Attribute', attributeObject);
-					}, this);
 			},
 
 		/**
@@ -784,6 +669,48 @@
 			 */
 			dataViewFilterSourceEntryTypeIsEmpty: function () {
 				return !this.dataViewFilterCacheEntryTypeExists({ name: this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.SOURCE_ENTRY_TYPE_NAME) });
+			},
+
+		// SourceEntryTypeAttributes property functions
+			/**
+			 * @param {String} name
+			 *
+			 * @returns {Array or CMDBuild.model.management.dataView.filter.Attribute}
+			 */
+			dataViewFilterSourceEntryTypeAttributesGet: function (name) {
+				if (Ext.isString(name) && !Ext.isEmpty(name))
+					return this.sourceEntryTypeAttributes[name];
+
+				return Ext.Object.getValues(this.sourceEntryTypeAttributes);
+			},
+
+			/**
+			 * @param {String} name
+			 *
+			 * @returns {Boolean}
+			 */
+			dataViewFilterSourceEntryTypeAttributesIsEmpty: function (name) {
+				if (Ext.isString(name) && !Ext.isEmpty(name))
+					return Ext.isEmpty(this.sourceEntryTypeAttributes[name]);
+
+				return Ext.isEmpty(this.sourceEntryTypeAttributes);
+			},
+
+			/**
+			 * @param {Array} attributes
+			 *
+			 * @returns {Void}
+			 *
+			 * @private
+			 */
+			dataViewFilterSourceEntryTypeAttributesSet: function (attributes) {
+				this.sourceEntryTypeAttributes = {};
+
+				if (Ext.isArray(attributes) && !Ext.isEmpty(attributes))
+					Ext.Array.each(attributes, function (attributeObject, i, allAttributeObjects) {
+						if (Ext.isObject(attributeObject) && !Ext.Object.isEmpty(attributeObject))
+							this.sourceEntryTypeAttributes[attributeObject[CMDBuild.core.constants.Proxy.NAME]] = Ext.create('CMDBuild.model.management.dataView.filter.Attribute', attributeObject);
+					}, this);
 			}
 	});
 

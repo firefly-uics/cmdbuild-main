@@ -95,8 +95,8 @@
 					|| this.cmfg('panelGridAndFormListPanelAppliedFilterGet').isEmptyBasic()
 				) {
 					this.cmfg('panelGridAndFormUiUpdate', {
-						filterReset: true,
-						workflowId: this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.ID)
+						entityId: this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.ID),
+						filterReset: true
 					});
 				} else {
 					var appliedFilterModel = this.cmfg('panelGridAndFormListPanelAppliedFilterGet'),
@@ -107,8 +107,8 @@
 					delete appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.FUNCTIONS];
 
 					this.cmfg('panelGridAndFormUiUpdate', {
-						filter: Ext.create('CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter', { configuration: appliedFilterConfigurationObject }),
-						workflowId: this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.ID)
+						entityId: this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.ID),
+						filter: Ext.create('CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter', { configuration: appliedFilterConfigurationObject })
 					});
 				}
 			}
@@ -166,8 +166,8 @@
 				}
 
 				this.cmfg('panelGridAndFormUiUpdate', {
-					filter: filter,
-					workflowId: this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.ID)
+					entityId: this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.ID),
+					filter: filter
 				});
 			} else {
 				this.cmfg('onPanelGridAndFormCommonFilterAdvancedClearButtonClick');

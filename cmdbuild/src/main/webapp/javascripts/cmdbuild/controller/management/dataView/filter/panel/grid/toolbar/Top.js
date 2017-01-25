@@ -91,7 +91,7 @@
 					scope: this,
 
 					handler: function (button, e) {
-						this.cmfg('onDataViewFilterAddButtonClick', this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.ID));
+						this.cmfg('onDataViewFilterAddButtonClick', { id: this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.ID) });
 					},
 
 					/**
@@ -142,7 +142,7 @@
 				// Add handler function only if isn't superclass
 				if (!entryTypeObject.get(CMDBuild.core.constants.Proxy.IS_SUPER_CLASS))
 					menuObject.handler = function (button, e) {
-						this.cmfg('onDataViewFilterAddButtonClick', button.entryTypeId);
+						this.cmfg('onDataViewFilterAddButtonClick', { id: button.entryTypeId });
 					};
 
 				if (Ext.isArray(parent)) {

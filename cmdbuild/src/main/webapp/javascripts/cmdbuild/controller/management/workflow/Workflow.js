@@ -41,12 +41,8 @@
 			'workflowReset',
 			'workflowSelectedActivityGet',
 			'workflowSelectedActivityIsEmpty',
-			'workflowSelectedActivityReset',
 			'workflowSelectedInstanceGet',
 			'workflowSelectedInstanceIsEmpty',
-			'workflowSelectedInstanceReset',
-			'workflowSelectedPreviousActivityGet', // TODO: rename workflowSelectedPreviousGet
-			'workflowSelectedPreviousActivityIsEmpty',
 			'workflowSelectedWorkflowAttributesGet',
 			'workflowSelectedWorkflowAttributesGetAll',
 			'workflowSelectedWorkflowAttributesIsEmpty',
@@ -89,6 +85,13 @@
 		},
 
 		/**
+		 * @property {CMDBuild.model.management.workflow.PreviousActivity}
+		 *
+		 * @private
+		 */
+		previousSelection: undefined,
+
+		/**
 		 * @property {CMDBuild.model.management.workflow.Activity}
 		 *
 		 * @private
@@ -101,13 +104,6 @@
 		 * @private
 		 */
 		selectedInstance: undefined,
-
-		/**
-		 * @property {CMDBuild.model.management.workflow.PreviousActivity}
-		 *
-		 * @private
-		 */
-		selectedPreviousActivity: undefined,
 
 		/**
 		 * @property {CMDBuild.model.management.workflow.Workflow}
@@ -267,10 +263,10 @@
 			this.cmfg('workflowUiViewModeSet');
 
 			// Forward to sub-controllers
-			if (!this.cmfg('workflowSelectedPreviousActivityIsEmpty'))
+			if (!this.workflowPreviousSelectionIsEmpty())
 				return this.cmfg('workflowUiUpdate', {
-					activityId: this.cmfg('workflowSelectedPreviousActivityGet', CMDBuild.core.constants.Proxy.ACTIVITY_ID),
-					instanceId: this.cmfg('workflowSelectedPreviousActivityGet', CMDBuild.core.constants.Proxy.INSTANCE_ID),
+					activityId: this.workflowPreviousSelectionGet(CMDBuild.core.constants.Proxy.ACTIVITY_ID),
+					instanceId: this.workflowPreviousSelectionGet(CMDBuild.core.constants.Proxy.INSTANCE_ID),
 					workflowId: this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.ID)
 				});
 
@@ -281,7 +277,7 @@
 		 * @returns {Void}
 		 */
 		onWorkflowActivityRemoveCallback: function () { // TODO: remove
-			this.cmfg('workflowSelectedActivityReset');
+			this.workflowSelectedActivityReset();
 
 			// Form setup
 			this.controllerForm.cmfg('workflowFormReset');
@@ -312,8 +308,8 @@
 			this.cmfg('workflowUiViewModeSet', 'add');
 
 			// Local variables reset
-			this.cmfg('workflowSelectedActivityReset');
-			this.cmfg('workflowSelectedInstanceReset');
+			this.workflowSelectedActivityReset();
+			this.workflowSelectedInstanceReset();
 			this.workflowStartActivityReset();
 
 			var params = {};
@@ -678,6 +674,62 @@
 					}, this);
 			},
 
+		// PreviousSelection property functions
+			/**
+			 * @param {Array or String} attributePath
+			 *
+			 * @returns {Mixed or undefined}
+			 *
+			 * @private
+			 */
+			workflowPreviousSelectionGet: function (attributePath) {
+				var parameters = {};
+				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'previousSelection';
+				parameters[CMDBuild.core.constants.Proxy.ATTRIBUTE_PATH] = attributePath;
+
+				return this.propertyManageGet(parameters);
+			},
+
+			/**
+			 * @param {Array or String} attributePath
+			 *
+			 * @returns {Boolean}
+			 *
+			 * @private
+			 */
+			workflowPreviousSelectionIsEmpty: function (attributePath) {
+				var parameters = {};
+				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'previousSelection';
+				parameters[CMDBuild.core.constants.Proxy.ATTRIBUTE_PATH] = attributePath;
+
+				return this.propertyManageIsEmpty(parameters);
+			},
+
+			/**
+			 * @returns {Boolean}
+			 *
+			 * @private
+			 */
+			workflowPreviousSelectionReset: function () {
+				return this.propertyManageReset('previousSelection');
+			},
+
+			/**
+			 * @param {Object} parameters
+			 *
+			 * @returns {Void}
+			 *
+			 * @private
+			 */
+			workflowPreviousSelectionSet: function (parameters) {
+				if (Ext.isObject(parameters) && !Ext.Object.isEmpty(parameters)) {
+					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.management.workflow.PreviousActivity';
+					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'previousSelection';
+
+					this.propertyManageSet(parameters);
+				}
+			},
+
 		/**
 		 * @returns {Void}
 		 */
@@ -717,6 +769,8 @@
 			 * @param {Object} parameters
 			 *
 			 * @returns {Void}
+			 *
+			 * @private
 			 */
 			workflowSelectedActivityReset: function (parameters) {
 				this.propertyManageReset('selectedActivity');
@@ -738,13 +792,13 @@
 
 					// Manage previous selected activity
 					if (!this.cmfg('workflowStartActivityGet', CMDBuild.core.constants.Proxy.STATUS)) {
-						var selectedPreviousActivityObject = {};
-						selectedPreviousActivityObject[CMDBuild.core.constants.Proxy.ACTIVITY_ID] = this.cmfg('workflowSelectedActivityGet', CMDBuild.core.constants.Proxy.ID);
-						selectedPreviousActivityObject[CMDBuild.core.constants.Proxy.INSTANCE_ID] = this.cmfg('workflowSelectedInstanceGet', CMDBuild.core.constants.Proxy.ID);
-						selectedPreviousActivityObject[CMDBuild.core.constants.Proxy.METADATA] = this.cmfg('workflowSelectedActivityGet',  CMDBuild.core.constants.Proxy.METADATA);
-						selectedPreviousActivityObject[CMDBuild.core.constants.Proxy.WORKFLOW_NAME] = this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.NAME);
+						var previousSelectionObject = {};
+						previousSelectionObject[CMDBuild.core.constants.Proxy.ACTIVITY_ID] = this.cmfg('workflowSelectedActivityGet', CMDBuild.core.constants.Proxy.ID);
+						previousSelectionObject[CMDBuild.core.constants.Proxy.INSTANCE_ID] = this.cmfg('workflowSelectedInstanceGet', CMDBuild.core.constants.Proxy.ID);
+						previousSelectionObject[CMDBuild.core.constants.Proxy.METADATA] = this.cmfg('workflowSelectedActivityGet',  CMDBuild.core.constants.Proxy.METADATA);
+						previousSelectionObject[CMDBuild.core.constants.Proxy.WORKFLOW_NAME] = this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.NAME);
 
-						this.workflowSelectedPreviousActivitySet({ value: selectedPreviousActivityObject });
+						this.workflowPreviousSelectionSet({ value: previousSelectionObject });
 					}
 				}
 			},
@@ -780,6 +834,8 @@
 			 * @param {Object} parameters
 			 *
 			 * @returns {Void}
+			 *
+			 * @private
 			 */
 			workflowSelectedInstanceReset: function (parameters) {
 				this.propertyManageReset('selectedInstance');
@@ -800,63 +856,11 @@
 					this.propertyManageSet(parameters);
 
 					// Manage previous selected activity
-					var selectedPreviousActivityObject = {};
-					selectedPreviousActivityObject[CMDBuild.core.constants.Proxy.INSTANCE_ID] = this.cmfg('workflowSelectedInstanceGet', CMDBuild.core.constants.Proxy.ID);
-					selectedPreviousActivityObject[CMDBuild.core.constants.Proxy.WORKFLOW_NAME] = this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.NAME);
+					var previousSelectionObject = {};
+					previousSelectionObject[CMDBuild.core.constants.Proxy.INSTANCE_ID] = this.cmfg('workflowSelectedInstanceGet', CMDBuild.core.constants.Proxy.ID);
+					previousSelectionObject[CMDBuild.core.constants.Proxy.WORKFLOW_NAME] = this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.NAME);
 
-					this.workflowSelectedPreviousActivitySet({ value: selectedPreviousActivityObject });
-				}
-			},
-
-		// SelectedPreviousActivity property functions
-			/**
-			 * @param {Array or String} attributePath
-			 *
-			 * @returns {Mixed or undefined}
-			 */
-			workflowSelectedPreviousActivityGet: function (attributePath) {
-				var parameters = {};
-				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedPreviousActivity';
-				parameters[CMDBuild.core.constants.Proxy.ATTRIBUTE_PATH] = attributePath;
-
-				return this.propertyManageGet(parameters);
-			},
-
-			/**
-			 * @param {Array or String} attributePath
-			 *
-			 * @returns {Boolean}
-			 */
-			workflowSelectedPreviousActivityIsEmpty: function (attributePath) {
-				var parameters = {};
-				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedPreviousActivity';
-				parameters[CMDBuild.core.constants.Proxy.ATTRIBUTE_PATH] = attributePath;
-
-				return this.propertyManageIsEmpty(parameters);
-			},
-
-			/**
-			 * @returns {Boolean}
-			 *
-			 * @private
-			 */
-			workflowSelectedPreviousActivityReset: function () {
-				return this.propertyManageReset('selectedPreviousActivity');
-			},
-
-			/**
-			 * @param {Object} parameters
-			 *
-			 * @returns {Void}
-			 *
-			 * @private
-			 */
-			workflowSelectedPreviousActivitySet: function (parameters) {
-				if (Ext.isObject(parameters) && !Ext.Object.isEmpty(parameters)) {
-					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.management.workflow.PreviousActivity';
-					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedPreviousActivity';
-
-					this.propertyManageSet(parameters);
+					this.workflowPreviousSelectionSet({ value: previousSelectionObject });
 				}
 			},
 
@@ -1024,7 +1028,7 @@
 				}
 			},
 
-		// StartActivity flag functions
+		// StartActivity property functions
 			/**
 			 * @param {Array or String} attributePath
 			 *
@@ -1046,8 +1050,7 @@
 			workflowStartActivityReset: function () {
 				this.workflowStartActivitySet({
 					value: {
-						status: false,
-						workflowId: parameters.id
+						status: false
 					}
 				});
 			},
@@ -1092,6 +1095,9 @@
 		 */
 		workflowUiUpdate: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
+
+			parameters.workflowId = Ext.isEmpty(parameters.workflowId) ? parameters.entityId : parameters.workflowId; // Compatibility with panels call
+
 			parameters.activityId = Ext.isString(parameters.activityId) ? parameters.activityId : null;
 			parameters.instanceId = Ext.isNumber(parameters.instanceId) ? parameters.instanceId : null;
 			parameters.metadata = Ext.isArray(parameters.metadata) ? parameters.metadata : [];
@@ -1109,12 +1115,12 @@
 			this.cmfg('workflowUiViewModeSet', parameters.viewMode);
 
 			// Local variables reset
-			this.cmfg('workflowSelectedActivityReset');
-			this.cmfg('workflowSelectedInstanceReset');
-			this.workflowStartActivityReset();
-			this.workflowSelectedPreviousActivityReset();
+			this.workflowPreviousSelectionReset();
+			this.workflowSelectedActivityReset();
+			this.workflowSelectedInstanceReset();
 			this.workflowSelectedWorkflowDefaultFilterReset();
 			this.workflowSelectedWorkflowReset();
+			this.workflowStartActivityReset();
 
 			CMDBuild.core.LoadMask.show();
 

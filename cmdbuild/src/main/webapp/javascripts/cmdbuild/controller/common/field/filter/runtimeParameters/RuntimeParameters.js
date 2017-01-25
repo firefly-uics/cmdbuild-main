@@ -164,8 +164,8 @@
 		 */
 		onFieldFilterRuntimeParametersAbortButtonClick: function () {
 			this.cmfg('panelGridAndFormUiUpdate', {
-				filterReset: true,
-				workflowId: this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.ID)
+				entityId: this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.ID),
+				filterReset: true
 			});
 
 			this.view.close();
@@ -179,8 +179,8 @@
 				this.filter.setRuntimeParameterValue(this.form.getValues());
 
 				this.cmfg('panelGridAndFormUiUpdate', {
-					filter: this.filter,
-					workflowId: this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.ID)
+					entityId: this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.ID),
+					filter: this.filter
 				});
 
 				this.view.close();

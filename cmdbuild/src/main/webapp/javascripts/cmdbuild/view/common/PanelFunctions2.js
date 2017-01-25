@@ -224,7 +224,7 @@
 			parameters = Ext.isObject(parameters) ? parameters : {};
 			parameters.state = Ext.isBoolean(parameters.state) ? parameters.state : false;
 
-			// Dependents from state value
+			// State value dependences
 			parameters.forceToolbarBottomState = Ext.isBoolean(parameters.forceToolbarBottomState) ? parameters.forceToolbarBottomState : !parameters.state;
 			parameters.forceToolbarTopState = Ext.isBoolean(parameters.forceToolbarTopState) ? parameters.forceToolbarTopState : parameters.state;
 
