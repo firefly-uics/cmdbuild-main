@@ -108,7 +108,7 @@
 					},
 					item: {
 						description: card.get('Description') || card.raw['Description'] || card.get('Code') || card.raw['Code'],
-						id: card.get(CMDBuild.core.constants.Proxy.ID),
+						id: card.get('Id'),
 						object: card
 					}
 				});
