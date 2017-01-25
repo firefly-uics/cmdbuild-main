@@ -102,6 +102,8 @@ FIXES
 
  * Shared already related cards on N:N domains
 
+ * Group multiselect returns array with invalid values
+
 
 
 
