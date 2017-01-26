@@ -154,4 +154,17 @@ public interface DmsService {
 
 	Map<String, String> getPresets();
 
+	/**
+	 * Search for all version of a document that matches the specified query.
+	 *
+	 * @param document
+	 *            the document query parameters.
+	 *
+	 * @return the list of found versions.
+	 *
+	 * @throws DmsError
+	 *             if something goes wrong.
+	 */
+	Iterable<StoredDocument> searchVersions(SingleDocumentSearch document);
+
 }

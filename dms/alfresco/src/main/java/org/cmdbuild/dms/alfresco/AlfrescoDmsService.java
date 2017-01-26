@@ -3,6 +3,7 @@ package org.cmdbuild.dms.alfresco;
 import static com.google.common.base.Suppliers.memoize;
 import static com.google.common.base.Suppliers.synchronizedSupplier;
 import static java.lang.String.format;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.cmdbuild.dms.MetadataAutocompletion.NULL_AUTOCOMPLETION_RULES;
@@ -22,6 +23,7 @@ import org.cmdbuild.dms.DocumentTypeDefinition;
 import org.cmdbuild.dms.DocumentUpdate;
 import org.cmdbuild.dms.MetadataAutocompletion;
 import org.cmdbuild.dms.MetadataAutocompletion.AutocompletionRules;
+import org.cmdbuild.dms.SingleDocumentSearch;
 import org.cmdbuild.dms.StorableDocument;
 import org.cmdbuild.dms.StoredDocument;
 import org.cmdbuild.dms.alfresco.ftp.AlfrescoFtpService;
@@ -32,6 +34,8 @@ import org.cmdbuild.dms.exception.DmsError;
 import com.google.common.base.Supplier;
 
 public class AlfrescoDmsService implements DmsService, LoggingSupport, ChangeListener {
+
+	private static final Iterable<StoredDocument> VERSIONING_NOT_SUPPORTED = emptyList();
 
 	private final AlfrescoDmsConfiguration configuration;
 
@@ -198,6 +202,12 @@ public class AlfrescoDmsService implements DmsService, LoggingSupport, ChangeLis
 	@Override
 	public Map<String, String> getPresets() {
 		return emptyMap();
+	}
+
+	@Override
+	public Iterable<StoredDocument> searchVersions(final SingleDocumentSearch document) {
+		logger.warn("versioning is not supported for this implementation");
+		return VERSIONING_NOT_SUPPORTED;
 	}
 
 }

@@ -8,8 +8,10 @@ import static org.cmdbuild.auth.acl.CMGroup.GroupType.restrictedAdmin;
 import static org.cmdbuild.servlets.json.CommunicationConstants.META;
 import static org.cmdbuild.spring.SpringIntegrationUtils.applicationContext;
 
+import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +25,6 @@ import org.cmdbuild.dms.MetadataGroup;
 import org.cmdbuild.dms.StoredDocument;
 import org.cmdbuild.exception.DmsException;
 import org.cmdbuild.logger.Log;
-import org.cmdbuild.logic.auth.AuthenticationLogic;
 import org.cmdbuild.logic.auth.AuthenticationLogic.GroupInfo;
 import org.cmdbuild.logic.dms.DmsLogic;
 import org.cmdbuild.notification.Notifier;
@@ -45,18 +46,12 @@ public class Serializer {
 
 	private static final Iterable<MetadataGroup> NO_METADATA_GROUPS = emptyList();
 
-	private final AuthenticationLogic authenticationLogic;
-
-	public Serializer(final AuthenticationLogic authenticationLogic) {
-		this.authenticationLogic = authenticationLogic;
-	}
-
 	public JSONObject serializeAttachment(final StoredDocument attachment) {
 		final JSONObject serializer = new JSONObject();
 		try {
 			serializer.put("Category", attachment.getCategory());
-			serializer.put("CreationDate", ATTACHMENT_DATE_FOMAT.format(attachment.getCreated()));
-			serializer.put("ModificationDate", ATTACHMENT_DATE_FOMAT.format(attachment.getModified()));
+			serializer.put("CreationDate", format(attachment.getCreated(), ATTACHMENT_DATE_FOMAT));
+			serializer.put("ModificationDate", format(attachment.getModified(), ATTACHMENT_DATE_FOMAT));
 			serializer.put("Author", attachment.getAuthor());
 			serializer.put("Version", attachment.getVersion());
 			serializer.put("Filename", attachment.getName());
@@ -66,6 +61,10 @@ public class Serializer {
 			Log.JSONRPC.error("Error serializing attachment", e);
 		}
 		return serializer;
+	}
+
+	private static String format(final Date date, final Format format) {
+		return (date == null) ? null : format.format(date);
 	}
 
 	private JSONObject serialize(final Iterable<MetadataGroup> metadataGroups) throws JSONException {

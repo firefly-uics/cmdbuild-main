@@ -7,7 +7,9 @@ import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 import static org.apache.chemistry.opencmis.commons.PropertyIds.DESCRIPTION;
 import static org.apache.chemistry.opencmis.commons.PropertyIds.NAME;
 import static org.apache.chemistry.opencmis.commons.PropertyIds.OBJECT_TYPE_ID;
@@ -70,6 +72,7 @@ import org.cmdbuild.dms.MetadataAutocompletion.AutocompletionRules;
 import org.cmdbuild.dms.MetadataDefinition;
 import org.cmdbuild.dms.MetadataGroup;
 import org.cmdbuild.dms.MetadataGroupDefinition;
+import org.cmdbuild.dms.SingleDocumentSearch;
 import org.cmdbuild.dms.StorableDocument;
 import org.cmdbuild.dms.StoredDocument;
 import org.cmdbuild.dms.cmis.Converter.Context;
@@ -417,91 +420,91 @@ public class CmisDmsService implements DmsService, LoggingSupport, ChangeListene
 			logger.debug(MARKER, "got children of '{}'", folder.getPath());
 			for (final CmisObject child : folder.getChildren()) {
 				logger.debug(MARKER, "got a child '{}'", child.getName());
-
 				if (child instanceof Document) {
 					final Document document = (Document) child;
 					logger.debug(MARKER, "child is a '{}' with description '{}'", Document.class,
 							document.getDescription());
-
-					logger.debug(MARKER, "getting paths for '{}'", child.getName());
-					String cmisPath = null;
-					for (final String path : document.getPaths()) {
-						if (cmisPath == null) {
-							cmisPath = path;
-						} else if (!cmisPath.startsWith(folder.getPath()) && path.startsWith(folder.getPath())) {
-							cmisPath = path;
-						}
-					}
-
-					String category = null;
-					if (model().getCategory() != null) {
-						final Property<Object> property = document.getProperty(model().getCategory());
-						if (property != null) {
-							category = converterOf(property.getDefinition()).convertFromCmisValue(session,
-									property.getDefinition(), property.getValue());
-						}
-					}
-
-					String author = null;
-					if (model().getAuthor() != null) {
-						final Property<Object> property = document.getProperty(model().getAuthor());
-						if (property != null) {
-							author = converterOf(property.getDefinition()).convertFromCmisValue(session,
-									property.getDefinition(), property.getValue());
-						}
-					}
-
-					DocumentTypeDefinition documentTypeDefinition = null;
-					logger.info(MARKER, "category of searched document is '{}'", category);
-					if (category != null) {
-						documentTypeDefinition = documentTypeDefinitions.get().get(category);
-					}
-					if (documentTypeDefinition == null) {
-						documentTypeDefinition = definitionsFactory.newDocumentTypeDefinitionWithNoMetadata(category);
-					}
-
-					final List<MetadataGroup> metadataGroups = newArrayList();
-					for (final MetadataGroupDefinition metadataGroupDefinition : documentTypeDefinition
-							.getMetadataGroupDefinitions()) {
-						final List<Metadata> metadataList = newArrayList();
-						for (final MetadataDefinition metadataDefinition : metadataGroupDefinition
-								.getMetadataDefinitions()) {
-							final CmisMetadataDefinition cmisMetadata = (CmisMetadataDefinition) metadataDefinition;
-							final PropertyDefinition<?> propertyDefinition = cmisMetadata.getProperty();
-							final Property<Object> property = document.getProperty(propertyDefinition.getId());
-							logger.info(MARKER, "processing property '{}'", property);
-							if (property != null && property.getValue() != null) {
-								logger.info(MARKER, "value of property is '{}'",
-										Object.class.cast(property.getValue()));
-								final Converter converter = converterOf(propertyDefinition);
-								final String value = converter.convertFromCmisValue(session, propertyDefinition,
-										property.getValue());
-								logger.info(MARKER, "after conversion value of property is '{}'", value);
-								metadataList.add(new CmisMetadata(cmisMetadata.getName(), value));
-							}
-						}
-						metadataGroups.add(new CmisMetadataGroup(metadataGroupDefinition.getName(), metadataList));
-					}
-
-					final StoredDocument storedDocument = new StoredDocument();
-					storedDocument.setPath(cmisPath.toString());
-					storedDocument.setUuid(document.getId());
-					storedDocument.setName(document.getName());
-					storedDocument.setDescription(document.getDescription());
-					storedDocument.setVersion(document.getVersionLabel());
-					storedDocument.setCreated(document.getCreationDate().getTime());
-					storedDocument.setModified(document.getLastModificationDate().getTime());
-					storedDocument.setAuthor(author);
-					storedDocument.setCategory(category);
-					storedDocument.setMetadataGroups(metadataGroups);
-
-					results.add(storedDocument);
+					results.add(convert(session, folder, document));
 				} else {
 					logger.info(MARKER, "child '{}' is not a document '{}'", child.getName(), child.getClass());
 				}
 			}
 		}
 		return results;
+	}
+
+	private StoredDocument convert(final Session session, final Folder folder, final Document document) {
+		logger.debug(MARKER, "getting paths for '{}'", document.getName());
+		String cmisPath = null;
+		for (final String path : document.getPaths()) {
+			if (cmisPath == null) {
+				cmisPath = path;
+			} else if (!cmisPath.startsWith(folder.getPath()) && path.startsWith(folder.getPath())) {
+				cmisPath = path;
+			}
+		}
+
+		String category = null;
+		if (model().getCategory() != null) {
+			final Property<Object> property = document.getProperty(model().getCategory());
+			if (property != null) {
+				category = converterOf(property.getDefinition()).convertFromCmisValue(session, property.getDefinition(),
+						property.getValue());
+			}
+		}
+
+		String author = null;
+		if (model().getAuthor() != null) {
+			final Property<Object> property = document.getProperty(model().getAuthor());
+			if (property != null) {
+				author = converterOf(property.getDefinition()).convertFromCmisValue(session, property.getDefinition(),
+						property.getValue());
+			}
+		}
+
+		DocumentTypeDefinition documentTypeDefinition = null;
+		logger.info(MARKER, "category of searched document is '{}'", category);
+		if (category != null) {
+			documentTypeDefinition = documentTypeDefinitions.get().get(category);
+		}
+		if (documentTypeDefinition == null) {
+			documentTypeDefinition = definitionsFactory.newDocumentTypeDefinitionWithNoMetadata(category);
+		}
+
+		final List<MetadataGroup> metadataGroups = newArrayList();
+		for (final MetadataGroupDefinition metadataGroupDefinition : documentTypeDefinition
+				.getMetadataGroupDefinitions()) {
+			final List<Metadata> metadataList = newArrayList();
+			for (final MetadataDefinition metadataDefinition : metadataGroupDefinition.getMetadataDefinitions()) {
+				final CmisMetadataDefinition cmisMetadata = (CmisMetadataDefinition) metadataDefinition;
+				final PropertyDefinition<?> propertyDefinition = cmisMetadata.getProperty();
+				final Property<Object> property = document.getProperty(propertyDefinition.getId());
+				logger.info(MARKER, "processing property '{}'", property);
+				if (property != null && property.getValue() != null) {
+					logger.info(MARKER, "value of property is '{}'", Object.class.cast(property.getValue()));
+					final Converter converter = converterOf(propertyDefinition);
+					final String value =
+							converter.convertFromCmisValue(session, propertyDefinition, property.getValue());
+					logger.info(MARKER, "after conversion value of property is '{}'", value);
+					metadataList.add(new CmisMetadata(cmisMetadata.getName(), value));
+				}
+			}
+			metadataGroups.add(new CmisMetadataGroup(metadataGroupDefinition.getName(), metadataList));
+		}
+
+		final StoredDocument output = new StoredDocument();
+		output.setPath(cmisPath == null ? null : cmisPath.toString());
+		output.setUuid(document.getId());
+		output.setName(document.getName());
+		output.setDescription(document.getDescription());
+		output.setVersion(document.getVersionLabel());
+		output.setCreated(document.getCreationDate().getTime());
+		output.setModified(document.getLastModificationDate().getTime());
+		output.setAuthor(author);
+		output.setCategory(category);
+		output.setMetadataGroups(metadataGroups);
+		output.setVersionable(document.isVersionable());
+		return output;
 	}
 
 	@Override
@@ -554,7 +557,6 @@ public class CmisDmsService implements DmsService, LoggingSupport, ChangeListene
 				updateDescriptionAndMetadata(document);
 			}
 		}
-
 	}
 
 	@Override
@@ -881,6 +883,23 @@ public class CmisDmsService implements DmsService, LoggingSupport, ChangeListene
 		final Map<String, String> output = newHashMap();
 		for (final XmlModel element : presets().getModels()) {
 			output.put(element.getId(), element.getDescription());
+		}
+		return output;
+	}
+
+	@Override
+	public Iterable<StoredDocument> searchVersions(final SingleDocumentSearch document) {
+		final Session session = createSession();
+		final Folder folder = createFolder(session, document.getPath());
+		requireNonNull(folder, "cannot create folder");
+		final Iterable<StoredDocument> output;
+		final Document pwc = getDocument(session, document.getPath(), document.getFileName());
+		if (pwc.isVersionable()) {
+			output = pwc.getAllVersions().stream() //
+					.map(input -> convert(session, folder, input)) //
+					.collect(toList());
+		} else {
+			output = emptyList();
 		}
 		return output;
 	}

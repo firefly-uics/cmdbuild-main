@@ -42,6 +42,7 @@ import org.cmdbuild.dms.DocumentSearch;
 import org.cmdbuild.dms.DocumentTypeDefinition;
 import org.cmdbuild.dms.DocumentUpdate;
 import org.cmdbuild.dms.MetadataAutocompletion.AutocompletionRules;
+import org.cmdbuild.dms.SingleDocumentSearch;
 import org.cmdbuild.dms.StorableDocument;
 import org.cmdbuild.dms.StoredDocument;
 import org.cmdbuild.dms.exception.DmsError;
@@ -206,6 +207,16 @@ public class DefaultDmsLogic implements DmsLogic {
 					}
 
 				}).first();
+	}
+
+	@Override
+	public Iterable<StoredDocument> searchVersions(final String className, final Long cardId, final String filename) {
+		if (!search(className, cardId, filename).isPresent()) {
+			throw DMS_ATTACHMENT_NOTFOUND.createException(filename, className, cardId.toString());
+		}
+		final SingleDocumentSearch document = createDocumentFactory(className) //
+				.createSingleDocumentSearch(className, cardId, filename);
+		return service.searchVersions(document);
 	}
 
 	@Override

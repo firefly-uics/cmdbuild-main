@@ -124,7 +124,7 @@ public class ModSecurity extends JSONBaseWithSpringContext {
 		final JSONArray groups = new JSONArray();
 
 		for (final CMGroup group : allGroups) {
-			final JSONObject jsonGroup = new Serializer(authLogic()).serialize(group);
+			final JSONObject jsonGroup = new Serializer().serialize(group);
 			groups.put(jsonGroup);
 		}
 
@@ -168,7 +168,7 @@ public class ModSecurity extends JSONBaseWithSpringContext {
 		}
 
 		final JSONObject out = new JSONObject();
-		out.put(GROUP, new Serializer(authLogic()).serialize(createdOrUpdatedGroup));
+		out.put(GROUP, new Serializer().serialize(createdOrUpdatedGroup));
 		return out;
 	}
 
@@ -181,7 +181,7 @@ public class ModSecurity extends JSONBaseWithSpringContext {
 		final CMGroup group = groupsLogic().setGroupActive(groupId, active);
 
 		final JSONObject out = new JSONObject();
-		out.put(GROUP, new Serializer(authLogic()).serialize(group));
+		out.put(GROUP, new Serializer().serialize(group));
 		return out;
 	}
 
@@ -664,7 +664,7 @@ public class ModSecurity extends JSONBaseWithSpringContext {
 		for (final String name : user.getGroupNames()) {
 			groupsForLogin.add(authLogic.getGroupInfoForGroup(name));
 		}
-		final JSONArray jsonGroupList = new Serializer(authLogic()).serializeGroupsForUser(user, groupsForLogin);
+		final JSONArray jsonGroupList = new Serializer().serializeGroupsForUser(user, groupsForLogin);
 
 		final JSONObject out = new JSONObject();
 		out.put(RESPONSE, jsonGroupList);

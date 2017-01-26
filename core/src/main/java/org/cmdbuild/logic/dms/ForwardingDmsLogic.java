@@ -63,6 +63,11 @@ public abstract class ForwardingDmsLogic extends ForwardingObject implements Dms
 	}
 
 	@Override
+	public Iterable<StoredDocument> searchVersions(final String className, final Long cardId, final String filename) {
+		return delegate().searchVersions(className, cardId, filename);
+	}
+
+	@Override
 	public void create(final String author, final String className, final Long cardId, final InputStream inputStream,
 			final String fileName, final Metadata metadata) throws IOException, CMDBException {
 		delegate().create(author, className, cardId, inputStream, fileName, metadata);

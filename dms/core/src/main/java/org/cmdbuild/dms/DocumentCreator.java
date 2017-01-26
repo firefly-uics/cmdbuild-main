@@ -8,6 +8,11 @@ public interface DocumentCreator {
 			String className, //
 			Long cardId);
 
+	SingleDocumentSearch createSingleDocumentSearch( //
+			String className, //
+			Long cardId, //
+			String filename);
+
 	StorableDocument createStorableDocument( //
 			String author, //
 			String className, //

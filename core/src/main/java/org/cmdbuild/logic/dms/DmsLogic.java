@@ -88,6 +88,8 @@ public interface DmsLogic extends Logic {
 
 	Optional<StoredDocument> search(String className, Long cardId, String fileName);
 
+	Iterable<StoredDocument> searchVersions(String className, Long cardId, String filename);
+
 	void create(String author, String className, Long cardId, InputStream inputStream, String fileName,
 			Metadata metadata) throws IOException, CMDBException;
 

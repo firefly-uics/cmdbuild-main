@@ -42,7 +42,34 @@ public class DefaultDocumentCreator implements DocumentCreator {
 			}
 
 		};
+	}
 
+	@Override
+	public SingleDocumentSearch createSingleDocumentSearch(final String className, final Long cardId,
+			final String filename) {
+		return new SingleDocumentSearch() {
+
+			@Override
+			public String getClassName() {
+				return className;
+			}
+
+			@Override
+			public Long getCardId() {
+				return cardId;
+			}
+
+			@Override
+			public String getFileName() {
+				return filename;
+			}
+
+			@Override
+			public List<String> getPath() {
+				return path(cardId);
+			}
+
+		};
 	}
 
 	@Override

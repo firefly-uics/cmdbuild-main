@@ -88,4 +88,9 @@ public abstract class ForwardingDmsService extends ForwardingObject implements D
 		return delegate().getPresets();
 	}
 
+	@Override
+	public Iterable<StoredDocument> searchVersions(final SingleDocumentSearch document) {
+		return delegate().searchVersions(document);
+	}
+
 }

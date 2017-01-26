@@ -13,6 +13,7 @@ public class StoredDocument {
 	private Date modified;
 	private String category;
 	private Iterable<MetadataGroup> metadataGroups;
+	private boolean versionable;
 
 	private String path;
 
@@ -96,60 +97,12 @@ public class StoredDocument {
 		this.metadataGroups = metadataGroups;
 	}
 
-	/*
-	 * here are the things alfresco returns when searching for something (at
-	 * least the things i think are useful)
-	 * 
-	 * {http://www.alfresco.org/model/content/1.0}name :
-	 * cmdb.20070307.backup.sql
-	 * 
-	 * 
-	 * {http://www.alfresco.org/model/system/1.0}node-dbid : 2680
-	 * 
-	 * {http://www.alfresco.org/model/content/1.0}modified :
-	 * 2007-09-25T15:45:58.346+02:00
-	 * 
-	 * {http://www.alfresco.org/model/content/1.0}initialVersion : true
-	 * 
-	 * {http://www.alfresco.org/model/content/1.0}description :
-	 * cmdb.20070307.backup.sql
-	 * 
-	 * {http://www.alfresco.org/model/system/1.0}node-uuid :
-	 * a02cf3a3-6b6d-11dc-8bb4-c5afb2bb3313
-	 * 
-	 * {http://www.alfresco.org/model/content/1.0}autoVersion : true
-	 * 
-	 * {http://www.alfresco.org/model/system/1.0}store-protocol : workspace
-	 * 
-	 * {http://www.alfresco.org/model/content/1.0}modifier : admin
-	 * 
-	 * {http://www.alfresco.org/model/content/1.0}title :
-	 * cmdb.20070307.backup.sql
-	 * 
-	 * {http://www.alfresco.org/model/content/1.0}content :
-	 * contentUrl=store://2007
-	 * /9/25/15/45/a03cd226-6b6d-11dc-8bb4-c5afb2bb3313.bin
-	 * |mimetype=text/plain|size=15364335|encoding=UTF-8|locale=en_AU_
-	 * 
-	 * {http://www.alfresco.org/model/system/1.0}store-identifier : SpacesStore
-	 * 
-	 * {http://www.alfresco.org/model/content/1.0}created :
-	 * 2007-09-25T15:45:49.800+02:00
-	 * 
-	 * {http://www.alfresco.org/model/content/1.0}versionLabel : 1.0
-	 * 
-	 * {http://www.alfresco.org/model/content/1.0}creator : admin
-	 * 
-	 * {http://www.alfresco.org/model/content/1.0}path :
-	 * /{http://www.alfresco.org
-	 * /model/application/1.0}company_home/{http://www.alfresco
-	 * .org/model/application
-	 * /1.0}user_homes/{http://www.alfresco.org/model/content
-	 * /1.0}CMDBuild/{http:
-	 * //www.alfresco.org/model/content/1.0}test/{http://www.
-	 * alfresco.org/model/content
-	 * /1.0}asset/{http://www.alfresco.org/model/content
-	 * /1.0}aClassName/{http://www
-	 * .alfresco.org/model/content/1.0}cmdb.20070307.backup.sql
-	 */
+	public boolean isVersionable() {
+		return versionable;
+	}
+
+	public void setVersionable(final boolean versionable) {
+		this.versionable = versionable;
+	}
+
 }

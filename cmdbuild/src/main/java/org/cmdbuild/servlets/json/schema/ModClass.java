@@ -152,13 +152,13 @@ public class ModClass extends JSONBaseWithSpringContext {
 		final JSONArray serializedClasses = new JSONArray();
 		for (final CMClass cmClass : classesToBeReturned) {
 			final JSONObject classObject = classSerializer().toClient(cmClass);
-			new Serializer(authLogic()).addAttachmentsData(classObject, cmClass, dmsLogic(), notifier());
+			new Serializer().addAttachmentsData(classObject, cmClass, dmsLogic(), notifier());
 			serializedClasses.put(classObject);
 		}
 
 		for (final UserProcessClass userProcessClass : processClasses) {
 			final JSONObject classObject = classSerializer().toClient(userProcessClass, activeOnly);
-			new Serializer(authLogic()).addAttachmentsData(classObject, userProcessClass, dmsLogic(), notifier());
+			new Serializer().addAttachmentsData(classObject, userProcessClass, dmsLogic(), notifier());
 			serializedClasses.put(classObject);
 
 			// do this check only for the request
@@ -222,7 +222,7 @@ public class ModClass extends JSONBaseWithSpringContext {
 
 	private JSONObject serialize(final CMClass value) throws JSONException {
 		final JSONObject output = classSerializer().toClient(value);
-		new Serializer(authLogic()).addAttachmentsData(output, value, dmsLogic(), notifier());
+		new Serializer().addAttachmentsData(output, value, dmsLogic(), notifier());
 		return output;
 	}
 

@@ -105,6 +105,12 @@ public class PrivilegedDmsLogic extends ForwardingDmsLogic {
 	}
 
 	@Override
+	public Iterable<StoredDocument> searchVersions(final String className, final Long cardId, final String filename) {
+		assureReadPrivilege(className);
+		return delegate().searchVersions(className, cardId, filename);
+	}
+
+	@Override
 	public void create(final String author, final String className, final Long cardId, final InputStream inputStream,
 			final String fileName, final Metadata metadata) throws IOException, CMDBException {
 		assureWritePrivilege(className);

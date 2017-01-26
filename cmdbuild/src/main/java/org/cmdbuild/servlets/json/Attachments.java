@@ -148,7 +148,7 @@ public class Attachments extends JSONBaseWithSpringContext {
 		final List<StoredDocument> attachments = dmsLogic().search(className, cardId);
 		final JSONArray rows = new JSONArray();
 		for (final StoredDocument attachment : attachments) {
-			rows.put(new Serializer(authLogic()).serializeAttachment(attachment));
+			rows.put(new Serializer().serializeAttachment(attachment));
 		}
 
 		final JSONObject out = new JSONObject();
@@ -280,6 +280,20 @@ public class Attachments extends JSONBaseWithSpringContext {
 		final List<Preset> elements = dmsLogic().presets().entrySet().stream()
 				.map(t -> new Preset(t.getKey(), t.getValue())).collect(Collectors.toList());
 		return JsonResponse.success(elements);
+	}
+
+	@JSONExported
+	public JSONObject getAttachmentVersions( //
+			@Parameter(CLASS_NAME) final String className, //
+			@Parameter(CARD_ID) final Long cardId, //
+			@Parameter("Filename") final String filename //
+	) throws JSONException, CMDBException {
+		final JSONArray rows = new JSONArray();
+		dmsLogic().searchVersions(className, cardId, filename) //
+				.forEach(input -> rows.put(new Serializer().serializeAttachment(input)));
+		final JSONObject out = new JSONObject();
+		out.put("rows", rows);
+		return out;
 	}
 
 }

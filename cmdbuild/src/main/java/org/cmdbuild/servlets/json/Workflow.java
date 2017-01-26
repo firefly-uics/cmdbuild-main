@@ -137,7 +137,7 @@ public class Workflow extends JSONBaseWithSpringContext {
 
 	private JSONObject serialize(final UserProcessClass value) throws JSONException, CMWorkflowException {
 		final JSONObject output = classSerializer().toClient(value, true);
-		new Serializer(authLogic()).addAttachmentsData(output, value, dmsLogic(), notifier());
+		new Serializer().addAttachmentsData(output, value, dmsLogic(), notifier());
 		return output;
 	}
 
