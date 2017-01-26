@@ -1,6 +1,5 @@
 package unit.logic.dms;
 
-import static java.util.Arrays.asList;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -10,9 +9,10 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import org.cmdbuild.dms.MetadataGroup;
+import org.apache.commons.io.input.NullInputStream;
 import org.cmdbuild.exception.AuthException;
 import org.cmdbuild.logic.dms.DmsLogic;
+import org.cmdbuild.logic.dms.DmsLogic.Metadata;
 import org.cmdbuild.logic.dms.PrivilegedDmsLogic;
 import org.cmdbuild.logic.dms.PrivilegedDmsLogic.DmsPrivileges;
 import org.junit.Before;
@@ -83,32 +83,29 @@ public class PrivilegedDmsLogicTest {
 	}
 
 	@Test(expected = AuthException.class)
-	public void noWritePrivilegeWhenUploading() throws Exception {
+	public void noWritePrivilegeWhenCreating() throws Exception {
 		// given
 		doReturn(false).when(dmsPrivileges).writable(anyString());
 		final InputStream inputStream = new ByteArrayInputStream(new byte[0]);
-		final Iterable<MetadataGroup> metadataGroups = asList();
+		final Metadata metadata = mock(Metadata.class);
 
 		// when
-		underTest.upload("the author", "foo", 42L, inputStream, "the filename", "the category", "the description",
-				metadataGroups);
+		underTest.create("the author", "foo", 42L, inputStream, "the filename", metadata);
 	}
 
 	@Test
-	public void writePrivilegeWhenUploading() throws Exception {
+	public void writePrivilegeWhenCreating() throws Exception {
 		// given
 		doReturn(true).when(dmsPrivileges).writable(anyString());
 		final InputStream inputStream = new ByteArrayInputStream(new byte[0]);
-		final Iterable<MetadataGroup> metadataGroups = asList();
+		final Metadata metadata = mock(Metadata.class);
 
 		// when
-		underTest.upload("the author", "foo", 42L, inputStream, "the filename", "the category", "the description",
-				metadataGroups);
+		underTest.create("the author", "foo", 42L, inputStream, "the filename", metadata);
 
 		// then
 		verify(dmsPrivileges).writable("foo");
-		verify(delegate).upload("the author", "foo", 42L, inputStream, "the filename", "the category",
-				"the description", metadataGroups);
+		verify(delegate).create("the author", "foo", 42L, inputStream, "the filename", metadata);
 		verifyNoMoreInteractions(delegate, dmsPrivileges);
 	}
 
@@ -136,30 +133,29 @@ public class PrivilegedDmsLogicTest {
 	}
 
 	@Test(expected = AuthException.class)
-	public void noWritePrivilegeWhenUpdatingMetadata() throws Exception {
+	public void noWritePrivilegeWhenUpdating() throws Exception {
 		// given
 		doReturn(false).when(dmsPrivileges).writable(anyString());
-		final Iterable<MetadataGroup> metadataGroups = asList();
+		final InputStream inputStream = new NullInputStream(42);
+		final Metadata metadata = mock(Metadata.class);
 
 		// when
-		underTest.updateDescriptionAndMetadata("dummy user", "foo", 42L, "the filename", "the category", "the description",
-				metadataGroups);
+		underTest.update("dummy user", "foo", 42L, inputStream, "the filename", metadata);
 	}
 
 	@Test
 	public void writePrivilegeWhenUpdatingMetadata() throws Exception {
 		// given
 		doReturn(true).when(dmsPrivileges).writable(anyString());
-		final Iterable<MetadataGroup> metadataGroups = asList();
+		final InputStream inputStream = new NullInputStream(42);
+		final Metadata metadata = mock(Metadata.class);
 
 		// when
-		underTest.updateDescriptionAndMetadata("dummy user", "foo", 42L, "the filename", "the category", "the description",
-				metadataGroups);
+		underTest.update("dummy user", "foo", 42L, inputStream, "the filename", metadata);
 
 		// then
 		verify(dmsPrivileges).writable("foo");
-		verify(delegate).updateDescriptionAndMetadata("dummy user", "foo", 42L, "the filename", "the category", "the description",
-				metadataGroups);
+		verify(delegate).update("dummy user", "foo", 42L, inputStream, "the filename", metadata);
 		verifyNoMoreInteractions(delegate, dmsPrivileges);
 	}
 

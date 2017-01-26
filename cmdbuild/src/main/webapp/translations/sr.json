@@ -382,6 +382,7 @@
 			"CLASS_NOTFOUND": "Klasa {0} ne postoji",
 			"CQL_COMPILATION_FAILED": "CQL upit nije validan",
 			"DMS_ATTACHMENT_DELETE_ERROR": "Brisanje priloga nije uspelo",
+			"DMS_ATTACHMENT_FOUND": "<em>Attachment {0} already existing for card {2} of {1}</em>",
 			"DMS_ATTACHMENT_NOTFOUND": "Prilog {0} za objekat {2} u {1} ne postoji",
 			"DMS_ATTACHMENT_UPLOAD_ERROR": "Dodavanje priloga nije uspelo",
 			"DMS_AUTOCOMPLETION_RULES_ERROR": "Nije moguće učitati pravila za automatsko dovršavanjeza priloge {0}",

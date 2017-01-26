@@ -13,6 +13,7 @@ import javax.activation.DataHandler;
 import org.apache.commons.lang3.Validate;
 import org.cmdbuild.dms.MetadataGroup;
 import org.cmdbuild.logic.Action;
+import org.cmdbuild.logic.dms.DmsLogic.Metadata;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
@@ -115,15 +116,30 @@ public class StoreDocument implements Action {
 	public void execute() {
 		for (final Document document : documents) {
 			try {
-				dmsLogic.upload( //
+				dmsLogic.create( //
 						AUTHOR, //
 						classname, //
 						id, //
 						document.getDataHandler().getInputStream(), //
 						document.getName(), //
-						category, //
-						NO_DESCRIPTION, //
-						metadataGroups);
+						new Metadata() {
+
+							@Override
+							public String category() {
+								return category;
+							}
+
+							@Override
+							public String description() {
+								return NO_DESCRIPTION;
+							}
+
+							@Override
+							public Iterable<MetadataGroup> metadataGroups() {
+								return metadataGroups;
+							}
+
+						});
 			} catch (final Exception e) {
 				logger.error(marker, "error storing document", e);
 			}

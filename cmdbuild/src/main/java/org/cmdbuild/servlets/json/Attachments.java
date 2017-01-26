@@ -2,6 +2,8 @@ package org.cmdbuild.servlets.json;
 
 import static org.cmdbuild.servlets.json.CommunicationConstants.CARD_ID;
 import static org.cmdbuild.servlets.json.CommunicationConstants.CLASS_NAME;
+import static org.cmdbuild.servlets.json.CommunicationConstants.DESCRIPTION;
+import static org.cmdbuild.servlets.json.CommunicationConstants.ID;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,12 +24,14 @@ import org.cmdbuild.dms.MetadataGroupDefinition;
 import org.cmdbuild.dms.StoredDocument;
 import org.cmdbuild.exception.CMDBException;
 import org.cmdbuild.exception.DmsException;
+import org.cmdbuild.logic.dms.DmsLogic;
 import org.cmdbuild.services.json.dto.JsonResponse;
 import org.cmdbuild.servlets.json.serializers.Attachments.JsonAttachmentsContext;
 import org.cmdbuild.servlets.json.serializers.Attachments.JsonCategoryDefinition;
 import org.cmdbuild.servlets.json.serializers.Serializer;
 import org.cmdbuild.servlets.utils.Parameter;
 import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONArray;
@@ -37,6 +41,86 @@ import org.json.JSONObject;
 import com.google.common.collect.Lists;
 
 public class Attachments extends JSONBaseWithSpringContext {
+
+	private static class MetadataImpl implements DmsLogic.Metadata {
+
+		private final String category;
+		private final String description;
+		private final Map<String, Map<String, Object>> metadataValues;
+		private final DocumentTypeDefinition documentTypeDefinition;
+
+		private MetadataImpl(final String category, final String description,
+				final Map<String, Map<String, Object>> metadataValues,
+				final DocumentTypeDefinition documentTypeDefinition) {
+			this.category = category;
+			this.description = description;
+			this.metadataValues = metadataValues;
+			this.documentTypeDefinition = documentTypeDefinition;
+		}
+
+		@Override
+		public String category() {
+			return category;
+		}
+
+		@Override
+		public String description() {
+			return description;
+		}
+
+		@Override
+		public Iterable<MetadataGroup> metadataGroups() {
+			return metadataGroupsFrom(documentTypeDefinition, metadataValues);
+		}
+
+		private static List<MetadataGroup> metadataGroupsFrom(final DocumentTypeDefinition documentTypeDefinition,
+				final Map<String, Map<String, Object>> metadataValues) {
+			final List<MetadataGroup> metadataGroups = Lists.newArrayList();
+			for (final MetadataGroupDefinition metadataGroupDefinition : documentTypeDefinition
+					.getMetadataGroupDefinitions()) {
+				final String groupMame = metadataGroupDefinition.getName();
+				final Map<String, Object> allMetadataMap = metadataValues.get(groupMame);
+				if (allMetadataMap == null) {
+					continue;
+				}
+
+				metadataGroups.add(new MetadataGroup() {
+
+					@Override
+					public String getName() {
+						return groupMame;
+					}
+
+					@Override
+					public Iterable<Metadata> getMetadata() {
+						final List<Metadata> metadata = Lists.newArrayList();
+						for (final MetadataDefinition metadataDefinition : metadataGroupDefinition
+								.getMetadataDefinitions()) {
+							final String metadataName = metadataDefinition.getName();
+							final Object rawValue = allMetadataMap.get(metadataName);
+							metadata.add(new Metadata() {
+
+								@Override
+								public String getName() {
+									return metadataName;
+								}
+
+								@Override
+								public String getValue() {
+									return (rawValue == null) ? StringUtils.EMPTY : rawValue.toString();
+								}
+
+							});
+						}
+						return metadata;
+					}
+				});
+
+			}
+			return metadataGroups;
+		}
+
+	}
 
 	private static final ObjectMapper mapper = new ObjectMapper();
 
@@ -77,7 +161,7 @@ public class Attachments extends JSONBaseWithSpringContext {
 			@Parameter("Filename") final String filename, //
 			@Parameter(CLASS_NAME) final String className, //
 			@Parameter(CARD_ID) final Long cardId //
-	) throws JSONException, CMDBException {
+	) throws CMDBException {
 
 		return dmsLogic().download(className, cardId, filename);
 	}
@@ -90,19 +174,17 @@ public class Attachments extends JSONBaseWithSpringContext {
 			@Parameter("Metadata") final String jsonMetadataValues, //
 			@Parameter(CLASS_NAME) final String className, //
 			@Parameter(CARD_ID) final Long cardId //
-	) throws JSONException, CMDBException, IOException {
+	) throws CMDBException, IOException {
 
 		final Map<String, Map<String, Object>> metadataValues = metadataValuesFromJson(jsonMetadataValues);
 		final String username = operationUser().getAuthenticatedUser().getUsername();
-		dmsLogic().upload( //
+		dmsLogic().create( //
 				username, //
 				className, //
 				cardId, //
 				file.getInputStream(), //
 				removeFilePath(file.getName()), //
-				category, //
-				description, //
-				metadataGroupsFrom(categoryDefinition(category), metadataValues) //
+				new MetadataImpl(category, description, metadataValues, categoryDefinition(category)) //
 		);
 	}
 
@@ -119,69 +201,23 @@ public class Attachments extends JSONBaseWithSpringContext {
 	@JSONExported
 	public void modifyAttachment( //
 			@Parameter("Filename") final String filename, //
+			@Parameter(value = "File", required = false) final FileItem file, //
 			@Parameter("Category") final String category, //
 			@Parameter("Description") final String description, //
 			@Parameter("Metadata") final String jsonMetadataValues, //
 			@Parameter(CLASS_NAME) final String className, //
 			@Parameter(CARD_ID) final Long cardId //
-	) throws JSONException, CMDBException, IOException {
+	) throws CMDBException, IOException {
 
 		final Map<String, Map<String, Object>> metadataValues = metadataValuesFromJson(jsonMetadataValues);
-		dmsLogic().updateDescriptionAndMetadata( //
+		dmsLogic().update( //
 				operationUser().getAuthenticatedUser().getUsername(), //
 				className, //
 				cardId, //
+				file == null ? null : file.getInputStream(), //
 				filename, //
-				category, //
-				description, //
-				metadataGroupsFrom(categoryDefinition(category), metadataValues));
-	}
-
-	private List<MetadataGroup> metadataGroupsFrom(final DocumentTypeDefinition documentTypeDefinition,
-			final Map<String, Map<String, Object>> metadataValues) {
-		final List<MetadataGroup> metadataGroups = Lists.newArrayList();
-		for (final MetadataGroupDefinition metadataGroupDefinition : documentTypeDefinition
-				.getMetadataGroupDefinitions()) {
-			final String groupMame = metadataGroupDefinition.getName();
-			final Map<String, Object> allMetadataMap = metadataValues.get(groupMame);
-			if (allMetadataMap == null) {
-				continue;
-			}
-
-			metadataGroups.add(new MetadataGroup() {
-
-				@Override
-				public String getName() {
-					return groupMame;
-				}
-
-				@Override
-				public Iterable<Metadata> getMetadata() {
-					final List<Metadata> metadata = Lists.newArrayList();
-					for (final MetadataDefinition metadataDefinition : metadataGroupDefinition
-							.getMetadataDefinitions()) {
-						final String metadataName = metadataDefinition.getName();
-						final Object rawValue = allMetadataMap.get(metadataName);
-						metadata.add(new Metadata() {
-
-							@Override
-							public String getName() {
-								return metadataName;
-							}
-
-							@Override
-							public String getValue() {
-								return (rawValue == null) ? StringUtils.EMPTY : rawValue.toString();
-							}
-
-						});
-					}
-					return metadata;
-				}
-			});
-
-		}
-		return metadataGroups;
+				new MetadataImpl(category, description, metadataValues, categoryDefinition(category)) //
+		);
 	}
 
 	@JSONExported
@@ -189,7 +225,7 @@ public class Attachments extends JSONBaseWithSpringContext {
 			@Parameter("Filename") final String filename, //
 			@Parameter(CLASS_NAME) final String className, //
 			@Parameter(CARD_ID) final Long cardId //
-	) throws JSONException, CMDBException, IOException {
+	) throws CMDBException {
 
 		dmsLogic().delete(className, cardId, filename);
 	}
@@ -227,10 +263,12 @@ public class Attachments extends JSONBaseWithSpringContext {
 			this.description = description;
 		}
 
+		@JsonProperty(ID)
 		public String getId() {
 			return id;
 		}
 
+		@JsonProperty(DESCRIPTION)
 		public String getDescription() {
 			return description;
 		}
@@ -238,8 +276,9 @@ public class Attachments extends JSONBaseWithSpringContext {
 	}
 
 	@JSONExported
-	public JsonResponse getPresets() throws JSONException, CMDBException {
-		final List<Preset> elements = dmsLogic().presets().entrySet().stream().map(t->new Preset(t.getKey(), t.getValue())).collect(Collectors.toList());
+	public JsonResponse getPresets() throws CMDBException {
+		final List<Preset> elements = dmsLogic().presets().entrySet().stream()
+				.map(t -> new Preset(t.getKey(), t.getValue())).collect(Collectors.toList());
 		return JsonResponse.success(elements);
 	}
 

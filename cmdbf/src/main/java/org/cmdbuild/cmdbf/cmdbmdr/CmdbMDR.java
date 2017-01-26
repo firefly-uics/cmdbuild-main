@@ -108,6 +108,7 @@ import org.cmdbuild.data.store.lookup.Lookup;
 import org.cmdbuild.data.store.lookup.LookupType;
 import org.cmdbuild.dms.DmsConfiguration;
 import org.cmdbuild.dms.DocumentTypeDefinition;
+import org.cmdbuild.dms.MetadataGroup;
 import org.cmdbuild.dms.StoredDocument;
 import org.cmdbuild.logger.Log;
 import org.cmdbuild.logic.GISLogic;
@@ -116,6 +117,7 @@ import org.cmdbuild.logic.data.access.DataAccessLogic;
 import org.cmdbuild.logic.data.access.RelationDTO;
 import org.cmdbuild.logic.data.lookup.LookupLogic;
 import org.cmdbuild.logic.dms.DmsLogic;
+import org.cmdbuild.logic.dms.DmsLogic.Metadata;
 import org.cmdbuild.model.data.Card;
 import org.cmdbuild.model.gis.LayerMetadata;
 import org.cmdbuild.services.PatchManager;
@@ -183,8 +185,8 @@ public class CmdbMDR implements ManagementDataRepository {
 	private static final String ENTRY_RECORDID_PREFIX = "entry:";
 	private static final String DOCUMENT_RECORDID_PREFIX = "doc:";
 	private static final String GEO_RECORDID_PREFIX = "geo:";
-	private static final QName LAST_MODIFIED = new QName("http://schemas.dmtf.org/cmdbf/1/tns/serviceData",
-			"lastModified");
+	private static final QName LAST_MODIFIED =
+			new QName("http://schemas.dmtf.org/cmdbf/1/tns/serviceData", "lastModified");
 	private static final QName END_DATE = new QName("http://www.cmdbuild.org/cmdbf/1/tns/serviceData", "endDate");
 
 	private final XmlRegistry xmlRegistry;
@@ -218,8 +220,8 @@ public class CmdbMDR implements ManagementDataRepository {
 		}
 
 		@Override
-		protected Collection<CMDBfRelationship> getRelationships(final String templateId,
-				final Set<CMDBfId> instanceId, final ItemSet<CMDBfItem> source, final ItemSet<CMDBfItem> target,
+		protected Collection<CMDBfRelationship> getRelationships(final String templateId, final Set<CMDBfId> instanceId,
+				final ItemSet<CMDBfItem> source, final ItemSet<CMDBfItem> target,
 				final RecordConstraintType recordConstraint) throws QueryErrorFault {
 			try {
 				return CmdbMDR.this.getRelationships(instanceId, source, target, recordConstraint);
@@ -244,15 +246,15 @@ public class CmdbMDR implements ManagementDataRepository {
 			}
 		}
 	}
-	
+
 	private class FilterCMAttributeTypeVisitor implements CMAttributeTypeVisitor {
 		private Object newValue;
-		private Object value;
-		
-		public FilterCMAttributeTypeVisitor(Object value) {
+		private final Object value;
+
+		public FilterCMAttributeTypeVisitor(final Object value) {
 			this.value = value;
 		}
-		
+
 		public Object getNewValue() {
 			return newValue;
 		}
@@ -277,20 +279,21 @@ public class CmdbMDR implements ManagementDataRepository {
 
 		@Override
 		public void visit(final ReferenceAttributeType attributeType) {
-			newValue = attributeType.convertValue(value);			
+			newValue = attributeType.convertValue(value);
 		}
 
 		@Override
 		public void visit(final LookupAttributeType attributeType) {
 			Long lookupId = null;
-			LookupType lookupType = lookupLogic.typeFor(attributeType.getLookupTypeName());
+			final LookupType lookupType = lookupLogic.typeFor(attributeType.getLookupTypeName());
 			for (final Lookup lookup : lookupLogic.getAllLookup(lookupType, true, UNUSED_LOOKUP_QUERY)) {
 				if (lookup.description() != null && ObjectUtils.equals(lookup.description(), value)) {
 					lookupId = lookup.getId();
 				}
 			}
-			if(lookupId != null)
-				newValue = new LookupValue(lookupId, (String)value, attributeType.getLookupTypeName(), null);
+			if (lookupId != null) {
+				newValue = new LookupValue(lookupId, (String) value, attributeType.getLookupTypeName(), null);
+			}
 		}
 
 		@Override
@@ -399,19 +402,20 @@ public class CmdbMDR implements ManagementDataRepository {
 	}
 
 	@Override
-	public QueryResultType graphQuery(final QueryType body) throws InvalidPropertyTypeFault, UnknownTemplateIDFault,
-			ExpensiveQueryErrorFault, QueryErrorFault, XPathErrorFault, UnsupportedSelectorFault,
-			UnsupportedConstraintFault {
+	public QueryResultType graphQuery(final QueryType body)
+			throws InvalidPropertyTypeFault, UnknownTemplateIDFault, ExpensiveQueryErrorFault, QueryErrorFault,
+			XPathErrorFault, UnsupportedSelectorFault, UnsupportedConstraintFault {
 		return new CmdbQueryResult(body);
 	}
 
 	@Override
-	public RegisterResponseType register(final RegisterRequestType body) throws UnsupportedRecordTypeFault,
-			InvalidRecordFault, InvalidMDRFault, RegistrationErrorFault {
+	public RegisterResponseType register(final RegisterRequestType body)
+			throws UnsupportedRecordTypeFault, InvalidRecordFault, InvalidMDRFault, RegistrationErrorFault {
 		if (getMdrId().equals(body.getMdrId())) {
 			final ItemSet<CMDBfItem> itemSet = new ItemSet<CMDBfItem>();
 			final RegisterResponseType registerResponse = new RegisterResponseType();
-			final Map<CMDBfItem, RegisterInstanceResponseType> retryList = new HashMap<CMDBfItem, RegisterInstanceResponseType>();
+			final Map<CMDBfItem, RegisterInstanceResponseType> retryList =
+					new HashMap<CMDBfItem, RegisterInstanceResponseType>();
 			if (body.getItemList() != null) {
 				for (final ItemType item : body.getItemList().getItem()) {
 					final CMDBfItem cmdbfItem = new CMDBfItem(item);
@@ -525,13 +529,14 @@ public class CmdbMDR implements ManagementDataRepository {
 	}
 
 	@Override
-	public DeregisterResponseType deregister(final DeregisterRequestType body) throws DeregistrationErrorFault,
-			InvalidMDRFault {
+	public DeregisterResponseType deregister(final DeregisterRequestType body)
+			throws DeregistrationErrorFault, InvalidMDRFault {
 		if (getMdrId().equals(body.getMdrId())) {
 			final DeregisterResponseType deregisterResponse = new DeregisterResponseType();
 			if (body.getRelationshipIdList() != null) {
 				for (final MdrScopedIdType instanceId : body.getRelationshipIdList().getInstanceId()) {
-					final DeregisterInstanceResponseType deregisterInstanceResponse = new DeregisterInstanceResponseType();
+					final DeregisterInstanceResponseType deregisterInstanceResponse =
+							new DeregisterInstanceResponseType();
 					deregisterInstanceResponse.setInstanceId(instanceId);
 					try {
 						deregisterRelationship(instanceId);
@@ -550,7 +555,8 @@ public class CmdbMDR implements ManagementDataRepository {
 			}
 			if (body.getItemIdList() != null) {
 				for (final MdrScopedIdType instanceId : body.getItemIdList().getInstanceId()) {
-					final DeregisterInstanceResponseType deregisterInstanceResponse = new DeregisterInstanceResponseType();
+					final DeregisterInstanceResponseType deregisterInstanceResponse =
+							new DeregisterInstanceResponseType();
 					deregisterInstanceResponse.setInstanceId(instanceId);
 					try {
 						deregisterItem(instanceId);
@@ -582,14 +588,14 @@ public class CmdbMDR implements ManagementDataRepository {
 	private QueryCapabilities getQueryCapabilities(final ObjectFactory factory) {
 		final QueryCapabilities queryCapabilities = factory.createQueryCapabilities();
 
-		final org.dmtf.schemas.cmdbf._1.tns.servicemetadata.ContentSelectorType contentSelectorType = factory
-				.createContentSelectorType();
+		final org.dmtf.schemas.cmdbf._1.tns.servicemetadata.ContentSelectorType contentSelectorType =
+				factory.createContentSelectorType();
 		contentSelectorType.setPropertySelector(true);
 		contentSelectorType.setRecordTypeSelector(true);
 		queryCapabilities.setContentSelectorSupport(contentSelectorType);
 
-		final org.dmtf.schemas.cmdbf._1.tns.servicemetadata.RecordConstraintType recordConstraintType = factory
-				.createRecordConstraintType();
+		final org.dmtf.schemas.cmdbf._1.tns.servicemetadata.RecordConstraintType recordConstraintType =
+				factory.createRecordConstraintType();
 		recordConstraintType.setRecordTypeConstraint(true);
 		recordConstraintType.setPropertyValueConstraint(true);
 		final PropertyValueOperatorsType propertyValueOperatorsType = factory.createPropertyValueOperatorsType();
@@ -604,8 +610,8 @@ public class CmdbMDR implements ManagementDataRepository {
 		recordConstraintType.setPropertyValueOperators(propertyValueOperatorsType);
 		queryCapabilities.setRecordConstraintSupport(recordConstraintType);
 
-		final org.dmtf.schemas.cmdbf._1.tns.servicemetadata.RelationshipTemplateType relationshipTemplateType = factory
-				.createRelationshipTemplateType();
+		final org.dmtf.schemas.cmdbf._1.tns.servicemetadata.RelationshipTemplateType relationshipTemplateType =
+				factory.createRelationshipTemplateType();
 		relationshipTemplateType.setDepthLimit(true);
 		relationshipTemplateType.setMinimumMaximum(true);
 		queryCapabilities.setRelationshipTemplateSupport(relationshipTemplateType);
@@ -654,8 +660,8 @@ public class CmdbMDR implements ManagementDataRepository {
 				if (recordTypes == null) {
 					recordTypes = new RecordTypes();
 					recordTypes.setNamespace(typeQName.getNamespaceURI());
-					recordTypes.setSchemaLocation(xmlRegistry.getByNamespaceURI(typeQName.getNamespaceURI())
-							.getSchemaLocation());
+					recordTypes.setSchemaLocation(
+							xmlRegistry.getByNamespaceURI(typeQName.getNamespaceURI()).getSchemaLocation());
 					recordTypesMap.put(typeQName.getNamespaceURI(), recordTypes);
 				}
 				recordTypes.getRecordType().add(recordType);
@@ -710,8 +716,8 @@ public class CmdbMDR implements ManagementDataRepository {
 					final Card newCard = (Card) xmlRegistry.deserialize(xml);
 					cardBuilder.withAllAttributes(newCard.getAttributes());
 					if (record.getRecordMetadata() != null && record.getRecordMetadata().getLastModified() != null) {
-						final DateTime lastModified = new DateTime(record.getRecordMetadata().getLastModified()
-								.toGregorianCalendar().getTimeInMillis());
+						final DateTime lastModified = new DateTime(
+								record.getRecordMetadata().getLastModified().toGregorianCalendar().getTimeInMillis());
 						if (recordLastModified == null || lastModified.isBefore(recordLastModified)) {
 							cardBuilder.withBeginDate(lastModified);
 							recordLastModified = lastModified;
@@ -795,8 +801,8 @@ public class CmdbMDR implements ManagementDataRepository {
 			final Object recordType = (recordQName != null) ? xmlRegistry.getType(recordQName) : null;
 			DateTime recordDate = null;
 			if (record.getRecordMetadata() != null && record.getRecordMetadata().getLastModified() != null) {
-				recordDate = new DateTime(record.getRecordMetadata().getLastModified().toGregorianCalendar()
-						.getTimeInMillis());
+				recordDate = new DateTime(
+						record.getRecordMetadata().getLastModified().toGregorianCalendar().getTimeInMillis());
 			}
 			if (card != null && card.getEndDate() == null) {
 				if (recordType instanceof DocumentTypeDefinition) {
@@ -816,14 +822,45 @@ public class CmdbMDR implements ManagementDataRepository {
 					}
 					if (recordDate == null || documentDate == null || !recordDate.isBefore(documentDate)) {
 						if (newDocument.getInputStream() != null) {
-							dmsLogic.upload(operationUser.getAuthenticatedUser().getUsername(), card.getClassName(),
-									card.getId(), newDocument.getInputStream(), newDocument.getName(),
-									newDocument.getCategory(), newDocument.getDescription(),
-									newDocument.getMetadataGroups());
+							dmsLogic.create(operationUser.getAuthenticatedUser().getUsername(), card.getClassName(),
+									card.getId(), newDocument.getInputStream(), newDocument.getName(), new Metadata() {
+
+										@Override
+										public String category() {
+											return newDocument.getCategory();
+										}
+
+										@Override
+										public String description() {
+											return newDocument.getDescription();
+										}
+
+										@Override
+										public Iterable<MetadataGroup> metadataGroups() {
+											return newDocument.getMetadataGroups();
+										}
+
+									});
 						} else {
-							dmsLogic.updateDescriptionAndMetadata(operationUser.getAuthenticatedUser().getUsername(),
-									card.getClassName(), card.getId(), newDocument.getName(), null,
-									newDocument.getDescription(), newDocument.getMetadataGroups());
+							dmsLogic.update(operationUser.getAuthenticatedUser().getUsername(), card.getClassName(),
+									card.getId(), null, newDocument.getName(), new Metadata() {
+
+										@Override
+										public String category() {
+											return null;
+										}
+
+										@Override
+										public String description() {
+											return newDocument.getDescription();
+										}
+
+										@Override
+										public Iterable<MetadataGroup> metadataGroups() {
+											return newDocument.getMetadataGroups();
+										}
+
+									});
 						}
 					} else {
 						throw new RegistrationErrorFault("Record " + recordQName + " Out of date");
@@ -895,8 +932,8 @@ public class CmdbMDR implements ManagementDataRepository {
 					newRelation.domainName = cmType.getName();
 
 					if (record.getRecordMetadata() != null && record.getRecordMetadata().getLastModified() != null) {
-						final DateTime lastModified = new DateTime(record.getRecordMetadata().getLastModified()
-								.toGregorianCalendar().getTimeInMillis());
+						final DateTime lastModified = new DateTime(
+								record.getRecordMetadata().getLastModified().toGregorianCalendar().getTimeInMillis());
 						if (recordLastModified == null || lastModified.isBefore(recordLastModified)) {
 							recordLastModified = lastModified;
 						}
@@ -907,15 +944,17 @@ public class CmdbMDR implements ManagementDataRepository {
 			}
 		}
 
-		final MdrScopedIdType sourceId = relationship.getSource() != null ? getLocalItemId(relationship.getSource())
-				: null;
-		final MdrScopedIdType targetId = relationship.getTarget() != null ? getLocalItemId(relationship.getTarget())
-				: null;
+		final MdrScopedIdType sourceId =
+				relationship.getSource() != null ? getLocalItemId(relationship.getSource()) : null;
+		final MdrScopedIdType targetId =
+				relationship.getTarget() != null ? getLocalItemId(relationship.getTarget()) : null;
 
 		if (relation == null && sourceId != null && targetId != null && cmType != null) {
-			relation = Iterables.getOnlyElement(
-					findRelations(null, Collections.singleton(aliasRegistry.getInstanceId(sourceId)),
-							Collections.singleton(aliasRegistry.getInstanceId(targetId)), cmType, null, null), null);
+			relation =
+					Iterables.getOnlyElement(
+							findRelations(null, Collections.singleton(aliasRegistry.getInstanceId(sourceId)),
+									Collections.singleton(aliasRegistry.getInstanceId(targetId)), cmType, null, null),
+							null);
 		}
 
 		Long relationId = null;
@@ -950,10 +989,10 @@ public class CmdbMDR implements ManagementDataRepository {
 						if (relationDate == null || recordLastModified == null
 								|| !recordLastModified.isBefore(relationDate)) {
 							newRelation.relationId = relation.getId();
-							newRelation.addSourceCard(relation.getCard1Id(), relation.getType().getClass1()
-									.getIdentifier().getLocalName());
-							newRelation.addDestinationCard(relation.getCard2Id(), relation.getType().getClass2()
-									.getIdentifier().getLocalName());
+							newRelation.addSourceCard(relation.getCard1Id(),
+									relation.getType().getClass1().getIdentifier().getLocalName());
+							newRelation.addDestinationCard(relation.getCard2Id(),
+									relation.getType().getClass2().getIdentifier().getLocalName());
 							dataAccessLogic.updateRelation(newRelation);
 						} else {
 							throw new RegistrationErrorFault("Out of date");
@@ -966,9 +1005,8 @@ public class CmdbMDR implements ManagementDataRepository {
 		}
 		if (relationId != null) {
 			relationship.instanceIds().add(aliasRegistry.getCMDBfId(relationId, cmType.getName()));
-			relationship.instanceIds().addAll(
-					aliasRegistry.getRelationshipAlias(relationId, cmType.getName(),
-							newRelation.relationAttributeToValue.entrySet()));
+			relationship.instanceIds().addAll(aliasRegistry.getRelationshipAlias(relationId, cmType.getName(),
+					newRelation.relationAttributeToValue.entrySet()));
 		}
 	}
 
@@ -984,8 +1022,8 @@ public class CmdbMDR implements ManagementDataRepository {
 		if (card != null) {
 			final String recordId = aliasRegistry.getRecordId(instanceId);
 			if (recordId == null || recordId.startsWith(ENTRY_RECORDID_PREFIX)) {
-				final QName qname = xmlRegistry
-						.getTypeQName(new GeoClass(card.getType().getIdentifier().getLocalName()));
+				final QName qname =
+						xmlRegistry.getTypeQName(new GeoClass(card.getType().getIdentifier().getLocalName()));
 				final GeoClass geoClass = (GeoClass) xmlRegistry.getType(qname);
 				if (geoClass != null) {
 					final JSONObject jsonObject = new JSONObject();
@@ -1000,8 +1038,8 @@ public class CmdbMDR implements ManagementDataRepository {
 				final String name = recordId.substring(DOCUMENT_RECORDID_PREFIX.length());
 				dmsLogic.delete(card.getType().getIdentifier().getLocalName(), card.getId(), name);
 			} else if (recordId.startsWith(GEO_RECORDID_PREFIX)) {
-				final QName qname = xmlRegistry
-						.getTypeQName(new GeoClass(card.getType().getIdentifier().getLocalName()));
+				final QName qname =
+						xmlRegistry.getTypeQName(new GeoClass(card.getType().getIdentifier().getLocalName()));
 				final GeoClass geoClass = (GeoClass) xmlRegistry.getType(qname);
 				final JSONObject jsonObject = new JSONObject();
 				for (final LayerMetadata layer : geoClass.getLayers()) {
@@ -1040,8 +1078,8 @@ public class CmdbMDR implements ManagementDataRepository {
 			final Set<String> documentTypes = new HashSet<String>();
 			if (recordConstraint != null) {
 				for (final QNameType recordType : recordConstraint.getRecordType()) {
-					final Object type = xmlRegistry.getType(new QName(recordType.getNamespace(), recordType
-							.getLocalName()));
+					final Object type =
+							xmlRegistry.getType(new QName(recordType.getNamespace(), recordType.getLocalName()));
 					if (type instanceof CMClass) {
 						typeList.add((CMClass) type);
 					} else if (type instanceof DocumentTypeDefinition) {
@@ -1085,12 +1123,12 @@ public class CmdbMDR implements ManagementDataRepository {
 							boolean match = true;
 							if (match && !documentTypes.isEmpty()) {
 								match = false;
-								for (final StoredDocument doc : dmsLogic.search(card.getType().getIdentifier()
-										.getLocalName(), card.getId())) {
+								for (final StoredDocument doc : dmsLogic
+										.search(card.getType().getIdentifier().getLocalName(), card.getId())) {
 									match |= documentTypes.contains(doc.getCategory());
 									if (match && !recordConstraint.getPropertyValue().isEmpty()) {
-										final RecordType record = getRecord(aliasRegistry.getCMDBfId(card), doc, null,
-												xml);
+										final RecordType record =
+												getRecord(aliasRegistry.getCMDBfId(card), doc, null, xml);
 										final Map<QName, String> properties = CMDBfUtils.parseRecord(record);
 										match &= Iterables.all(recordConstraint.getPropertyValue(),
 												new Predicate<PropertyValueType>() {
@@ -1147,8 +1185,8 @@ public class CmdbMDR implements ManagementDataRepository {
 			}
 		} else {
 			for (final QNameType recordType : recordConstraint.getRecordType()) {
-				final Object type = xmlRegistry
-						.getType(new QName(recordType.getNamespace(), recordType.getLocalName()));
+				final Object type =
+						xmlRegistry.getType(new QName(recordType.getNamespace(), recordType.getLocalName()));
 				if (type instanceof CMDomain) {
 					domainList.add((CMDomain) type);
 				}
@@ -1165,8 +1203,8 @@ public class CmdbMDR implements ManagementDataRepository {
 			}
 			if (idMap == null || idList != null) {
 				for (final CmdbRelation relation : findRelations(idList, buildCardIdList(source),
-						buildCardIdList(target), type, recordConstraint != null ? recordConstraint.getPropertyValue()
-								: null, null)) {
+						buildCardIdList(target), type,
+						recordConstraint != null ? recordConstraint.getPropertyValue() : null, null)) {
 					if (dedupSet.add(relation.getId())) {
 						relationshipList.add(getCMDBfRelationship(relation));
 					}
@@ -1229,15 +1267,15 @@ public class CmdbMDR implements ManagementDataRepository {
 					if (dmsConfiguration.isEnabled()) {
 						if (!documentTypes.isEmpty()) {
 							for (final Long cardId : idMap.get(typeName)) {
-								for (final StoredDocument document : dmsLogic.search(type.getIdentifier()
-										.getLocalName(), cardId)) {
+								for (final StoredDocument document : dmsLogic
+										.search(type.getIdentifier().getLocalName(), cardId)) {
 									if (documentTypes.contains(document.getCategory())) {
-										final DataHandler dataHandler = dmsLogic.download(type.getIdentifier()
-												.getLocalName(), cardId, document.getName());
+										final DataHandler dataHandler = dmsLogic.download(
+												type.getIdentifier().getLocalName(), cardId, document.getName());
 										final CMDBfId id = aliasRegistry.getCMDBfId(cardId, type.getName());
 										final CMDBfItem item = items.get(id);
-										final RecordType record = getRecord(id, document, dataHandler.getInputStream(),
-												xml);
+										final RecordType record =
+												getRecord(id, document, dataHandler.getInputStream(), xml);
 										item.records().add(contentSelectorFunction.apply(record));
 									}
 								}
@@ -1372,16 +1410,16 @@ public class CmdbMDR implements ManagementDataRepository {
 					if (type instanceof ClassHistory) {
 						isSatisfiable = applyIdFilter(attribute(type, HISTORY_CURRENT_ID), instanceIdList, conditions);
 					} else {
-						isSatisfiable = applyIdFilter(attribute(type, Constants.ID_ATTRIBUTE), instanceIdList,
-								conditions);
+						isSatisfiable =
+								applyIdFilter(attribute(type, Constants.ID_ATTRIBUTE), instanceIdList, conditions);
 					}
 				}
 				if (filters != null) {
 					isSatisfiable &= applyPropertyFilter(type, null, filters, conditions);
 				}
 				if (isSatisfiable) {
-					final QuerySpecsBuilder queryBuilder = dataAccessLogic.getView().select(toArray(attributes, QueryAttribute.class))
-							.from(type);
+					final QuerySpecsBuilder queryBuilder =
+							dataAccessLogic.getView().select(toArray(attributes, QueryAttribute.class)).from(type);
 					if (!conditions.isEmpty()) {
 						if (conditions.size() == 1) {
 							queryBuilder.where(conditions.get(0));
@@ -1429,12 +1467,12 @@ public class CmdbMDR implements ManagementDataRepository {
 				eq(Source._1.name())));
 
 		if (source != null) {
-			isSatisfiable = applyIdFilter(attribute(DOMAIN_ALIAS, SystemAttributes.DomainId1.getDBName()), source,
-					conditions);
+			isSatisfiable =
+					applyIdFilter(attribute(DOMAIN_ALIAS, SystemAttributes.DomainId1.getDBName()), source, conditions);
 		}
 		if (target != null) {
-			isSatisfiable = applyIdFilter(attribute(DOMAIN_ALIAS, SystemAttributes.DomainId2.getDBName()), target,
-					conditions);
+			isSatisfiable =
+					applyIdFilter(attribute(DOMAIN_ALIAS, SystemAttributes.DomainId2.getDBName()), target, conditions);
 		}
 		if (instanceId != null) {
 			isSatisfiable &= applyIdFilter(attribute(DOMAIN_ALIAS, Constants.ID_ATTRIBUTE), instanceId, conditions);
@@ -1443,11 +1481,10 @@ public class CmdbMDR implements ManagementDataRepository {
 			isSatisfiable &= applyPropertyFilter(type, DOMAIN_ALIAS, filters, conditions);
 		}
 		if (isSatisfiable) {
-			final QuerySpecsBuilder queryBuilder = dataAccessLogic.getView().select(toArray(attributes, QueryAttribute.class));
+			final QuerySpecsBuilder queryBuilder =
+					dataAccessLogic.getView().select(toArray(attributes, QueryAttribute.class));
 			queryBuilder.from(type.getClass1());
-			queryBuilder.join(
-					type.getClass2(),
-					TARGET_ALIAS,
+			queryBuilder.join(type.getClass2(), TARGET_ALIAS,
 					over(type instanceof CMDomainHistory ? history(((CMDomainHistory) type).getBaseType()) : type,
 							as(DOMAIN_ALIAS)));
 			if (!conditions.isEmpty()) {
@@ -1468,11 +1505,11 @@ public class CmdbMDR implements ManagementDataRepository {
 				final CMRelation relation = row.getRelation(DOMAIN_ALIAS).getRelation();
 				if (!(type instanceof CMDomainHistory) || relation.getEndDate() != null) {
 					if (relation.getEndDate() != null) {
-						relationList.add(new CMRelationHistory(relation, sourceCard.getType().getName(), targetCard
-								.getType().getName()));
+						relationList.add(new CMRelationHistory(relation, sourceCard.getType().getName(),
+								targetCard.getType().getName()));
 					} else {
-						relationList.add(new CmdbRelation(relation, sourceCard.getType().getName(), targetCard
-								.getType().getName()));
+						relationList.add(new CmdbRelation(relation, sourceCard.getType().getName(),
+								targetCard.getType().getName()));
 					}
 				}
 			}
@@ -1482,7 +1519,8 @@ public class CmdbMDR implements ManagementDataRepository {
 
 	private CMDBfItem getCMDBfItem(final CMCard card) {
 		final CMDBfItem item = new CMDBfItem(aliasRegistry.getCMDBfId(card));
-		for (final CMDBfId alias : aliasRegistry.getItemAlias(card.getId(), card.getType().getName(), card.getValues())) {
+		for (final CMDBfId alias : aliasRegistry.getItemAlias(card.getId(), card.getType().getName(),
+				card.getValues())) {
 			item.instanceIds().add(alias);
 		}
 		return item;
@@ -1506,9 +1544,9 @@ public class CmdbMDR implements ManagementDataRepository {
 			final Element xmlElement = (Element) root.getFirstChild();
 			final RecordMetadata recordMetadata = new RecordMetadata();
 			final DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
-			recordMetadata.setRecordId(aliasRegistry.getCMDBfId(element,
-					ENTRY_RECORDID_PREFIX + element.getType().getIdentifier().getLocalName()).getLocalId()
-					+ (element.getEndDate() != null ? "_" + element.getEndDate().toString() : ""));
+			recordMetadata.setRecordId(aliasRegistry
+					.getCMDBfId(element, ENTRY_RECORDID_PREFIX + element.getType().getIdentifier().getLocalName())
+					.getLocalId() + (element.getEndDate() != null ? "_" + element.getEndDate().toString() : ""));
 			final GregorianCalendar beginDate = element.getBeginDate().toGregorianCalendar();
 			recordMetadata.setLastModified(datatypeFactory.newXMLGregorianCalendar(beginDate));
 			if (element.getEndDate() != null) {
@@ -1535,8 +1573,8 @@ public class CmdbMDR implements ManagementDataRepository {
 			final Element xmlElement = (Element) root.getFirstChild();
 			final RecordMetadata recordMetadata = new RecordMetadata();
 			final DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
-			recordMetadata.setRecordId(aliasRegistry.getCMDBfId(id, DOCUMENT_RECORDID_PREFIX + document.getName())
-					.getLocalId());
+			recordMetadata.setRecordId(
+					aliasRegistry.getCMDBfId(id, DOCUMENT_RECORDID_PREFIX + document.getName()).getLocalId());
 			final GregorianCalendar calendar = new GregorianCalendar();
 			calendar.setTime(document.getCreated());
 			recordMetadata.setLastModified(datatypeFactory.newXMLGregorianCalendar(calendar));
@@ -1564,8 +1602,8 @@ public class CmdbMDR implements ManagementDataRepository {
 			xmlRegistry.serialize(root, geoCard);
 			final Element xmlElement = (Element) root.getFirstChild();
 			final RecordMetadata recordMetadata = new RecordMetadata();
-			recordMetadata.setRecordId(aliasRegistry.getCMDBfId(id, GEO_RECORDID_PREFIX + geoCard.getType().getName())
-					.getLocalId());
+			recordMetadata.setRecordId(
+					aliasRegistry.getCMDBfId(id, GEO_RECORDID_PREFIX + geoCard.getType().getName()).getLocalId());
 			final RecordType recordType = new RecordType();
 			recordType.setRecordMetadata(recordMetadata);
 			recordType.setAny(xmlElement);
@@ -1661,8 +1699,8 @@ public class CmdbMDR implements ManagementDataRepository {
 				}
 				if (propertyValue.getContains() != null) {
 					for (final StringOperatorType operator : propertyValue.getContains()) {
-						WhereClause filter = condition(attribute(typeAlias, attribute.getName()), contains(attribute
-								.getType().convertValue(operator.getValue())));
+						WhereClause filter = condition(attribute(typeAlias, attribute.getName()),
+								contains(attribute.getType().convertValue(operator.getValue())));
 						if (operator.isNegate()) {
 							filter = not(filter);
 						}
@@ -1673,16 +1711,17 @@ public class CmdbMDR implements ManagementDataRepository {
 					for (final StringOperatorType operator : propertyValue.getLike()) {
 						WhereClause filter = null;
 						if (operator.getValue().startsWith("%") && operator.getValue().endsWith("%")) {
-							filter = condition(attribute(typeAlias, attribute.getName()), contains(operator.getValue()
-									.substring(1, operator.getValue().length() - 1)));
+							filter = condition(attribute(typeAlias, attribute.getName()),
+									contains(operator.getValue().substring(1, operator.getValue().length() - 1)));
 						} else if (operator.getValue().startsWith("%")) {
-							filter = condition(attribute(typeAlias, attribute.getName()), endsWith(operator.getValue()
-									.substring(1)));
+							filter = condition(attribute(typeAlias, attribute.getName()),
+									endsWith(operator.getValue().substring(1)));
 						} else if (operator.getValue().endsWith("%")) {
-							filter = condition(attribute(typeAlias, attribute.getName()), beginsWith(operator
-									.getValue().substring(0, operator.getValue().length() - 1)));
+							filter = condition(attribute(typeAlias, attribute.getName()),
+									beginsWith(operator.getValue().substring(0, operator.getValue().length() - 1)));
 						} else {
-							filter = condition(attribute(typeAlias, attribute.getName()), contains(operator.getValue()));
+							filter = condition(attribute(typeAlias, attribute.getName()),
+									contains(operator.getValue()));
 						}
 						if (operator.isNegate()) {
 							filter = not(filter);
@@ -1762,7 +1801,7 @@ public class CmdbMDR implements ManagementDataRepository {
 	}
 
 	private Object convertFilterValue(final CMAttribute attribute, final Object value) {
-		FilterCMAttributeTypeVisitor visitor = new FilterCMAttributeTypeVisitor(value);
+		final FilterCMAttributeTypeVisitor visitor = new FilterCMAttributeTypeVisitor(value);
 		attribute.getType().accept(visitor);
 		return visitor.getNewValue();
 	}

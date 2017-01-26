@@ -11,7 +11,7 @@
 	<artifactId>cmdbuild-dms-cmis</artifactId>
 	<name>CMDBuild DMS CMIS</name>
 	<properties>
-		<opencmis.version>0.13.0</opencmis.version>
+		<opencmis.version>1.0.0</opencmis.version>
 	</properties>
 	<dependencies>
 		<dependency>

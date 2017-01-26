@@ -382,6 +382,7 @@
 			"CLASS_NOTFOUND": "Class {0} không tìm thấy",
 			"CQL_COMPILATION_FAILED": "Truy vấn CQL thất bại",
 			"DMS_ATTACHMENT_DELETE_ERROR": "Xóa tập tin đính kèm đã thất bại",
+			"DMS_ATTACHMENT_FOUND": "<em>Attachment {0} already existing for card {2} of {1}</em>",
 			"DMS_ATTACHMENT_NOTFOUND": "Tập tin đính kèm {0} thẻ {2} of {1} không tìm thấy",
 			"DMS_ATTACHMENT_UPLOAD_ERROR": "Tải lên tập tin đính kèm đã thất bại",
 			"DMS_AUTOCOMPLETION_RULES_ERROR": "Không thể đọc được các quy tắc tự động đính kèm tập tin cho class {0}",

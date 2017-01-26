@@ -382,6 +382,7 @@
 			"CLASS_NOTFOUND": "未发现类{0}",
 			"CQL_COMPILATION_FAILED": "错误编辑CQL query",
 			"DMS_ATTACHMENT_DELETE_ERROR": "附件删除失败",
+			"DMS_ATTACHMENT_FOUND": "<em>Attachment {0} already existing for card {2} of {1}</em>",
 			"DMS_ATTACHMENT_NOTFOUND": "附件{0} 在卡片 {2} of {1}中未被发现",
 			"DMS_ATTACHMENT_UPLOAD_ERROR": "附件上传失败",
 			"DMS_AUTOCOMPLETION_RULES_ERROR": "Cannot read attachments autocompletion rules for class {0}",

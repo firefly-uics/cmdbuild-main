@@ -26,9 +26,34 @@ import com.google.common.base.Optional;
 
 public class AttachmentsManagement implements AttachmentsHelper {
 
-	private static final Function<StoredDocument, Attachment> TO_ATTACHMENT_WITH_NO_METADATA = ToAttachment
-			.newInstance() //
-			.build();
+	private class AttachmentAdapter implements DmsLogic.Metadata {
+
+		private final Attachment delegate;
+
+		public AttachmentAdapter(final Attachment delegate) {
+			this.delegate = delegate;
+		}
+
+		@Override
+		public String category() {
+			return delegate.getCategory();
+		}
+
+		@Override
+		public String description() {
+			return delegate.getDescription();
+		}
+
+		@Override
+		public Iterable<MetadataGroup> metadataGroups() {
+			return metadataGroupsOf(delegate);
+		}
+
+	}
+
+	private static final Function<StoredDocument, Attachment> TO_ATTACHMENT_WITH_NO_METADATA =
+			ToAttachment.newInstance() //
+					.build();
 
 	private static final Function<StoredDocument, Attachment> TO_ATTACHMENT_WITH_METADATA = ToAttachment.newInstance() //
 			.withMetadata(true) //
@@ -45,36 +70,26 @@ public class AttachmentsManagement implements AttachmentsHelper {
 	@Override
 	public String create(final String classId, final Long cardId, final String attachmentName,
 			final Attachment attachment, final DataHandler dataHandler) throws Exception {
-		update(classId, cardId, attachmentName, attachment, dataHandler);
+		dmsLogic.create( //
+				userStore.getUser().getAuthenticatedUser().getUsername(), //
+				classId, //
+				cardId, //
+				dataHandler.getInputStream(), //
+				attachmentName, //
+				new AttachmentAdapter(defaultIfNull(attachment, nullAttachment())));
 		return dataHandler.getName();
 	}
 
 	@Override
 	public void update(final String classId, final Long cardId, final String attachmentId, final Attachment attachment,
 			final DataHandler dataHandler) throws Exception {
-		if (dataHandler != null) {
-			final Attachment _attachment = defaultIfNull(attachment, nullAttachment());
-			dmsLogic.upload( //
-					userStore.getUser().getAuthenticatedUser().getUsername(), //
-					classId, //
-					cardId, //
-					dataHandler.getInputStream(), //
-					attachmentId, //
-					_attachment.getCategory(), //
-					_attachment.getDescription(), //
-					metadataGroupsOf(_attachment) //
-			);
-		} else if (attachment != null) {
-			dmsLogic.updateDescriptionAndMetadata( //
-					userStore.getUser().getAuthenticatedUser().getUsername(), //
-					classId, //
-					cardId, //
-					attachmentId, //
-					attachment.getCategory(), //
-					attachment.getDescription(), //
-					metadataGroupsOf(attachment) //
-			);
-		}
+		dmsLogic.update( //
+				userStore.getUser().getAuthenticatedUser().getUsername(), //
+				classId, //
+				cardId, //
+				dataHandler == null ? null : dataHandler.getInputStream(), //
+				attachmentId, //
+				new AttachmentAdapter(defaultIfNull(attachment, nullAttachment())));
 	}
 
 	private Collection<MetadataGroup> metadataGroupsOf(final Attachment attachment) {

@@ -46,7 +46,7 @@ public interface DmsService {
 	List<StoredDocument> search(DocumentSearch document) throws DmsError;
 
 	/**
-	 * Upload the specified document.
+	 * Uploads, for creating or for updating, the specified document.
 	 *
 	 * @param document
 	 *            the definition for the document that needs to be upload.

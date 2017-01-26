@@ -20,6 +20,16 @@ import com.google.common.base.Optional;
 
 public interface DmsLogic extends Logic {
 
+	interface Metadata {
+
+		String category();
+
+		String description();
+
+		Iterable<MetadataGroup> metadataGroups();
+
+	}
+
 	/**
 	 * Gets the lookup type that represents attachment categories.
 	 *
@@ -78,15 +88,15 @@ public interface DmsLogic extends Logic {
 
 	Optional<StoredDocument> search(String className, Long cardId, String fileName);
 
-	void upload(String author, String className, Long cardId, InputStream inputStream, String fileName, String category,
-			String description, Iterable<MetadataGroup> metadataGroups) throws IOException, CMDBException;
+	void create(String author, String className, Long cardId, InputStream inputStream, String fileName,
+			Metadata metadata) throws IOException, CMDBException;
 
 	DataHandler download(String className, Long cardId, String fileName);
 
 	void delete(String className, Long cardId, String fileName) throws DmsException;
 
-	void updateDescriptionAndMetadata(String author, String className, Long cardId, String filename, String category,
-			String description, Iterable<MetadataGroup> metadataGroups);
+	void update(String author, String className, Long cardId, InputStream inputStream, String filename,
+			Metadata metadata);
 
 	void copy(String sourceClassName, Long sourceId, String filename, String destinationClassName, Long destinationId);
 

@@ -382,6 +382,7 @@
 			"CLASS_NOTFOUND": "الصنف {0} لا يوجد",
 			"CQL_COMPILATION_FAILED": "فشل في تنفيذ استعلام CQL",
 			"DMS_ATTACHMENT_DELETE_ERROR": "فشل في حذف المرفق",
+			"DMS_ATTACHMENT_FOUND": "<em>Attachment {0} already existing for card {2} of {1}</em>",
 			"DMS_ATTACHMENT_NOTFOUND": "المرفق {0} للبطاقة {2} من {1} لا يوجد",
 			"DMS_ATTACHMENT_UPLOAD_ERROR": "فشل في رفع المرفق",
 			"DMS_AUTOCOMPLETION_RULES_ERROR": "لا يمكن قراءة قواعد الإكمال التلقائي للمرفقات للصنف {0}",

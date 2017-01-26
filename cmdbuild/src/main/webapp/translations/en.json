@@ -382,6 +382,7 @@
 			"CLASS_NOTFOUND": "Class {0} not found",
 			"CQL_COMPILATION_FAILED": "Failed to compile CQL query",
 			"DMS_ATTACHMENT_DELETE_ERROR": "Attachment delete failed",
+			"DMS_ATTACHMENT_FOUND": "Attachment {0} already existing for card {2} of {1}",
 			"DMS_ATTACHMENT_NOTFOUND": "Attachment {0} for card {2} of {1} not found",
 			"DMS_ATTACHMENT_UPLOAD_ERROR": "Attachment upload failed",
 			"DMS_AUTOCOMPLETION_RULES_ERROR": "Cannot read attachments autocompletion rules for class {0}",

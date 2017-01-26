@@ -163,8 +163,8 @@ public class CmisDmsService implements DmsService, LoggingSupport, ChangeListene
 			@Override
 			public XmlPresets get() {
 				try {
-					final InputStream is = getClass().getClassLoader()
-							.getResourceAsStream("org/cmdbuild/dms/cmis/model/presets.xml");
+					final InputStream is =
+							getClass().getClassLoader().getResourceAsStream("org/cmdbuild/dms/cmis/model/presets.xml");
 					return JAXBContext.newInstance(XmlPresets.class) //
 							.createUnmarshaller() //
 							.unmarshal(new StreamSource(is), XmlPresets.class) //
@@ -180,41 +180,41 @@ public class CmisDmsService implements DmsService, LoggingSupport, ChangeListene
 		}));
 		model =
 
-		synchronizedSupplier(memoize(new Supplier<XmlModel>() {
+				synchronizedSupplier(memoize(new Supplier<XmlModel>() {
 
-			@Override
-			public XmlModel get() {
-				try {
-					logger.info(MARKER, "loading model");
-					final String modelType = defaultString(configuration.getCmisModelType());
-					final XmlModel model;
-					switch (modelType) {
-					case "custom":
-						logger.info(MARKER, "loading custom model");
-						final String content = configuration.getCustomModelFileContent();
-						model = content.isEmpty() ? new XmlModel()
-								: JAXBContext.newInstance(XmlModel.class) //
-										.createUnmarshaller() //
-										.unmarshal(new StreamSource(new StringReader(content)), XmlModel.class) //
-										.getValue();
-						break;
+					@Override
+					public XmlModel get() {
+						try {
+							logger.info(MARKER, "loading model");
+							final String modelType = defaultString(configuration.getCmisModelType());
+							final XmlModel model;
+							switch (modelType) {
+							case "custom":
+								logger.info(MARKER, "loading custom model");
+								final String content = configuration.getCustomModelFileContent();
+								model = content.isEmpty() ? new XmlModel()
+										: JAXBContext.newInstance(XmlModel.class) //
+												.createUnmarshaller() //
+												.unmarshal(new StreamSource(new StringReader(content)), XmlModel.class) //
+												.getValue();
+								break;
 
-					default:
-						logger.info(MARKER, "loading preset '{}'", modelType);
-						model = presets().getModels().stream() //
-								.filter(t -> t.getId().equals(modelType)) //
-								.findFirst() //
-								.orElse(new XmlModel());
-						break;
+							default:
+								logger.info(MARKER, "loading preset '{}'", modelType);
+								model = presets().getModels().stream() //
+										.filter(t -> t.getId().equals(modelType)) //
+										.findFirst() //
+										.orElse(new XmlModel());
+								break;
+							}
+							return model;
+						} catch (final Exception e) {
+							logger.error(MARKER, "error loading model", e);
+							return new XmlModel();
+						}
 					}
-					return model;
-				} catch (final Exception e) {
-					logger.error(MARKER, "error loading model", e);
-					return new XmlModel();
-				}
-			}
 
-		}));
+				}));
 		definitionsFactory = new DefaultDefinitionsFactory();
 		defaultConverter = new DefaultConverter();
 		types = synchronizedSupplier(memoize(new Supplier<Collection<ObjectType>>() {
@@ -329,8 +329,8 @@ public class CmisDmsService implements DmsService, LoggingSupport, ChangeListene
 						}
 					}
 					if (cmisMetadataGroupDefinitions != null) {
-						final CmisDocumentType cmisDocumentType = new CmisDocumentType(documentType.getName(),
-								cmisMetadataGroupDefinitions);
+						final CmisDocumentType cmisDocumentType =
+								new CmisDocumentType(documentType.getName(), cmisMetadataGroupDefinitions);
 						output.put(cmisDocumentType.getName(), cmisDocumentType);
 					}
 				}
@@ -539,9 +539,8 @@ public class CmisDmsService implements DmsService, LoggingSupport, ChangeListene
 				final Document pwc = (Document) session.getObject(cmisDocument.checkOut());
 				final ContentStream contentStream = session.getObjectFactory()
 						.createContentStream(document.getFileName(), -1, mimeType, document.getInputStream());
-				final Map<String, Object> properties = getProperties(session, document, pwc);
 				try {
-					pwc.checkIn(true, properties, contentStream, "");
+					pwc.checkIn(true, null, contentStream, "");
 				} catch (final Exception e) {
 					pwc.cancelCheckOut();
 					throw DmsError.forward(e);
@@ -552,6 +551,7 @@ public class CmisDmsService implements DmsService, LoggingSupport, ChangeListene
 						throw DmsError.forward(e);
 					}
 				}
+				updateDescriptionAndMetadata(document);
 			}
 		}
 
@@ -606,8 +606,8 @@ public class CmisDmsService implements DmsService, LoggingSupport, ChangeListene
 					if (cmisConverter != null && cmisConverter.isAsymmetric()) {
 						final String value = cmisConverter.convertFromCmisValue(session, property.getDefinition(),
 								property.getValue());
-						final Object cmisValue = cmisConverter.convertToCmisValue(session, property.getDefinition(),
-								value);
+						final Object cmisValue =
+								cmisConverter.convertToCmisValue(session, property.getDefinition(), value);
 						logger.debug(MARKER, "setting property '{}' to '{}'", property.getId(), cmisValue);
 						properties.put(property.getId(), cmisValue);
 					}
@@ -749,8 +749,8 @@ public class CmisDmsService implements DmsService, LoggingSupport, ChangeListene
 			properties.put(DESCRIPTION, document.getDescription());
 
 			if (model().getDescriptionProperty() != null) {
-				final PropertyDefinition<?> propertyDefinition = propertyDefinitions()
-						.get(model().getDescriptionProperty());
+				final PropertyDefinition<?> propertyDefinition =
+						propertyDefinitions().get(model().getDescriptionProperty());
 				logger.info(MARKER, "description property '{}' updatability '{}'", propertyDefinition.getDisplayName(),
 						propertyDefinition.getUpdatability());
 				if (propertyDefinition != null) {
@@ -811,15 +811,15 @@ public class CmisDmsService implements DmsService, LoggingSupport, ChangeListene
 					if (document.getMetadataGroups() != null) {
 						for (final MetadataGroup group : document.getMetadataGroups()) {
 							logger.info(MARKER, "processing group '{}'", group.getName());
-							final CmisMetadataGroupDefinition groupDefinition = documentType
-									.getMetadataGroupDefinition(group.getName());
+							final CmisMetadataGroupDefinition groupDefinition =
+									documentType.getMetadataGroupDefinition(group.getName());
 							if (groupDefinition != null && group.getMetadata() != null) {
 								for (final Metadata metadata : group.getMetadata()) {
-									final CmisMetadataDefinition metadataDefinition = groupDefinition
-											.getMetadataDefinition(metadata.getName());
+									final CmisMetadataDefinition metadataDefinition =
+											groupDefinition.getMetadataDefinition(metadata.getName());
 									if (metadataDefinition != null) {
-										final PropertyDefinition<?> propertyDefinition = metadataDefinition
-												.getProperty();
+										final PropertyDefinition<?> propertyDefinition =
+												metadataDefinition.getProperty();
 										final Converter converter = converterOf(propertyDefinition);
 										final Object value = converter.convertToCmisValue(session, propertyDefinition,
 												metadata.getValue());

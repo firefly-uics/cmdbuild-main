@@ -382,6 +382,7 @@
 			"CLASS_NOTFOUND": "Klas {0} niet gevonden",
 			"CQL_COMPILATION_FAILED": "Compilatie van CQL query mislukt",
 			"DMS_ATTACHMENT_DELETE_ERROR": "Bijlage verwijderen mislukt",
+			"DMS_ATTACHMENT_FOUND": "<em>Attachment {0} already existing for card {2} of {1}</em>",
 			"DMS_ATTACHMENT_NOTFOUND": "Bijlage {0} voor kaart {2} van {1} niet gevonden",
 			"DMS_ATTACHMENT_UPLOAD_ERROR": "Bijlage ophalen mislukt",
 			"DMS_AUTOCOMPLETION_RULES_ERROR": "Kan auto-aanvullings regels voor aanhangsel van klas {0} niet lezen",

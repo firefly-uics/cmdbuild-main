@@ -7,6 +7,13 @@ import static org.cmdbuild.dao.query.clause.QueryAliasAttribute.attribute;
 import static org.cmdbuild.dao.query.clause.where.EqualsOperatorAndValue.eq;
 import static org.cmdbuild.dao.query.clause.where.SimpleWhereClause.condition;
 import static org.cmdbuild.data.store.lookup.Predicates.lookupActive;
+import static org.cmdbuild.exception.DmsException.Type.DMS_ATTACHMENT_DELETE_ERROR;
+import static org.cmdbuild.exception.DmsException.Type.DMS_ATTACHMENT_FOUND;
+import static org.cmdbuild.exception.DmsException.Type.DMS_ATTACHMENT_NOTFOUND;
+import static org.cmdbuild.exception.DmsException.Type.DMS_ATTACHMENT_UPLOAD_ERROR;
+import static org.cmdbuild.exception.DmsException.Type.DMS_AUTOCOMPLETION_RULES_ERROR;
+import static org.cmdbuild.exception.DmsException.Type.DMS_DOCUMENT_TYPE_DEFINITION_ERROR;
+import static org.cmdbuild.exception.DmsException.Type.DMS_UPDATE_ERROR;
 import static org.cmdbuild.logic.dms.Utils.valueForCategory;
 
 import java.io.IOException;
@@ -35,7 +42,6 @@ import org.cmdbuild.dms.DocumentSearch;
 import org.cmdbuild.dms.DocumentTypeDefinition;
 import org.cmdbuild.dms.DocumentUpdate;
 import org.cmdbuild.dms.MetadataAutocompletion.AutocompletionRules;
-import org.cmdbuild.dms.MetadataGroup;
 import org.cmdbuild.dms.StorableDocument;
 import org.cmdbuild.dms.StoredDocument;
 import org.cmdbuild.dms.exception.DmsError;
@@ -107,7 +113,7 @@ public class DefaultDmsLogic implements DmsLogic {
 			}
 			return definitionsFactory.newDocumentTypeDefinitionWithNoMetadata(category);
 		} catch (final DmsError e) {
-			throw DmsException.Type.DMS_DOCUMENT_TYPE_DEFINITION_ERROR.createException(category);
+			throw DMS_DOCUMENT_TYPE_DEFINITION_ERROR.createException(category);
 		}
 	}
 
@@ -160,8 +166,8 @@ public class DefaultDmsLogic implements DmsLogic {
 				for (final String groupName : rules.getMetadataGroupNames()) {
 					rulesByClassname.put(groupName, Maps.<String, String> newHashMap());
 					for (final String metadataName : rules.getMetadataNamesForGroup(groupName)) {
-						final Map<String, String> valuesByClassname = rules.getRulesForGroupAndMetadata(groupName,
-								metadataName);
+						final Map<String, String> valuesByClassname =
+								rules.getRulesForGroupAndMetadata(groupName, metadataName);
 						for (final String _classname : valuesByClassname.keySet()) {
 							if (_classname.equals(classname)) {
 								rulesByClassname.get(groupName).put(metadataName, valuesByClassname.get(_classname));
@@ -172,7 +178,7 @@ public class DefaultDmsLogic implements DmsLogic {
 			}
 			return rulesByClassname;
 		} catch (final DmsError e) {
-			throw DmsException.Type.DMS_AUTOCOMPLETION_RULES_ERROR.createException(classname);
+			throw DMS_AUTOCOMPLETION_RULES_ERROR.createException(classname);
 		}
 	}
 
@@ -203,9 +209,11 @@ public class DefaultDmsLogic implements DmsLogic {
 	}
 
 	@Override
-	public void upload(final String author, final String className, final Long cardId, final InputStream inputStream,
-			final String fileName, final String category, final String description,
-			final Iterable<MetadataGroup> metadataGroups) throws IOException, CMDBException {
+	public void create(final String author, final String className, final Long cardId, final InputStream inputStream,
+			final String fileName, final Metadata metadata) throws IOException, CMDBException {
+		if (search(className, cardId, fileName).isPresent()) {
+			throw DMS_ATTACHMENT_FOUND.createException(fileName, className, cardId.toString());
+		}
 		final CMClass type = dataView.findClass(className);
 		final String realClassName = dataView //
 				.select(anyAttribute(type)) //
@@ -219,15 +227,15 @@ public class DefaultDmsLogic implements DmsLogic {
 				.getType() //
 				.getName();
 		final StorableDocument document = createDocumentFactory(realClassName) //
-				.createStorableDocument(author, realClassName, cardId, inputStream, fileName, category, description,
-						metadataGroups);
+				.createStorableDocument(author, realClassName, cardId, inputStream, fileName, metadata.category(),
+						metadata.description(), metadata.metadataGroups());
 		try {
 			service.upload(document);
 		} catch (final Exception e) {
 			final String message = String.format("error uploading file '%s' to card '%s' with id '%d'", //
 					fileName, realClassName, cardId);
 			logger.error(message, e);
-			throw DmsException.Type.DMS_ATTACHMENT_UPLOAD_ERROR.createException();
+			throw DMS_ATTACHMENT_UPLOAD_ERROR.createException();
 		}
 	}
 
@@ -242,8 +250,7 @@ public class DefaultDmsLogic implements DmsLogic {
 			final String message = String.format("error downloading file '%s' for card '%s' with id '%d'", //
 					fileName, className, cardId);
 			logger.error(message, e);
-			throw DmsException.Type.DMS_ATTACHMENT_NOTFOUND.createException(fileName, className,
-					String.valueOf(cardId));
+			throw DMS_ATTACHMENT_NOTFOUND.createException(fileName, className, String.valueOf(cardId));
 		}
 	}
 
@@ -257,23 +264,34 @@ public class DefaultDmsLogic implements DmsLogic {
 			final String message = String.format("error deleting file '%s' for card '%s' with id '%d'", //
 					fileName, className, cardId);
 			logger.error(message, e);
-			throw DmsException.Type.DMS_ATTACHMENT_DELETE_ERROR.createException();
+			throw DMS_ATTACHMENT_DELETE_ERROR.createException();
 		}
 	}
 
 	@Override
-	public void updateDescriptionAndMetadata(final String author, final String className, final Long cardId,
-			final String filename, final String category, final String description,
-			final Iterable<MetadataGroup> metadataGroups) {
-		final DocumentUpdate document = createDocumentFactory(className) //
-				.createDocumentUpdate(className, cardId, filename, category, description, author, metadataGroups);
+	public void update(final String author, final String className, final Long cardId, final InputStream inputStream,
+			final String filename, final Metadata metadata) {
+		if (!search(className, cardId, filename).isPresent()) {
+			throw DMS_ATTACHMENT_NOTFOUND.createException(filename, className, cardId.toString());
+		}
 		try {
-			service.updateDescriptionAndMetadata(document);
+			final DocumentCreator documents = createDocumentFactory(className);
+			if (inputStream == null) {
+				final DocumentUpdate update = documents //
+						.createDocumentUpdate(className, cardId, filename, metadata.category(), metadata.description(),
+								author, metadata.metadataGroups());
+				service.updateDescriptionAndMetadata(update);
+			} else {
+				final StorableDocument storable = documents //
+						.createStorableDocument(author, className, cardId, inputStream, filename, metadata.category(),
+								metadata.description(), metadata.metadataGroups());
+				service.upload(storable);
+			}
 		} catch (final Exception e) {
 			final String message = String.format("error updating file '%s' for card '%s' with id '%d'", //
 					filename, className, cardId);
 			logger.error(message, e);
-			throw DmsException.Type.DMS_UPDATE_ERROR.createException();
+			throw DMS_UPDATE_ERROR.createException();
 		}
 	}
 
@@ -294,7 +312,7 @@ public class DefaultDmsLogic implements DmsLogic {
 			final String message = String.format("error copying file '%s' from '%s' with id '%d' to '%s' with id '%d'", //
 					filename, sourceClassName, sourceId, destinationClassName, destinationId);
 			logger.error(message, e);
-			throw DmsException.Type.DMS_UPDATE_ERROR.createException();
+			throw DMS_UPDATE_ERROR.createException();
 		}
 	}
 
@@ -315,7 +333,7 @@ public class DefaultDmsLogic implements DmsLogic {
 			final String message = String.format("error moving file '%s' from '%s' with id '%d' to '%s' with id '%d'", //
 					filename, sourceClassName, sourceId, destinationClassName, destinationId);
 			logger.error(message, e);
-			throw DmsException.Type.DMS_UPDATE_ERROR.createException();
+			throw DMS_UPDATE_ERROR.createException();
 		}
 	}
 

@@ -1,7 +1,10 @@
 package unit.logic.dms;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -16,12 +19,14 @@ import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 
 import org.cmdbuild.logic.dms.DmsLogic;
+import org.cmdbuild.logic.dms.DmsLogic.Metadata;
 import org.cmdbuild.logic.dms.StoreDocument;
 import org.cmdbuild.logic.dms.StoreDocument.Builder;
 import org.cmdbuild.logic.dms.StoreDocument.Document;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.mockito.ArgumentCaptor;
 
 public class StoreDocumentTest {
 
@@ -147,8 +152,14 @@ public class StoreDocumentTest {
 				.execute();
 
 		// then
-		verify(dmsLogic).upload(eq("system"), eq("foo"), eq(42L), any(InputStream.class), eq(file.getName()),
-				eq("bar"), eq(EMPTY), any(Iterable.class));
+		final ArgumentCaptor<Metadata> captor = ArgumentCaptor.forClass(Metadata.class);
+		verify(dmsLogic).create(eq("system"), eq("foo"), eq(42L), any(InputStream.class), eq(file.getName()),
+				captor.capture());
+
+		final Metadata captured = captor.getValue();
+		assertThat(captured.category(), equalTo("bar"));
+		assertThat(captured.description(), equalTo(EMPTY));
+		assertThat(captured.metadataGroups(), equalTo(emptyList()));
 	}
 
 	@Test
@@ -182,10 +193,21 @@ public class StoreDocumentTest {
 				.execute();
 
 		// then
-		verify(dmsLogic).upload(eq("system"), eq("foo"), eq(42L), any(InputStream.class), eq(firstFile.getName()),
-				eq("bar"), eq(EMPTY), any(Iterable.class));
-		verify(dmsLogic).upload(eq("system"), eq("foo"), eq(42L), any(InputStream.class), eq(secondFile.getName()),
-				eq("bar"), eq(EMPTY), any(Iterable.class));
+		final ArgumentCaptor<Metadata> captor = ArgumentCaptor.forClass(Metadata.class);
+		verify(dmsLogic).create(eq("system"), eq("foo"), eq(42L), any(InputStream.class), eq(firstFile.getName()),
+				captor.capture());
+		verify(dmsLogic).create(eq("system"), eq("foo"), eq(42L), any(InputStream.class), eq(secondFile.getName()),
+				captor.capture());
+
+		final Metadata firstCaptured = captor.getAllValues().get(0);
+		assertThat(firstCaptured.category(), equalTo("bar"));
+		assertThat(firstCaptured.description(), equalTo(EMPTY));
+		assertThat(firstCaptured.metadataGroups(), equalTo(emptyList()));
+
+		final Metadata secondCaptured = captor.getAllValues().get(1);
+		assertThat(secondCaptured.category(), equalTo("bar"));
+		assertThat(secondCaptured.description(), equalTo(EMPTY));
+		assertThat(secondCaptured.metadataGroups(), equalTo(emptyList()));
 	}
 
 }

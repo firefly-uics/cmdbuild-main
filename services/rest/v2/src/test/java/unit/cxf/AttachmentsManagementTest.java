@@ -2,7 +2,9 @@ package unit.cxf;
 
 import static java.util.Collections.emptyList;
 import static org.cmdbuild.service.rest.v2.model.Models.newAttachment;
-import static org.mockito.Matchers.any;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isNull;
@@ -26,10 +28,12 @@ import org.cmdbuild.auth.user.OperationUser;
 import org.cmdbuild.dms.DocumentTypeDefinition;
 import org.cmdbuild.dms.MetadataGroupDefinition;
 import org.cmdbuild.logic.dms.DmsLogic;
+import org.cmdbuild.logic.dms.DmsLogic.Metadata;
 import org.cmdbuild.service.rest.v2.cxf.AttachmentsManagement;
 import org.cmdbuild.service.rest.v2.model.Attachment;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
 public class AttachmentsManagementTest {
 
@@ -88,11 +92,15 @@ public class AttachmentsManagementTest {
 		attachmentsManagement.create("foo", 123L, "bar", attachment, dataHandler);
 
 		// then
+		final ArgumentCaptor<Metadata> captor = ArgumentCaptor.forClass(Metadata.class);
 		verify(userStore).getUser();
-		verify(dmsLogic).getCategoryDefinition(eq("the category"));
-		verify(dmsLogic).upload(eq("dummy user"), eq("foo"), eq(123L), same(inputStream), eq("bar"), eq("the category"),
-				eq("the description"), any(Iterable.class));
+		verify(dmsLogic).create(eq("dummy user"), eq("foo"), eq(123L), same(inputStream), eq("bar"), captor.capture());
 		verifyNoMoreInteractions(userStore, dmsLogic);
+
+		final Metadata captured = captor.getValue();
+		assertThat(captured.category(), equalTo("the category"));
+		assertThat(captured.description(), equalTo("the description"));
+		assertThat(captured.metadataGroups(), equalTo(emptyList()));
 	}
 
 	@Test
@@ -112,11 +120,15 @@ public class AttachmentsManagementTest {
 		attachmentsManagement.create("foo", 123L, "bar", null, dataHandler);
 
 		// then
+		final ArgumentCaptor<Metadata> captor = ArgumentCaptor.forClass(Metadata.class);
 		verify(userStore).getUser();
-		verify(dmsLogic).getCategoryDefinition(isNull(String.class));
-		verify(dmsLogic).upload(eq("dummy user"), eq("foo"), eq(123L), same(inputStream), eq("bar"),
-				isNull(String.class), isNull(String.class), any(Iterable.class));
+		verify(dmsLogic).create(eq("dummy user"), eq("foo"), eq(123L), same(inputStream), eq("bar"), captor.capture());
 		verifyNoMoreInteractions(userStore, dmsLogic);
+
+		final Metadata captured = captor.getValue();
+		assertThat(captured.category(), nullValue());
+		assertThat(captured.description(), nullValue());
+		assertThat(captured.metadataGroups(), equalTo(emptyList()));
 	}
 
 	@Test
@@ -158,11 +170,15 @@ public class AttachmentsManagementTest {
 		attachmentsManagement.update("foo", 123L, "bar", attachment, dataHandler);
 
 		// then
+		final ArgumentCaptor<Metadata> captor = ArgumentCaptor.forClass(Metadata.class);
 		verify(userStore).getUser();
-		verify(dmsLogic).getCategoryDefinition(eq("the new category"));
-		verify(dmsLogic).upload(eq("dummy user"), eq("foo"), eq(123L), same(inputStream), eq("bar"),
-				eq("the new category"), eq("the new description"), any(Iterable.class));
+		verify(dmsLogic).update(eq("dummy user"), eq("foo"), eq(123L), eq(inputStream), eq("bar"), captor.capture());
 		verifyNoMoreInteractions(userStore, dmsLogic);
+
+		final Metadata captured = captor.getValue();
+		assertThat(captured.category(), equalTo("the new category"));
+		assertThat(captured.description(), equalTo("the new description"));
+		assertThat(captured.metadataGroups(), equalTo(emptyList()));
 	}
 
 	@Test
@@ -180,11 +196,15 @@ public class AttachmentsManagementTest {
 		attachmentsManagement.update("foo", 123L, "bar", null, dataHandler);
 
 		// then
+		final ArgumentCaptor<Metadata> captor = ArgumentCaptor.forClass(Metadata.class);
 		verify(userStore).getUser();
-		verify(dmsLogic).getCategoryDefinition(isNull(String.class));
-		verify(dmsLogic).upload(eq("dummy user"), eq("foo"), eq(123L), same(inputStream), eq("bar"),
-				isNull(String.class), isNull(String.class), any(Iterable.class));
+		verify(dmsLogic).update(eq("dummy user"), eq("foo"), eq(123L), eq(inputStream), eq("bar"), captor.capture());
 		verifyNoMoreInteractions(userStore, dmsLogic);
+
+		final Metadata captured = captor.getValue();
+		assertThat(captured.category(), nullValue());
+		assertThat(captured.description(), nullValue());
+		assertThat(captured.metadataGroups(), equalTo(emptyList()));
 	}
 
 	@Test
@@ -201,10 +221,15 @@ public class AttachmentsManagementTest {
 		attachmentsManagement.update("foo", 123L, "bar", attachment, null);
 
 		// then
-		verify(dmsLogic).getCategoryDefinition(eq("the new category"));
-		verify(dmsLogic).updateDescriptionAndMetadata(eq("dummy user"), eq("foo"), eq(123L), eq("bar"),
-				eq("the new category"), eq("the new description"), any(Iterable.class));
+		final ArgumentCaptor<Metadata> captor = ArgumentCaptor.forClass(Metadata.class);
+		verify(dmsLogic).update(eq("dummy user"), eq("foo"), eq(123L), isNull(InputStream.class), eq("bar"),
+				captor.capture());
 		verifyNoMoreInteractions(dmsLogic);
+
+		final Metadata captured = captor.getValue();
+		assertThat(captured.category(), equalTo("the new category"));
+		assertThat(captured.description(), equalTo("the new description"));
+		assertThat(captured.metadataGroups(), equalTo(emptyList()));
 	}
 
 	@Test

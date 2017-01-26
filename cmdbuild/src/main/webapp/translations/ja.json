@@ -382,6 +382,7 @@
 			"CLASS_NOTFOUND": "クラス{0} は見つかりません",
 			"CQL_COMPILATION_FAILED": "CQL クエリのコンパイルに失敗",
 			"DMS_ATTACHMENT_DELETE_ERROR": "添付の削除に失敗",
+			"DMS_ATTACHMENT_FOUND": "<em>Attachment {0} already existing for card {2} of {1}</em>",
 			"DMS_ATTACHMENT_NOTFOUND": "{1}のカード{2}への添付{0}が見つかりません",
 			"DMS_ATTACHMENT_UPLOAD_ERROR": "添付のアップロードに失敗",
 			"DMS_AUTOCOMPLETION_RULES_ERROR": "クラス {0} の添付ファイルの自動補完ルールを読み取ることができません",

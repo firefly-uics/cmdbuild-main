@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.activation.DataHandler;
 
 import org.cmdbuild.dms.DocumentTypeDefinition;
-import org.cmdbuild.dms.MetadataGroup;
 import org.cmdbuild.dms.StoredDocument;
 import org.cmdbuild.dms.exception.DmsError;
 import org.cmdbuild.exception.CMDBException;
@@ -64,10 +63,9 @@ public abstract class ForwardingDmsLogic extends ForwardingObject implements Dms
 	}
 
 	@Override
-	public void upload(final String author, final String className, final Long cardId, final InputStream inputStream,
-			final String fileName, final String category, final String description,
-			final Iterable<MetadataGroup> metadataGroups) throws IOException, CMDBException {
-		delegate().upload(author, className, cardId, inputStream, fileName, category, description, metadataGroups);
+	public void create(final String author, final String className, final Long cardId, final InputStream inputStream,
+			final String fileName, final Metadata metadata) throws IOException, CMDBException {
+		delegate().create(author, className, cardId, inputStream, fileName, metadata);
 	}
 
 	@Override
@@ -81,11 +79,9 @@ public abstract class ForwardingDmsLogic extends ForwardingObject implements Dms
 	}
 
 	@Override
-	public void updateDescriptionAndMetadata(final String author, final String className, final Long cardId,
-			final String filename, final String category, final String description,
-			final Iterable<MetadataGroup> metadataGroups) {
-		delegate().updateDescriptionAndMetadata(author, className, cardId, filename, category, description,
-				metadataGroups);
+	public void update(final String author, final String className, final Long cardId, final InputStream inputStream,
+			final String filename, final Metadata metadata) {
+		delegate().update(author, className, cardId, inputStream, filename, metadata);
 	}
 
 	@Override

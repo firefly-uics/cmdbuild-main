@@ -10,7 +10,6 @@ import java.util.List;
 import org.cmdbuild.auth.acl.PrivilegeContext;
 import org.cmdbuild.dao.entrytype.CMClass;
 import org.cmdbuild.dao.view.CMDataView;
-import org.cmdbuild.dms.MetadataGroup;
 import org.cmdbuild.dms.StoredDocument;
 import org.cmdbuild.exception.CMDBException;
 import org.cmdbuild.exception.DmsException;
@@ -96,35 +95,33 @@ public class PrivilegedDmsLogic extends ForwardingDmsLogic {
 	@Override
 	public List<StoredDocument> search(final String className, final Long cardId) {
 		assureReadPrivilege(className);
-		return super.search(className, cardId);
+		return delegate().search(className, cardId);
 	}
 
 	@Override
 	public Optional<StoredDocument> search(final String className, final Long cardId, final String fileName) {
 		assureReadPrivilege(className);
-		return super.search(className, cardId, fileName);
+		return delegate().search(className, cardId, fileName);
 	}
 
 	@Override
-	public void upload(final String author, final String className, final Long cardId, final InputStream inputStream,
-			final String fileName, final String category, final String description,
-			final Iterable<MetadataGroup> metadataGroups) throws IOException, CMDBException {
+	public void create(final String author, final String className, final Long cardId, final InputStream inputStream,
+			final String fileName, final Metadata metadata) throws IOException, CMDBException {
 		assureWritePrivilege(className);
-		super.upload(author, className, cardId, inputStream, fileName, category, description, metadataGroups);
+		delegate().create(author, className, cardId, inputStream, fileName, metadata);
 	}
 
 	@Override
 	public void delete(final String className, final Long cardId, final String fileName) throws DmsException {
 		assureWritePrivilege(className);
-		super.delete(className, cardId, fileName);
+		delegate().delete(className, cardId, fileName);
 	}
 
 	@Override
-	public void updateDescriptionAndMetadata(final String author, final String className, final Long cardId,
-			final String filename, final String category, final String description,
-			final Iterable<MetadataGroup> metadataGroups) {
+	public void update(final String author, final String className, final Long cardId, final InputStream inputStream,
+			final String filename, final Metadata metadata) {
 		assureWritePrivilege(className);
-		super.updateDescriptionAndMetadata(author, className, cardId, filename, category, description, metadataGroups);
+		delegate().update(author, className, cardId, inputStream, filename, metadata);
 	}
 
 	@Override
@@ -132,7 +129,7 @@ public class PrivilegedDmsLogic extends ForwardingDmsLogic {
 			final String destinationClassName, final Long destinationId) {
 		assureReadPrivilege(sourceClassName);
 		assureWritePrivilege(destinationClassName);
-		super.copy(sourceClassName, sourceId, filename, destinationClassName, destinationId);
+		delegate().copy(sourceClassName, sourceId, filename, destinationClassName, destinationId);
 	}
 
 	@Override
@@ -140,7 +137,7 @@ public class PrivilegedDmsLogic extends ForwardingDmsLogic {
 			final String destinationClassName, final Long destinationId) {
 		assureReadPrivilege(sourceClassName);
 		assureWritePrivilege(destinationClassName);
-		super.move(sourceClassName, sourceId, filename, destinationClassName, destinationId);
+		delegate().move(sourceClassName, sourceId, filename, destinationClassName, destinationId);
 	}
 
 }

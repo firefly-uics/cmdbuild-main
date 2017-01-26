@@ -11,6 +11,7 @@ import org.cmdbuild.auth.user.OperationUser;
 import org.cmdbuild.dms.MetadataGroup;
 import org.cmdbuild.dms.StoredDocument;
 import org.cmdbuild.logic.dms.DmsLogic;
+import org.cmdbuild.logic.dms.DmsLogic.Metadata;
 import org.cmdbuild.services.soap.types.Attachment;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -42,15 +43,30 @@ public class DmsLogicHelper implements SoapLogicHelper {
 	public boolean uploadAttachment(final String className, final Long cardId, final DataHandler file,
 			final String filename, final String category, final String description) {
 		try {
-			dmsLogic.upload( //
+			dmsLogic.create( //
 					operationUser.getAuthenticatedUser().getUsername(), //
 					className, //
 					cardId, //
 					file.getInputStream(), //
 					filename, //
-					category, //
-					description, //
-					METADATA_NOT_SUPPORTED);
+					new Metadata() {
+
+						@Override
+						public String category() {
+							return category;
+						}
+
+						@Override
+						public String description() {
+							return description;
+						}
+
+						@Override
+						public Iterable<MetadataGroup> metadataGroups() {
+							return METADATA_NOT_SUPPORTED;
+						}
+
+					});
 			return true;
 		} catch (final Exception e) {
 			final String message = String.format("error uploading file '%s' in '%s'", filename, className);
@@ -77,14 +93,30 @@ public class DmsLogicHelper implements SoapLogicHelper {
 	public boolean updateDescription(final String className, final Long cardId, final String filename,
 			final String description) {
 		try {
-			dmsLogic.updateDescriptionAndMetadata( //
+			dmsLogic.update( //
 					operationUser.getAuthenticatedUser().getUsername(), //
 					className, //
 					cardId, //
-					filename, //
 					null, //
-					description, //
-					METADATA_NOT_SUPPORTED);
+					filename, //
+					new Metadata() {
+
+						@Override
+						public String category() {
+							return null;
+						}
+
+						@Override
+						public String description() {
+							return description;
+						}
+
+						@Override
+						public Iterable<MetadataGroup> metadataGroups() {
+							return METADATA_NOT_SUPPORTED;
+						}
+
+					});
 			return true;
 		} catch (final Exception e) {
 			return false;

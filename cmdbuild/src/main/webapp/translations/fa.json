@@ -382,6 +382,7 @@
 			"CLASS_NOTFOUND": "کلاس {0} پیدا نشد",
 			"CQL_COMPILATION_FAILED": "Failed to compile CQL query",
 			"DMS_ATTACHMENT_DELETE_ERROR": "حذف ضمیمه با مشکل مواجه شد",
+			"DMS_ATTACHMENT_FOUND": "<em>Attachment {0} already existing for card {2} of {1}</em>",
 			"DMS_ATTACHMENT_NOTFOUND": "ضمیمه ی  {0} برای کارت {2} از {1} پیدا نشد",
 			"DMS_ATTACHMENT_UPLOAD_ERROR": "آپلود ضمیمه با مشکل مواجه شد",
 			"DMS_AUTOCOMPLETION_RULES_ERROR": "قوانین اتوکامپلیت برای ضمیمه ی  {0} فابل خواندن نمیباشد",

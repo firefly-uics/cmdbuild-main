@@ -382,6 +382,7 @@
 			"CLASS_NOTFOUND": "Třída {0} nebyla nalezena",
 			"CQL_COMPILATION_FAILED": "Překlad CQL dotazu se nezdařil",
 			"DMS_ATTACHMENT_DELETE_ERROR": "Odstranění přílohy se nezdařilo",
+			"DMS_ATTACHMENT_FOUND": "<em>Attachment {0} already existing for card {2} of {1}</em>",
 			"DMS_ATTACHMENT_NOTFOUND": "Příloha {0} záznamu {2} z {1} nebyla nalezena",
 			"DMS_ATTACHMENT_UPLOAD_ERROR": "Nahrání přílohy se nezdařilo",
 			"DMS_AUTOCOMPLETION_RULES_ERROR": "Nelze načíst pravidla automatického vyplňování metadat příloh pro třídu {0}",
