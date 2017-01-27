@@ -1,5 +1,6 @@
 package org.cmdbuild.servlets.json;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import static org.cmdbuild.servlets.json.CommunicationConstants.CARD_ID;
 import static org.cmdbuild.servlets.json.CommunicationConstants.CLASS_NAME;
 import static org.cmdbuild.servlets.json.CommunicationConstants.DESCRIPTION;
@@ -167,12 +168,13 @@ public class Attachments extends JSONBaseWithSpringContext {
 
 	@JSONExported
 	public void uploadAttachment( //
+			@Parameter(CLASS_NAME) final String className, //
+			@Parameter(CARD_ID) final Long cardId, //
 			@Parameter("File") final FileItem file, //
 			@Parameter("Category") final String category, //
 			@Parameter("Description") final String description, //
 			@Parameter("Metadata") final String jsonMetadataValues, //
-			@Parameter(CLASS_NAME) final String className, //
-			@Parameter(CARD_ID) final Long cardId //
+			@Parameter(value = "Major", required = false) final Boolean major //
 	) throws CMDBException, IOException {
 		final Map<String, Map<String, Object>> metadataValues = metadataValuesFromJson(jsonMetadataValues);
 		final String username = operationUser().getAuthenticatedUser().getUsername();
@@ -182,7 +184,8 @@ public class Attachments extends JSONBaseWithSpringContext {
 				cardId, //
 				file.getInputStream(), //
 				removeFilePath(file.getName()), //
-				new MetadataImpl(category, description, metadataValues, categoryDefinition(category)) //
+				new MetadataImpl(category, description, metadataValues, categoryDefinition(category)), //
+				defaultIfNull(major, false) //
 		);
 	}
 
@@ -198,15 +201,15 @@ public class Attachments extends JSONBaseWithSpringContext {
 
 	@JSONExported
 	public void modifyAttachment( //
+			@Parameter(CLASS_NAME) final String className, //
+			@Parameter(CARD_ID) final Long cardId, //
 			@Parameter("Filename") final String filename, //
 			@Parameter(value = "File", required = false) final FileItem file, //
 			@Parameter("Category") final String category, //
 			@Parameter("Description") final String description, //
 			@Parameter("Metadata") final String jsonMetadataValues, //
-			@Parameter(CLASS_NAME) final String className, //
-			@Parameter(CARD_ID) final Long cardId //
+			@Parameter(value = "Major", required = false) final Boolean major //
 	) throws CMDBException, IOException {
-
 		final Map<String, Map<String, Object>> metadataValues = metadataValuesFromJson(jsonMetadataValues);
 		dmsLogic().update( //
 				operationUser().getAuthenticatedUser().getUsername(), //
@@ -214,7 +217,8 @@ public class Attachments extends JSONBaseWithSpringContext {
 				cardId, //
 				file == null ? null : file.getInputStream(), //
 				filename, //
-				new MetadataImpl(category, description, metadataValues, categoryDefinition(category)) //
+				new MetadataImpl(category, description, metadataValues, categoryDefinition(category)), //
+				defaultIfNull(major, false) //
 		);
 	}
 
@@ -224,7 +228,6 @@ public class Attachments extends JSONBaseWithSpringContext {
 			@Parameter(CLASS_NAME) final String className, //
 			@Parameter(CARD_ID) final Long cardId //
 	) throws CMDBException {
-
 		dmsLogic().delete(className, cardId, filename);
 	}
 

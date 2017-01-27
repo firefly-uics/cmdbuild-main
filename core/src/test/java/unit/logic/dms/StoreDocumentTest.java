@@ -154,7 +154,7 @@ public class StoreDocumentTest {
 		// then
 		final ArgumentCaptor<Metadata> captor = ArgumentCaptor.forClass(Metadata.class);
 		verify(dmsLogic).create(eq("system"), eq("foo"), eq(42L), any(InputStream.class), eq(file.getName()),
-				captor.capture());
+				captor.capture(), eq(true));
 
 		final Metadata captured = captor.getValue();
 		assertThat(captured.category(), equalTo("bar"));
@@ -195,9 +195,9 @@ public class StoreDocumentTest {
 		// then
 		final ArgumentCaptor<Metadata> captor = ArgumentCaptor.forClass(Metadata.class);
 		verify(dmsLogic).create(eq("system"), eq("foo"), eq(42L), any(InputStream.class), eq(firstFile.getName()),
-				captor.capture());
+				captor.capture(), eq(true));
 		verify(dmsLogic).create(eq("system"), eq("foo"), eq(42L), any(InputStream.class), eq(secondFile.getName()),
-				captor.capture());
+				captor.capture(), eq(true));
 
 		final Metadata firstCaptured = captor.getAllValues().get(0);
 		assertThat(firstCaptured.category(), equalTo("bar"));

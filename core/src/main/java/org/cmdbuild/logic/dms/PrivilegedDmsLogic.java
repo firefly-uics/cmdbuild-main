@@ -114,9 +114,9 @@ public class PrivilegedDmsLogic extends ForwardingDmsLogic {
 
 	@Override
 	public void create(final String author, final String className, final Long cardId, final InputStream inputStream,
-			final String fileName, final Metadata metadata) throws IOException, CMDBException {
+			final String fileName, final Metadata metadata, final boolean major) throws IOException, CMDBException {
 		assureWritePrivilege(className);
-		delegate().create(author, className, cardId, inputStream, fileName, metadata);
+		delegate().create(author, className, cardId, inputStream, fileName, metadata, major);
 	}
 
 	@Override
@@ -128,9 +128,9 @@ public class PrivilegedDmsLogic extends ForwardingDmsLogic {
 
 	@Override
 	public void update(final String author, final String className, final Long cardId, final InputStream inputStream,
-			final String filename, final Metadata metadata) {
+			final String filename, final Metadata metadata, final boolean major) {
 		assureWritePrivilege(className);
-		delegate().update(author, className, cardId, inputStream, filename, metadata);
+		delegate().update(author, className, cardId, inputStream, filename, metadata, major);
 	}
 
 	@Override

@@ -90,7 +90,7 @@ public class PrivilegedDmsLogicTest {
 		final Metadata metadata = mock(Metadata.class);
 
 		// when
-		underTest.create("the author", "foo", 42L, inputStream, "the filename", metadata);
+		underTest.create("the author", "foo", 42L, inputStream, "the filename", metadata, true);
 	}
 
 	@Test
@@ -101,11 +101,11 @@ public class PrivilegedDmsLogicTest {
 		final Metadata metadata = mock(Metadata.class);
 
 		// when
-		underTest.create("the author", "foo", 42L, inputStream, "the filename", metadata);
+		underTest.create("the author", "foo", 42L, inputStream, "the filename", metadata, true);
 
 		// then
 		verify(dmsPrivileges).writable("foo");
-		verify(delegate).create("the author", "foo", 42L, inputStream, "the filename", metadata);
+		verify(delegate).create("the author", "foo", 42L, inputStream, "the filename", metadata, true);
 		verifyNoMoreInteractions(delegate, dmsPrivileges);
 	}
 
@@ -163,7 +163,7 @@ public class PrivilegedDmsLogicTest {
 		final Metadata metadata = mock(Metadata.class);
 
 		// when
-		underTest.update("dummy user", "foo", 42L, inputStream, "the filename", metadata);
+		underTest.update("dummy user", "foo", 42L, inputStream, "the filename", metadata, true);
 	}
 
 	@Test
@@ -174,11 +174,11 @@ public class PrivilegedDmsLogicTest {
 		final Metadata metadata = mock(Metadata.class);
 
 		// when
-		underTest.update("dummy user", "foo", 42L, inputStream, "the filename", metadata);
+		underTest.update("dummy user", "foo", 42L, inputStream, "the filename", metadata, true);
 
 		// then
 		verify(dmsPrivileges).writable("foo");
-		verify(delegate).update("dummy user", "foo", 42L, inputStream, "the filename", metadata);
+		verify(delegate).update("dummy user", "foo", 42L, inputStream, "the filename", metadata, true);
 		verifyNoMoreInteractions(delegate, dmsPrivileges);
 	}
 

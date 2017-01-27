@@ -139,7 +139,8 @@ public class StoreDocument implements Action {
 								return metadataGroups;
 							}
 
-						});
+						}, //
+						true);
 			} catch (final Exception e) {
 				logger.error(marker, "error storing document", e);
 			}

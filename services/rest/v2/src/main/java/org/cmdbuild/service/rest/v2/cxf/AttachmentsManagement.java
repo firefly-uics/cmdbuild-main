@@ -76,7 +76,8 @@ public class AttachmentsManagement implements AttachmentsHelper {
 				cardId, //
 				dataHandler.getInputStream(), //
 				attachmentName, //
-				new AttachmentAdapter(defaultIfNull(attachment, nullAttachment())));
+				new AttachmentAdapter(defaultIfNull(attachment, nullAttachment())), //
+				true);
 		return dataHandler.getName();
 	}
 
@@ -89,7 +90,8 @@ public class AttachmentsManagement implements AttachmentsHelper {
 				cardId, //
 				dataHandler == null ? null : dataHandler.getInputStream(), //
 				attachmentId, //
-				new AttachmentAdapter(defaultIfNull(attachment, nullAttachment())));
+				new AttachmentAdapter(defaultIfNull(attachment, nullAttachment())), //
+				false);
 	}
 
 	private Collection<MetadataGroup> metadataGroupsOf(final Attachment attachment) {

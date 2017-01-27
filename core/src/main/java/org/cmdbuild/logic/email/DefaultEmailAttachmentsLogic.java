@@ -1,6 +1,7 @@
 package org.cmdbuild.logic.email;
 
 import static com.google.common.collect.FluentIterable.from;
+import static java.util.Collections.emptyList;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.cmdbuild.data.store.email.EmailConstants.EMAIL_CLASS_NAME;
 
@@ -20,6 +21,7 @@ import org.cmdbuild.dms.DocumentCreatorFactory;
 import org.cmdbuild.dms.DocumentDelete;
 import org.cmdbuild.dms.DocumentDownload;
 import org.cmdbuild.dms.DocumentSearch;
+import org.cmdbuild.dms.MetadataGroup;
 import org.cmdbuild.dms.StorableDocument;
 import org.cmdbuild.dms.StoredDocument;
 import org.cmdbuild.dms.exception.DmsError;
@@ -33,6 +35,7 @@ import com.google.common.base.Optional;
 public class DefaultEmailAttachmentsLogic implements EmailAttachmentsLogic {
 
 	private static final String CATEGORY_NOT_USED = null;
+	private static final Iterable<MetadataGroup> NO_METADATA = emptyList();
 
 	private final CMDataView dataView;
 	private final DmsService dmsService;
@@ -64,7 +67,9 @@ public class DefaultEmailAttachmentsLogic implements EmailAttachmentsLogic {
 							inputStream, //
 							dataHandler.getName(), //
 							CATEGORY_NOT_USED, //
-							EMPTY);
+							EMPTY, //
+							NO_METADATA, //
+							true);
 			dmsService.upload(document);
 		} catch (final Exception e) {
 			logger.error("error uploading document");

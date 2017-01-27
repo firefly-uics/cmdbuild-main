@@ -6,4 +6,6 @@ public interface StorableDocument extends DocumentUpdate {
 
 	InputStream getInputStream();
 
+	boolean isMajorVersion();
+
 }

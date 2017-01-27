@@ -66,7 +66,8 @@ public class DmsLogicHelper implements SoapLogicHelper {
 							return METADATA_NOT_SUPPORTED;
 						}
 
-					});
+					}, //
+					true);
 			return true;
 		} catch (final Exception e) {
 			final String message = String.format("error uploading file '%s' in '%s'", filename, className);
@@ -113,7 +114,8 @@ public class DmsLogicHelper implements SoapLogicHelper {
 							return METADATA_NOT_SUPPORTED;
 						}
 
-					});
+					}, //
+					false);
 			return true;
 		} catch (final Exception e) {
 			return false;

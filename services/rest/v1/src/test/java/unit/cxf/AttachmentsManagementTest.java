@@ -94,7 +94,8 @@ public class AttachmentsManagementTest {
 		// then
 		final ArgumentCaptor<Metadata> captor = ArgumentCaptor.forClass(Metadata.class);
 		verify(userStore).getUser();
-		verify(dmsLogic).create(eq("dummy user"), eq("foo"), eq(123L), same(inputStream), eq("bar"), captor.capture());
+		verify(dmsLogic).create(eq("dummy user"), eq("foo"), eq(123L), same(inputStream), eq("bar"), captor.capture(),
+				eq(true));
 		verifyNoMoreInteractions(userStore, dmsLogic);
 
 		final Metadata captured = captor.getValue();
@@ -122,7 +123,8 @@ public class AttachmentsManagementTest {
 		// then
 		final ArgumentCaptor<Metadata> captor = ArgumentCaptor.forClass(Metadata.class);
 		verify(userStore).getUser();
-		verify(dmsLogic).create(eq("dummy user"), eq("foo"), eq(123L), same(inputStream), eq("bar"), captor.capture());
+		verify(dmsLogic).create(eq("dummy user"), eq("foo"), eq(123L), same(inputStream), eq("bar"), captor.capture(),
+				eq(true));
 		verifyNoMoreInteractions(userStore, dmsLogic);
 
 		final Metadata captured = captor.getValue();
@@ -172,7 +174,8 @@ public class AttachmentsManagementTest {
 		// then
 		final ArgumentCaptor<Metadata> captor = ArgumentCaptor.forClass(Metadata.class);
 		verify(userStore).getUser();
-		verify(dmsLogic).update(eq("dummy user"), eq("foo"), eq(123L), eq(inputStream), eq("bar"), captor.capture());
+		verify(dmsLogic).update(eq("dummy user"), eq("foo"), eq(123L), eq(inputStream), eq("bar"), captor.capture(),
+				eq(false));
 		verifyNoMoreInteractions(userStore, dmsLogic);
 
 		final Metadata captured = captor.getValue();
@@ -198,7 +201,8 @@ public class AttachmentsManagementTest {
 		// then
 		final ArgumentCaptor<Metadata> captor = ArgumentCaptor.forClass(Metadata.class);
 		verify(userStore).getUser();
-		verify(dmsLogic).update(eq("dummy user"), eq("foo"), eq(123L), eq(inputStream), eq("bar"), captor.capture());
+		verify(dmsLogic).update(eq("dummy user"), eq("foo"), eq(123L), eq(inputStream), eq("bar"), captor.capture(),
+				eq(false));
 		verifyNoMoreInteractions(userStore, dmsLogic);
 
 		final Metadata captured = captor.getValue();
@@ -223,7 +227,7 @@ public class AttachmentsManagementTest {
 		// then
 		final ArgumentCaptor<Metadata> captor = ArgumentCaptor.forClass(Metadata.class);
 		verify(dmsLogic).update(eq("dummy user"), eq("foo"), eq(123L), isNull(InputStream.class), eq("bar"),
-				captor.capture());
+				captor.capture(), eq(false));
 		verifyNoMoreInteractions(dmsLogic);
 
 		final Metadata captured = captor.getValue();

@@ -91,20 +91,19 @@ public interface DmsLogic extends Logic {
 	Iterable<StoredDocument> searchVersions(String className, Long cardId, String filename);
 
 	void create(String author, String className, Long cardId, InputStream inputStream, String fileName,
-			Metadata metadata) throws IOException, CMDBException;
+			Metadata metadata, boolean major) throws IOException, CMDBException;
 
 	/**
 	 * @param version
 	 *            the version of the document, {@code null} means the last
 	 *            version.
-	 * 
 	 */
 	DataHandler download(String className, Long cardId, String fileName, String version);
 
 	void delete(String className, Long cardId, String fileName) throws DmsException;
 
 	void update(String author, String className, Long cardId, InputStream inputStream, String filename,
-			Metadata metadata);
+			Metadata metadata, boolean major);
 
 	void copy(String sourceClassName, Long sourceId, String filename, String destinationClassName, Long destinationId);
 

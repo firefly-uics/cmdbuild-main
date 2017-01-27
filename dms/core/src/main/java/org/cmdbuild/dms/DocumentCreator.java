@@ -20,17 +20,9 @@ public interface DocumentCreator {
 			InputStream inputStream, //
 			String fileName, //
 			String category, //
-			String description);
-
-	StorableDocument createStorableDocument( //
-			String author, //
-			String className, //
-			Long cardId, //
-			InputStream inputStream, //
-			String fileName, //
-			String category, //
 			String description, //
-			Iterable<MetadataGroup> metadataGroups);
+			Iterable<MetadataGroup> metadataGroups, //
+			boolean major);
 
 	DocumentDownload createDocumentDownload( //
 			String className, //
@@ -42,14 +34,6 @@ public interface DocumentCreator {
 			String className, //
 			Long cardId, //
 			String fileName);
-
-	DocumentUpdate createDocumentUpdate( //
-			String className, //
-			Long cardId, //
-			String filename, //
-			String category, //
-			String description, //
-			String author);
 
 	DocumentUpdate createDocumentUpdate( //
 			String className, //

@@ -69,8 +69,8 @@ public abstract class ForwardingDmsLogic extends ForwardingObject implements Dms
 
 	@Override
 	public void create(final String author, final String className, final Long cardId, final InputStream inputStream,
-			final String fileName, final Metadata metadata) throws IOException, CMDBException {
-		delegate().create(author, className, cardId, inputStream, fileName, metadata);
+			final String fileName, final Metadata metadata, final boolean major) throws IOException, CMDBException {
+		delegate().create(author, className, cardId, inputStream, fileName, metadata, major);
 	}
 
 	@Override
@@ -81,8 +81,8 @@ public abstract class ForwardingDmsLogic extends ForwardingObject implements Dms
 
 	@Override
 	public void update(final String author, final String className, final Long cardId, final InputStream inputStream,
-			final String filename, final Metadata metadata) {
-		delegate().update(author, className, cardId, inputStream, filename, metadata);
+			final String filename, final Metadata metadata, final boolean major) {
+		delegate().update(author, className, cardId, inputStream, filename, metadata, major);
 	}
 
 	@Override

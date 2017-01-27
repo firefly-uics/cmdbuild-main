@@ -1,10 +1,8 @@
 package org.cmdbuild.dms;
 
-import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 
 import java.io.InputStream;
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang3.Validate;
@@ -12,8 +10,6 @@ import org.apache.commons.lang3.Validate;
 import com.google.common.collect.Lists;
 
 public class DefaultDocumentCreator implements DocumentCreator {
-
-	private static final Collection<MetadataGroup> lol = emptyList();
 
 	private final Iterable<String> basePath;
 
@@ -74,14 +70,8 @@ public class DefaultDocumentCreator implements DocumentCreator {
 
 	@Override
 	public StorableDocument createStorableDocument(final String author, final String className, final Long cardId,
-			final InputStream inputStream, final String fileName, final String category, final String description) {
-		return createStorableDocument(author, className, cardId, inputStream, fileName, category, description, lol);
-	}
-
-	@Override
-	public StorableDocument createStorableDocument(final String author, final String className, final Long cardId,
 			final InputStream inputStream, final String fileName, final String category, final String description,
-			final Iterable<MetadataGroup> metadataGroups) {
+			final Iterable<MetadataGroup> metadataGroups, final boolean major) {
 		return new StorableDocument() {
 
 			@Override
@@ -127,6 +117,11 @@ public class DefaultDocumentCreator implements DocumentCreator {
 			@Override
 			public Iterable<MetadataGroup> getMetadataGroups() {
 				return metadataGroups;
+			}
+
+			@Override
+			public boolean isMajorVersion() {
+				return major;
 			}
 
 		};
@@ -190,12 +185,6 @@ public class DefaultDocumentCreator implements DocumentCreator {
 			}
 
 		};
-	}
-
-	@Override
-	public DocumentUpdate createDocumentUpdate(final String className, final Long cardId, final String filename,
-			final String category, final String description, final String author) {
-		return createDocumentUpdate(className, cardId, filename, category, description, author, lol);
 	}
 
 	@Override

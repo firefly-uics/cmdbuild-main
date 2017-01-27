@@ -23,6 +23,8 @@ import static org.apache.chemistry.opencmis.commons.SessionParameter.READ_TIMEOU
 import static org.apache.chemistry.opencmis.commons.SessionParameter.USER;
 import static org.apache.chemistry.opencmis.commons.enums.CmisVersion.CMIS_1_0;
 import static org.apache.chemistry.opencmis.commons.enums.UnfileObject.DELETE;
+import static org.apache.chemistry.opencmis.commons.enums.VersioningState.MAJOR;
+import static org.apache.chemistry.opencmis.commons.enums.VersioningState.MINOR;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import static org.apache.commons.lang3.StringUtils.defaultString;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -55,7 +57,6 @@ import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.apache.chemistry.opencmis.commons.definitions.PropertyDefinition;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
 import org.apache.chemistry.opencmis.commons.enums.CmisVersion;
-import org.apache.chemistry.opencmis.commons.enums.VersioningState;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.cmdbuild.dms.DefaultDefinitionsFactory;
@@ -538,23 +539,22 @@ public class CmisDmsService implements DmsService, LoggingSupport, ChangeListene
 			final MimetypesFileTypeMap mimeTypesMap = new MimetypesFileTypeMap();
 			final String mimeType = mimeTypesMap.getContentType(document.getFileName());
 
-			Document cmisDocument = getDocument(session, document.getPath(), document.getFileName());
-			if (cmisDocument == null) {
+			Document existing = getDocument(session, document.getPath(), document.getFileName());
+			if (existing == null) {
 				logger.info(MARKER, "create document");
 				final ContentStream contentStream = session.getObjectFactory()
 						.createContentStream(document.getFileName(), -1, mimeType, document.getInputStream());
 				final Map<String, Object> properties = getProperties(session, document, null);
-				cmisDocument = folder.createDocument(properties, contentStream, VersioningState.MAJOR);
-				logger.info(MARKER, "document created '{}' with secondary types '{}'", cmisDocument,
-						cmisDocument.getSecondaryTypes());
-
+				existing = folder.createDocument(properties, contentStream, document.isMajorVersion() ? MAJOR : MINOR);
+				logger.info(MARKER, "document created '{}' with secondary types '{}'", existing,
+						existing.getSecondaryTypes());
 			} else {
 				logger.info(MARKER, "update document");
-				final Document pwc = (Document) session.getObject(cmisDocument.checkOut());
+				final Document pwc = (Document) session.getObject(existing.checkOut());
 				final ContentStream contentStream = session.getObjectFactory()
 						.createContentStream(document.getFileName(), -1, mimeType, document.getInputStream());
 				try {
-					pwc.checkIn(true, null, contentStream, "");
+					pwc.checkIn(document.isMajorVersion(), null, contentStream, "");
 				} catch (final Exception e) {
 					pwc.cancelCheckOut();
 					throw DmsError.forward(e);

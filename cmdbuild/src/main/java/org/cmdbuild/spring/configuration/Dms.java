@@ -5,7 +5,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.StreamSupport.stream;
 import static org.cmdbuild.common.utils.Reflection.unsupported;
 import static org.cmdbuild.spring.util.Constants.DEFAULT;
-import static org.cmdbuild.spring.util.Constants.PROTOTYPE;
+import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -138,7 +138,7 @@ public class Dms {
 	}
 
 	@Bean
-	@Scope(PROTOTYPE)
+	@Scope(SCOPE_PROTOTYPE)
 	@Qualifier(DEFAULT)
 	public PrivilegedDmsLogic privilegedDmsLogic() {
 		return new PrivilegedDmsLogic( //
@@ -148,7 +148,7 @@ public class Dms {
 	}
 
 	@Bean
-	@Scope(PROTOTYPE)
+	@Scope(SCOPE_PROTOTYPE)
 	public DmsPrivileges defaultDmsPrivileges() {
 		return new DefaultDmsPrivileges(data.systemDataView(), privilegeManagement.userPrivilegeContext());
 	}

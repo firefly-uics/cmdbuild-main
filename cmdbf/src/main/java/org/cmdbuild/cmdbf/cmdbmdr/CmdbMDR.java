@@ -840,7 +840,7 @@ public class CmdbMDR implements ManagementDataRepository {
 											return newDocument.getMetadataGroups();
 										}
 
-									});
+									}, true);
 						} else {
 							dmsLogic.update(operationUser.getAuthenticatedUser().getUsername(), card.getClassName(),
 									card.getId(), null, newDocument.getName(), new Metadata() {
@@ -860,7 +860,7 @@ public class CmdbMDR implements ManagementDataRepository {
 											return newDocument.getMetadataGroups();
 										}
 
-									});
+									}, false);
 						}
 					} else {
 						throw new RegistrationErrorFault("Record " + recordQName + " Out of date");

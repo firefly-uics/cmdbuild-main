@@ -98,7 +98,8 @@ public class DmsServiceResource extends ExternalResource {
 						(file == null) ? null : file.getName(), //
 						category, //
 						DESCRIPTION, //
-						metadataGroups);
+						metadataGroups, //
+						true);
 			} catch (final FileNotFoundException e) {
 				throw new RuntimeException("should never come here", e);
 			}

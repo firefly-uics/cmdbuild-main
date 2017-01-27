@@ -222,7 +222,7 @@ public class DefaultDmsLogic implements DmsLogic {
 
 	@Override
 	public void create(final String author, final String className, final Long cardId, final InputStream inputStream,
-			final String fileName, final Metadata metadata) throws IOException, CMDBException {
+			final String fileName, final Metadata metadata, final boolean major) throws IOException, CMDBException {
 		if (search(className, cardId, fileName).isPresent()) {
 			throw DMS_ATTACHMENT_FOUND.createException(fileName, className, cardId.toString());
 		}
@@ -244,7 +244,7 @@ public class DefaultDmsLogic implements DmsLogic {
 				.getName();
 		final StorableDocument document = createDocumentFactory(realClassName) //
 				.createStorableDocument(author, realClassName, cardId, inputStream, fileName, metadata.category(),
-						metadata.description(), metadata.metadataGroups());
+						metadata.description(), metadata.metadataGroups(), major);
 		try {
 			service.upload(document);
 		} catch (final Exception e) {
@@ -294,7 +294,7 @@ public class DefaultDmsLogic implements DmsLogic {
 
 	@Override
 	public void update(final String author, final String className, final Long cardId, final InputStream inputStream,
-			final String filename, final Metadata metadata) {
+			final String filename, final Metadata metadata, final boolean major) {
 		if (!search(className, cardId, filename).isPresent()) {
 			throw DMS_ATTACHMENT_NOT_FOUND.createException(filename, className, cardId.toString());
 		}
@@ -308,7 +308,7 @@ public class DefaultDmsLogic implements DmsLogic {
 			} else {
 				final StorableDocument storable = documents //
 						.createStorableDocument(author, className, cardId, inputStream, filename, metadata.category(),
-								metadata.description(), metadata.metadataGroups());
+								metadata.description(), metadata.metadataGroups(), major);
 				service.upload(storable);
 			}
 		} catch (final Exception e) {
