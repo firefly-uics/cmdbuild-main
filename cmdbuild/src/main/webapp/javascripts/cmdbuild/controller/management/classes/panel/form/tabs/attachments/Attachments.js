@@ -489,7 +489,6 @@
 		 * FIXME: waiting for refactor
 		 */
 		onCardSelected: function (card) {
-_debug('onCardSelected', card);
 			if (Ext.isObject(card) && !Ext.Object.isEmpty(card)) {
 				this.classesFormTabAttachmentsSelectedCardSet({ value: card.getData() });
 
@@ -512,7 +511,6 @@ _debug('onCardSelected', card);
 		 * FIXME: waiting for refactor
 		 */
 		onEntryTypeSelected: function (entryType) {
-_debug('onEntryTypeSelected', entryType);
 			if (Ext.isObject(entryType) && !Ext.Object.isEmpty(entryType)) {
 				// Local variables reset
 				this.classesFormTabAttachmentsSelectedCardReset();
