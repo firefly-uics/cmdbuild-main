@@ -262,7 +262,7 @@ public class DefaultDmsLogic implements DmsLogic {
 		if (!stored.isPresent()) {
 			throw DMS_ATTACHMENT_NOT_FOUND.createException(fileName, className, cardId.toString());
 		}
-		if (isNotBlank(version) && stored.get().isVersionable()) {
+		if (isNotBlank(version) && !stored.get().isVersionable()) {
 			throw DMS_ATTACHMENT_NOT_VERSIONABLE.createException(fileName, className, cardId.toString());
 		}
 		try {
