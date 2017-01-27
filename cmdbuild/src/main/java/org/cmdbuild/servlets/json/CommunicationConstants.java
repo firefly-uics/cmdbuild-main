@@ -26,6 +26,7 @@ public class CommunicationConstants {
 			ATTRIBUTENAME = "attributeName", //
 			ATTRIBUTES = "attributes", //
 			ATTRIBUTES_PRIVILEGES = "attributesPrivileges", //
+			AUTHOR = "author", //
 			BCC = "bcc", //
 			BEGIN_DATE = "beginDate", //
 			BIM_LAYER = "bimLayer", //
@@ -37,6 +38,7 @@ public class CommunicationConstants {
 			CARD_ID = "cardId", //
 			CARDS = "cards", //
 			CATEGORY = "category", //
+			CATEGORIES = "categories", //
 			CC = "cc", //
 			CHARTNAME = "chartName", //
 			CLASS_ATTRIBUTE = "classAttribute", //
@@ -54,6 +56,7 @@ public class CommunicationConstants {
 			CONTEXT = "context", //
 			COUNT = "count", //
 			CREATE = "create", //
+			CREATION = "creation", //
 			CRON_EXPRESSION = "cronExpression", //
 			DASHBOARDNAME = "dashboardName", //
 			DATA = "data", //
@@ -71,8 +74,8 @@ public class CommunicationConstants {
 			DATE = "date", //
 			DB_NAME = "db_name", //
 			DB_TYPE = "db_type", //
-			DEFAULT = "Default", //
 			DEFAULT_ACCOUNT = "defaultAccount", //
+			DEFAULT = "Default", //
 			DEFAULT_GROUP = "defaultGroup", //
 			DEFAULT_GROUP_ID = "defaultGroupId", //
 			DEFAULT_VALUE = "defaultvalue", //
@@ -80,10 +83,10 @@ public class CommunicationConstants {
 			DELETE = "delete", //
 			DESCRIPTION_CAPITAL = "Description", //
 			DESCRIPTION = "description", //
-			DESTINATION = "destination", //
 			DESTINATION_CLASS = "destinationClass", //
 			DESTINATION_CODE = "destinationCode", //
 			DESTINATION_DESCRIPTION = "destinationDescription", //
+			DESTINATION = "destination", //
 			DETAIL_CARD_ID = "detailCardId", //
 			DETAIL_CLASS_NAME = "detailClassName", //
 			DIRECT_DESCRIPTION = "descrdir", //
@@ -149,6 +152,7 @@ public class CommunicationConstants {
 			HEADERS = "headers", //
 			HOST = "host", //
 			ICONNAME = "iconName", //
+			ID_CLASS = "idClass", //
 			IMAP_PORT = "imapPort", //
 			IMAP_SERVER = "imapServer", //
 			IMAP_SSL = "imapSsl", //
@@ -159,7 +163,6 @@ public class CommunicationConstants {
 			INHERITED = "inherited", //
 			INHERIT = "inherits", //
 			INVERSE_DESCRIPTION = "descrinv", //
-			ID_CLASS = "idClass", //
 			IP_TYPE = "ipType", //
 			IS_ACTIVE = "isActive", //
 			IS_ADMINISTRATOR = "isAdministrator", //
@@ -170,16 +173,19 @@ public class CommunicationConstants {
 			KEEP_SYNCHRONIZATION = "keepSynchronization", //
 			KEY = "key", //
 			LANGUAGE = "language", //
-			LANGUAGES = "languages", //
 			LANGUAGE_PROMPT = "language_prompt", //
+			LANGUAGES = "languages", //
 			LAST_CHECKIN = "lastCheckin", //
 			LENGTH = "len", //
 			LIMIT = "limit", //
 			LIM_PASSWORD = "lim_password", //
 			LIM_USER = "lim_user", //
+			LIST = "list", //
 			LOOKUPID = "lookupId", //
 			LOOKUP_LIST = "lookuplist", //
 			LOOKUP = "lookup", //
+			MAJOR = "major", //
+			MANDATORY = "mandatory", //
 			MANAGEMENT_DATABASE = "postgres", //
 			MAPPER_ACTIVE = "parsingActive", //
 			MAPPER_KEY_END = "parsingKeyEnd", //
@@ -190,20 +196,22 @@ public class CommunicationConstants {
 			MASTER_CLASS_NAME = "masterClassName", //
 			MASTERDETAIL_LABEL = "md_label", //
 			MASTER = "master", //
+			MENU_ITEM_UUID = "uuid", //
 			MENU = "menu", //
 			META = "meta", //
 			MODE = "mode", //
+			MODIFICATION = "modification", //
 			MYSQL_LABEL = "MySQL", //
 			MYSQL = "mysql", //
 			NAME = "name", //
 			NAMES = "names", //
 			NEW_PASSWORD = "newpassword", //
-			NOTES = "Notes", //
 			NO_SUBJECT_PREFIX = "noSubjectPrefix", //
+			NOTES = "Notes", //
 			NOTIFICATION_ACTIVE = "notificationActive", //
 			NOTIFICATION_EMAIL_ACCOUNT = "notificationEmailAccount", //
-			NOTIFICATION_EMAIL_TEMPLATE = "notificationEmailTemplate", //
 			NOTIFICATION_EMAIL_TEMPLATE_ERROR = "notificationEmailTemplateError", //
+			NOTIFICATION_EMAIL_TEMPLATE = "notificationEmailTemplate", //
 			NOTIFY_WITH = "notifyWith", //
 			NOT_NEGATIVES = "notNegatives", //
 			NOT_NULL = "isnotnull", //
@@ -213,8 +221,8 @@ public class CommunicationConstants {
 			ORACLE_LABEL = "Oracle", //
 			ORACLE = "oracle", //
 			ORIG_TYPE = "orig_type", //
-			OUTPUT_FOLDER = "outputFolder", //
 			OUT_OF_FILTER = "outOfFilter", //
+			OUTPUT_FOLDER = "outputFolder", //
 			OWNER = "owner", //
 			PARAMS = "params", //
 			PARENT_DESCRIPTION = "ParentDescription", //
@@ -233,6 +241,7 @@ public class CommunicationConstants {
 			POSTGRESQL_LABEL = "PostgreSQL", //
 			POSTGRESQL = "postgresql", //
 			PRECISION = "precision", //
+			PRIVILEGED = "privileged", //
 			PRIVILEGE_FILTER = "privilegeFilter", //
 			PRIVILEGE_MODE = "privilege_mode", //
 			PRIVILEGE_NONE = "none_privilege", //
@@ -240,7 +249,6 @@ public class CommunicationConstants {
 			PRIVILEGE_OBJ_ID = "privilegedObjectId", //
 			PRIVILEGE_OBJ_NAME = "privilegedObjectName", //
 			PRIVILEGE_READ = "read_privilege", //
-			PRIVILEGED = "privileged", //
 			PRIVILEGES = "privileges", //
 			PRIVILEGE_WRITE = "write_privilege", //
 			PROCESSED_FOLDER = "processedFolder", //
@@ -257,9 +265,9 @@ public class CommunicationConstants {
 			REPORT_ID = "reportId", //
 			REPORTNAME = "reportName", //
 			REPORT_PARAMETERS = "reportParameters", //
+			RESPONSE = "response", //
 			RESULT = "result", //
 			RESULTS = "results", //
-			RESPONSE = "response", //
 			ROOT_REFERENCE = "rootreference", //
 			ROOT = "root", //
 			ROWS = "rows", //
@@ -287,11 +295,11 @@ public class CommunicationConstants {
 			STARTING_CLASS = "startingClass", //
 			START = "start", //
 			STATE = "state", //
-			STATUS = "status", //
 			STATUS_DRAFT = "draft", //
 			STATUS_OUTGOING = "outgoing", //
 			STATUS_RECEIVED = "received", //
 			STATUS_SENT = "sent", //
+			STATUS = "status", //
 			SUBJECT = "subject", //
 			SUCCESS = "success", //
 			SUPERCLASS = "superclass", //
@@ -304,14 +312,14 @@ public class CommunicationConstants {
 			TASK_READ_EMAIL = "email", //
 			TASK_START_WORKFLOW = "workflow", //
 			TASK_SYNCHRONOUS_EVENT = "event_synchronous", //
-			TEMPLATE = "template", //
 			TEMPLATES = "templates", //
+			TEMPLATE = "template", //
 			TEMPORARY = "temporary", //
 			TEMPORARY_ID = TEMPORARY + ID_CAPITAL, //
 			TIME = "time", //
 			TITLE = "title", //
-			TO = "to", //
 			TOTAL = "total", //
+			TO = "to", //
 			TRANSLATIONS = "translations", //
 			TRANSLATION_UUID = "translationUuid", //
 			TYPE_CAPITAL = "Type", //
@@ -327,11 +335,11 @@ public class CommunicationConstants {
 			USERS = "users", //
 			USER_TYPE = "user_type", //
 			USER = "user", //
-			MENU_ITEM_UUID = "uuid", //
-			VALUE = "value", //
 			VALUES = "values", //
+			VALUE = "value", //
 			VARIABLES = "variables", //
 			VERSION = "version", //
+			VERSIONABLE = "versionable", //
 			VIEWNAME = "viewName", //
 			VIEWS = "views", //
 			WIDGET_ID = "widgetId", //
@@ -344,6 +352,6 @@ public class CommunicationConstants {
 			WORKFLOW_SAVE_ATTACHMENTS = "workflowSaveAttachments", //
 			WW = "ww", //
 			XPDL = "xpdl" //
-			;
+	;
 
 }

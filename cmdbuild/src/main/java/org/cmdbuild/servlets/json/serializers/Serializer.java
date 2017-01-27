@@ -1,17 +1,12 @@
 package org.cmdbuild.servlets.json.serializers;
 
-import static java.util.Collections.emptyList;
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import static org.cmdbuild.auth.acl.CMGroup.GroupType.admin;
 import static org.cmdbuild.auth.acl.CMGroup.GroupType.normal;
 import static org.cmdbuild.auth.acl.CMGroup.GroupType.restrictedAdmin;
 import static org.cmdbuild.servlets.json.CommunicationConstants.META;
 import static org.cmdbuild.spring.SpringIntegrationUtils.applicationContext;
 
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -20,11 +15,7 @@ import org.cmdbuild.auth.acl.CMGroup.GroupType;
 import org.cmdbuild.auth.user.CMUser;
 import org.cmdbuild.dao.entrytype.CMClass;
 import org.cmdbuild.dms.DmsConfiguration;
-import org.cmdbuild.dms.Metadata;
-import org.cmdbuild.dms.MetadataGroup;
-import org.cmdbuild.dms.StoredDocument;
 import org.cmdbuild.exception.DmsException;
-import org.cmdbuild.logger.Log;
 import org.cmdbuild.logic.auth.AuthenticationLogic.GroupInfo;
 import org.cmdbuild.logic.dms.DmsLogic;
 import org.cmdbuild.notification.Notifier;
@@ -36,49 +27,10 @@ import org.json.JSONObject;
 @_Serializer
 public class Serializer {
 
-	// TODO use constants
-	private static final SimpleDateFormat ATTACHMENT_DATE_FOMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-
 	private static final String AVAILABLE_CLASS = "availableclass";
 	private static final String AVAILABLE_PROCESS_CLASS = "availableprocessclass";
 	private static final String AVAILABLE_REPORT = "availablereport";
 	private static final String AVAILABLE_DASHBOARDS = "availabledashboards";
-
-	private static final Iterable<MetadataGroup> NO_METADATA_GROUPS = emptyList();
-
-	public JSONObject serializeAttachment(final StoredDocument attachment) {
-		final JSONObject serializer = new JSONObject();
-		try {
-			serializer.put("Category", attachment.getCategory());
-			serializer.put("CreationDate", format(attachment.getCreated(), ATTACHMENT_DATE_FOMAT));
-			serializer.put("ModificationDate", format(attachment.getModified(), ATTACHMENT_DATE_FOMAT));
-			serializer.put("Author", attachment.getAuthor());
-			serializer.put("Version", attachment.getVersion());
-			serializer.put("Filename", attachment.getName());
-			serializer.put("Description", attachment.getDescription());
-			serializer.put("Metadata", serialize(attachment.getMetadataGroups()));
-			serializer.put("Versionable", attachment.isVersionable());
-		} catch (final JSONException e) {
-			Log.JSONRPC.error("Error serializing attachment", e);
-		}
-		return serializer;
-	}
-
-	private static String format(final Date date, final Format format) {
-		return (date == null) ? null : format.format(date);
-	}
-
-	private JSONObject serialize(final Iterable<MetadataGroup> metadataGroups) throws JSONException {
-		final JSONObject jsonMetadata = new JSONObject();
-		for (final MetadataGroup metadataGroup : defaultIfNull(metadataGroups, NO_METADATA_GROUPS)) {
-			final JSONObject jsonAllMetadata = new JSONObject();
-			for (final Metadata metadata : metadataGroup.getMetadata()) {
-				jsonAllMetadata.put(metadata.getName(), metadata.getValue());
-			}
-			jsonMetadata.put(metadataGroup.getName(), jsonAllMetadata);
-		}
-		return jsonMetadata;
-	}
 
 	public JSONArray buildJsonAvaiableMenuItems() throws JSONException {
 		final JSONArray jsonAvaiableItems = new JSONArray();

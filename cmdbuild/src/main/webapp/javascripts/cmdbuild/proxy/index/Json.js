@@ -5,16 +5,16 @@
 		singleton: true,
 
 		attachment: {
-			create: 'services/json/attachments/uploadattachment',
+			create: 'services/json/attachments/create',
 			read: '',
-			update: 'services/json/attachments/modifyattachment',
-			remove: 'services/json/attachments/deleteattachment',
+			update: 'services/json/attachments/update',
+			remove: 'services/json/attachments/delete',
 
-			readAll: 'services/json/attachments/getattachmentlist',
+			readAll: 'services/json/attachments/readall',
 
-			download: 'services/json/attachments/downloadattachment',
-			getContext: 'services/json/attachments/getattachmentscontext',
-			getVersions: 'services/json/attachments/getattachmentversions'
+			download: 'services/json/attachments/download',
+			getContext: 'services/json/attachments/readcontext',
+			getVersions: 'services/json/attachments/readallversions'
 		},
 
 		attribute: {
@@ -103,7 +103,7 @@
 			connectionTest: 'services/json/configure/testconnection',
 
 			dms: {
-				readAllPreset: 'services/json/attachments/getpresets'
+				readAllPreset: 'services/json/attachments/readpresets'
 			},
 
 			ui: {

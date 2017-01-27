@@ -1,15 +1,38 @@
 package org.cmdbuild.servlets.json;
 
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import static org.cmdbuild.services.json.dto.JsonResponse.success;
+import static org.cmdbuild.servlets.json.CommunicationConstants.AUTHOR;
 import static org.cmdbuild.servlets.json.CommunicationConstants.CARD_ID;
+import static org.cmdbuild.servlets.json.CommunicationConstants.CATEGORIES;
+import static org.cmdbuild.servlets.json.CommunicationConstants.CATEGORY;
 import static org.cmdbuild.servlets.json.CommunicationConstants.CLASS_NAME;
+import static org.cmdbuild.servlets.json.CommunicationConstants.CREATION;
 import static org.cmdbuild.servlets.json.CommunicationConstants.DESCRIPTION;
+import static org.cmdbuild.servlets.json.CommunicationConstants.FILE;
+import static org.cmdbuild.servlets.json.CommunicationConstants.FILE_NAME;
 import static org.cmdbuild.servlets.json.CommunicationConstants.ID;
+import static org.cmdbuild.servlets.json.CommunicationConstants.LIST;
+import static org.cmdbuild.servlets.json.CommunicationConstants.MAJOR;
+import static org.cmdbuild.servlets.json.CommunicationConstants.MANDATORY;
+import static org.cmdbuild.servlets.json.CommunicationConstants.META;
+import static org.cmdbuild.servlets.json.CommunicationConstants.MODIFICATION;
+import static org.cmdbuild.servlets.json.CommunicationConstants.NAME;
+import static org.cmdbuild.servlets.json.CommunicationConstants.TYPE;
+import static org.cmdbuild.servlets.json.CommunicationConstants.VALUES;
+import static org.cmdbuild.servlets.json.CommunicationConstants.VERSION;
+import static org.cmdbuild.servlets.json.CommunicationConstants.VERSIONABLE;
 
 import java.io.IOException;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.activation.DataHandler;
 
@@ -27,21 +50,194 @@ import org.cmdbuild.exception.CMDBException;
 import org.cmdbuild.exception.DmsException;
 import org.cmdbuild.logic.dms.DmsLogic;
 import org.cmdbuild.services.json.dto.JsonResponse;
-import org.cmdbuild.servlets.json.serializers.Attachments.JsonAttachmentsContext;
-import org.cmdbuild.servlets.json.serializers.Attachments.JsonCategoryDefinition;
-import org.cmdbuild.servlets.json.serializers.Serializer;
 import org.cmdbuild.servlets.utils.Parameter;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.google.common.collect.Lists;
 
 public class Attachments extends JSONBaseWithSpringContext {
+
+	public static class JsonAttachment {
+
+		// TODO use constants
+		private static final SimpleDateFormat ATTACHMENT_DATE_FOMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		private static final Iterable<MetadataGroup> NO_METADATA_GROUPS = emptyList();
+
+		private static String format(final Date date, final Format format) {
+			return (date == null) ? null : format.format(date);
+		}
+
+		private final StoredDocument attachment;
+
+		public JsonAttachment(final StoredDocument delegate) {
+			this.attachment = delegate;
+		}
+
+		@JsonProperty(FILE_NAME)
+		public String getFilename() {
+			return attachment.getName();
+		}
+
+		@JsonProperty(CREATION)
+		public String getCreationDate() {
+			return format(attachment.getCreated(), ATTACHMENT_DATE_FOMAT);
+		}
+
+		@JsonProperty(MODIFICATION)
+		public String getModificationDate() {
+			return format(attachment.getModified(), ATTACHMENT_DATE_FOMAT);
+		}
+
+		@JsonProperty(AUTHOR)
+		public String getAuthor() {
+			return attachment.getAuthor();
+		}
+
+		@JsonProperty(CATEGORY)
+		public String getCategory() {
+			return attachment.getCategory();
+		}
+
+		@JsonProperty(DESCRIPTION)
+		public String getDescription() {
+			return attachment.getDescription();
+		}
+
+		@JsonProperty(META)
+		public Map<String, Map<String, String>> getMetadata() {
+			final Map<String, Map<String, String>> output = new HashMap<>();
+			defaultIfNull(attachment.getMetadataGroups(), NO_METADATA_GROUPS) //
+					.forEach(group -> {
+						output.put(group.getName(), new HashMap<>());
+						group.getMetadata() //
+								.forEach(metadata -> output.get(group.getName()).put(metadata.getName(),
+										metadata.getValue()));
+					});
+			return output;
+		}
+
+		@JsonProperty(VERSION)
+		public String getVersion() {
+			return attachment.getVersion();
+		}
+
+		@JsonProperty(VERSIONABLE)
+		public boolean getVersionable() {
+			return attachment.isVersionable();
+		}
+
+	}
+
+	public static class JsonCategoryDefinition {
+
+		private final DocumentTypeDefinition delegate;
+
+		public JsonCategoryDefinition(final DocumentTypeDefinition delegate) {
+			this.delegate = delegate;
+		}
+
+		@JsonProperty(NAME)
+		public String getName() {
+			return delegate.getName();
+		}
+
+		@JsonProperty(DESCRIPTION)
+		public String getDescription() {
+			return delegate.getName();
+		}
+
+		@JsonProperty(META)
+		public Iterable<JsonMetadataGroupDefinition> getMetadataGroups() {
+			final List<JsonMetadataGroupDefinition> jsonDefinitions = Lists.newArrayList();
+			for (final MetadataGroupDefinition definition : delegate.getMetadataGroupDefinitions()) {
+				jsonDefinitions.add(new JsonMetadataGroupDefinition(definition));
+			}
+			return jsonDefinitions;
+		}
+
+	}
+
+	public static class JsonMetadataGroupDefinition {
+
+		private final MetadataGroupDefinition metadataGroupDefinition;
+
+		public JsonMetadataGroupDefinition(final MetadataGroupDefinition definition) {
+			this.metadataGroupDefinition = definition;
+		}
+
+		@JsonProperty(NAME)
+		public String getName() {
+			return metadataGroupDefinition.getName();
+		}
+
+		@JsonProperty(META)
+		public Iterable<JsonMetadataDefinition> getMetadata() {
+			final List<JsonMetadataDefinition> jsonDefinitions = Lists.newArrayList();
+			for (final MetadataDefinition definition : metadataGroupDefinition.getMetadataDefinitions()) {
+				jsonDefinitions.add(new JsonMetadataDefinition(definition));
+			}
+			return jsonDefinitions;
+		}
+
+	}
+
+	public static class JsonMetadataDefinition {
+
+		private final MetadataDefinition metadataDefinition;
+
+		public JsonMetadataDefinition(final MetadataDefinition metadataDefinition) {
+			this.metadataDefinition = metadataDefinition;
+		}
+
+		@JsonProperty(NAME)
+		public String getName() {
+			return metadataDefinition.getName();
+		}
+
+		@JsonProperty(TYPE)
+		public String getType() {
+			return metadataDefinition.getType().getId();
+		}
+
+		@JsonProperty(DESCRIPTION)
+		public String getDescription() {
+			return metadataDefinition.getDescription();
+		}
+
+		@JsonProperty(MANDATORY)
+		public boolean isMandatory() {
+			return metadataDefinition.isMandatory();
+		}
+
+		@JsonProperty(LIST)
+		public boolean isList() {
+			return metadataDefinition.isList();
+		}
+
+		@JsonProperty(VALUES)
+		public Iterable<String> getValues() {
+			return metadataDefinition.getListValues();
+		}
+
+	}
+
+	public static class JsonAttachmentsContext {
+
+		private final Iterable<JsonCategoryDefinition> categoriesDefinition;
+
+		public JsonAttachmentsContext(final Iterable<JsonCategoryDefinition> categoriesDefinition) {
+			this.categoriesDefinition = categoriesDefinition;
+		}
+
+		@JsonProperty(CATEGORIES)
+		public Iterable<JsonCategoryDefinition> getCategories() {
+			return categoriesDefinition;
+		}
+
+	}
 
 	private static class MetadataImpl implements DmsLogic.Metadata {
 
@@ -132,49 +328,44 @@ public class Attachments extends JSONBaseWithSpringContext {
 	}
 
 	@JSONExported
-	public JsonResponse getAttachmentsContext() {
+	public JsonResponse readContext() {
 		final List<JsonCategoryDefinition> jsonCategories = Lists.newArrayList();
 		for (final DocumentTypeDefinition element : dmsLogic().getConfiguredCategoryDefinitions()) {
-			jsonCategories.add(JsonCategoryDefinition.from(element));
+			jsonCategories.add(new JsonCategoryDefinition(element));
 		}
-		return JsonResponse.success(JsonAttachmentsContext.from(jsonCategories));
+		return success(new JsonAttachmentsContext(jsonCategories));
 	}
 
 	@JSONExported
-	public JSONObject getAttachmentList( //
+	public JsonResponse readAll( //
 			@Parameter(CLASS_NAME) final String className, //
 			@Parameter(CARD_ID) final Long cardId //
-	) throws JSONException, CMDBException {
-		final List<StoredDocument> attachments = dmsLogic().search(className, cardId);
-		final JSONArray rows = new JSONArray();
-		for (final StoredDocument attachment : attachments) {
-			rows.put(new Serializer().serializeAttachment(attachment));
-		}
-
-		final JSONObject out = new JSONObject();
-		out.put("rows", rows);
-		return out;
+	) throws CMDBException {
+		final List<JsonAttachment> output = new ArrayList<>();
+		dmsLogic().search(className, cardId) //
+				.forEach(input -> output.add(new JsonAttachment(input)));
+		return success(output);
 	}
 
 	@JSONExported
-	public DataHandler downloadAttachment( //
+	public DataHandler download( //
 			@Parameter(CLASS_NAME) final String className, //
 			@Parameter(CARD_ID) final Long cardId, //
-			@Parameter("Filename") final String filename, //
-			@Parameter(value = "Version", required = false) final String version //
+			@Parameter(FILE_NAME) final String filename, //
+			@Parameter(value = VERSION, required = false) final String version //
 	) throws CMDBException {
 		return dmsLogic().download(className, cardId, filename, version);
 	}
 
 	@JSONExported
-	public void uploadAttachment( //
+	public void create( //
 			@Parameter(CLASS_NAME) final String className, //
 			@Parameter(CARD_ID) final Long cardId, //
-			@Parameter("File") final FileItem file, //
-			@Parameter("Category") final String category, //
-			@Parameter("Description") final String description, //
-			@Parameter("Metadata") final String jsonMetadataValues, //
-			@Parameter(value = "Major", required = false) final Boolean major //
+			@Parameter(FILE) final FileItem file, //
+			@Parameter(CATEGORY) final String category, //
+			@Parameter(DESCRIPTION) final String description, //
+			@Parameter(META) final String jsonMetadataValues, //
+			@Parameter(value = MAJOR, required = false) final Boolean major //
 	) throws CMDBException, IOException {
 		final Map<String, Map<String, Object>> metadataValues = metadataValuesFromJson(jsonMetadataValues);
 		final String username = operationUser().getAuthenticatedUser().getUsername();
@@ -200,15 +391,15 @@ public class Attachments extends JSONBaseWithSpringContext {
 	}
 
 	@JSONExported
-	public void modifyAttachment( //
+	public void update( //
 			@Parameter(CLASS_NAME) final String className, //
 			@Parameter(CARD_ID) final Long cardId, //
-			@Parameter("Filename") final String filename, //
-			@Parameter(value = "File", required = false) final FileItem file, //
-			@Parameter("Category") final String category, //
-			@Parameter("Description") final String description, //
-			@Parameter("Metadata") final String jsonMetadataValues, //
-			@Parameter(value = "Major", required = false) final Boolean major //
+			@Parameter(FILE_NAME) final String filename, //
+			@Parameter(value = FILE, required = false) final FileItem file, //
+			@Parameter(CATEGORY) final String category, //
+			@Parameter(DESCRIPTION) final String description, //
+			@Parameter(META) final String jsonMetadataValues, //
+			@Parameter(value = MAJOR, required = false) final Boolean major //
 	) throws CMDBException, IOException {
 		final Map<String, Map<String, Object>> metadataValues = metadataValuesFromJson(jsonMetadataValues);
 		dmsLogic().update( //
@@ -223,8 +414,8 @@ public class Attachments extends JSONBaseWithSpringContext {
 	}
 
 	@JSONExported
-	public void deleteAttachment( //
-			@Parameter("Filename") final String filename, //
+	public void delete( //
+			@Parameter(FILE_NAME) final String filename, //
 			@Parameter(CLASS_NAME) final String className, //
 			@Parameter(CARD_ID) final Long cardId //
 	) throws CMDBException {
@@ -277,24 +468,24 @@ public class Attachments extends JSONBaseWithSpringContext {
 	}
 
 	@JSONExported
-	public JsonResponse getPresets() throws CMDBException {
-		final List<Preset> elements = dmsLogic().presets().entrySet().stream()
-				.map(t -> new Preset(t.getKey(), t.getValue())).collect(Collectors.toList());
+	public JsonResponse readPresets() throws CMDBException {
+		final List<Preset> elements = dmsLogic().presets() //
+				.entrySet() //
+				.stream().map(t -> new Preset(t.getKey(), t.getValue())) //
+				.collect(toList());
 		return JsonResponse.success(elements);
 	}
 
 	@JSONExported
-	public JSONObject getAttachmentVersions( //
+	public JsonResponse readAllVersions( //
 			@Parameter(CLASS_NAME) final String className, //
 			@Parameter(CARD_ID) final Long cardId, //
-			@Parameter("Filename") final String filename //
-	) throws JSONException, CMDBException {
-		final JSONArray rows = new JSONArray();
+			@Parameter(FILE_NAME) final String filename //
+	) throws CMDBException {
+		final List<JsonAttachment> output = new ArrayList<>();
 		dmsLogic().searchVersions(className, cardId, filename) //
-				.forEach(input -> rows.put(new Serializer().serializeAttachment(input)));
-		final JSONObject out = new JSONObject();
-		out.put("rows", rows);
-		return out;
+				.forEach(input -> output.add(new JsonAttachment(input)));
+		return success(output);
 	}
 
 }
