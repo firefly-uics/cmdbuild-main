@@ -57,6 +57,7 @@ public class Serializer {
 			serializer.put("Filename", attachment.getName());
 			serializer.put("Description", attachment.getDescription());
 			serializer.put("Metadata", serialize(attachment.getMetadataGroups()));
+			serializer.put("Versionable", attachment.isVersionable());
 		} catch (final JSONException e) {
 			Log.JSONRPC.error("Error serializing attachment", e);
 		}
