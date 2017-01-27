@@ -35,7 +35,8 @@ public interface DocumentCreator {
 	DocumentDownload createDocumentDownload( //
 			String className, //
 			Long cardId, //
-			String fileName);
+			String fileName, //
+			String version);
 
 	DocumentDelete createDocumentDelete( //
 			String className, //

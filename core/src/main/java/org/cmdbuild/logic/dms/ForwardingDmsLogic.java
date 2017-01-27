@@ -74,19 +74,20 @@ public abstract class ForwardingDmsLogic extends ForwardingObject implements Dms
 	}
 
 	@Override
-	public DataHandler download(final String className, final Long cardId, final String fileName) {
-		return delegate().download(className, cardId, fileName);
-	}
-
-	@Override
-	public void delete(final String className, final Long cardId, final String fileName) throws DmsException {
-		delegate().delete(className, cardId, fileName);
+	public DataHandler download(final String className, final Long cardId, final String fileName,
+			final String version) {
+		return delegate().download(className, cardId, fileName, version);
 	}
 
 	@Override
 	public void update(final String author, final String className, final Long cardId, final InputStream inputStream,
 			final String filename, final Metadata metadata) {
 		delegate().update(author, className, cardId, inputStream, filename, metadata);
+	}
+
+	@Override
+	public void delete(final String className, final Long cardId, final String fileName) throws DmsException {
+		delegate().delete(className, cardId, fileName);
 	}
 
 	@Override

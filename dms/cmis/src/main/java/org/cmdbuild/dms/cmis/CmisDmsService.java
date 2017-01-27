@@ -25,6 +25,7 @@ import static org.apache.chemistry.opencmis.commons.enums.CmisVersion.CMIS_1_0;
 import static org.apache.chemistry.opencmis.commons.enums.UnfileObject.DELETE;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import static org.apache.commons.lang3.StringUtils.defaultString;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.builder.ToStringStyle.SHORT_PREFIX_STYLE;
 import static org.cmdbuild.dms.MetadataAutocompletion.NULL_AUTOCOMPLETION_RULES;
 
@@ -34,6 +35,7 @@ import java.io.StringReader;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.activation.DataHandler;
 import javax.activation.MimetypesFileTypeMap;
@@ -510,8 +512,17 @@ public class CmisDmsService implements DmsService, LoggingSupport, ChangeListene
 	@Override
 	public DataHandler download(final DocumentDownload document) throws DmsError {
 		try {
+			final Optional<Document> output;
 			final Document cmisDocument = getDocument(createSession(), document.getPath(), document.getFileName());
-			return (cmisDocument != null) ? new DataHandler(new ContentStreamAdapter(cmisDocument.getContentStream()))
+			if (isBlank(document.getVersion())) {
+				output = Optional.of(cmisDocument);
+			} else {
+				output = cmisDocument.getAllVersions() //
+						.stream() //
+						.filter(input -> document.getVersion().equals(input.getVersionLabel())) //
+						.findFirst();
+			}
+			return output.isPresent() ? new DataHandler(new ContentStreamAdapter(output.get().getContentStream()))
 					: null;
 		} catch (final IOException e) {
 			logger.error(MARKER, "error getting document", e);

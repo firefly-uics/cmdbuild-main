@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import javax.activation.DataHandler;
+
 import org.cmdbuild.auth.acl.PrivilegeContext;
 import org.cmdbuild.dao.entrytype.CMClass;
 import org.cmdbuild.dao.view.CMDataView;
@@ -118,9 +120,10 @@ public class PrivilegedDmsLogic extends ForwardingDmsLogic {
 	}
 
 	@Override
-	public void delete(final String className, final Long cardId, final String fileName) throws DmsException {
-		assureWritePrivilege(className);
-		delegate().delete(className, cardId, fileName);
+	public DataHandler download(final String className, final Long cardId, final String fileName,
+			final String version) {
+		assureReadPrivilege(className);
+		return delegate().download(className, cardId, fileName, version);
 	}
 
 	@Override
@@ -128,6 +131,12 @@ public class PrivilegedDmsLogic extends ForwardingDmsLogic {
 			final String filename, final Metadata metadata) {
 		assureWritePrivilege(className);
 		delegate().update(author, className, cardId, inputStream, filename, metadata);
+	}
+
+	@Override
+	public void delete(final String className, final Long cardId, final String fileName) throws DmsException {
+		assureWritePrivilege(className);
+		delegate().delete(className, cardId, fileName);
 	}
 
 	@Override

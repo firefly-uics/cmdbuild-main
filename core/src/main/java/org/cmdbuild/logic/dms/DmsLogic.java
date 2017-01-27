@@ -93,7 +93,13 @@ public interface DmsLogic extends Logic {
 	void create(String author, String className, Long cardId, InputStream inputStream, String fileName,
 			Metadata metadata) throws IOException, CMDBException;
 
-	DataHandler download(String className, Long cardId, String fileName);
+	/**
+	 * @param version
+	 *            the version of the document, {@code null} means the last
+	 *            version.
+	 * 
+	 */
+	DataHandler download(String className, Long cardId, String fileName, String version);
 
 	void delete(String className, Long cardId, String fileName) throws DmsException;
 

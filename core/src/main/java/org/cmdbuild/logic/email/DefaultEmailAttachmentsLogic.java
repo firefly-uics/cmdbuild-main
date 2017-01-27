@@ -144,7 +144,7 @@ public class DefaultEmailAttachmentsLogic implements EmailAttachmentsLogic {
 					});
 		} catch (final Exception e) {
 			logger.error("error reading documents");
-			throw DmsException.Type.DMS_ATTACHMENT_NOTFOUND.createException();
+			throw DmsException.Type.DMS_ATTACHMENT_NOT_FOUND.createException();
 		}
 
 	}
@@ -161,7 +161,8 @@ public class DefaultEmailAttachmentsLogic implements EmailAttachmentsLogic {
 					final DocumentDownload document = documentCreator.createDocumentDownload( //
 							EMAIL_CLASS_NAME, //
 							email.getId(), //
-							storedDocument.getName());
+							storedDocument.getName(), //
+							null);
 					dataHandler = Optional.of(dmsService.download(document));
 					break;
 				}
@@ -169,7 +170,7 @@ public class DefaultEmailAttachmentsLogic implements EmailAttachmentsLogic {
 			return dataHandler;
 		} catch (final DmsError e) {
 			logger.error("error reading document");
-			throw DmsException.Type.DMS_ATTACHMENT_NOTFOUND.createException();
+			throw DmsException.Type.DMS_ATTACHMENT_NOT_FOUND.createException();
 		}
 	}
 
@@ -189,11 +190,11 @@ public class DefaultEmailAttachmentsLogic implements EmailAttachmentsLogic {
 	public DataHandler download(final Email email, final Attachment attachment) {
 		try {
 			final DocumentDownload document = documentCreator(email.isTemporary()) //
-					.createDocumentDownload(EMAIL_CLASS_NAME, email.getId(), attachment.getFileName());
+					.createDocumentDownload(EMAIL_CLASS_NAME, email.getId(), attachment.getFileName(), null);
 			return dmsService.download(document);
 		} catch (final Exception e) {
 			logger.error("error downloading document");
-			throw DmsException.Type.DMS_ATTACHMENT_NOTFOUND.createException();
+			throw DmsException.Type.DMS_ATTACHMENT_NOT_FOUND.createException();
 		}
 	}
 

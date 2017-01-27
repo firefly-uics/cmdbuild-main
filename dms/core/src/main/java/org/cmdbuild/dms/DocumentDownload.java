@@ -4,4 +4,6 @@ public interface DocumentDownload extends Document {
 
 	String getFileName();
 
+	String getVersion();
+
 }

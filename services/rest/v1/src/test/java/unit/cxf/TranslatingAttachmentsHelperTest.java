@@ -58,8 +58,8 @@ public class TranslatingAttachmentsHelperTest {
 				.build();
 		final DataHandler dataHandler = new DataHandler(new FileDataSource(temporaryFolder.newFile()));
 		doReturn("the id") //
-				.when(delegate).create(anyString(), anyLong(), anyString(), any(Attachment.class),
-						any(DataHandler.class));
+				.when(delegate)
+				.create(anyString(), anyLong(), anyString(), any(Attachment.class), any(DataHandler.class));
 
 		// when
 		final String id = translatingAttachmentsHelper.create("foo", 123L, "bar", attachment, dataHandler);
@@ -105,9 +105,10 @@ public class TranslatingAttachmentsHelperTest {
 		final Iterable<Attachment> found = translatingAttachmentsHelper.search("foo", 123L);
 
 		// then
-		assertThat(newArrayList(found), equalTo(asList(newAttachment(attachment) //
-				.withId("encoded value") //
-				.build())));
+		assertThat(newArrayList(found),
+				equalTo(asList(newAttachment(attachment) //
+						.withId("encoded value") //
+						.build())));
 		verify(delegate).search(eq("foo"), eq(123L));
 		verify(encoding).encode(eq("the id"));
 		verifyNoMoreInteractions(encoding, delegate);
@@ -129,9 +130,10 @@ public class TranslatingAttachmentsHelperTest {
 		final Optional<Attachment> found = translatingAttachmentsHelper.search("foo", 123L, "bar");
 
 		// then
-		assertThat(found.get(), equalTo(newAttachment(attachment) //
-				.withId("encoded value") //
-				.build()));
+		assertThat(found.get(),
+				equalTo(newAttachment(attachment) //
+						.withId("encoded value") //
+						.build()));
 		verify(encoding).decode(eq("bar"));
 		verify(delegate).search(eq("foo"), eq(123L), eq("decoded value"));
 		verify(encoding).encode(eq("the id"));

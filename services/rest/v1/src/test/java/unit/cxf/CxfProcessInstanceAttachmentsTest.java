@@ -122,7 +122,7 @@ public class CxfProcessInstanceAttachmentsTest {
 				newAttachment() //
 						.withName("yet another already existing") //
 						.build())) //
-				.when(attachmentsHelper).search(anyString(), anyLong());
+								.when(attachmentsHelper).search(anyString(), anyLong());
 		doThrow(new WebApplicationException()) //
 				.when(errorHandler).alreadyExistingAttachmentName(eq("already existing"));
 
@@ -148,10 +148,10 @@ public class CxfProcessInstanceAttachmentsTest {
 				newAttachment() //
 						.withName("file name") //
 						.build())) //
-				.when(attachmentsHelper).search(anyString(), anyLong());
+								.when(attachmentsHelper).search(anyString(), anyLong());
 		doReturn("bar") //
-				.when(attachmentsHelper).create(anyString(), anyLong(), anyString(), any(Attachment.class),
-						any(DataHandler.class));
+				.when(attachmentsHelper)
+				.create(anyString(), anyLong(), anyString(), any(Attachment.class), any(DataHandler.class));
 
 		// when
 		final ResponseSingle<String> response = attachmentsService.create("foo", 123L, attachment, dataHandler);
@@ -180,10 +180,10 @@ public class CxfProcessInstanceAttachmentsTest {
 				newAttachment() //
 						.withName("file name") //
 						.build())) //
-				.when(attachmentsHelper).search(anyString(), anyLong());
+								.when(attachmentsHelper).search(anyString(), anyLong());
 		doReturn("bar") //
-				.when(attachmentsHelper).create(anyString(), anyLong(), anyString(), any(Attachment.class),
-						any(DataHandler.class));
+				.when(attachmentsHelper)
+				.create(anyString(), anyLong(), anyString(), any(Attachment.class), any(DataHandler.class));
 
 		// when
 		final ResponseSingle<String> response = attachmentsService.create("foo", 123L, null, dataHandler);
@@ -372,7 +372,7 @@ public class CxfProcessInstanceAttachmentsTest {
 				newAttachment() //
 						.withName("yet another already existing") //
 						.build())) //
-				.when(attachmentsHelper).search(anyString(), anyLong());
+								.when(attachmentsHelper).search(anyString(), anyLong());
 		doThrow(new WebApplicationException()) //
 				.when(errorHandler).differentAttachmentName(eq("different name"));
 
@@ -398,7 +398,7 @@ public class CxfProcessInstanceAttachmentsTest {
 				newAttachment() //
 						.withName("existing") //
 						.build())) //
-				.when(attachmentsHelper).search(anyString(), anyLong());
+								.when(attachmentsHelper).search(anyString(), anyLong());
 
 		// when
 		attachmentsService.update("foo", 123L, "bar", attachment, dataHandler);
@@ -426,7 +426,7 @@ public class CxfProcessInstanceAttachmentsTest {
 				newAttachment() //
 						.withName("existing") //
 						.build())) //
-				.when(attachmentsHelper).search(anyString(), anyLong());
+								.when(attachmentsHelper).search(anyString(), anyLong());
 
 		// when
 		attachmentsService.update("foo", 123L, "bar", null, dataHandler);

@@ -1271,7 +1271,7 @@ public class CmdbMDR implements ManagementDataRepository {
 										.search(type.getIdentifier().getLocalName(), cardId)) {
 									if (documentTypes.contains(document.getCategory())) {
 										final DataHandler dataHandler = dmsLogic.download(
-												type.getIdentifier().getLocalName(), cardId, document.getName());
+												type.getIdentifier().getLocalName(), cardId, document.getName(), null);
 										final CMDBfId id = aliasRegistry.getCMDBfId(cardId, type.getName());
 										final CMDBfItem item = items.get(id);
 										final RecordType record =

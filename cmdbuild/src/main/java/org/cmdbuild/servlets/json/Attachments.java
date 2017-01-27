@@ -144,7 +144,6 @@ public class Attachments extends JSONBaseWithSpringContext {
 			@Parameter(CLASS_NAME) final String className, //
 			@Parameter(CARD_ID) final Long cardId //
 	) throws JSONException, CMDBException {
-
 		final List<StoredDocument> attachments = dmsLogic().search(className, cardId);
 		final JSONArray rows = new JSONArray();
 		for (final StoredDocument attachment : attachments) {
@@ -158,12 +157,12 @@ public class Attachments extends JSONBaseWithSpringContext {
 
 	@JSONExported
 	public DataHandler downloadAttachment( //
-			@Parameter("Filename") final String filename, //
 			@Parameter(CLASS_NAME) final String className, //
-			@Parameter(CARD_ID) final Long cardId //
+			@Parameter(CARD_ID) final Long cardId, //
+			@Parameter("Filename") final String filename, //
+			@Parameter(value = "Version", required = false) final String version //
 	) throws CMDBException {
-
-		return dmsLogic().download(className, cardId, filename);
+		return dmsLogic().download(className, cardId, filename, version);
 	}
 
 	@JSONExported
@@ -175,7 +174,6 @@ public class Attachments extends JSONBaseWithSpringContext {
 			@Parameter(CLASS_NAME) final String className, //
 			@Parameter(CARD_ID) final Long cardId //
 	) throws CMDBException, IOException {
-
 		final Map<String, Map<String, Object>> metadataValues = metadataValuesFromJson(jsonMetadataValues);
 		final String username = operationUser().getAuthenticatedUser().getUsername();
 		dmsLogic().create( //

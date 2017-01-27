@@ -163,7 +163,7 @@ public class AttachmentsManagement implements AttachmentsHelper {
 
 	@Override
 	public DataHandler download(final String classId, final Long cardId, final String attachmentId) {
-		return dmsLogic.download(classId, cardId, attachmentId);
+		return dmsLogic.download(classId, cardId, attachmentId, null);
 	}
 
 	@Override

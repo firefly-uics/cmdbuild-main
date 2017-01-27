@@ -1,15 +1,16 @@
 package org.cmdbuild.logic.dms;
 
 import static com.google.common.collect.FluentIterable.from;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.cmdbuild.dao.driver.postgres.Const.ID_ATTRIBUTE;
-import static org.cmdbuild.dao.query.clause.AnyAttribute.anyAttribute;
 import static org.cmdbuild.dao.query.clause.QueryAliasAttribute.attribute;
 import static org.cmdbuild.dao.query.clause.where.EqualsOperatorAndValue.eq;
 import static org.cmdbuild.dao.query.clause.where.SimpleWhereClause.condition;
 import static org.cmdbuild.data.store.lookup.Predicates.lookupActive;
 import static org.cmdbuild.exception.DmsException.Type.DMS_ATTACHMENT_DELETE_ERROR;
 import static org.cmdbuild.exception.DmsException.Type.DMS_ATTACHMENT_FOUND;
-import static org.cmdbuild.exception.DmsException.Type.DMS_ATTACHMENT_NOTFOUND;
+import static org.cmdbuild.exception.DmsException.Type.DMS_ATTACHMENT_NOT_FOUND;
+import static org.cmdbuild.exception.DmsException.Type.DMS_ATTACHMENT_NOT_VERSIONABLE;
 import static org.cmdbuild.exception.DmsException.Type.DMS_ATTACHMENT_UPLOAD_ERROR;
 import static org.cmdbuild.exception.DmsException.Type.DMS_AUTOCOMPLETION_RULES_ERROR;
 import static org.cmdbuild.exception.DmsException.Type.DMS_DOCUMENT_TYPE_DEFINITION_ERROR;
@@ -212,7 +213,7 @@ public class DefaultDmsLogic implements DmsLogic {
 	@Override
 	public Iterable<StoredDocument> searchVersions(final String className, final Long cardId, final String filename) {
 		if (!search(className, cardId, filename).isPresent()) {
-			throw DMS_ATTACHMENT_NOTFOUND.createException(filename, className, cardId.toString());
+			throw DMS_ATTACHMENT_NOT_FOUND.createException(filename, className, cardId.toString());
 		}
 		final SingleDocumentSearch document = createDocumentFactory(className) //
 				.createSingleDocumentSearch(className, cardId, filename);
@@ -227,7 +228,11 @@ public class DefaultDmsLogic implements DmsLogic {
 		}
 		final CMClass type = dataView.findClass(className);
 		final String realClassName = dataView //
-				.select(anyAttribute(type)) //
+				/*
+				 * we need at least one attribute and the code has more
+				 * probabilities to be shorter than the description
+				 */
+				.select(attribute(type, type.getCodeAttributeName())) //
 				.from(type) //
 				.where(condition(attribute(type, ID_ATTRIBUTE), eq(cardId))) //
 				.limit(1) //
@@ -251,17 +256,25 @@ public class DefaultDmsLogic implements DmsLogic {
 	}
 
 	@Override
-	public DataHandler download(final String className, final Long cardId, final String fileName) {
-		final DocumentDownload document = createDocumentFactory(className) //
-				.createDocumentDownload(className, cardId, fileName);
+	public DataHandler download(final String className, final Long cardId, final String fileName,
+			final String version) {
+		final Optional<StoredDocument> stored = search(className, cardId, fileName);
+		if (!stored.isPresent()) {
+			throw DMS_ATTACHMENT_NOT_FOUND.createException(fileName, className, cardId.toString());
+		}
+		if (isNotBlank(version) && stored.get().isVersionable()) {
+			throw DMS_ATTACHMENT_NOT_VERSIONABLE.createException(fileName, className, cardId.toString());
+		}
 		try {
+			final DocumentDownload document = createDocumentFactory(className) //
+					.createDocumentDownload(className, cardId, fileName, version);
 			final DataHandler dataHandler = service.download(document);
 			return dataHandler;
 		} catch (final Exception e) {
 			final String message = String.format("error downloading file '%s' for card '%s' with id '%d'", //
 					fileName, className, cardId);
 			logger.error(message, e);
-			throw DMS_ATTACHMENT_NOTFOUND.createException(fileName, className, String.valueOf(cardId));
+			throw DMS_ATTACHMENT_NOT_FOUND.createException(fileName, className, String.valueOf(cardId));
 		}
 	}
 
@@ -283,7 +296,7 @@ public class DefaultDmsLogic implements DmsLogic {
 	public void update(final String author, final String className, final Long cardId, final InputStream inputStream,
 			final String filename, final Metadata metadata) {
 		if (!search(className, cardId, filename).isPresent()) {
-			throw DMS_ATTACHMENT_NOTFOUND.createException(filename, className, cardId.toString());
+			throw DMS_ATTACHMENT_NOT_FOUND.createException(filename, className, cardId.toString());
 		}
 		try {
 			final DocumentCreator documents = createDocumentFactory(className);

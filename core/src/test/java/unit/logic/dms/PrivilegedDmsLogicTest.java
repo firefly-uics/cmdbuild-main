@@ -110,6 +110,29 @@ public class PrivilegedDmsLogicTest {
 	}
 
 	@Test(expected = AuthException.class)
+	public void noReadPrivilegeWhenDownloading() throws Exception {
+		// given
+		doReturn(false).when(dmsPrivileges).readable(anyString());
+
+		// when
+		underTest.download("the classname", 42L, "the filename", "the version");
+	}
+
+	@Test
+	public void readPrivilegeWhenDownloading() throws Exception {
+		// given
+		doReturn(true).when(dmsPrivileges).readable(anyString());
+
+		// when
+		underTest.download("the classname", 42L, "the filename", "the version");
+
+		// then
+		verify(dmsPrivileges).readable("the classname");
+		verify(delegate).download("the classname", 42L, "the filename", "the version");
+		verifyNoMoreInteractions(delegate, dmsPrivileges);
+	}
+
+	@Test(expected = AuthException.class)
 	public void noWritePrivilegeWhenDeleting() throws Exception {
 		// given
 		doReturn(false).when(dmsPrivileges).writable(anyString());

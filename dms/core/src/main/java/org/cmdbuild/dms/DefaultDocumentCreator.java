@@ -133,7 +133,8 @@ public class DefaultDocumentCreator implements DocumentCreator {
 	}
 
 	@Override
-	public DocumentDownload createDocumentDownload(final String className, final Long cardId, final String fileName) {
+	public DocumentDownload createDocumentDownload(final String className, final Long cardId, final String fileName,
+			final String version) {
 		return new DocumentDownload() {
 
 			@Override
@@ -154,6 +155,11 @@ public class DefaultDocumentCreator implements DocumentCreator {
 			@Override
 			public String getFileName() {
 				return fileName;
+			}
+
+			@Override
+			public String getVersion() {
+				return version;
 			}
 
 		};

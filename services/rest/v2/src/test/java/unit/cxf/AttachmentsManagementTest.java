@@ -147,7 +147,7 @@ public class AttachmentsManagementTest {
 		attachmentsManagement.download("foo", 123L, "bar");
 
 		// then
-		verify(dmsLogic).download(eq("foo"), eq(123L), eq("bar"));
+		verify(dmsLogic).download(eq("foo"), eq(123L), eq("bar"), isNull(String.class));
 		verifyNoMoreInteractions(dmsLogic);
 	}
 

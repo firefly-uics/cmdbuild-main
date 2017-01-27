@@ -76,10 +76,7 @@ public class DmsLogicHelper implements SoapLogicHelper {
 	}
 
 	public DataHandler download(final String className, final Long cardId, final String filename) {
-		return dmsLogic.download( //
-				className, //
-				cardId, //
-				filename);
+		return dmsLogic.download(className, cardId, filename, null);
 	}
 
 	public boolean delete(final String className, final Long cardId, final String filename) {
