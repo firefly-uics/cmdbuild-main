@@ -133,37 +133,6 @@
 				})
 			;
 
-			this.attachmentPanel = CMDBuild.configuration.userInterface.isDisabledCardTab(CMDBuild.core.constants.Proxy.CLASS_ATTACHMENT_TAB) ? null
-				: new CMDBuild.view.management.classes.attachments.CMCardAttachmentsPanel({
-					title: tr.tabs.attachments,
-					disabled: true,
-
-					listeners: {
-						show: function(panel, eOpts) {
-							// History record save
-							if (!Ext.isEmpty(_CMCardModuleState.entryType) && !Ext.isEmpty(_CMCardModuleState.card))
-								CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
-									moduleId: 'class',
-									entryType: {
-										description: _CMCardModuleState.entryType.get(CMDBuild.core.constants.Proxy.TEXT),
-										id: _CMCardModuleState.entryType.get(CMDBuild.core.constants.Proxy.ID),
-										object: _CMCardModuleState.entryType
-									},
-									item: {
-										description: _CMCardModuleState.card.get('Description') || _CMCardModuleState.card.get('Code'),
-										id: _CMCardModuleState.card.get(CMDBuild.core.constants.Proxy.ID),
-										object: _CMCardModuleState.card
-									},
-									section: {
-										description: this.title,
-										object: this
-									}
-								});
-						}
-					}
-				})
-			;
-
 			this.callParent(arguments);
 
 			this.cardPanel.displayMode();

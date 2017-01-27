@@ -251,15 +251,11 @@
 		},
 
 		buildTabControllerAttachments: function () {
-			var view = this.view.getAttachmentsPanel();
+			this.attachmentsController = Ext.create('CMDBuild.controller.management.classes.panel.form.tabs.attachments.Attachments', { parentDelegate: this });
 
-			if (!Ext.isEmpty(view)) {
-				this.attachmentsController = new CMDBuild.controller.management.classes.attachments.CMCardAttachmentsController(view, this);
+			this.subControllers.push(this.attachmentsController);
 
-				this.subControllers.push(this.attachmentsController);
-
-				this.view.cardTabPanel.add(view); // Add panel to view
-			}
+			this.view.cardTabPanel.add(this.attachmentsController.getView()); // Add panel to view
 		},
 
 		buildTabControllerCard: function () {

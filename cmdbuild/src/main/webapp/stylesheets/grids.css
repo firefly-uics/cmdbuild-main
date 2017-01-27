@@ -83,6 +83,9 @@
 
 /* Grid classes */
 	.grid-row-disabled { color: #666666 !important; }
+	.x-grid-row-bold,
+	.x-grid-row-bold td,
+	.x-grid-row-bold td div { font-weight: bold !important; }
 
 /* Grid icons */
 	.x-grid-cell-inner {

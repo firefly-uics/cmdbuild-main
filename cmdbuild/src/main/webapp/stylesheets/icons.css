@@ -28,6 +28,7 @@
 .up { background-image: url("../images/icons/up.gif") !important; }
 .up-hover { background-image: url("../images/icons/up-hover.gif") !important; }
 .userInterface { background-image: url("../images/icons/userInterface.png") !important; }
+.versions { background-image: url("../images/icons/versions.png") !important; }
 
 .arrow_left, /* @deprecated */
 .arrowLeft{ background-image: url("../images/icons/arrow_left.png") !important; }

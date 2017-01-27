@@ -3,11 +3,10 @@
 	/**
 	 * Service class to be used as mixin for Ext.form.Panel or some methods are compatible also with Ext.panel.Panel
 	 *
-	 * Specific properties:
-	 * 	- {Boolean} considerAsFieldToDisable: enable setDisable function on processed item also if it's not inherits from Ext.form.Field
-	 * 	- {Boolean} disableEnableFunctions: disable enable/setDisabled(false) on processed item (ex. cmImmutable)
-	 * 	- {Boolean} disablePanelFunctions: disable PanelFunctions class actions on processed item
-	 * 	- {Boolean} forceDisabledState: force item to be disabled
+	 * Specific managed properties:
+	 * 	- {Boolean} disablePanelFunctions: disable PanelFunctions class actions on processed item (old name: considerAsFieldToDisable)
+	 * 	- {Boolean} enablePanelFunctions: enable PanelFunctions class actions on processed item
+	 * 	- {Boolean} forceDisabled: force item to be disabled
 	 *
 	 * @version 2
 	 *
@@ -24,36 +23,45 @@
 		 *
 		 * @private
 		 */
-		isManagedField: function (field) {
+		isPanelFunctionManagedField: function (field) {
 			return (
-				field instanceof Ext.form.Field
-				|| field instanceof Ext.form.field.Base
-				|| field instanceof Ext.form.field.HtmlEditor
-				|| field instanceof Ext.form.FieldContainer
+				Ext.isObject(field) && !Ext.Object.isEmpty(field)
+				&& !field.disablePanelFunctions
+				&& (
+					field instanceof Ext.button.Button
+					|| field instanceof Ext.form.Field
+					|| field instanceof Ext.form.field.Base
+					|| field instanceof Ext.form.FieldContainer
+					|| field instanceof Ext.form.FieldSet
+					|| field instanceof Ext.ux.form.MultiSelect
+					|| (Ext.isBoolean(field.enablePanelFunctions) && field.enablePanelFunctions)
+					|| (Ext.isBoolean(field.considerAsFieldToDisable) && field.considerAsFieldToDisable) /** @deprecated */
+				)
 			);
 		},
 
 		/**
 		 * @param {Object} parameters
 		 * @param {Boolean} parameters.includeDisabled
+		 * @param {Ext.component.Component} parameters.target
 		 *
 		 * @returns {Object}
 		 */
 		panelFunctionDataGet: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
 			parameters.includeDisabled = Ext.isBoolean(parameters.includeDisabled) ? parameters.includeDisabled : false;
+			parameters.target = Ext.isObject(parameters.target) ? parameters.target : this;
 
-			var values = Ext.isFunction(this.getForm) ? this.getForm().getValues() : {};
+			var values = Ext.isFunction(parameters.target.getForm) ? parameters.target.getForm().getValues() : {};
 
 			if (parameters.includeDisabled) {
 				var data = {};
 
-				this.cascade(function (item) {
+				parameters.target.cascade(function (item) {
 					if (
-						Ext.isObject(item) && !Ext.Object.isEmpty(item)
+						this.isPanelFunctionManagedField(item)
 						&& Ext.isFunction(item.getValue) && Ext.isFunction(item.getName)
-						&& this.isManagedField(item)
-						&& !item.disablePanelFunctions
+						&& Ext.isBoolean(item.submitValue) && item.submitValue
 					) {
 						data[item.getName()] = item.getValue();
 					}

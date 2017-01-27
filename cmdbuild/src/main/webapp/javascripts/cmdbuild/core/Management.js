@@ -181,11 +181,6 @@
 		 */
 		buildUserInterface: function () {
 			if (!CMDBuild.core.CookiesManager.authorizationIsEmpty()) {
-				/**
-				 * @deprecated
-				 */
-				_CMCache.syncAttachmentCategories();
-
 				// Building accordion definitions object array (display order)
 				var accordionDefinitionObjectsArray = [{ className: 'CMDBuild.controller.management.accordion.Menu', identifier: CMDBuild.core.constants.ModuleIdentifiers.getNavigation() }];
 

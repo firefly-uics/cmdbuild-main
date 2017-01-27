@@ -9,6 +9,7 @@
 <script type="text/javascript" src="javascripts/cmdbuild/override/form/field/Checkbox.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/override/form/field/ComboBox.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/override/form/field/Display.js"></script>
+<script type="text/javascript" src="javascripts/cmdbuild/override/form/field/File.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/override/form/field/VTypes.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/override/form/FieldContainer.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/override/form/FieldSet.js"></script>
@@ -18,6 +19,9 @@
 <script type="text/javascript" src="javascripts/cmdbuild/override/layout/container/Editor.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/override/selection/CheckboxModel.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/override/toolbar/Paging.js"></script>
+
+<!-- CONFIGURATIONS -->
+<script type="text/javascript" src="javascripts/cmdbuild/core/configurations/DataFormat.js"></script>
 
 <!-- MODELS -->
 <script type="text/javascript" src="javascripts/cmdbuild/model/report/Cache.js"></script>
@@ -35,7 +39,6 @@
 <script type="text/javascript" src="javascripts/cmdbuild/cache/CMCacheLookupFunctions.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/cache/CMCacheDomainFunctions.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/cache/CMCacheDashboardFunctions.js"></script>
-<script type="text/javascript" src="javascripts/cmdbuild/cache/CMCacheAttachmentCategoryFunctions.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/cache/CMCacheGISFunctions.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/cache/CMCache.js"></script>
 

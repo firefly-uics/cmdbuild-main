@@ -166,8 +166,8 @@
 				Ext.defer(function () { // Form cleanup
 					form.close();
 				}, 100);
-			} else{
-				_error('form object not managed', 'CMDBuild.core.interfaces.FormSubmit');
+			} else {
+				_error('submit(): form object not managed', 'CMDBuild.core.interfaces.FormSubmit', parameters.form);
 			}
 		}
 	});

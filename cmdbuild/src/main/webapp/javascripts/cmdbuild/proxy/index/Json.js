@@ -13,7 +13,8 @@
 			readAll: 'services/json/attachments/getattachmentlist',
 
 			download: 'services/json/attachments/downloadattachment',
-			getContext: 'services/json/attachments/getattachmentscontext'
+			getContext: 'services/json/attachments/getattachmentscontext',
+			getVersions: 'services/json/attachments/getattachmentversions'
 		},
 
 		attribute: {
