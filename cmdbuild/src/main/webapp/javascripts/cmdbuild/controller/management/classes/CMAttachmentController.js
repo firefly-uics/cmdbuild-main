@@ -7,7 +7,7 @@
 		'CMDBuild.core.constants.Proxy',
 		'CMDBuild.core.interfaces.messages.Error',
 		'CMDBuild.core.Message',
-		'CMDBuild.proxy.management.classes.panel.form.tabs.attachments.Attachments',
+//		'CMDBuild.proxy.management.classes.panel.form.tabs.attachments.Attachments',
 		'CMDBuild.proxy.index.Json'
 	]);
 

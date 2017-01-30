@@ -61,11 +61,13 @@
 			});
 
 			Ext.apply(this, {
-				items : [ this.centralPanel, this.cardTabPanel ],
-				tools : [ Ext.create('CMDBuild.view.management.classes.tools.Properties'),
-						Ext.create('CMDBuild.view.management.classes.tools.Minimize'),
-						Ext.create('CMDBuild.view.management.classes.tools.Maximize'),
-						Ext.create('CMDBuild.view.management.classes.tools.Restore') ]
+				items: [ this.centralPanel, this.cardTabPanel ],
+				tools:[
+					Ext.create('CMDBuild.view.management.classes.tools.Properties'),
+					Ext.create('CMDBuild.view.management.classes.tools.Minimize'),
+					Ext.create('CMDBuild.view.management.classes.tools.Maximize'),
+					Ext.create('CMDBuild.view.management.classes.tools.Restore')
+				]
 			});
 
 			this.callParent(arguments);
@@ -128,10 +130,7 @@
 
 		// protected
 		buildComponents : function() {
-			var gridratio = CMDBuild.configuration.instance.get('cardFormRatio') || 50; // TODO:
-																						// use
-																						// proxy
-																						// constants
+			var gridratio = CMDBuild.configuration.instance.get('cardFormRatio') || 50; // TODO: use proxy constants
 			var tbar = [ this.addCardButton = Ext.create('CMDBuild.core.buttons.iconized.split.add.Card', {
 				classId : undefined,
 				disabled : true
@@ -259,8 +258,7 @@
 	});
 
 	function buildMapButton(tbar) {
-		if (CMDBuild.configuration.gis.get('enabled')) { // TODO: use proxy
-															// constants
+		if (CMDBuild.configuration.gis.get('enabled')) { // TODO: use proxy constants
 
 			this.showMapButton = new Ext.button.Button({
 				text : CMDBuild.Translation.management.modcard.tabs.map,
@@ -276,10 +274,7 @@
 	}
 
 	function buildMapPanel() {
-		if (CMDBuild.configuration.gis.get('enabled') && this.whitMap) { // TODO:
-																			// use
-																			// proxy
-																			// constants
+		if (CMDBuild.configuration.gis.get('enabled') && this.whitMap) { // TODO: use proxy constants
 			this.showGridButton = new Ext.button.Button({
 				text : CMDBuild.Translation.management.modcard.add_relations_window.list_tab,
 				iconCls : 'table',

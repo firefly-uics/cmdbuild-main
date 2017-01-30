@@ -1,6 +1,6 @@
 (function() {
 
-	Ext.require('CMDBuild.proxy.management.classes.panel.form.tabs.attachments.Attachments');
+//	Ext.require('CMDBuild.proxy.management.classes.panel.form.tabs.attachments.Attachments');
 
 	var tr = CMDBuild.Translation.management.modcard;
 

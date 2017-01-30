@@ -139,11 +139,6 @@
 		extend: 'CMDBuild.controller.management.common.CMModController',
 
 		/**
-		 * @property {CMDBuild.controller.management.classes.attachments.CMCardAttachmentsController}
-		 */
-		attachmentsController: undefined,
-
-		/**
 		 * @property {Ext.data.Model}
 		 */
 		card: undefined,
@@ -157,6 +152,11 @@
 		 * @property {CMDBuild.controller.management.classes.CMMapController}
 		 */
 		controllerMap: undefined,
+
+		/**
+		 * @property {CMDBuild.controller.management.classes.panel.form.tabs.Attachment}
+		 */
+		controllerTabAttachment: undefined,
 
 		/**
 		 * @property {CMDBuild.controller.management.classes.tabs.Email}
@@ -251,11 +251,15 @@
 		},
 
 		buildTabControllerAttachments: function () {
-			this.attachmentsController = Ext.create('CMDBuild.controller.management.classes.panel.form.tabs.attachments.Attachments', { parentDelegate: this });
+			if (!CMDBuild.configuration.userInterface.isDisabledCardTab(CMDBuild.core.constants.Proxy.CLASS_ATTACHMENT_TAB)) {
+				this.controllerTabAttachment = Ext.create('CMDBuild.controller.management.classes.panel.form.tabs.Attachment', { parentDelegate: this });
 
-			this.subControllers.push(this.attachmentsController);
+				this.subControllers.push(this.controllerTabAttachment);
 
-			this.view.cardTabPanel.add(this.attachmentsController.getView()); // Add panel to view
+				this.view.cardTabPanel.attachmentPanel = this.controllerTabEmail.getView(); // Creates tabPanel object
+
+				this.view.cardTabPanel.add(this.controllerTabAttachment.getView()); // Add panel to view
+			}
 		},
 
 		buildTabControllerCard: function () {
