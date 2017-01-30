@@ -759,19 +759,20 @@ public class CmisDmsService implements DmsService, LoggingSupport, ChangeListene
 				}
 			}
 
-			properties.put(DESCRIPTION, document.getDescription());
-
-			if (model().getDescriptionProperty() != null) {
-				final PropertyDefinition<?> propertyDefinition =
-						propertyDefinitions().get(model().getDescriptionProperty());
-				logger.info(MARKER, "description property '{}' updatability '{}'", propertyDefinition.getDisplayName(),
-						propertyDefinition.getUpdatability());
-				if (propertyDefinition != null) {
-					final Object value = converterOf(propertyDefinition).convertToCmisValue(session, propertyDefinition,
-							document.getDescription());
-					logger.info(MARKER, "converted property for '{}' value '{}'", propertyDefinition.getDisplayName(),
-							value);
-					properties.put(model().getDescriptionProperty(), value);
+			if (document.getDescription() != null) {
+				properties.put(DESCRIPTION, document.getDescription());
+				if (model().getDescriptionProperty() != null) {
+					final PropertyDefinition<?> propertyDefinition =
+							propertyDefinitions().get(model().getDescriptionProperty());
+					logger.info(MARKER, "description property '{}' updatability '{}'",
+							propertyDefinition.getDisplayName(), propertyDefinition.getUpdatability());
+					if (propertyDefinition != null) {
+						final Object value = converterOf(propertyDefinition).convertToCmisValue(session,
+								propertyDefinition, document.getDescription());
+						logger.info(MARKER, "converted property for '{}' value '{}'",
+								propertyDefinition.getDisplayName(), value);
+						properties.put(model().getDescriptionProperty(), value);
+					}
 				}
 			}
 
