@@ -24,6 +24,7 @@
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
+			'onPanelModuleAttachmentVersionsCloseButtonClick',
 			'onPanelModuleAttachmentVersionsDownloadButtonClick',
 			'panelModuleAttachmentVersionsConfigureAndShow'
 		],
@@ -53,6 +54,13 @@
 
 			// Shorthands
 			this.grid = this.view.grid;
+		},
+
+		/**
+		 * @returns {Void}
+		 */
+		onPanelModuleAttachmentVersionsCloseButtonClick: function () {
+			this.view.close();
 		},
 
 		/**

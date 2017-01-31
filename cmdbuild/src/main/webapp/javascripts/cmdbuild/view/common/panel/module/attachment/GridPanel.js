@@ -30,7 +30,6 @@
 		buttonAdd: undefined,
 
 		border: false,
-		cls: 'cmdb-border-bottom',
 		disableSelection: true,
 		frame: false,
 		scroll: 'vertical', // Business rule: voluntarily hide the horizontal scroll-bar because probably no one want it

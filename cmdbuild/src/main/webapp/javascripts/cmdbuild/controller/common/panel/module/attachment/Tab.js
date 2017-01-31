@@ -28,7 +28,7 @@
 		cmfgCatchedFunctions: [
 			'onPanelModuleAttachmentTabBackButtonClick',
 			'onPanelModuleAttachmentTabShow',
-			'onPanelModuleAttachmentTabShowCallback', // Public only for overriding reasons
+			'onPanelModuleAttachmentTabShowCallback', // Public only for overriding reason
 			'panelModuleAttachmentTabReset'
 		],
 
@@ -64,12 +64,10 @@
 			this.controllerGrid = Ext.create('CMDBuild.controller.common.panel.module.attachment.Grid', { parentDelegate: this });
 
 			// Shorthands
-			this.grid = this.controllerGrid.getView()
+			this.grid = this.controllerGrid.getView();
 
 			// View build
-			this.view.add([
-				this.grid
-			]);
+			this.view.add([this.grid]);
 		},
 
 		/**

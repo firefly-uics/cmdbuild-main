@@ -602,16 +602,8 @@
 				if (!Ext.isObject(model) || Ext.Object.isEmpty(model))
 					return _error('onOpenAttachmentClick(): unmanaged model parameter', this, model);
 			// END: Error handling
-_debug('onOpenAttachmentClick', model);
-//Id: model.get('dst_id'),
-//IdClass: model.get('dst_cid'),
-//Description: model.get('dst_desc')
-//			var w = new CMDBuild.view.management.common.CMAttachmentsWindow();
-//
-//			new CMDBuild.controller.management.common.CMAttachmentsWindowController(w, modelToCardInfo(model));
-//
-//			w.show();
-			this.controllerWindowAttachment.cmfg('panelModuleAttachmentConfigureAndShow', {
+
+			this.controllerWindowAttachment.cmfg('panelModuleAttachmentWindowConfigureAndShow', {
 				entityId: model.get('dst_cid'),
 				id: model.get('dst_id')
 			});
@@ -714,14 +706,6 @@ _debug('onOpenAttachmentClick', model);
 		onEntryTypeSelected: Ext.emptyFn,
 		onCardSelected: Ext.emptyFn
 	});
-
-	function modelToCardInfo(model) {
-		return {
-			Id: model.get('dst_id'),
-			IdClass: model.get('dst_cid'),
-			Description: model.get('dst_desc')
-		};
-	}
 
 	function openCardWindow(model, editable) {
 		var w = Ext.create('CMDBuild.view.management.common.CMCardWindow', {

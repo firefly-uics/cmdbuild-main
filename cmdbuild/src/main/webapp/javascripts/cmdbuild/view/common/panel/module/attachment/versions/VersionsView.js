@@ -28,6 +28,29 @@
 		 */
 		initComponent: function () {
 			Ext.apply(this, {
+				dockedItems: [
+					Ext.create('Ext.toolbar.Toolbar', {
+						dock: 'bottom',
+						itemId: CMDBuild.core.constants.Proxy.TOOLBAR_BOTTOM,
+						ui: 'footer',
+
+						layout: {
+							type: 'hbox',
+							align: 'middle',
+							pack: 'center'
+						},
+
+						items: [
+							Ext.create('CMDBuild.core.buttons.text.Close', {
+								scope: this,
+
+								handler: function (button, e) {
+									this.delegate.cmfg('onPanelModuleAttachmentVersionsCloseButtonClick');
+								}
+							})
+						]
+					})
+				],
 				items: [
 					this.grid = Ext.create('CMDBuild.view.common.panel.module.attachment.versions.GridPanel', { delegate: this.delegate })
 				]

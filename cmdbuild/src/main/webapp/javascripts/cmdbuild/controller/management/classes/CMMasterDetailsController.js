@@ -9,6 +9,11 @@
 		extend: "CMDBuild.controller.management.classes.CMModCardSubController",
 
 		/**
+		 * @property {CMDBuild.controller.common.panel.module.attachment.Window}
+		 */
+		controllerWindowAttachment: undefined,
+
+		/**
 		 * @property {CMDBuild.controller.management.classes.panel.form.tabs.masterDetail.window.Note}
 		 */
 		controllerWindowNote: undefined,
@@ -49,6 +54,7 @@
 			};
 
 			// Build sub-controllers
+			this.controllerWindowAttachment = Ext.create('CMDBuild.controller.common.panel.module.attachment.Window', { parentDelegate: this });
 			this.controllerWindowNote = Ext.create('CMDBuild.controller.management.classes.panel.form.tabs.masterDetail.window.Note', { parentDelegate: this });
 		},
 
@@ -221,10 +227,21 @@
 			});
 		},
 
-		onOpenAttachmentClick: function(model) {
-			var w = new CMDBuild.view.management.common.CMAttachmentsWindow();
-			new CMDBuild.controller.management.common.CMAttachmentsWindowController(w,modelToCardInfo(model));
-			w.show();
+		/**
+		 * @param {Ext.data.Store} model
+		 *
+		 * @returns {Void}
+		 */
+		onOpenAttachmentClick: function (model) {
+			// Error handling
+				if (!Ext.isObject(model) || Ext.Object.isEmpty(model))
+					return _error('onOpenAttachmentClick(): unmanaged model parameter', this, model);
+			// END: Error handling
+
+			this.controllerWindowAttachment.cmfg('panelModuleAttachmentWindowConfigureAndShow', {
+				entityId: model.get('IdClass'),
+				id: model.get('Id')
+			});
 		},
 
 		onTabClick: onTabClick,
@@ -246,14 +263,6 @@
 
 	function detailSide(domainRecord) {
 		return 3-masterSide(domainRecord);
-	}
-
-	function modelToCardInfo(model) {
-		return {
-			Id: model.get("Id"),
-			IdClass: model.get("IdClass"),
-			Description: model.get("Description")
-		};
 	}
 
 	function onDetailDoubleClick(grid, model, html, index, e, options) {

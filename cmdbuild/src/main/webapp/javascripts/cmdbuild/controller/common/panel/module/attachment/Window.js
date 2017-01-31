@@ -2,9 +2,6 @@
 
 	/**
 	 * Required managed functions from upper structure:
-	 * 	- panelGridAndFormIdentifierGet
-	 * 	- panelGridAndFormPanelFormTemplateResolverFormGet
-	 * 	- panelGridAndFormPanelFormTabActiveSet
 	 * 	- panelGridAndFormSelectedEntityGet
 	 * 	- panelGridAndFormSelectedEntityIsEmpty
 	 * 	- panelGridAndFormSelectedItemGet
@@ -28,22 +25,18 @@
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
-			'onPanelModuleAttachmentGridAddButtonClick',
-			'onPanelModuleAttachmentBackButtonClick',
-			'onPanelModuleAttachmentGridDownloadButtonClick',
-			'onPanelModuleAttachmentGridModifyButtonClick',
-			'onPanelModuleAttachmentGridRemoveButtonClick',
-//			'onPanelModuleAttachmentShow',
-			'onPanelModuleAttachmentGridVersionsButtonClick',
-			'panelModuleAttachmentGridCategoriesExists',
-			'panelModuleAttachmentGridCategoriesGet',
-			'panelModuleAttachmentConfigureAndShow',
-			'panelModuleAttachmentGridReset',
-			'panelModuleAttachmentGridStoreLoad',
-
-			'panelModuleAttachmentSelectedEntityGet = panelGridAndFormSelectedEntityGet',
-			'panelModuleAttachmentSelectedEntityIsEmpty = panelGridAndFormSelectedEntityIsEmpty',
+			'onPanelModuleAttachmentWindowCloseButtonClick',
+			'panelModuleAttachmentWindowConfigureAndShow',
+			'panelModuleAttachmentWindowSelectedEntityGet = panelGridAndFormSelectedEntityGet',
+			'panelModuleAttachmentWindowSelectedEntityIsEmpty = panelGridAndFormSelectedEntityIsEmpty',
+			'panelModuleAttachmentWindowSelectedItemGet = panelGridAndFormSelectedItemGet',
+			'panelModuleAttachmentWindowSelectedItemIsEmpty = panelGridAndFormSelectedItemIsEmpty'
 		],
+
+		/**
+		 * @property {CMDBuild.view.common.panel.module.attachment.GridPanel}
+		 */
+		grid: undefined,
 
 		/**
 		 * @property {CMDBuild.model.common.panel.module.attachment.entity.Entity}
@@ -77,22 +70,35 @@
 
 			this.view = Ext.create('CMDBuild.view.common.panel.module.attachment.WindowView', { delegate: this });
 
+			// Build sub-controllers
+			this.controllerGrid = Ext.create('CMDBuild.controller.common.panel.module.attachment.Grid', { parentDelegate: this });
+
 			// Shorthands
-			this.grid = this.view.grid;
+			this.grid = this.controllerGrid.getView();
+
+			// View build
+			this.view.add([this.grid]);
 		},
 
 		/**
-		 * Includes onPanelModuleAttachmentShow
-		 *
+		 * @returns {Void}
+		 */
+		onPanelModuleAttachmentWindowCloseButtonClick: function () {
+			this.view.close();
+		},
+
+		/**
 		 * @param {Object} parameters
 		 * @param {Number} parameters.entityId
 		 * @param {Number} parameters.id
 		 *
 		 * @returns {Void}
 		 */
-		panelModuleAttachmentConfigureAndShow: function (parameters) {
-_debug('panelModuleAttachmentConfigureAndShow', parameters);
+		panelModuleAttachmentWindowConfigureAndShow: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
+
+			this.panelModuleAttachmentWindowSelectedEntityReset();
+			this.panelModuleAttachmentWindowSelectedItemReset();
 
 			CMDBuild.core.LoadMask.show(); // Manual loadMask manage
 
@@ -100,9 +106,127 @@ _debug('panelModuleAttachmentConfigureAndShow', parameters);
 				this.readItem(parameters.id, function () {
 					CMDBuild.core.LoadMask.hide(); // Manual loadMask manage
 
+					this.setViewTitle([this.cmfg('panelModuleAttachmentWindowSelectedItemGet', CMDBuild.core.constants.Proxy.DESCRIPTION)]);
+
+					this.grid.buttonAdd.setDisabled(
+						!this.cmfg('panelGridAndFormSelectedEntityGet', [
+							CMDBuild.core.constants.Proxy.PERMISSIONS,
+							CMDBuild.core.constants.Proxy.WRITE
+						])
+					);
+
+					this.controllerGrid.cmfg('panelModuleAttachmentGridStoreLoad');
+
+					this.view.show();
 				});
 			});
 		},
+
+		// SelectedEntity property functions
+			/**
+			 * @param {Array or String} attributePath
+			 *
+			 * @returns {Mixed or undefined}
+			 */
+			panelModuleAttachmentWindowSelectedEntityGet: function (attributePath) {
+				var parameters = {};
+				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedEntity';
+				parameters[CMDBuild.core.constants.Proxy.ATTRIBUTE_PATH] = attributePath;
+
+				return this.propertyManageGet(parameters);
+			},
+
+			/**
+			 * @param {Array or String} attributePath
+			 *
+			 * @returns {Boolean}
+			 */
+			panelModuleAttachmentWindowSelectedEntityIsEmpty: function (attributePath) {
+				var parameters = {};
+				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedEntity';
+				parameters[CMDBuild.core.constants.Proxy.ATTRIBUTE_PATH] = attributePath;
+
+				return this.propertyManageIsEmpty(parameters);
+			},
+
+			/**
+			 * @returns {Boolean}
+			 *
+			 * @private
+			 */
+			panelModuleAttachmentWindowSelectedEntityReset: function () {
+				return this.propertyManageReset('selectedEntity');
+			},
+
+			/**
+			 * @param {Object} parameters
+			 *
+			 * @returns {Void}
+			 *
+			 * @private
+			 */
+			panelModuleAttachmentWindowSelectedEntitySet: function (parameters) {
+				if (Ext.isObject(parameters) && !Ext.Object.isEmpty(parameters)) {
+					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.common.panel.module.attachment.entity.Entity';
+					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedEntity';
+
+					this.propertyManageSet(parameters);
+				}
+			},
+
+		// SelectedItem property functions
+			/**
+			 * @param {Array or String} attributePath
+			 *
+			 * @returns {Mixed or undefined}
+			 */
+			panelModuleAttachmentWindowSelectedItemGet: function (attributePath) {
+				var parameters = {};
+				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedItem';
+				parameters[CMDBuild.core.constants.Proxy.ATTRIBUTE_PATH] = attributePath;
+
+				return this.propertyManageGet(parameters);
+			},
+
+			/**
+			 * @param {Array or String} attributePath
+			 *
+			 * @returns {Boolean}
+			 */
+			panelModuleAttachmentWindowSelectedItemIsEmpty: function (attributePath) {
+				var parameters = {};
+				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedItem';
+				parameters[CMDBuild.core.constants.Proxy.ATTRIBUTE_PATH] = attributePath;
+
+				return this.propertyManageIsEmpty(parameters);
+			},
+
+			/**
+			 * @param {Object} parameters
+			 *
+			 * @returns {Void}
+			 *
+			 * @private
+			 */
+			panelModuleAttachmentWindowSelectedItemReset: function (parameters) {
+				this.propertyManageReset('selectedItem');
+			},
+
+			/**
+			 * @param {Object} parameters
+			 *
+			 * @returns {Void}
+			 *
+			 * @private
+			 */
+			panelModuleAttachmentWindowSelectedItemSet: function (parameters) {
+				if (Ext.isObject(parameters) && !Ext.Object.isEmpty(parameters)) {
+					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.common.panel.module.attachment.Item';
+					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedItem';
+
+					this.propertyManageSet(parameters);
+				}
+			},
 
 		/**
 		 * @param {Number} id
@@ -136,7 +260,7 @@ _debug('panelModuleAttachmentConfigureAndShow', parameters);
 						}, this);
 
 						if (Ext.isObject(entityObject) && !Ext.Object.isEmpty(entityObject)) {
-							this.panelModuleAttachmentSelectedEntitySet({ value: entityObject });
+							this.panelModuleAttachmentWindowSelectedEntitySet({ value: entityObject });
 
 							Ext.callback(callback, this);
 						} else {
@@ -166,17 +290,17 @@ _debug('panelModuleAttachmentConfigureAndShow', parameters);
 
 			var params = {};
 			params[CMDBuild.core.constants.Proxy.CARD_ID] = id;
-			params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.cmfg('panelModuleAttachmentSelectedEntityGet', CMDBuild.core.constants.Proxy.NAME);
+			params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.cmfg('panelModuleAttachmentWindowSelectedEntityGet', CMDBuild.core.constants.Proxy.NAME);
 
 			CMDBuild.proxy.common.panel.module.attachment.Window.readItem({
 				params: params,
 				loadMask: false,
 				scope: this,
 				success: function (response, options, decodedResponse) {
-					decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.RESPONSE];
+					decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.CARD];
 
 					if (Ext.isObject(decodedResponse) && !Ext.Object.isEmpty(decodedResponse)) {
-						this.panelModuleAttachmentSelectedItemSet({ value: decodedResponse });
+						this.panelModuleAttachmentWindowSelectedItemSet({ value: decodedResponse });
 
 						Ext.callback(callback, this);
 					} else {
@@ -184,111 +308,7 @@ _debug('panelModuleAttachmentConfigureAndShow', parameters);
 					}
 				}
 			});
-		},
-
-		// SelectedEntity property functions
-			/**
-			 * @param {Array or String} attributePath
-			 *
-			 * @returns {Mixed or undefined}
-			 */
-			panelModuleAttachmentSelectedEntityGet: function (attributePath) {
-				var parameters = {};
-				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedEntity';
-				parameters[CMDBuild.core.constants.Proxy.ATTRIBUTE_PATH] = attributePath;
-
-				return this.propertyManageGet(parameters);
-			},
-
-			/**
-			 * @param {Array or String} attributePath
-			 *
-			 * @returns {Boolean}
-			 */
-			panelModuleAttachmentSelectedEntityIsEmpty: function (attributePath) {
-				var parameters = {};
-				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedEntity';
-				parameters[CMDBuild.core.constants.Proxy.ATTRIBUTE_PATH] = attributePath;
-
-				return this.propertyManageIsEmpty(parameters);
-			},
-
-//			/**
-//			 * @returns {Boolean}
-//			 *
-//			 * @private
-//			 */
-//			panelModuleAttachmentSelectedEntityReset: function () {
-//				return this.propertyManageReset('selectedEntity');
-//			},
-
-			/**
-			 * @param {Object} parameters
-			 *
-			 * @returns {Void}
-			 *
-			 * @private
-			 */
-			panelModuleAttachmentSelectedEntitySet: function (parameters) {
-				if (Ext.isObject(parameters) && !Ext.Object.isEmpty(parameters)) {
-					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.common.panel.module.attachment.entity.Entity';
-					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedEntity';
-
-					this.propertyManageSet(parameters);
-				}
-			},
-
-		// SelectedItem property functions
-//			/**
-//			 * @param {Array or String} attributePath
-//			 *
-//			 * @returns {Mixed or undefined}
-//			 */
-//			panelModuleAttachmentSelectedItemGet: function (attributePath) {
-//				var parameters = {};
-//				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedItem';
-//				parameters[CMDBuild.core.constants.Proxy.ATTRIBUTE_PATH] = attributePath;
-//
-//				return this.propertyManageGet(parameters);
-//			},
-//
-//			/**
-//			 * @param {Array or String} attributePath
-//			 *
-//			 * @returns {Boolean}
-//			 */
-//			panelModuleAttachmentSelectedItemIsEmpty: function (attributePath) {
-//				var parameters = {};
-//				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedItem';
-//				parameters[CMDBuild.core.constants.Proxy.ATTRIBUTE_PATH] = attributePath;
-//
-//				return this.propertyManageIsEmpty(parameters);
-//			},
-//
-//			/**
-//			 * @param {Object} parameters
-//			 *
-//			 * @returns {Void}
-//			 */
-//			panelModuleAttachmentSelectedItemReset: function (parameters) {
-//				this.propertyManageReset('selectedItem');
-//			},
-
-			/**
-			 * @param {Object} parameters
-			 *
-			 * @returns {Void}
-			 *
-			 * @private
-			 */
-			panelModuleAttachmentSelectedItemSet: function (parameters) {
-				if (Ext.isObject(parameters) && !Ext.Object.isEmpty(parameters)) {
-					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.common.panel.module.attachment.Item';
-					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedItem';
-
-					this.propertyManageSet(parameters);
-				}
-			}
+		}
 	});
 
 })();

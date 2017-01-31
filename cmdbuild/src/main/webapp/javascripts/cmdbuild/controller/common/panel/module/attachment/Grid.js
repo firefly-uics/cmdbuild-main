@@ -2,9 +2,7 @@
 
 	/**
 	 * Required managed functions from upper structure:
-	 * 	- panelGridAndFormIdentifierGet
 	 * 	- panelGridAndFormPanelFormTemplateResolverFormGet
-	 * 	- panelGridAndFormPanelFormTabActiveSet
 	 * 	- panelGridAndFormSelectedEntityGet
 	 * 	- panelGridAndFormSelectedEntityIsEmpty
 	 * 	- panelGridAndFormSelectedItemGet
@@ -67,6 +65,11 @@
 		controllerWindowModify: undefined,
 
 		/**
+		 * @cfg {Boolean}
+		 */
+		enableBorderBottom: false,
+
+		/**
 		 * @property {CMDBuild.view.common.panel.module.attachment.GridPanel}
 		 */
 		view: undefined,
@@ -82,7 +85,10 @@
 		constructor: function (configurationObject) {
 			this.callParent(arguments);
 
-			this.view = Ext.create('CMDBuild.view.common.panel.module.attachment.GridPanel', { delegate: this });
+			this.view = Ext.create('CMDBuild.view.common.panel.module.attachment.GridPanel', {
+				delegate: this,
+				cls: this.enableBorderBottom ? 'cmdb-border-bottom' : ''
+			});
 
 			// Build sub-controllers
 			this.controllerVersions = Ext.create('CMDBuild.controller.common.panel.module.attachment.Versions', { parentDelegate: this });

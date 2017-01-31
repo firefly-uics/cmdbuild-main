@@ -15,7 +15,7 @@
 		 */
 		form: undefined,
 
-		baseTitle: CMDBuild.Translation.attachment, // TODO: manage title (Attachment - ITEM_DESCRIPTION)
+		baseTitle: CMDBuild.Translation.attachment,
 		closeAction: 'hide',
 		dimensionsMode: 'percentage',
 		layout: 'fit',
@@ -29,21 +29,6 @@
 		initComponent: function () {
 			Ext.apply(this, {
 				dockedItems: [
-					Ext.create('Ext.toolbar.Toolbar', {
-						dock: 'top',
-						itemId: CMDBuild.core.constants.Proxy.TOOLBAR_TOP,
-
-						items: [
-							this.buttonAdd = Ext.create('CMDBuild.core.buttons.iconized.add.Add', {
-								text: CMDBuild.Translation.addAttachment,
-								scope: this,
-
-								handler: function (button, e) {
-									this.delegate.cmfg('onPanelModuleAttachmentGridAddButtonClick'); // TODO
-								}
-							})
-						]
-					}),
 					Ext.create('Ext.toolbar.Toolbar', {
 						dock: 'bottom',
 						itemId: CMDBuild.core.constants.Proxy.TOOLBAR_BOTTOM,
@@ -60,25 +45,16 @@
 								scope: this,
 
 								handler: function (button, e) {
-									this.delegate.cmfg('onPanelModuleAttachmentWindowAddAbortButtonClick'); // TODO
+									this.delegate.cmfg('onPanelModuleAttachmentWindowCloseButtonClick');
 								}
 							})
 						]
 					})
-				],
-				items: [
-					this.grid = Ext.create('CMDBuild.view.common.panel.module.attachment.GridPanel', { delegate: this.delegate })
 				]
 			});
 
 			this.callParent(arguments);
-		},
-
-//		listeners: {
-//			show: function (panel, eOpts) {
-//				this.delegate.cmfg('onPanelModuleAttachmentShow'); // TODO: remove
-//			}
-//		}
+		}
 	});
 
 })();
