@@ -210,7 +210,7 @@
 									Ext.Array.forEach(readedClasses, function (entityObject, i, allEntitiesObjects) {
 										if (!Ext.Array.contains(this.filteredClasses, entityObject[CMDBuild.core.constants.Proxy.NAME])) { // Apply filter to classes
 											switch(entityObject[CMDBuild.core.constants.Proxy.TYPE]) {
-												case CMDBuild.core.constants.Global.getTableTypeProcessClass(): { // Process node object
+												case CMDBuild.core.constants.Global.getTableTypeWorkflow(): { // Process node object
 													var processNodeObject = {};
 													processNodeObject['iconCls'] = 'cmdb-tree-processclass-icon';
 													processNodeObject[CMDBuild.core.constants.Proxy.DESCRIPTION] = entityObject[CMDBuild.core.constants.Proxy.TEXT];
@@ -266,7 +266,7 @@
 											}
 										} break;
 
-										case CMDBuild.core.constants.Global.getTableTypeProcessClass(): {
+										case CMDBuild.core.constants.Global.getTableTypeWorkflow(): {
 											if (
 												!Ext.isEmpty(node[CMDBuild.core.constants.Proxy.PARENT])
 												&& !Ext.isEmpty(nodesMap[node[CMDBuild.core.constants.Proxy.PARENT]])

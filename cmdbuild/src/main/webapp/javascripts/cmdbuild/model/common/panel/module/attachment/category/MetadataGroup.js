@@ -2,7 +2,7 @@
 
 	Ext.require('CMDBuild.core.constants.Proxy');
 
-	Ext.define('CMDBuild.model.management.classes.panel.form.tabs.attachments.category.MetadataGroup', {
+	Ext.define('CMDBuild.model.management.classes.panel.form.tabs.attachment.category.MetadataGroup', {
 		extend: 'Ext.data.Model',
 
 		fields: [

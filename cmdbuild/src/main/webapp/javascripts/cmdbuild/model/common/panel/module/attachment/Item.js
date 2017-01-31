@@ -5,7 +5,7 @@
 		'CMDBuild.core.constants.Proxy'
 	]);
 
-	Ext.define('CMDBuild.model.management.classes.panel.form.tabs.attachments.SelectedCard', {
+	Ext.define('CMDBuild.model.common.panel.module.attachment.Item', {
 		extend: 'Ext.data.Model',
 
 		fields: [

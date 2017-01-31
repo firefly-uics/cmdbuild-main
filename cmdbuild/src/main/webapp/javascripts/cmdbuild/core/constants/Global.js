@@ -15,9 +15,9 @@
 			rootNameClasses: 'Class',
 			rootNameWorkflows: 'Activity',
 			tableTypeClass: 'class',
-			tableTypeProcessClass: 'processclass',
 			tableTypeSimpleTable: 'simpletable',
 			tableTypeStandardTable: 'standard',
+			tableTypeWorkflow: 'processclass',
 			titleSeparator: ' - '
 		},
 

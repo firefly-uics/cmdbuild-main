@@ -8,16 +8,6 @@
 		 */
 		delegate: undefined,
 
-		/**
-		 * @property {CMDBuild.core.buttons.iconized.add.Add}
-		 */
-		buttonAdd: undefined,
-
-		/**
-		 * @property {CMDBuild.view.common.panel.module.attachment.GridPanel}
-		 */
-		grid: undefined,
-
 		border: false,
 		cls: 'x-panel-body-default-framed',
 		frame: false,
@@ -33,21 +23,6 @@
 		initComponent: function () {
 			Ext.apply(this, {
 				dockedItems: [
-					Ext.create('Ext.toolbar.Toolbar', {
-						dock: 'top',
-						itemId: CMDBuild.core.constants.Proxy.TOOLBAR_TOP,
-
-						items: [
-							this.buttonAdd = Ext.create('CMDBuild.core.buttons.iconized.add.Add', {
-								text: CMDBuild.Translation.addAttachment,
-								scope: this,
-
-								handler: function (button, e) {
-									this.delegate.cmfg('onPanelModuleAttachmentAddButtonClick');
-								}
-							})
-						]
-					}),
 					Ext.create('Ext.toolbar.Toolbar', {
 						dock: 'bottom',
 						itemId: CMDBuild.core.constants.Proxy.TOOLBAR_BOTTOM,
@@ -65,14 +40,11 @@
 								scope: this,
 
 								handler: function (button, e) {
-									this.delegate.cmfg('onPanelModuleAttachmentBackButtonClick');
+									this.delegate.cmfg('onPanelModuleAttachmentTabBackButtonClick');
 								}
 							})
 						]
 					})
-				],
-				items: [
-					this.grid = Ext.create('CMDBuild.view.common.panel.module.attachment.GridPanel', { delegate: this.delegate })
 				]
 			});
 
@@ -81,7 +53,7 @@
 
 		listeners: {
 			show: function (panel, eOpts) {
-				this.delegate.cmfg('onPanelModuleAttachmentShow');
+				this.delegate.cmfg('onPanelModuleAttachmentTabShow');
 			}
 		}
 	});

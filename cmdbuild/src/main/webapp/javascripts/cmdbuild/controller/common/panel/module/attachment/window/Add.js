@@ -12,11 +12,11 @@
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.common.panel.module.attachment.Attachment'
+			'CMDBuild.proxy.common.panel.module.attachment.Add'
 		],
 
 		/**
-		 * @cfg {CMDBuild.controller.common.panel.module.attachment.Tab}
+		 * @cfg {CMDBuild.controller.common.panel.module.attachment.Grid}
 		 */
 		parentDelegate: undefined,
 
@@ -57,7 +57,7 @@
 
 		/**
 		 * @param {Object} configurationObject
-		 * @param {CMDBuild.controller.common.panel.module.attachment.Tab} configurationObject.parentDelegate
+		 * @param {CMDBuild.controller.common.panel.module.attachment.Grid} configurationObject.parentDelegate
 		 *
 		 * @returns {Void}
 		 *
@@ -94,8 +94,8 @@
 
 			this.panelModuleAttachmentContainerFieldsMetadataReset();
 
-			if (this.cmfg('panelModuleAttachmentCategoriesExists', category)) {
-				var categoryModel = this.cmfg('panelModuleAttachmentCategoriesGet', { name: category });
+			if (this.cmfg('panelModuleAttachmentGridCategoriesExists', category)) {
+				var categoryModel = this.cmfg('panelModuleAttachmentGridCategoriesGet', { name: category });
 
 				Ext.Array.forEach(categoryModel.get(CMDBuild.core.constants.Proxy.METADATA_GROUPS), function (metadataGroupModel, i, allMetadataGroupModels) {
 					if (Ext.isObject(metadataGroupModel) && !Ext.Object.isEmpty(metadataGroupModel)) {
@@ -125,13 +125,13 @@
 				params[CMDBuild.core.constants.Proxy.MAJOR] = formData[CMDBuild.core.constants.Proxy.MAJOR];
 				params[CMDBuild.core.constants.Proxy.META] = Ext.encode(this.panelModuleAttachmentWindowMetadataValuesGet());
 
-				CMDBuild.proxy.common.panel.module.attachment.Attachment.create({
+				CMDBuild.proxy.common.panel.module.attachment.Add.create({
 					form: this.form.getForm(),
 					params: params,
 					loadMask: this.view,
 					scope: this,
 					success: function (form, action) {
-						this.cmfg('panelModuleAttachmentStoreLoad');
+						this.cmfg('panelModuleAttachmentGridStoreLoad');
 
 						this.cmfg('onPanelModuleAttachmentWindowAddAbortButtonClick');
 					}

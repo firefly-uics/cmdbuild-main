@@ -6,7 +6,7 @@
 		requires: [
 			'CMDBuild.core.configurations.DataFormat',
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.common.panel.module.attachment.Attachment'
+			'CMDBuild.proxy.common.panel.module.attachment.Versions'
 		],
 
 		/**
@@ -94,7 +94,7 @@
 						]
 					})
 				],
-				store: CMDBuild.proxy.common.panel.module.attachment.Attachment.getStoreVersions()
+				store: CMDBuild.proxy.common.panel.module.attachment.Versions.getStore()
 			});
 
 			this.callParent(arguments);

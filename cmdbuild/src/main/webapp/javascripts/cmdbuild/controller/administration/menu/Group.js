@@ -83,7 +83,7 @@
 			if (
 				(
 					type == CMDBuild.core.constants.Global.getTableTypeClass()
-					|| type == CMDBuild.core.constants.Global.getTableTypeProcessClass()
+					|| type == CMDBuild.core.constants.Global.getTableTypeWorkflow()
 				)
 				&& _CMCache.isEntryTypeByName(nodeObject[CMDBuild.core.constants.Proxy.REFERENCED_CLASS_NAME])
 			) {

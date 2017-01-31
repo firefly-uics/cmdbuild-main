@@ -249,8 +249,15 @@
 			}
 		},
 
-		entryType: {
-			readAll: 'services/json/schema/modclass/getallclasses'
+		entryType: { // TODO: rename entity
+			readAll: 'services/json/schema/modclass/getallclasses',
+
+			item: {
+				create: '',
+				read: 'services/json/management/modcard/getcard',
+				update: '',
+				remove: ''
+			}
 		},
 
 		filter: {

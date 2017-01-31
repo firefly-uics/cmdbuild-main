@@ -16,7 +16,7 @@
 		],
 
 		/**
-		 * @cfg {CMDBuild.controller.common.panel.module.attachment.Tab}
+		 * @cfg {CMDBuild.controller.common.panel.module.attachment.Grid}
 		 */
 		parentDelegate: undefined,
 
@@ -40,7 +40,7 @@
 
 		/**
 		 * @param {Object} configurationObject
-		 * @param {CMDBuild.controller.common.panel.module.attachment.Tab} configurationObject.parentDelegate
+		 * @param {CMDBuild.controller.common.panel.module.attachment.Grid} configurationObject.parentDelegate
 		 *
 		 * @returns {Void}
 		 *
@@ -100,6 +100,7 @@
 			params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.NAME);
 			params[CMDBuild.core.constants.Proxy.FILE_NAME] = parameters.record.get(CMDBuild.core.constants.Proxy.FILE_NAME);
 
+			this.grid.getStore().removeAll(); // Avoid old rows display untill end of load
 			this.grid.getStore().load({ params: params });
 
 			this.view.show();

@@ -10,7 +10,7 @@
 		],
 
 		/**
-		 * @cfg {CMDBuild.controller.common.panel.module.attachment.Tab}
+		 * @cfg {CMDBuild.controller.common.panel.module.attachment.Grid}
 		 */
 		delegate: undefined,
 
@@ -23,6 +23,11 @@
 		 * @property {CMDBuild.core.buttons.iconized.Remove}
 		 */
 		buttonActionRemove: undefined,
+
+		/**
+		 * @property {CMDBuild.core.buttons.iconized.add.Add}
+		 */
+		buttonAdd: undefined,
 
 		border: false,
 		cls: 'cmdb-border-bottom',
@@ -48,6 +53,23 @@
 						groupHeaderTpl: '{name} ({rows.length} {[values.rows.length > 1 ? CMDBuild.Translation.attachments : CMDBuild.Translation.attachment]})',
 						hideGroupedHeader: true
 					}
+				],
+				dockedItems: [
+					Ext.create('Ext.toolbar.Toolbar', {
+						dock: 'top',
+						itemId: CMDBuild.core.constants.Proxy.TOOLBAR_TOP,
+
+						items: [
+							this.buttonAdd = Ext.create('CMDBuild.core.buttons.iconized.add.Add', {
+								text: CMDBuild.Translation.addAttachment,
+								scope: this,
+
+								handler: function (button, e) {
+									this.delegate.cmfg('onPanelModuleAttachmentGridAddButtonClick');
+								}
+							})
+						]
+					})
 				],
 				columns: [
 					Ext.create('Ext.grid.column.Date', {
@@ -103,7 +125,7 @@
 								scope: this,
 
 								handler: function (grid, rowIndex, colIndex, node, e, record, rowNode) {
-									this.delegate.cmfg('onPanelModuleAttachmentDownloadButtonClick', record);
+									this.delegate.cmfg('onPanelModuleAttachmentGridDownloadButtonClick', record);
 								}
 							}),
 							Ext.create('CMDBuild.core.buttons.iconized.Versions', {
@@ -112,7 +134,7 @@
 								scope: this,
 
 								handler: function (grid, rowIndex, colIndex, node, e, record, rowNode) {
-									this.delegate.cmfg('onPanelModuleAttachmentVersionsButtonClick', record);
+									this.delegate.cmfg('onPanelModuleAttachmentGridVersionsButtonClick', record);
 								},
 
 								isDisabled: function (view, rowIndex, colIndex, item, record) {
@@ -125,7 +147,7 @@
 								scope: this,
 
 								handler: function (grid, rowIndex, colIndex, node, e, record, rowNode) {
-									this.delegate.cmfg('onPanelModuleAttachmentModifyButtonClick', record);
+									this.delegate.cmfg('onPanelModuleAttachmentGridModifyButtonClick', record);
 								},
 
 								isDisabled: function (view, rowIndex, colIndex, item, record) {
@@ -141,7 +163,7 @@
 								scope: this,
 
 								handler: function (grid, rowIndex, colIndex, node, e, record, rowNode) {
-									this.delegate.cmfg('onPanelModuleAttachmentRemoveButtonClick', record);
+									this.delegate.cmfg('onPanelModuleAttachmentGridRemoveButtonClick', record);
 								},
 
 								isDisabled: function (view, rowIndex, colIndex, item, record) {
