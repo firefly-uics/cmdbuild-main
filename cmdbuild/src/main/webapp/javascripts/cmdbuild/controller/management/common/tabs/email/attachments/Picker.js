@@ -108,7 +108,6 @@
 			this.view.destroy();
 		},
 
-		// TODO: waiting for refactor (rename)
 		onTabEmailAttachmentPickerConfirmButtonClick: function () {
 			if (this.view.attachmentGrid.getSelectionModel().hasSelection()) {
 				Ext.Array.forEach(this.view.attachmentGrid.getSelectionModel().getSelection(), function (attachment, i, allAttachments) {
@@ -116,7 +115,7 @@
 					params[CMDBuild.core.constants.Proxy.CARD_ID] = this.selectedCardGet(CMDBuild.core.constants.Proxy.ID);
 					params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.selectedCardGet(CMDBuild.core.constants.Proxy.CLASS_NAME);
 					params[CMDBuild.core.constants.Proxy.EMAIL_ID] = this.record.get(CMDBuild.core.constants.Proxy.ID);
-					params[CMDBuild.core.constants.Proxy.FILE_NAME] = attachment.get('Filename');
+					params[CMDBuild.core.constants.Proxy.FILE_NAME] = attachment.get(CMDBuild.core.constants.Proxy.FILE_NAME);
 					params[CMDBuild.core.constants.Proxy.TEMPORARY] = this.record.get(CMDBuild.core.constants.Proxy.TEMPORARY);
 
 					CMDBuild.proxy.common.tabs.email.Attachment.copy({
@@ -126,12 +125,12 @@
 						failure: function (response, options, decodedResponse) {
 							CMDBuild.core.Message.error(
 								CMDBuild.Translation.common.failure,
-								Ext.String.format(CMDBuild.Translation.errors.copyAttachmentFailure, attachment.get('Filename')),
+								Ext.String.format(CMDBuild.Translation.errors.copyAttachmentFailure, attachment.get(CMDBuild.core.constants.Proxy.FILE_NAME)),
 								false
 							);
 						},
 						success: function (response, options, decodedResponse) {
-							this.cmfg('tabEmailAttachmentAddPanel', attachment.get('Filename'));
+							this.cmfg('tabEmailAttachmentAddPanel', attachment.get(CMDBuild.core.constants.Proxy.FILE_NAME));
 						}
 					});
 				}, this);

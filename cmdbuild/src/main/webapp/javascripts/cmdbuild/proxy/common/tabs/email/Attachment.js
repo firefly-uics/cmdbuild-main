@@ -6,8 +6,9 @@
 			'CMDBuild.core.constants.Global',
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.core.interfaces.FormSubmit',
-			'CMDBuild.proxy.index.Json',
-			'CMDBuild.model.common.tabs.email.attachments.TargetClass'
+			'CMDBuild.model.common.tabs.email.attachments.Attachment',
+			'CMDBuild.model.common.tabs.email.attachments.TargetClass',
+			'CMDBuild.proxy.index.Json'
 		],
 
 		singleton: true,
@@ -48,13 +49,13 @@
 		getStore: function () {
 			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.ATTACHMENT, {
 				autoLoad: false,
-				model: 'CMDBuild.model.CMAttachment', // TODO: waiting for refactor
+				model: 'CMDBuild.model.common.tabs.email.attachments.Attachment',
 				proxy: {
 					type: 'ajax',
 					url: CMDBuild.proxy.index.Json.attachment.readAll,
 					reader: {
 						type: 'json',
-						root: CMDBuild.core.constants.Proxy.ROWS
+						root: CMDBuild.core.constants.Proxy.RESPONSE
 					},
 					extraParams: { // Avoid to send limit, page and start parameters in server calls
 						limitParam: undefined,
@@ -63,7 +64,7 @@
 					}
 				},
 				sorters: [
-					{ property: 'Filename', direction: 'ASC' }
+					{ property: CMDBuild.core.constants.Proxy.FILE_NAME, direction: 'ASC' }
 				]
 			});
 		},

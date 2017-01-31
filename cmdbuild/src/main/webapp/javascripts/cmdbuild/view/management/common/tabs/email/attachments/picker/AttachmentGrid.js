@@ -27,13 +27,13 @@
 			Ext.apply(this, {
 				columns: [
 					{
+						dataIndex: CMDBuild.core.constants.Proxy.FILE_NAME,
 						text: CMDBuild.Translation.fileName,
-						dataIndex: 'Filename', // TODO: waiting for refactor (rename)
 						flex: 1
 					},
 					{
+						dataIndex: CMDBuild.core.constants.Proxy.DESCRIPTION,
 						text: CMDBuild.Translation.descriptionLabel,
-						dataIndex: 'Description', // TODO: waiting for refactor (rename)
 						flex: 1
 					}
 				],

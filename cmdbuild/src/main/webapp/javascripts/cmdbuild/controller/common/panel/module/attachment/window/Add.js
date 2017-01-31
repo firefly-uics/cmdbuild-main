@@ -203,7 +203,7 @@
 	});
 
 	/**
-	 * Take a CMDBuild.model.CMMetadataGroup as input and return an array of Ext.form.field derived from the metadataDefinitions in the input
+	 * Take a MetadataGroup model as input and return an array of Ext.form.field derived from the metadataDefinitions in the input
 	 *
 	 * @legacy
 	 *
