@@ -537,14 +537,6 @@
 	"management": {
 		"description": "Ενότητα χειρισμού δεδομένων",
 		"modcard": {
-			"add_attachment": "Προσθήκη συνημμένου",
-			"add_attachment_window": {
-				"category": "Κατηγορία",
-				"description": "Περιγραφή",
-				"load_attachment": "Φόρτωση συνημμένου",
-				"select_category": "Επιλέξτε μια κατηγορία...",
-				"window_title": "Προσθήκη συνημμένου"
-			},
 			"add_card": "Προσθήκη κάρτας",
 			"add_relations": "Προσθήκη συσχετίσεων",
 			"add_relations_window": {
@@ -554,20 +546,7 @@
 				"select_domain": "<em>Select a domain...</em>",
 				"window_title": "Προσθήκη συσχετίσεων"
 			},
-			"attachment_columns": {
-				"author": "Συγγραφέας",
-				"category": "Κατηγορία",
-				"creation_date": "Ημερομηνία δημιουργίας",
-				"description": "Περιγραφή",
-				"filename": "Όνομα αρχείου",
-				"item": "συνημμένο",
-				"items": "συνημμένα",
-				"modification_date": "Ημερομηνία τροποποίησης",
-				"version": "Έκδοση"
-			},
 			"clone_card": "Κλωνοποίηση κάρτας",
-			"delete_attachment": "Διαγραφή συνημμένου",
-			"delete_attachment_confirm": "Είστε βέβαιος ότι θέλετε να διαγράψετε αυτό το συνημμένο;",
 			"delete_card": "Διαγραφή κάρτας",
 			"delete_card_confirm": "Είστε βέβαιος ότι θέλετε να διαγράψετε αυτή την κάρτα;",
 			"delete_relation": "Διαγραφή συσχέτισης",
@@ -576,8 +555,6 @@
 				"detail_attributes": "Χαρακτηριστικά λεπτομέρειας",
 				"relation_attributes": "Χαρακτηριστικά συσχέτισης"
 			},
-			"download_attachment": "Κατέβασμα συνημμένου",
-			"edit_attachment": "Επεξεργασία συνημμένου",
 			"edit_relation": "Επεξεργασία συσχέτισης",
 			"gis": {
 				"geo_attributes": "Γεωγραφικά χαρακτηριστικά",
@@ -614,7 +591,6 @@
 			"showattach": "Εμφάνιση συνημμένων",
 			"subclass": "Υποκλάση",
 			"tabs": {
-				"attachments": "Συνημμένα",
 				"card": "Κάρτα",
 				"detail": "Λεπτομέρειες",
 				"history": "Ιστορικό",
@@ -665,7 +641,6 @@
 	"activityName": "<em>Activity name</em>",
 	"activityPerformer": "<em>Activity performer</em>",
 	"add": "Προσθήκη",
-	"add_attachment_from_dms": "<em>Add attachments from DMS</em>",
 	"addAccount": "Προσθήκη λογαριασμού",
 	"addAttachment": "Προσθήκη συνημμένου",
 	"addAttachmentFromDms": "<em>Add attachments from DMS</em>",
@@ -1336,7 +1311,6 @@
 	"update": "<em>Update</em>",
 	"updateLabel": "<em>Update</em>",
 	"upload": "Ανέβασμα",
-	"uploading_attachment": "Ανέβασμα συνημμένου...</em>",
 	"uploadXpdl": "<em>Upload XPDL</em>",
 	"url": "<em>URL</em>",
 	"user": "<em>User</em>",

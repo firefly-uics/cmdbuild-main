@@ -537,14 +537,6 @@
 	"management": {
 		"description": "Adatkezelő modul",
 		"modcard": {
-			"add_attachment": "Csatolmány hozzáadása",
-			"add_attachment_window": {
-				"category": "Kategória",
-				"description": "Leírás",
-				"load_attachment": "Csatolmány megnyitása",
-				"select_category": "Válasszon kategóriát...",
-				"window_title": "Csatolmány hozzáadása"
-			},
 			"add_card": "Kártya hozzáadása a következőhöz: ",
 			"add_relations": "Reláció hozzáadása",
 			"add_relations_window": {
@@ -554,20 +546,7 @@
 				"select_domain": "Válasszon domaint...",
 				"window_title": "Reláció hozzáadása"
 			},
-			"attachment_columns": {
-				"author": "Szerző",
-				"category": "Kategória",
-				"creation_date": "Kezdő dátum",
-				"description": "Leírás",
-				"filename": "Fájl neve",
-				"item": "csatolmány",
-				"items": "csatolmányok",
-				"modification_date": "Módosítás dátuma",
-				"version": "Verzió"
-			},
 			"clone_card": "Kártya másolása",
-			"delete_attachment": "Csatolmány törlése",
-			"delete_attachment_confirm": "Biztos benne hogy törölni kívánja a csatolmányt?",
 			"delete_card": "Kártya törlése",
 			"delete_card_confirm": "Biztos hogy törölni akarja a kártyát?",
 			"delete_relation": "Reláció törlése",
@@ -576,8 +555,6 @@
 				"detail_attributes": "Részletek attribútumai",
 				"relation_attributes": "Relációk attribútumai"
 			},
-			"download_attachment": "Csatolmány letöltése",
-			"edit_attachment": "Csatolmány szerkesztése",
 			"edit_relation": "Reláció szerkesztése",
 			"gis": {
 				"geo_attributes": "Földrajzi attribútumok",
@@ -614,7 +591,6 @@
 			"showattach": "Csatolmányok megjelenítése",
 			"subclass": "Alosztály",
 			"tabs": {
-				"attachments": "Csatolmányok",
 				"card": "Kártya",
 				"detail": "Részletek",
 				"history": "Történet",
@@ -665,7 +641,6 @@
 	"activityName": "Aktivitás neve",
 	"activityPerformer": "Aktivitás végzője",
 	"add": "Hozzáadás",
-	"add_attachment_from_dms": "<em>Add attachments from DMS</em>",
 	"addAccount": "Fiók hozzáadása",
 	"addAttachment": "Csatolmány hozzáadása",
 	"addAttachmentFromDms": "Csatolmány hozzáadása DMS-ből",
@@ -1336,7 +1311,6 @@
 	"update": "Frissítés",
 	"updateLabel": "Frissítés",
 	"upload": "Feltöltés",
-	"uploading_attachment": "Csatolmány feltöltése...",
 	"uploadXpdl": "XPDL feltöltés",
 	"url": "URL",
 	"user": "Felhasználó",

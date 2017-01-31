@@ -537,14 +537,6 @@
 	"management": {
 		"description": "Gegevens beheer module",
 		"modcard": {
-			"add_attachment": "Bijlage toevoegen",
-			"add_attachment_window": {
-				"category": "Categorie",
-				"description": "Omschrijving",
-				"load_attachment": "Bijlage laden",
-				"select_category": "Selecteer een categorie ...",
-				"window_title": "Bijlage toevoegen"
-			},
 			"add_card": "Kaart toevoegen",
 			"add_relations": "Relaties toevoegen",
 			"add_relations_window": {
@@ -554,20 +546,7 @@
 				"select_domain": "Selecteer een domein...",
 				"window_title": "Relaties toevoegen"
 			},
-			"attachment_columns": {
-				"author": "Schrijver",
-				"category": "Categorie",
-				"creation_date": "Begin datum",
-				"description": "Omschrijving",
-				"filename": "Bestandsnaam",
-				"item": "bijlage",
-				"items": "bijlagen",
-				"modification_date": "Modificatie datum",
-				"version": "Versie"
-			},
 			"clone_card": "Kopieer kaart",
-			"delete_attachment": "verwijder bijlage",
-			"delete_attachment_confirm": "Weet je zeker dat je deze bijage wilt verwijderen ?",
 			"delete_card": "Verwijder kaart",
 			"delete_card_confirm": "Weet je zeker dat je deze kaart wilt verwijderen ?",
 			"delete_relation": "Verwijder relatie",
@@ -576,8 +555,6 @@
 				"detail_attributes": "Detail's attributen",
 				"relation_attributes": "Relatie's attributen"
 			},
-			"download_attachment": "Ophalen bijlage",
-			"edit_attachment": "Aanpassen bijlage",
 			"edit_relation": "Aanpassen relatie",
 			"gis": {
 				"geo_attributes": "Geografische attributen",
@@ -614,7 +591,6 @@
 			"showattach": "Toon bijlage",
 			"subclass": "Subklas",
 			"tabs": {
-				"attachments": "Bijlage",
 				"card": "Kaart",
 				"detail": "Detail",
 				"history": "Geschiedenis",
@@ -665,7 +641,6 @@
 	"activityName": "Aktiviteit naam",
 	"activityPerformer": "Activiteit uitvoerder",
 	"add": "Toevoegen",
-	"add_attachment_from_dms": "Bijlage van DMS toevoegen",
 	"addAccount": "Gebruiker toevoegen",
 	"addAttachment": "Bijlage toevoegen",
 	"addAttachmentFromDms": "Bijlage van DMS toevoegen",
@@ -1336,7 +1311,6 @@
 	"update": "Bijwerken",
 	"updateLabel": "Bijwerken",
 	"upload": "Ophalen",
-	"uploading_attachment": "Ophalen bijlage ...",
 	"uploadXpdl": "Ophalen XPDL",
 	"url": "URL",
 	"user": "Gebruiker",

@@ -537,14 +537,6 @@
 	"management": {
 		"description": "Módulo de Gestão de Dados",
 		"modcard": {
-			"add_attachment": "Adicionar anexo",
-			"add_attachment_window": {
-				"category": "Categoria",
-				"description": "Descrição",
-				"load_attachment": "Carregar anexo",
-				"select_category": "Selecionar uma categoria...",
-				"window_title": "Adicionar anexo"
-			},
 			"add_card": "Adicionar cartão",
 			"add_relations": "Adicionar relacionamentos",
 			"add_relations_window": {
@@ -554,20 +546,7 @@
 				"select_domain": "Selecione um domínio...",
 				"window_title": "Adicionar relacionamentos"
 			},
-			"attachment_columns": {
-				"author": "Autor",
-				"category": "Categoria",
-				"creation_date": "Data de Ínicio",
-				"description": "Descrição",
-				"filename": "Nome do Ficheiro",
-				"item": "anexo",
-				"items": "anexos",
-				"modification_date": "Data de modificação",
-				"version": "Versão"
-			},
 			"clone_card": "Copiar cartão",
-			"delete_attachment": "Excluir anexo",
-			"delete_attachment_confirm": "Tem a certeza que deseja remover este anexo?",
 			"delete_card": "Remover cartão",
 			"delete_card_confirm": "Tem a certeza que deseja remover este cartão?",
 			"delete_relation": "Remover relacionamento",
@@ -576,8 +555,6 @@
 				"detail_attributes": "Atributos do detalhe",
 				"relation_attributes": "Atributos da relação"
 			},
-			"download_attachment": "Download anexo",
-			"edit_attachment": "Editar anexo",
 			"edit_relation": "Editar relacionamento",
 			"gis": {
 				"geo_attributes": "Atributos geográficos",
@@ -614,7 +591,6 @@
 			"showattach": "Visualizar anexos",
 			"subclass": "Subclass",
 			"tabs": {
-				"attachments": "Anexos",
 				"card": "Cartão",
 				"detail": "Detalhe",
 				"history": "Histórico",
@@ -665,7 +641,6 @@
 	"activityName": "Nome da atividade",
 	"activityPerformer": "Executante da atividade",
 	"add": "Adicionar",
-	"add_attachment_from_dms": "Adicionar anexos do SGD",
 	"addAccount": "Adicionar conta",
 	"addAttachment": "Adicionar anexo",
 	"addAttachmentFromDms": "Adicionar anexos do SGD",
@@ -1336,7 +1311,6 @@
 	"update": "Atualizar",
 	"updateLabel": "Modificar",
 	"upload": "Carregar",
-	"uploading_attachment": "Anexo em carregamento...",
 	"uploadXpdl": "Carregar XPDL",
 	"url": "URL",
 	"user": "Utilizador",

@@ -537,14 +537,6 @@
 	"management": {
 		"description": "Modul pro správu dat",
 		"modcard": {
-			"add_attachment": "Nová příloha",
-			"add_attachment_window": {
-				"category": "Kategorie",
-				"description": "Popis",
-				"load_attachment": "Nahrát přílohu",
-				"select_category": "Vyberte kategorii...",
-				"window_title": "Nová příloha"
-			},
 			"add_card": "Nový záznam",
 			"add_relations": "Nové vazby",
 			"add_relations_window": {
@@ -554,20 +546,7 @@
 				"select_domain": "Vybrat doménu...",
 				"window_title": "Nové vazby"
 			},
-			"attachment_columns": {
-				"author": "Autor",
-				"category": "Kategorie",
-				"creation_date": "Datum vytvoření",
-				"description": "Popis",
-				"filename": "Název souboru",
-				"item": "příloha",
-				"items": "přílohy",
-				"modification_date": "Datum změny",
-				"version": "Verze"
-			},
 			"clone_card": "Klonovat záznam",
-			"delete_attachment": "Odstranit přílohu",
-			"delete_attachment_confirm": "Opravdu si přejete odstranit tuto přílohu?",
 			"delete_card": "Odstranit záznam",
 			"delete_card_confirm": "Opravdu si přejete odstranit tento záznam?",
 			"delete_relation": "Odstranit vazbu",
@@ -576,8 +555,6 @@
 				"detail_attributes": "Atributy detailů",
 				"relation_attributes": "Atributy vazeb"
 			},
-			"download_attachment": "Uložit přílohu",
-			"edit_attachment": "Upravit přílohu",
 			"edit_relation": "Upravit vazbu",
 			"gis": {
 				"geo_attributes": "Geografické atributy",
@@ -614,7 +591,6 @@
 			"showattach": "Zobrazit přílohy",
 			"subclass": "Podtřída",
 			"tabs": {
-				"attachments": "Přílohy",
 				"card": "Záznam",
 				"detail": "Detaily",
 				"history": "Historie",
@@ -665,7 +641,6 @@
 	"activityName": "Název kroku procesu",
 	"activityPerformer": "Realizátor kroku procesu",
 	"add": "Nový",
-	"add_attachment_from_dms": "Nové přílohy z DMS",
 	"addAccount": "Nový účet",
 	"addAttachment": "Nová příloha",
 	"addAttachmentFromDms": "Nové přílohy z DMS",
@@ -1336,7 +1311,6 @@
 	"update": "Upravit",
 	"updateLabel": "Upravit",
 	"upload": "Nahrát",
-	"uploading_attachment": "Nahrávám přílohu...",
 	"uploadXpdl": "Nahrát XPDL",
 	"url": "URL",
 	"user": "Uživatel",

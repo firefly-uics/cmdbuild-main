@@ -537,14 +537,6 @@
 	"management": {
 		"description": "ماژول مدیریت اطلاعات",
 		"modcard": {
-			"add_attachment": "اضافه کردن ضمیمه",
-			"add_attachment_window": {
-				"category": "رده",
-				"description": "توضیحات",
-				"load_attachment": "بارگیری ضمیمه",
-				"select_category": "انتخاب رده",
-				"window_title": "اضافه کردن ضمیمه"
-			},
 			"add_card": "اضافه کردن کارت",
 			"add_relations": "اضافه کردن رابطه",
 			"add_relations_window": {
@@ -554,20 +546,7 @@
 				"select_domain": "یک دامین انتخاب کن",
 				"window_title": "اضافه کردن رابطه"
 			},
-			"attachment_columns": {
-				"author": "نویسنده",
-				"category": "رده",
-				"creation_date": "تاریخ شروع",
-				"description": "توضیحات",
-				"filename": "نام فیلتر",
-				"item": "ضمیمه",
-				"items": "ضمیمه ها",
-				"modification_date": "تاریخ تغییر",
-				"version": "ورژن"
-			},
 			"clone_card": "شبیه سازی کارت",
-			"delete_attachment": "حذف ضمیمه",
-			"delete_attachment_confirm": "آیا مطمئنید که میخواهید این ضمیمه را حذف کنید؟",
 			"delete_card": "حذف کارت",
 			"delete_card_confirm": "آیا مطمئنید که میخواهید این کارت را حذف کنید؟",
 			"delete_relation": "حذف رابطه",
@@ -576,8 +555,6 @@
 				"detail_attributes": "خواص جزئیات",
 				"relation_attributes": "خواص روابط"
 			},
-			"download_attachment": "دانلود ضمیمه",
-			"edit_attachment": "ویرایش ضمیمه",
 			"edit_relation": "ویرایش رابطه",
 			"gis": {
 				"geo_attributes": "Geographical attributes",
@@ -614,7 +591,6 @@
 			"showattach": "نمایش ضمیمه",
 			"subclass": "Subclass",
 			"tabs": {
-				"attachments": "ضمیمه",
 				"card": "کارت",
 				"detail": "جزئیات",
 				"history": "تاریخچه",
@@ -665,7 +641,6 @@
 	"activityName": "نام فعالیت",
 	"activityPerformer": "انجام دهنده",
 	"add": "اضافه",
-	"add_attachment_from_db": "اضافه کردن ضمیمه از پایگاه داده",
 	"addAccount": "اضافه کردن حساب",
 	"addAttachment": "اضافه کردن ضمیمه",
 	"addAttachmentFromDms": "اضافه کردن ضمیمه از پایگاه داده",
@@ -1336,7 +1311,6 @@
 	"update": "بخ روز رسانی",
 	"updateLabel": "Update",
 	"upload": "آپلود",
-	"uploading_attachment": "آپلود ضمیمه",
 	"uploadXpdl": "Upload XPDL",
 	"url": "URL",
 	"user": "کاربر",

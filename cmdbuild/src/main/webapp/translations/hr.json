@@ -537,14 +537,6 @@
 	"management": {
 		"description": "Modul za upravljanje podacima",
 		"modcard": {
-			"add_attachment": "Dodaj prilog",
-			"add_attachment_window": {
-				"category": "Kategorija",
-				"description": "Opis",
-				"load_attachment": "Izaberi datoteku",
-				"select_category": "Izaberite kategoriju...",
-				"window_title": "Dodaj prilog"
-			},
 			"add_card": "Dodaj karticu",
 			"add_relations": "Dodaj relaciju",
 			"add_relations_window": {
@@ -554,20 +546,7 @@
 				"select_domain": "Izaberite domenu...",
 				"window_title": "Dodaj relacije"
 			},
-			"attachment_columns": {
-				"author": "Autor",
-				"category": "Kategorija",
-				"creation_date": "Datum izrade",
-				"description": "Opis",
-				"filename": "Naziv datoteke",
-				"item": "prilog",
-				"items": "prilozi",
-				"modification_date": "Datum izmjene",
-				"version": "Verzija"
-			},
 			"clone_card": "Kloniraj karticu",
-			"delete_attachment": "Ukloni prilog",
-			"delete_attachment_confirm": "Sigurni ste da želite ukloniti ovaj prilog?",
 			"delete_card": "Ukloni karticu",
 			"delete_card_confirm": "Sigurno želite ukloniti ovu karticu?",
 			"delete_relation": "Ukloni relaciju",
@@ -576,8 +555,6 @@
 				"detail_attributes": "Atributi detalja",
 				"relation_attributes": "Atributi veze"
 			},
-			"download_attachment": "Preuzmi prilog",
-			"edit_attachment": "Izmjeni prilog",
 			"edit_relation": "Izmjeni relaciju",
 			"gis": {
 				"geo_attributes": "Zemljopisni atributi",
@@ -614,7 +591,6 @@
 			"showattach": "Prikaži priloge",
 			"subclass": "Podklase",
 			"tabs": {
-				"attachments": "Prilozi",
 				"card": "Kartica",
 				"detail": "Detalji",
 				"history": "Povijest",
@@ -665,7 +641,6 @@
 	"activityName": "Naziv aktivnosti",
 	"activityPerformer": "Izvršitelj aktivnosti",
 	"add": "Dodaj",
-	"add_attachment_from_dms": "<em>Add attachments from DMS</em>",
 	"addAccount": "<em>Add account</em>",
 	"addAttachment": "Dodaj prilog",
 	"addAttachmentFromDms": "<em>Add attachments from DMS</em>",
@@ -1336,7 +1311,6 @@
 	"update": "Ažuriraj",
 	"updateLabel": "<em>Update</em>",
 	"upload": "Postavi na server",
-	"uploading_attachment": "<em>Uploading attachment...</em>",
 	"uploadXpdl": "Postavi XPDL na server",
 	"url": "<em>URL</em>",
 	"user": "Korisnik",

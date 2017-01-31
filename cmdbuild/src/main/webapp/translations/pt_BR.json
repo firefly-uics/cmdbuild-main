@@ -537,14 +537,6 @@
 	"management": {
 		"description": "Módulo de Gerenciamento de Dados",
 		"modcard": {
-			"add_attachment": "Adicionar anexo",
-			"add_attachment_window": {
-				"category": "Categoria",
-				"description": "Descrição",
-				"load_attachment": "Carregar anexo",
-				"select_category": "Selecionar uma categoria...",
-				"window_title": "Adicionar anexo"
-			},
 			"add_card": "Adicionar cartão",
 			"add_relations": "Adicionar relacionamentos",
 			"add_relations_window": {
@@ -554,20 +546,7 @@
 				"select_domain": "Selecione um domínio...",
 				"window_title": "Adicionar relacionamentos"
 			},
-			"attachment_columns": {
-				"author": "Autor",
-				"category": "Categoria",
-				"creation_date": "Data de Ínicio",
-				"description": "Descrição",
-				"filename": "Nome do Arquivo",
-				"item": "anexo",
-				"items": "anexos",
-				"modification_date": "Data de modificação",
-				"version": "Versão"
-			},
 			"clone_card": "Copiar cartão",
-			"delete_attachment": "Excluir anexo",
-			"delete_attachment_confirm": "Você tem certeza que deseja remover este anexo?",
 			"delete_card": "Remover cartão",
 			"delete_card_confirm": "Você tem certeza que deseja remover este cartão?",
 			"delete_relation": "Remover relacionamento",
@@ -576,8 +555,6 @@
 				"detail_attributes": "Detail's attributes",
 				"relation_attributes": "Relation's attributes"
 			},
-			"download_attachment": "Download anexo",
-			"edit_attachment": "Editar anexo",
 			"edit_relation": "Editar relacionamento",
 			"gis": {
 				"geo_attributes": "Atributos geográficos",
@@ -614,7 +591,6 @@
 			"showattach": "Visualizar anexos",
 			"subclass": "Subclass",
 			"tabs": {
-				"attachments": "Anexos",
 				"card": "Cartão",
 				"detail": "Detalhe",
 				"history": "Histórico",
@@ -665,7 +641,6 @@
 	"activityName": "Nome da Atividade",
 	"activityPerformer": "Executante da Atividade",
 	"add": "Adicionar",
-	"add_attachment_from_dms": "<em>Add attachments from DMS</em>",
 	"addAccount": "<em>Add account</em>",
 	"addAttachment": "Adicionar anexo",
 	"addAttachmentFromDms": "<em>Add attachments from DMS</em>",
@@ -1336,7 +1311,6 @@
 	"update": "Atualizar",
 	"updateLabel": "<em>Update</em>",
 	"upload": "Carregar",
-	"uploading_attachment": "<em>Uploading attachment...</em>",
 	"uploadXpdl": "Enviar XPDL",
 	"url": "<em>URL</em>",
 	"user": "Usuário",

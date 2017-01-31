@@ -537,14 +537,6 @@
 	"management": {
 		"description": "データ管理モジュール",
 		"modcard": {
-			"add_attachment": "添付追加",
-			"add_attachment_window": {
-				"category": "カテゴリ",
-				"description": "説明",
-				"load_attachment": "添付をロード",
-				"select_category": "カテゴリ選択...",
-				"window_title": "添付追加"
-			},
 			"add_card": "カード追加",
 			"add_relations": "リレーション追加",
 			"add_relations_window": {
@@ -554,20 +546,7 @@
 				"select_domain": "ドメイン選択...",
 				"window_title": "リレーション追加"
 			},
-			"attachment_columns": {
-				"author": "著者",
-				"category": "カテゴリ",
-				"creation_date": "作成日",
-				"description": "説明",
-				"filename": "ファイル名",
-				"item": "添付",
-				"items": "添付",
-				"modification_date": "更新日",
-				"version": "バージョン"
-			},
 			"clone_card": "カードをクローン",
-			"delete_attachment": "添付削除",
-			"delete_attachment_confirm": "本当にこの添付を削除しますか?",
 			"delete_card": "カード削除",
 			"delete_card_confirm": "本当にこのカードを削除しますか?",
 			"delete_relation": "リレーション削除",
@@ -576,8 +555,6 @@
 				"detail_attributes": "詳細の属性",
 				"relation_attributes": "リレーションの属性"
 			},
-			"download_attachment": "添付をダウンロード",
-			"edit_attachment": "添付を編集",
 			"edit_relation": "リレーションを編集",
 			"gis": {
 				"geo_attributes": "地理的属性",
@@ -614,7 +591,6 @@
 			"showattach": "添付表示",
 			"subclass": "サブクラス",
 			"tabs": {
-				"attachments": "添付",
 				"card": "カード",
 				"detail": "詳細",
 				"history": "履歴",
@@ -665,7 +641,6 @@
 	"activityName": "アクティビティ名",
 	"activityPerformer": "アクティビティの実施者",
 	"add": "追加",
-	"add_attachment_from_dms": "DMSから添付を追加",
 	"addAccount": "アカウントを追加",
 	"addAttachment": "添付追加",
 	"addAttachmentFromDms": "DMSから添付を追加",
@@ -1336,7 +1311,6 @@
 	"update": "更新",
 	"updateLabel": "更新",
 	"upload": "アップロード",
-	"uploading_attachment": "添付をアップロード中...",
 	"uploadXpdl": "XPDLテンプレートアップロード",
 	"url": "URL",
 	"user": "ユーザー",

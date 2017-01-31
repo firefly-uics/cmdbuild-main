@@ -537,14 +537,6 @@
 	"management": {
 		"description": "Data management module",
 		"modcard": {
-			"add_attachment": "Add attachment",
-			"add_attachment_window": {
-				"category": "Category",
-				"description": "Description",
-				"load_attachment": "Load attachment",
-				"select_category": "Select a category...",
-				"window_title": "Add attachment"
-			},
 			"add_card": "Add card",
 			"add_relations": "Add relations",
 			"add_relations_window": {
@@ -554,20 +546,7 @@
 				"select_domain": "Select a domain...",
 				"window_title": "Add relations"
 			},
-			"attachment_columns": {
-				"author": "Author",
-				"category": "Category",
-				"creation_date": "Begin date",
-				"description": "Description",
-				"filename": "File name",
-				"item": "attachment",
-				"items": "attachments",
-				"modification_date": "Modification date",
-				"version": "Version"
-			},
 			"clone_card": "Clone card",
-			"delete_attachment": "Delete attachment",
-			"delete_attachment_confirm": "Are you sure you want to delete this attachment?",
 			"delete_card": "Delete card",
 			"delete_card_confirm": "Are you sure you want to delete this card?",
 			"delete_relation": "Delete relation",
@@ -576,8 +555,6 @@
 				"detail_attributes": "Detail's attributes",
 				"relation_attributes": "Relation's attributes"
 			},
-			"download_attachment": "Download attachment",
-			"edit_attachment": "Edit attachment",
 			"edit_relation": "Edit relation",
 			"gis": {
 				"geo_attributes": "Geographical attributes",
@@ -614,7 +591,6 @@
 			"showattach": "Show attachments",
 			"subclass": "Subclass",
 			"tabs": {
-				"attachments": "Attachments",
 				"card": "Card",
 				"detail": "Detail",
 				"history": "History",
@@ -665,7 +641,6 @@
 	"activityName": "Activity name",
 	"activityPerformer": "Activity performer",
 	"add": "Add",
-	"add_attachment_from_dms": "Add attachments from DMS",
 	"addAccount": "Add account",
 	"addAttachment": "Add attachment",
 	"addAttachmentFromDms": "Add attachments from DMS",
@@ -1336,7 +1311,6 @@
 	"update": "Update",
 	"updateLabel": "Update",
 	"upload": "Upload",
-	"uploading_attachment": "Uploading attachment...",
 	"uploadXpdl": "Upload XPDL",
 	"url": "URL",
 	"user": "User",

@@ -537,14 +537,6 @@
 	"management": {
 		"description": "Danh muc quản lí dữ liệu",
 		"modcard": {
-			"add_attachment": "Thêm tập tin đính kèm",
-			"add_attachment_window": {
-				"category": "Danh mục",
-				"description": "Mô tả",
-				"load_attachment": "Tải tập tin đính kèm",
-				"select_category": "Chọn danh mục...",
-				"window_title": "Them tập tin đính kèm"
-			},
 			"add_card": "Thêm thẻ",
 			"add_relations": "Thêm các mối quan hệ",
 			"add_relations_window": {
@@ -554,20 +546,7 @@
 				"select_domain": "Chọn tên miền...",
 				"window_title": "Thêm các mối quan hệ"
 			},
-			"attachment_columns": {
-				"author": "Người cài đặt",
-				"category": "Danh mục",
-				"creation_date": "Ngày bắt đầu",
-				"description": "Mô tả",
-				"filename": "Tên tập tin",
-				"item": "Tập tin đính kèm",
-				"items": "Các tập tin đính kèm",
-				"modification_date": " sửa đổi ngày thang",
-				"version": "Phiên bản"
-			},
 			"clone_card": "Bản sao thẻ",
-			"delete_attachment": "Xóa tập tin đính kèm",
-			"delete_attachment_confirm": "Bạn có chắc rằng bạn muốn xóa tập tin đính kèm?",
 			"delete_card": "Xóa thẻ",
 			"delete_card_confirm": "Bạn có chắc rằng bạn muốn xóa thẻ này?",
 			"delete_relation": "Xóa mối quan hệ",
@@ -576,8 +555,6 @@
 				"detail_attributes": "Chi tiết của những thuộc tính",
 				"relation_attributes": "Mối quan hệ của các thuộc tính"
 			},
-			"download_attachment": "Tải xuống tập tin đính kèm",
-			"edit_attachment": "Chỉnh sữa tập tin đính kèm",
 			"edit_relation": "Chỉnh sửa mối quan hệ",
 			"gis": {
 				"geo_attributes": "Các thuộc tính địa lý",
@@ -614,7 +591,6 @@
 			"showattach": "Hiện thị các tập tin đính kèm",
 			"subclass": "Subclass",
 			"tabs": {
-				"attachments": "Các tập tin đính kèm",
 				"card": "Thẻ",
 				"detail": "Chi tiết",
 				"history": "Lich su",
@@ -665,7 +641,6 @@
 	"activityName": "Tên hoạt động",
 	"activityPerformer": "Hoạt động biểu diễn",
 	"add": "Thêm",
-	"add_attachment_from_dms": "<em>Add attachments from DMS</em>",
 	"addAccount": "<em>Add account</em>",
 	"addAttachment": "Thêm tập tin đính kèm",
 	"addAttachmentFromDms": "<em>Add attachments from DMS</em>",
@@ -1336,7 +1311,6 @@
 	"update": "Cập nhật",
 	"updateLabel": "<em>Update</em>",
 	"upload": "Tải lên",
-	"uploading_attachment": "<em>Uploading attachment...</em>",
 	"uploadXpdl": "Tải lên tập tin XPDL",
 	"url": "<em>URL</em>",
 	"user": "Người dùng",

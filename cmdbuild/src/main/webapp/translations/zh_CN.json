@@ -537,14 +537,6 @@
 	"management": {
 		"description": "数据管理模块",
 		"modcard": {
-			"add_attachment": "增加附件",
-			"add_attachment_window": {
-				"category": "种类",
-				"description": "描述",
-				"load_attachment": "加载附件",
-				"select_category": "选择一个种类...",
-				"window_title": "增加附件"
-			},
 			"add_card": "增加卡片",
 			"add_relations": "增加关系",
 			"add_relations_window": {
@@ -554,20 +546,7 @@
 				"select_domain": "选择一个域...",
 				"window_title": "增加关系"
 			},
-			"attachment_columns": {
-				"author": "作者",
-				"category": "种类",
-				"creation_date": "开始日期",
-				"description": "描述",
-				"filename": "文件名",
-				"item": "附件",
-				"items": "多个附件",
-				"modification_date": "变更日期",
-				"version": "版本"
-			},
 			"clone_card": "克隆卡片",
-			"delete_attachment": "删除附件",
-			"delete_attachment_confirm": "你确定要删除附件吗?",
 			"delete_card": "删除卡片",
 			"delete_card_confirm": "你确定要删除这个卡片吗?",
 			"delete_relation": "删除关系",
@@ -576,8 +555,6 @@
 				"detail_attributes": "细节的属性",
 				"relation_attributes": "关系的属性"
 			},
-			"download_attachment": "下载附件",
-			"edit_attachment": "编辑附件",
 			"edit_relation": "编辑关系",
 			"gis": {
 				"geo_attributes": "地理属性",
@@ -614,7 +591,6 @@
 			"showattach": "显示附件",
 			"subclass": "子类",
 			"tabs": {
-				"attachments": "附件",
 				"card": "卡片",
 				"detail": "细节",
 				"history": "历史",
@@ -665,7 +641,6 @@
 	"activityName": "活动名称",
 	"activityPerformer": "活动执行者",
 	"add": "增加",
-	"add_attachment_from_dms": "<em>Add attachments from DMS</em>",
 	"addAccount": "增加帐户",
 	"addAttachment": "增加附件",
 	"addAttachmentFromDms": "从DMS增加附件",
@@ -1336,7 +1311,6 @@
 	"update": "更新",
 	"updateLabel": "更新",
 	"upload": "上传",
-	"uploading_attachment": "上传附件...",
 	"uploadXpdl": "上传XPDL",
 	"url": "URL",
 	"user": "用户",

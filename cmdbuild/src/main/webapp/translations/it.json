@@ -537,14 +537,6 @@
 	"management": {
 		"description": "Modulo gestione dati",
 		"modcard": {
-			"add_attachment": "Aggiungi allegato",
-			"add_attachment_window": {
-				"category": "Categoria",
-				"description": "Descrizione",
-				"load_attachment": "Carica allegato",
-				"select_category": "Selezionare una categoria...",
-				"window_title": "Aggiungi allegato"
-			},
 			"add_card": "Aggiungi scheda",
 			"add_relations": "Aggiungi relazioni",
 			"add_relations_window": {
@@ -554,20 +546,7 @@
 				"select_domain": "Selezionare un dominio...",
 				"window_title": "Aggiungi relazioni"
 			},
-			"attachment_columns": {
-				"author": "Autore",
-				"category": "Categoria",
-				"creation_date": "Data creazione",
-				"description": "Descrizione",
-				"filename": "Nome file",
-				"item": "allegato",
-				"items": "allegati",
-				"modification_date": "Data modifica",
-				"version": "Versione"
-			},
 			"clone_card": "Clona scheda",
-			"delete_attachment": "Cancella allegato",
-			"delete_attachment_confirm": "Sicuro di voler cancellare questo allegato?",
 			"delete_card": "Cancella scheda",
 			"delete_card_confirm": "Sicuro di voler cancellare questa scheda?",
 			"delete_relation": "Cancella relazione",
@@ -576,8 +555,6 @@
 				"detail_attributes": "Attributi del dettaglio",
 				"relation_attributes": "Attributi della relazione"
 			},
-			"download_attachment": "Scarica allegato",
-			"edit_attachment": "Modifica allegato",
 			"edit_relation": "Modifica relazione",
 			"gis": {
 				"geo_attributes": "Attributi geografici",
@@ -614,7 +591,6 @@
 			"showattach": "Visualizza allegati",
 			"subclass": "Sottoclasse",
 			"tabs": {
-				"attachments": "Allegati",
 				"card": "Scheda",
 				"detail": "Dettagli",
 				"history": "Storia",
@@ -665,7 +641,6 @@
 	"activityName": "Nome attività",
 	"activityPerformer": "Esecutore attività",
 	"add": "Aggiungi",
-	"add_attachment_from_dms": "Aggiungi allegato da DMS",
 	"addAccount": "Aggiungi account",
 	"addAttachment": "Aggiungi allegato",
 	"addAttachmentFromDms": "Aggiungi allegato da DMS",
@@ -1336,7 +1311,6 @@
 	"update": "Aggiorna",
 	"updateLabel": "Aggiorna",
 	"upload": "Upload",
-	"uploading_attachment": "Caricamento allegato...",
 	"uploadXpdl": "Carica XPDL",
 	"url": "URL",
 	"user": "Utente",

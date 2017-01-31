@@ -537,14 +537,6 @@
 	"management": {
 		"description": "Модул за управљање подацима",
 		"modcard": {
-			"add_attachment": "Додај прилог",
-			"add_attachment_window": {
-				"category": "Категорија",
-				"description": "Опис",
-				"load_attachment": "Изабери датотеку",
-				"select_category": "Изаберите категорију...",
-				"window_title": "Додај прилог"
-			},
 			"add_card": "Додај картицу",
 			"add_relations": "Додај релацију",
 			"add_relations_window": {
@@ -554,20 +546,7 @@
 				"select_domain": "Изаберите релацију...",
 				"window_title": "Додај релације"
 			},
-			"attachment_columns": {
-				"author": "Аутор",
-				"category": "Категорија",
-				"creation_date": "Датум креирања",
-				"description": "Опис",
-				"filename": "Назив датотеке",
-				"item": "прилог",
-				"items": "прилози",
-				"modification_date": "Датум измене",
-				"version": "Верзија"
-			},
 			"clone_card": "Клонирај картицу",
-			"delete_attachment": "Уклони прилог",
-			"delete_attachment_confirm": "Сигурни сте да желите уклонити овај прилог?",
 			"delete_card": "Уклони картицу",
 			"delete_card_confirm": "Сигурно желите уклонити ову картицу?",
 			"delete_relation": "Уклони релацију",
@@ -576,8 +555,6 @@
 				"detail_attributes": "Атрибути детаља",
 				"relation_attributes": "Атрибути везе"
 			},
-			"download_attachment": "Преузми прилог",
-			"edit_attachment": "Измени прилог",
 			"edit_relation": "Измени релацију",
 			"gis": {
 				"geo_attributes": "Географски атрибути",
@@ -614,7 +591,6 @@
 			"showattach": "Прикажи прилоге",
 			"subclass": "Подкласе",
 			"tabs": {
-				"attachments": "Прилози",
 				"card": "Картица",
 				"detail": "Детаљи",
 				"history": "Историја",
@@ -665,7 +641,6 @@
 	"activityName": "Назив активности",
 	"activityPerformer": "Извршилац активности",
 	"add": "Додај",
-	"add_attachment_from_dms": "Додај прилог из DMS",
 	"addAccount": "Додај кориснички налог",
 	"addAttachment": "Додај прилог",
 	"addAttachmentFromDms": "Додај прилог из DMS",
@@ -1336,7 +1311,6 @@
 	"update": "Ажурирај",
 	"updateLabel": "Измени",
 	"upload": "Постави на сервер",
-	"uploading_attachment": "Слање прилога...",
 	"uploadXpdl": "Постави XPDL на сервер",
 	"url": "URL",
 	"user": "Корисник",

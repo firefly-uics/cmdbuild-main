@@ -537,14 +537,6 @@
 	"management": {
 		"description": "Управление данными",
 		"modcard": {
-			"add_attachment": "Вложить файл",
-			"add_attachment_window": {
-				"category": "Категория",
-				"description": "Описание",
-				"load_attachment": "Загрузить файл",
-				"select_category": "Выберите категорию...",
-				"window_title": "Вложить файл"
-			},
 			"add_card": "Добавить запись",
 			"add_relations": "Добавить связь",
 			"add_relations_window": {
@@ -554,20 +546,7 @@
 				"select_domain": "Выберите тип связи...",
 				"window_title": "Добавить связь"
 			},
-			"attachment_columns": {
-				"author": "Автор",
-				"category": "Категория",
-				"creation_date": "Дата создания",
-				"description": "Описание",
-				"filename": "Имя файла",
-				"item": "файл",
-				"items": "файла(ов)",
-				"modification_date": "Дата изменения",
-				"version": "Версия"
-			},
 			"clone_card": "Дублировать запись",
-			"delete_attachment": "Удалить вложенный файл",
-			"delete_attachment_confirm": "Действительно удалить вложенный файл?",
 			"delete_card": "Удалить запись",
 			"delete_card_confirm": "Действительно удалить запись?",
 			"delete_relation": "Удалить связь",
@@ -576,8 +555,6 @@
 				"detail_attributes": "Атрибуты элемента",
 				"relation_attributes": "Атрибуты связи"
 			},
-			"download_attachment": "Открыть вложенный файл",
-			"edit_attachment": "Изменить вложенный файл",
 			"edit_relation": "Редактировать связь",
 			"gis": {
 				"geo_attributes": "Географические атрибуты",
@@ -614,7 +591,6 @@
 			"showattach": "Показать вложенные файлы",
 			"subclass": "Подкласс",
 			"tabs": {
-				"attachments": "Вложенные файлы",
 				"card": "Данные",
 				"detail": "Дополнительно",
 				"history": "История",
@@ -665,7 +641,6 @@
 	"activityName": "Действие",
 	"activityPerformer": "Исполнитель",
 	"add": "Добавить",
-	"add_attachment_from_dms": "Вложить файлы из DMS",
 	"addAccount": "Создать учетную запись",
 	"addAttachment": "Вложить файл",
 	"addAttachmentFromDms": "Вложить файлы из DMS",
@@ -1336,7 +1311,6 @@
 	"update": "Обновить",
 	"updateLabel": "Обновление",
 	"upload": "Импорт",
-	"uploading_attachment": "Загружается вложение...",
 	"uploadXpdl": "Загрузить XPDL",
 	"url": "URL",
 	"user": "Пользователь",

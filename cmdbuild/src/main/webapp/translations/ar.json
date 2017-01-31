@@ -537,14 +537,6 @@
 	"management": {
 		"description": "وحدة إدارة البيانات",
 		"modcard": {
-			"add_attachment": "أضف مرفق",
-			"add_attachment_window": {
-				"category": "الفئة",
-				"description": "الوصف",
-				"load_attachment": "حمل المرفق",
-				"select_category": "اختر فئة...",
-				"window_title": "إضافة مرفق"
-			},
 			"add_card": "أضف بطاقة",
 			"add_relations": "أضف علاقات",
 			"add_relations_window": {
@@ -554,20 +546,7 @@
 				"select_domain": "اختر علاقة...",
 				"window_title": "إضافة علاقات"
 			},
-			"attachment_columns": {
-				"author": "المؤلف",
-				"category": "الفئة",
-				"creation_date": "تاريخ الإنشاء",
-				"description": "الوصف",
-				"filename": "اسم الملف",
-				"item": "المرفق",
-				"items": "المرفقات",
-				"modification_date": "تاريخ التعديل",
-				"version": "الإصدار"
-			},
 			"clone_card": "نسخ البطاقة",
-			"delete_attachment": "حذف المرفق",
-			"delete_attachment_confirm": "هل أنت متأكد من أنك تريد حذف هذا المرفق؟",
 			"delete_card": "حذف بطاقة",
 			"delete_card_confirm": "هل أنت متأكد من أنك تريد حذف هذه البطاقة؟",
 			"delete_relation": "حذف علاقة",
@@ -576,8 +555,6 @@
 				"detail_attributes": "سمات التفصيل",
 				"relation_attributes": "سمات العلاقة"
 			},
-			"download_attachment": "تنزيل المرفق",
-			"edit_attachment": "تحرير المرفق",
 			"edit_relation": "تحرير العلاقة",
 			"gis": {
 				"geo_attributes": "السمات الجغرافية",
@@ -614,7 +591,6 @@
 			"showattach": "أظهر المرفقات",
 			"subclass": "الصنف",
 			"tabs": {
-				"attachments": "المرفقات",
 				"card": "البطاقة",
 				"detail": "التفصيل",
 				"history": "التاريخ",
@@ -665,7 +641,6 @@
 	"activityName": "اسم النشاط",
 	"activityPerformer": "منجز النشاط",
 	"add": "أضف",
-	"add_attachment_from_dms": "<em>Add attachments from DMS</em>",
 	"addAccount": "أضف حساب",
 	"addAttachment": "أضف مرفق",
 	"addAttachmentFromDms": "أضف مرفق من نظام الملفات",
@@ -1336,7 +1311,6 @@
 	"update": "تحديث",
 	"updateLabel": "تحديث",
 	"upload": "رفع",
-	"uploading_attachment": "رفع المرفق...",
 	"uploadXpdl": "رفع XPDL",
 	"url": "الرابط",
 	"user": "المستخدم",

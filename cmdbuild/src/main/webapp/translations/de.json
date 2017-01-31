@@ -537,14 +537,6 @@
 	"management": {
 		"description": "Datenmanagement-Modul",
 		"modcard": {
-			"add_attachment": "Anlage hinzufügen",
-			"add_attachment_window": {
-				"category": "Kategorie",
-				"description": "Beschreibung",
-				"load_attachment": "Anlage laden",
-				"select_category": "Eine Kategorie markieren...",
-				"window_title": "Anlage hinzufügen"
-			},
 			"add_card": "Karte hinzufügen",
 			"add_relations": "Beziehungen hinzufügen",
 			"add_relations_window": {
@@ -554,20 +546,7 @@
 				"select_domain": "Einen Domain markieren...",
 				"window_title": "Beziehungen hinzufügen"
 			},
-			"attachment_columns": {
-				"author": "Autor",
-				"category": "Kategorie",
-				"creation_date": "Erstellungsdatum",
-				"description": "Beschreibung",
-				"filename": "Dateiname",
-				"item": "Anlage",
-				"items": "Anlagen",
-				"modification_date": "Änderungsdatum",
-				"version": "Version"
-			},
 			"clone_card": "Karte klonen",
-			"delete_attachment": "Anlage löschen",
-			"delete_attachment_confirm": "Sind Sie sicher, dass Sie diese Anlage löschen möchten?",
 			"delete_card": "Karte löschen",
 			"delete_card_confirm": "Sind Sie sicher, dass Sie diese Karte löschen möchten?",
 			"delete_relation": "Beziehung löschen",
@@ -576,8 +555,6 @@
 				"detail_attributes": "Detailattribut",
 				"relation_attributes": "Beziehungsattribut"
 			},
-			"download_attachment": "Anlage herunterladen",
-			"edit_attachment": "Anlage bearbeiten",
 			"edit_relation": "Beziehung bearbeiten",
 			"gis": {
 				"geo_attributes": "Geographische Attribute",
@@ -614,7 +591,6 @@
 			"showattach": "Ansicht Anlagen",
 			"subclass": "Unterklasse",
 			"tabs": {
-				"attachments": "Anlagen",
 				"card": "Karte",
 				"detail": "Details",
 				"history": "Chronologie",
@@ -665,7 +641,6 @@
 	"activityName": "Aktivitätsname",
 	"activityPerformer": "Ausführende der Aktivität",
 	"add": "Hinzufügen",
-	"add_attachment_from_dms": "Anhänge aus DMS hinzufügen",
 	"addAccount": "Benutzerkonto hinzufügen",
 	"addAttachment": "Anlage hinzufügen",
 	"addAttachmentFromDms": "Anhänge aus DMS hinzufügen",
@@ -1336,7 +1311,6 @@
 	"update": "Auffrischen",
 	"updateLabel": "Aktualisieren",
 	"upload": "Laden",
-	"uploading_attachment": "Die Anlage wird gerade hochgeladen ...",
 	"uploadXpdl": "XPDL laden",
 	"url": "URL",
 	"user": "Benutzer",

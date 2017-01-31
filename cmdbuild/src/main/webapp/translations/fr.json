@@ -537,14 +537,6 @@
 	"management": {
 		"description": "Module de gestion des données",
 		"modcard": {
-			"add_attachment": "Ajouter des pièces jointes",
-			"add_attachment_window": {
-				"category": "Catégorie",
-				"description": "Description",
-				"load_attachment": "Télécharger la pièce jointe",
-				"select_category": "Sélectionner une catégorie ...",
-				"window_title": "Ajout de pièces jointes"
-			},
 			"add_card": "Ajouter une fiche",
 			"add_relations": "Ajouter des relations",
 			"add_relations_window": {
@@ -554,20 +546,7 @@
 				"select_domain": "Sélectionner un lien ...",
 				"window_title": "Ajouter des relations"
 			},
-			"attachment_columns": {
-				"author": "Auteur",
-				"category": "Catégorie",
-				"creation_date": "Date de début",
-				"description": "Libellé",
-				"filename": "Nom de fichier",
-				"item": "Pièce jointe",
-				"items": "Pièces jointes",
-				"modification_date": "Date de modification",
-				"version": "Version"
-			},
 			"clone_card": "Dupliquer la fiche",
-			"delete_attachment": "Supprimer la pièce jointe",
-			"delete_attachment_confirm": "Êtes-vous sûr de vouloir supprimer cette pièce jointe ?",
 			"delete_card": "Supprimer la fiche",
 			"delete_card_confirm": "Êtes-vous sûr de vouloir supprimer cette fiche ?",
 			"delete_relation": "Supprimer la relation",
@@ -576,8 +555,6 @@
 				"detail_attributes": "Détails d'attributs",
 				"relation_attributes": "Attributs de la relation"
 			},
-			"download_attachment": "Chargement de la pièce jointe",
-			"edit_attachment": "Modifier la pièce jointe",
 			"edit_relation": "Modifier la relation",
 			"gis": {
 				"geo_attributes": "Attributs géographiques",
@@ -614,7 +591,6 @@
 			"showattach": "Voir les pièces jointes",
 			"subclass": "Sous-classe",
 			"tabs": {
-				"attachments": "Pièces jointes",
 				"card": "Fiche",
 				"detail": "Détail",
 				"history": "Historique",
@@ -665,7 +641,6 @@
 	"activityName": "Nom d'activité",
 	"activityPerformer": "Performance d'activité",
 	"add": "Ajouter",
-	"add_attachment_from_dms": "Ajouter des pièces jointes depuis le dépôt",
 	"addAccount": "Ajouter un compte",
 	"addAttachment": "Ajouter des pièces jointes",
 	"addAttachmentFromDms": "Ajouter des pièces jointes depuis le dépôt",
@@ -1336,7 +1311,6 @@
 	"update": "Mettre à jour",
 	"updateLabel": "Mettre à jour",
 	"upload": "Envoyer le fichier",
-	"uploading_attachment": "Réception des pièces jointes ...",
 	"uploadXpdl": "Modèle XPDL reçu",
 	"url": "URL",
 	"user": "Utilisateur",
