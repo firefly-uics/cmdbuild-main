@@ -2,10 +2,10 @@ package org.cmdbuild.logic.data.lookup;
 
 import static com.google.common.collect.FluentIterable.from;
 import static com.google.common.collect.Iterables.size;
-import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Ordering.from;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
-import static java.util.Collections.sort;
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.cmdbuild.exception.ORMException.ORMExceptionType.ORM_CHANGE_LOOKUPTYPE_ERROR;
 import static org.cmdbuild.logic.PrivilegeUtils.assure;
@@ -18,7 +18,6 @@ import static org.cmdbuild.logic.data.lookup.Util.withId;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import org.cmdbuild.auth.user.OperationUser;
@@ -273,18 +272,14 @@ public class LookupLogic implements Logic {
 			throw Exceptions.lookupTypeNotFound(realType.get());
 		}
 
-		final List<Lookup> list = newArrayList(elements);
+		final Iterable<Lookup> sortedAndFiltered = from(NUMBER_COMPARATOR) //
+				.sortedCopy(from(elements) //
+						.filter(actives(activeOnly)));
 
-		logger.trace(marker, "ordering elements");
-		sort(list, NUMBER_COMPARATOR);
-
-		final Integer offset = query.offset();
-		final Integer limit = query.limit();
-		final FluentIterable<Lookup> all = from(list) //
-				.filter(actives(activeOnly)) //
-				.skip((offset == null) ? 0 : offset) //
-				.limit((limit == null) ? Integer.MAX_VALUE : limit);
-		return new PagedElements<Lookup>(all, size(list));
+		final FluentIterable<Lookup> output = from(sortedAndFiltered) //
+				.skip(defaultIfNull(query.offset(), 0)) //
+				.limit(defaultIfNull(query.limit(), Integer.MAX_VALUE));
+		return new PagedElements<Lookup>(output, size(sortedAndFiltered));
 	}
 
 	public Iterable<Lookup> getAllLookupOfParent(final LookupType type) {

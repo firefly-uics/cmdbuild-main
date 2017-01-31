@@ -106,6 +106,8 @@ FIXES
 
  * Navigation chronology errors
 
+ * The total count of lookup values ignores filter
+
 
 
 
