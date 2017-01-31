@@ -212,7 +212,7 @@
 		buildSubControllers: function () {
 			Ext.suspendLayouts();
 
-			// Tabs controllers
+			// Tabs controllers (sorted)
 			this.buildTabControllerCard();
 			this.buildTabControllerDetails();
 			this.buildTabControllerNotes();
@@ -393,6 +393,13 @@
 				!(privileges.write && !privileges.crudDisabled.clone),
 				!(privileges.write && !privileges.crudDisabled.remove)
 			);
+		},
+
+		/**
+		 * @returns {Ext.form.Basic or null}
+		 */
+		getFormForTemplateResolver: function () {
+			return this.view.getCardPanel().getFormForTemplateResolver();
 		},
 
 		/**

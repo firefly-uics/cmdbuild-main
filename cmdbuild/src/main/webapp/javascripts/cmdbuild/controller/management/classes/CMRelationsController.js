@@ -9,6 +9,11 @@
 		extend: 'CMDBuild.controller.management.classes.CMModCardSubController',
 
 		/**
+		 * @property {CMDBuild.controller.common.panel.module.attachment.Window}
+		 */
+		controllerWindowAttachment: undefined,
+
+		/**
 		 * @param {CMDBuild.view.management.classes.CMCardRelationsPanel} view
 		 * @param {CMDBuild.controller.management.classes.CMModCardController} superController
 		 *
@@ -43,6 +48,9 @@
 			this.CMEVENTS = { serverOperationSuccess: 'cm-server-success' };
 
 			this.addEvents(this.CMEVENTS.serverOperationSuccess);
+
+			// Build sub-controllers
+			this.controllerWindowAttachment = Ext.create('CMDBuild.controller.common.panel.module.attachment.Window', { parentDelegate: this });
 		},
 
 		/**
@@ -586,13 +594,27 @@
 
 		/**
 		 * @param {CMRelationPanelModel} model
+		 *
+		 * @returns {Void}
 		 */
-		onOpenAttachmentClick: function(model) {
-			var w = new CMDBuild.view.management.common.CMAttachmentsWindow();
-
-			new CMDBuild.controller.management.common.CMAttachmentsWindowController(w, modelToCardInfo(model));
-
-			w.show();
+		onOpenAttachmentClick: function (model) {
+			// Error handling
+				if (!Ext.isObject(model) || Ext.Object.isEmpty(model))
+					return _error('onOpenAttachmentClick(): unmanaged model parameter', this, model);
+			// END: Error handling
+_debug('onOpenAttachmentClick', model);
+//Id: model.get('dst_id'),
+//IdClass: model.get('dst_cid'),
+//Description: model.get('dst_desc')
+//			var w = new CMDBuild.view.management.common.CMAttachmentsWindow();
+//
+//			new CMDBuild.controller.management.common.CMAttachmentsWindowController(w, modelToCardInfo(model));
+//
+//			w.show();
+			this.controllerWindowAttachment.cmfg('panelModuleAttachmentConfigureAndShow', {
+				entityId: model.get('dst_cid'),
+				id: model.get('dst_id')
+			});
 		}
 	});
 

@@ -25,18 +25,34 @@
 		parentDelegate: undefined,
 
 		/**
-		 * @property {CMDBuild.model.management.classes.panel.form.tabs.attachments.SelectedCard}
+		 * @cfg {Array}
+		 */
+		cmfgCatchedFunctions: [
+			'classesFormTabAttachmentSelectedCardGet = panelGridAndFormSelectedItemGet',
+			'classesFormTabAttachmentSelectedCardIsEmpty = panelGridAndFormSelectedItemIsEmpty',
+			'classesFormTabAttachmentSelectedEntityGet = panelGridAndFormSelectedEntityGet',
+			'classesFormTabAttachmentSelectedEntityIsEmpty = panelGridAndFormSelectedEntityIsEmpty',
+			'classesFormTemplateResolverFormGet = panelGridAndFormPanelFormTemplateResolverFormGet',
+			'classesIdentifierGet = panelGridAndFormIdentifierGet',
+			'onClassesFormTabAttachmentShowCallback = onPanelModuleAttachmentTabShowCallback',
+			'onPanelModuleAttachmentTabBackButtonClick',
+			'onPanelModuleAttachmentTabShow = onClassesFormTabAttachmentShow',
+			'panelModuleAttachmentTabReset = classesFormTabAttachmentReset'
+		],
+
+		/**
+		 * @property {CMDBuild.model.management.classes.panel.form.tabs.attachment.SelectedCard}
 		 *
 		 * @private
 		 */
 		selectedCard: undefined,
 
 		/**
-		 * @returns {CMDBuild.model.management.classes.panel.form.tabs.attachments.entryType.EntryType}
+		 * @returns {CMDBuild.model.management.classes.panel.form.tabs.attachment.entity.Entity}
 		 *
 		 * @private
 		 */
-		selectedEntryType: undefined,
+		selectedEntity: undefined,
 
 		/**
 		 * @param {Object} configurationObject
@@ -48,14 +64,6 @@
 		 */
 		constructor: function (configurationObject) {
 			this.mixins.observable.constructor.call(this, arguments);
-
-			this.cmfgCatchedFunctions = Ext.Array.push(this.cmfgCatchedFunctions, [
-				'classesFormTabAttachmentsSelectedCardGet = panelGridAndFormSelectedItemGet',
-				'classesFormTabAttachmentsSelectedCardIsEmpty = panelGridAndFormSelectedItemIsEmpty',
-				'classesFormTabAttachmentsSelectedEntryTypeGet = panelGridAndFormSelectedEntityGet',
-				'classesFormTabAttachmentsSelectedEntryTypeIsEmpty = panelGridAndFormSelectedEntityIsEmpty',
-				'panelGridAndFormIdentifierGet'
-			]);
 
 			this.callParent(arguments);
 
@@ -94,13 +102,20 @@
 				});
 		},
 
+		/**
+		 * @returns {String}
+		 */
+		classesIdentifierGet: function () {
+			return CMDBuild.core.constants.ModuleIdentifiers.getClasses();
+		},
+
 		// SelectedCard property functions
 			/**
 			 * @param {Array or String} attributePath
 			 *
 			 * @returns {Mixed or undefined}
 			 */
-			classesFormTabAttachmentsSelectedCardGet: function (attributePath) {
+			classesFormTabAttachmentSelectedCardGet: function (attributePath) {
 				var parameters = {};
 				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedCard';
 				parameters[CMDBuild.core.constants.Proxy.ATTRIBUTE_PATH] = attributePath;
@@ -113,7 +128,7 @@
 			 *
 			 * @returns {Boolean}
 			 */
-			classesFormTabAttachmentsSelectedCardIsEmpty: function (attributePath) {
+			classesFormTabAttachmentSelectedCardIsEmpty: function (attributePath) {
 				var parameters = {};
 				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedCard';
 				parameters[CMDBuild.core.constants.Proxy.ATTRIBUTE_PATH] = attributePath;
@@ -126,7 +141,7 @@
 			 *
 			 * @private
 			 */
-			classesFormTabAttachmentsSelectedCardReset: function () {
+			classesFormTabAttachmentSelectedCardReset: function () {
 				this.propertyManageReset('selectedCard');
 			},
 
@@ -137,9 +152,9 @@
 			 *
 			 * @private
 			 */
-			classesFormTabAttachmentsSelectedCardSet: function (parameters) {
+			classesFormTabAttachmentSelectedCardSet: function (parameters) {
 				if (Ext.isObject(parameters) && !Ext.Object.isEmpty(parameters)) {
-					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.management.classes.panel.form.tabs.attachments.SelectedCard';
+					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.management.classes.panel.form.tabs.attachment.SelectedCard';
 					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedCard';
 
 					this.propertyManageSet(parameters);
@@ -152,10 +167,10 @@
 			 *
 			 * @returns {Mixed or undefined}
 			 */
-			classesFormTabAttachmentsSelectedEntryTypeGet: function (attributePath) {
+			classesFormTabAttachmentSelectedEntityGet: function (attributePath) {
 				var parameters = {};
 				parameters[CMDBuild.core.constants.Proxy.ATTRIBUTE_PATH] = attributePath;
-				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedEntryType';
+				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedEntity';
 
 				return this.propertyManageGet(parameters);
 			},
@@ -165,10 +180,10 @@
 			 *
 			 * @returns {Boolean}
 			 */
-			classesFormTabAttachmentsSelectedEntryTypeIsEmpty: function (attributePath) {
+			classesFormTabAttachmentSelectedEntityIsEmpty: function (attributePath) {
 				var parameters = {};
 				parameters[CMDBuild.core.constants.Proxy.ATTRIBUTE_PATH] = attributePath;
-				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedEntryType';
+				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedEntity';
 
 				return this.propertyManageIsEmpty(parameters);
 			},
@@ -178,8 +193,8 @@
 			 *
 			 * @private
 			 */
-			classesFormTabAttachmentsSelectedEntryTypeReset: function () {
-				return this.propertyManageReset('selectedEntryType');
+			classesFormTabAttachmentSelectedEntityReset: function () {
+				return this.propertyManageReset('selectedEntity');
 			},
 
 			/**
@@ -189,54 +204,48 @@
 			 *
 			 * @private
 			 */
-			classesFormTabAttachmentsSelectedEntryTypeSet: function (parameters) {
+			classesFormTabAttachmentSelectedEntitySet: function (parameters) {
 				if (Ext.isObject(parameters) && !Ext.Object.isEmpty(parameters)) {
-					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.management.classes.panel.form.tabs.attachments.entryType.EntryType';
-					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedEntryType';
+					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.management.classes.panel.form.tabs.attachment.entity.Entity';
+					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedEntity';
 
 					this.propertyManageSet(parameters);
 				}
 			},
 
 		/**
-		 * @returns {Void}
-		 *
-		 * @override
+		 * @returns {Ext.form.Basic or null}
 		 */
-		onPanelModuleAttachmentAddButtonClick: function () {
-			var autocompletionRules = this.cmfg('classesFormTabAttachmentsSelectedEntryTypeGet', [
-					CMDBuild.core.constants.Proxy.METADATA,
-					CMDBuild.core.constants.Proxy.ATTACHMENTS,
-					CMDBuild.core.constants.Proxy.AUTOCOMPLETION
-				]) || {},
-				templateResolverForm = this.parentDelegate.getFormForTemplateResolver();
-
-			if (Ext.isObject(templateResolverForm) && !Ext.Object.isEmpty(templateResolverForm)) {
-				var mergedRoules = mergeRulesInASingleMap(autocompletionRules);
-
-				new CMDBuild.Management.TemplateResolver({
-					clientForm: templateResolverForm,
-					xaVars: mergedRoules,
-					serverVars: this.cmfg('classesFormTabAttachmentsSelectedCardGet', CMDBuild.core.constants.Proxy.VALUES), // getTemplateResolverServerVars() alias applied on cards
-				}).resolveTemplates({
-					attributes: Ext.Object.getKeys(mergedRoules),
-					scope: this,
-					callback: function (out, ctx) {
-						this.controllerWindowAdd.cmfg('panelModuleAttachmentWindowAddConfigureAndShow', { metadata: groupMergedRules(out) });
-					}
-				});
-			} else {
-				this.controllerWindowAdd.cmfg('panelModuleAttachmentWindowAddConfigureAndShow', { medatada: autocompletionRules });
-			}
+		classesFormTemplateResolverFormGet: function () {
+			return this.parentDelegate.getFormForTemplateResolver();
 		},
 
 		/**
 		 * @returns {Void}
-		 *
-		 * @override
 		 */
-		onPanelModuleAttachmentBackButtonClick: function () {
-			this.parentDelegate.view.cardTabPanel.setActiveTab(0);
+		onAddCardButtonClick: function () {
+			this.view.disable();
+		},
+
+		/**
+		 * @returns {Void}
+		 */
+		onClassesFormTabAttachmentShowCallback: function () {
+			this.grid.buttonAdd.setDisabled(
+				!this.cmfg('panelGridAndFormSelectedEntityGet', [
+					CMDBuild.core.constants.Proxy.PERMISSIONS,
+					CMDBuild.core.constants.Proxy.WRITE
+				])
+			);
+
+			this.controllerGrid.cmfg('panelModuleAttachmentGridStoreLoad');
+		},
+
+		/**
+		 * @returns {Void}
+		 */
+		onCloneCard: function () {
+			this.view.disable();
 		},
 
 		/**
@@ -246,16 +255,16 @@
 		 */
 		onCardSelected: function (card) {
 			if (Ext.isObject(card) && !Ext.Object.isEmpty(card)) {
-				this.classesFormTabAttachmentsSelectedCardSet({ value: card.getData() });
+				this.classesFormTabAttachmentSelectedCardSet({ value: card.getData() });
 
 				this.view.setDisabled(
 					!CMDBuild.configuration.dms.get(CMDBuild.core.constants.Proxy.ENABLED)
-					|| this.cmfg('classesFormTabAttachmentsSelectedEntryTypeIsEmpty')
-					|| this.cmfg('classesFormTabAttachmentsSelectedEntryTypeGet', CMDBuild.core.constants.Proxy.TABLE_TYPE) == CMDBuild.core.constants.Global.getTableTypeSimpleTable()
+					|| this.cmfg('classesFormTabAttachmentSelectedEntityIsEmpty')
+					|| this.cmfg('classesFormTabAttachmentSelectedEntityGet', CMDBuild.core.constants.Proxy.TABLE_TYPE) == CMDBuild.core.constants.Global.getTableTypeSimpleTable()
 				);
 
 				if (this.view.isVisible())
-					this.cmfg('onPanelModuleAttachmentShow')
+					this.cmfg('onClassesFormTabAttachmentShow')
 			}
 		},
 
@@ -267,71 +276,14 @@
 		onEntryTypeSelected: function (entryType) {
 			if (Ext.isObject(entryType) && !Ext.Object.isEmpty(entryType)) {
 				// Local variables reset
-				this.classesFormTabAttachmentsSelectedCardReset();
-				this.classesFormTabAttachmentsSelectedEntryTypeReset();
+				this.classesFormTabAttachmentSelectedCardReset();
+				this.classesFormTabAttachmentSelectedEntityReset();
 
-				this.classesFormTabAttachmentsSelectedEntryTypeSet({ value: entryType.getData() });
+				this.classesFormTabAttachmentSelectedEntitySet({ value: entryType.getData() });
 
-				this.cmfg('panelModuleAttachmentReset');
+				this.cmfg('classesFormTabAttachmentReset');
 			}
-		},
-
-		/**
-		 * @returns {String}
-		 */
-		panelGridAndFormIdentifierGet: function () {
-			return CMDBuild.core.constants.ModuleIdentifiers.getClasses();
 		}
 	});
-
-	/**
-	 * The template resolver want the templates as a map. Our rules are grouped so I need to merge them to have a single level map
-	 * To avoid name collision I choose to concatenate the group name and the meta-data name
-	 * The following two routines do this dirty work
-	 *
-	 * @legacy
-	 */
-	function mergeRulesInASingleMap(rules) {
-		rules = rules || {};
-
-		var out = {};
-
-		for (var groupName in rules) {
-			var group = rules[groupName];
-
-			for (var key in group) {
-				out[groupName + '_' + key] = group[key];
-			}
-		}
-
-		return out;
-	}
-
-	/**
-	 * @legacy
-	 */
-	function groupMergedRules(mergedRules) {
-		var out = {};
-
-		for (var key in mergedRules) {
-			var group = null,
-				metaName = null;
-
-			try {
-				var s = key.split('_');
-				group = s[0];
-				metaName = s[1];
-			} catch (e) {
-				// Pray for my soul
-			}
-
-			if (group && metaName) {
-				out[group] = out[group] || {};
-				out[group][metaName] = mergedRules[key];
-			}
-		}
-
-		return out;
-	}
 
 })();
