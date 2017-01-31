@@ -34,7 +34,7 @@
 			'classesFormTabAttachmentSelectedEntityIsEmpty = panelGridAndFormSelectedEntityIsEmpty',
 			'classesFormTemplateResolverFormGet = panelGridAndFormPanelFormTemplateResolverFormGet',
 			'classesIdentifierGet = panelGridAndFormIdentifierGet',
-			'onClassesFormTabAttachmentShowCallback = onPanelModuleAttachmentTabShowCallback',
+			'onClassesFormTabAttachmentShowCallback = onPanelModuleAttachmentTabShowCallback', // Public only for overriding reason
 			'onPanelModuleAttachmentTabBackButtonClick',
 			'onPanelModuleAttachmentTabShow = onClassesFormTabAttachmentShow',
 			'panelModuleAttachmentTabReset = classesFormTabAttachmentReset'
@@ -222,6 +222,8 @@
 
 		/**
 		 * @returns {Void}
+		 *
+		 * @public
 		 */
 		onAddCardButtonClick: function () {
 			this.view.disable();
@@ -251,6 +253,8 @@
 		/**
 		 * @param {Ext.data.Model} card
 		 *
+		 * @returns {Void}
+		 *
 		 * @public
 		 */
 		onCardSelected: function (card) {
@@ -270,6 +274,8 @@
 
 		/**
 		 * @param {CMDBuild.cache.CMEntryTypeModel} entryType
+		 *
+		 * @returns {Void}
 		 *
 		 * @public
 		 */
