@@ -27,11 +27,11 @@
 
 		// CMTabbedWidgetDelegate
 			/**
-			 * @returns {CMDBuild.view.management.workflow.panel.form.tabs.attachments.AttachmentsView}
+			 * @returns {CMDBuild.view.common.panel.module.attachment.TabView}
 			 */
 			getAttachmentsPanel: function() {
-				if (!Ext.isEmpty(this.delegate) && !Ext.isEmpty(this.delegate.controllerTabAttachments))
-					return this.delegate.controllerTabAttachments.getView();
+				if (!Ext.isEmpty(this.delegate) && !Ext.isEmpty(this.delegate.controllerTabAttachment))
+					return this.delegate.controllerTabAttachment.getView();
 
 				return null;
 			},
@@ -57,24 +57,16 @@
 			},
 
 			/**
-			 * Returns false if is not able to manage the widget
+			 * Returns false if is not able to manage the widget (only for normal widgets)
+			 *
+			 * @param {Object} view
 			 *
 			 * @returns {Boolean}
 			 */
-			showWidget: function (w) {
+			showWidget: function (view) {
 				var managedClasses = {
-					"CMDBuild.view.management.workflow.panel.form.tabs.attachments.AttachmentsView": function (me) {
-						var widgetRelatedPanel = me.getAttachmentsPanel();
-
-						if (!Ext.isEmpty(widgetRelatedPanel) && Ext.isFunction(widgetRelatedPanel.cmActivate))
-							widgetRelatedPanel.cmActivate();
-					},
-					"CMDBuild.view.management.workflow.panel.form.tabs.note.NoteView": function (me) {
-						var widgetRelatedPanel = me.getNotesPanel();
-
-						if (!Ext.isEmpty(widgetRelatedPanel) && Ext.isFunction(widgetRelatedPanel.cmActivate))
-							widgetRelatedPanel.cmActivate();
-					},
+					'CMDBuild.view.common.panel.module.attachment.TabView': Ext.emptyFn,
+					'CMDBuild.view.management.workflow.panel.form.tabs.note.NoteView': Ext.emptyFn,
 					'CMDBuild.view.management.workflow.panel.form.tabs.email.Email': function (me) {
 						var widgetRelatedPanel = me.getEmailPanel();
 
@@ -83,10 +75,11 @@
 					}
 				};
 
-				var fn = managedClasses[Ext.getClassName(w)];
+				var fn = managedClasses[Ext.getClassName(view)];
 
-				if (typeof fn == "function") {
+				if (Ext.isFunction(fn)) {
 					fn(this);
+
 					return true;
 				} else {
 					return false;

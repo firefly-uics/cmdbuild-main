@@ -34,7 +34,7 @@
 					'.ManageEmail': 'CMDBuild.controller.management.widget.ManageEmail',
 					'.ManageRelation': CMDBuild.controller.management.widget.manageRelation.CMManageRelationController,
 					'.NavigationTree': 'CMDBuild.controller.management.widget.navigationTree.NavigationTree',
-					'.OpenAttachment': CMDBuild.controller.management.common.widgets.CMOpenAttachmentController,
+					'.OpenAttachment': 'CMDBuild.controller.management.widget.OpenAttachment',
 					'.OpenNote': 'CMDBuild.controller.management.widget.OpenNote',
 					'.OpenReport': 'CMDBuild.controller.management.widget.openReport.OpenReport',
 					'.Ping': 'CMDBuild.controller.management.widget.Ping',

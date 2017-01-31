@@ -42,6 +42,7 @@
 			'onPanelModuleAttachmentGridModifyButtonClick',
 			'onPanelModuleAttachmentGridRemoveButtonClick',
 			'onPanelModuleAttachmentGridVersionsButtonClick',
+			'panelModuleAttachmentGridBorderBottomSet',
 			'panelModuleAttachmentGridCategoriesExists',
 			'panelModuleAttachmentGridCategoriesGet',
 			'panelModuleAttachmentGridReadAttachmentContext',
@@ -65,11 +66,6 @@
 		controllerWindowModify: undefined,
 
 		/**
-		 * @cfg {Boolean}
-		 */
-		enableBorderBottom: false,
-
-		/**
 		 * @property {CMDBuild.view.common.panel.module.attachment.GridPanel}
 		 */
 		view: undefined,
@@ -85,10 +81,7 @@
 		constructor: function (configurationObject) {
 			this.callParent(arguments);
 
-			this.view = Ext.create('CMDBuild.view.common.panel.module.attachment.GridPanel', {
-				delegate: this,
-				cls: this.enableBorderBottom ? 'cmdb-border-bottom' : ''
-			});
+			this.view = Ext.create('CMDBuild.view.common.panel.module.attachment.GridPanel', { delegate: this });
 
 			// Build sub-controllers
 			this.controllerVersions = Ext.create('CMDBuild.controller.common.panel.module.attachment.Versions', { parentDelegate: this });
@@ -210,6 +203,20 @@
 			// END: Error handling
 
 			this.controllerVersions.cmfg('panelModuleAttachmentVersionsConfigureAndShow', { record: record });
+		},
+
+		/**
+		 * @param {Boolean} enable
+		 *
+		 * @returns {Void}
+		 */
+		panelModuleAttachmentGridBorderBottomSet: function (enable) {
+			enable = Ext.isBoolean(enable) ? enable : false;
+
+			if (enable)
+				return this.view.addCls('cmdb-border-bottom');
+
+			return this.view.removeCls('cmdb-border-bottom');
 		},
 
 		// Categories property functions

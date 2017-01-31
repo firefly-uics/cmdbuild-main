@@ -26,6 +26,7 @@
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
+			'onPanelModuleAttachmentTabAddButtonClick',
 			'onPanelModuleAttachmentTabBackButtonClick',
 			'onPanelModuleAttachmentTabShow',
 			'onPanelModuleAttachmentTabShowCallback', // Public only for overriding reason
@@ -36,6 +37,13 @@
 		 * @property {CMDBuild.controller.common.panel.module.attachment.Grid}
 		 */
 		controllerGrid: undefined,
+
+		/**
+		 * Adds css class to add grid bottom border
+		 *
+		 * @cfg {Boolean}
+		 */
+		enableBorderBottom: false,
 
 		/**
 		 * @property {CMDBuild.view.common.panel.module.attachment.GridPanel}
@@ -68,6 +76,13 @@
 
 			// View build
 			this.view.add([this.grid]);
+		},
+
+		/**
+		 * @returns {Void}
+		 */
+		onPanelModuleAttachmentTabAddButtonClick: function () {
+			this.view.disable();
 		},
 
 		/**

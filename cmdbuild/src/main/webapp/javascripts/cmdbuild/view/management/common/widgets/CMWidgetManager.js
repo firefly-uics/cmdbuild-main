@@ -51,20 +51,17 @@
 						return null;
 					},
 
-					'.OpenAttachment': function(widget, card) {
-						var widgetUI = null;
-						if (me.tabbedWidgetDelegate) {
-							widgetUI = me.tabbedWidgetDelegate.getAttachmentsPanel() || null;
+					/**
+					 * @param {Object} widget
+					 * @param {CMDBuild.model.CMActivityInstance} activity
+					 *
+					 * @returns {Void}
+					 */
+					'.OpenAttachment': function (widget, activity) {
+						if (!Ext.isEmpty(me.tabbedWidgetDelegate) && !Ext.isEmpty(me.tabbedWidgetDelegate.getAttachmentsPanel()))
+							return me.tabbedWidgetDelegate.getAttachmentsPanel();
 
-							if (widgetUI != null) {
-								widgetUI.configure({
-									widget: widget,
-									activityInstance: card
-								});
-							}
-						}
-
-						return widgetUI;
+						return null;
 					},
 
 					/**
@@ -73,7 +70,7 @@
 					 *
 					 * @returns {Void}
 					 */
-					'.OpenNote': function (widget, card) {
+					'.OpenNote': function (widget, activity) {
 						if (!Ext.isEmpty(me.tabbedWidgetDelegate) && !Ext.isEmpty(me.tabbedWidgetDelegate.getEmailPanel()))
 							return me.tabbedWidgetDelegate.getNotesPanel();
 

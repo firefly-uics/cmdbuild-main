@@ -3,6 +3,9 @@
 	/**
 	 * Main controller which manage email regeneration methods
 	 *
+	 * Required managed functions from upper structure:
+	 * 	- panelGridAndFormPanelFormTemplateResolverFormGet
+	 *
 	 * @abstract
 	 */
 	Ext.define('CMDBuild.controller.management.common.tabs.email.Email', {
@@ -51,7 +54,6 @@
 			'tabEmailEditModeGet',
 			'tabEmailEditModeSet',
 			'tabEmailGetAllTemplatesData',
-			'tabEmailGetFormForTemplateResolver',
 			'tabEmailGlobalLoadMaskGet',
 			'tabEmailGlobalLoadMaskSet',
 			'tabEmailRegenerateAllEmailsSet',
@@ -284,7 +286,7 @@
 		 */
 		checkTemplatesToRegenerate: function () {
 			var templatesToRegenerate = [];
-			var clientForm = this.cmfg('tabEmailGetFormForTemplateResolver');
+			var clientForm = this.cmfg('panelGridAndFormPanelFormTemplateResolverFormGet');
 			var dirtyVariables = Ext.Object.getKeys(clientForm.getValues(false, true));
 			var xaVars = this.extractVariablesForTemplateResolver();
 
@@ -446,7 +448,7 @@
 					var xaVars = Ext.apply({}, templateData, record.getData());
 
 					var templateResolver = new CMDBuild.Management.TemplateResolver({
-						clientForm: this.cmfg('tabEmailGetFormForTemplateResolver'),
+						clientForm: this.cmfg('panelGridAndFormPanelFormTemplateResolverFormGet'),
 						xaVars: xaVars,
 						serverVars: CMDBuild.controller.management.common.widgets.CMWidgetController.getTemplateResolverServerVars(
 							this.cmfg('tabEmailSelectedEntityGet', CMDBuild.core.constants.Proxy.ENTITY)
@@ -500,7 +502,7 @@
 				var xaVars = Ext.apply({}, template.getData(), template.get(CMDBuild.core.constants.Proxy.VARIABLES));
 
 				var templateResolver = new CMDBuild.Management.TemplateResolver({
-					clientForm: this.cmfg('tabEmailGetFormForTemplateResolver'),
+					clientForm: this.cmfg('panelGridAndFormPanelFormTemplateResolverFormGet'),
 					xaVars: xaVars,
 					serverVars: CMDBuild.controller.management.common.widgets.CMWidgetController.getTemplateResolverServerVars(
 						this.cmfg('tabEmailSelectedEntityGet', CMDBuild.core.constants.Proxy.ENTITY)
@@ -663,14 +665,6 @@
 
 				this.editMode = state;
 			},
-
-		/**
-		 * Adapter function waiting for widgetController refactor
-		 */
-		tabEmailGetFormForTemplateResolver: function () {
-			if (!Ext.isEmpty(this.parentDelegate) && Ext.isFunction(this.parentDelegate.getFormForTemplateResolver))
-				return this.parentDelegate.getFormForTemplateResolver();
-		},
 
 		tabEmailGetAllTemplatesData: function () {
 			var templatesFromConfiguration = this.cmfg('tabEmailConfigurationGet', CMDBuild.core.constants.Proxy.TEMPLATES);

@@ -23,6 +23,7 @@
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
+			'identifierGet = panelGridAndFormIdentifierGet',
 			'onWorkflowAbortButtonClick',
 			'onWorkflowActivityItemDoubleClick',
 			'onWorkflowActivityRemoveCallback',
@@ -42,15 +43,15 @@
 			'workflowSelectedActivityGet',
 			'workflowSelectedActivityIsEmpty',
 			'workflowSelectedActivityReset',
-			'workflowSelectedInstanceGet',
-			'workflowSelectedInstanceIsEmpty',
+			'workflowSelectedInstanceGet = panelGridAndFormSelectedItemGet',
+			'workflowSelectedInstanceIsEmpty = panelGridAndFormSelectedItemIsEmpty',
 			'workflowSelectedInstanceReset',
 			'workflowSelectedPreviousActivityGet',
 			'workflowSelectedPreviousActivityIsEmpty',
 			'workflowSelectedWorkflowAttributesGet',
 			'workflowSelectedWorkflowAttributesIsEmpty',
-			'workflowSelectedWorkflowGet',
-			'workflowSelectedWorkflowIsEmpty',
+			'workflowSelectedWorkflowGet = panelGridAndFormSelectedEntityGet',
+			'workflowSelectedWorkflowIsEmpty = panelGridAndFormSelectedEntityIsEmpty',
 			'workflowTreeActivitySelect -> controllerTree',
 			'workflowTreeApplyStoreEvent -> controllerTree',
 			'workflowTreeFilterApply -> controllerTree',
@@ -323,8 +324,8 @@
 		 */
 		onWorkflowAbortButtonClick: function () {
 			this.cmfg('workflowFullScreenUiSetup', { maximize: 'top' });
-			this.cmfg('workflowSelectedInstanceReset');
 			this.cmfg('workflowSelectedActivityReset');
+			this.cmfg('workflowSelectedInstanceReset');
 			this.workflowIsStartActivityReset();
 
 			// Forward to sub controllers
@@ -512,6 +513,7 @@
 			parameters = Ext.isObject(parameters) ? parameters : {};
 			parameters.loadMask = Ext.isBoolean(parameters.loadMask) ? parameters.loadMask : true;
 
+			this.cmfg('workflowSelectedActivityReset');
 			this.cmfg('workflowSelectedInstanceReset');
 			this.workflowIsStartActivityReset();
 

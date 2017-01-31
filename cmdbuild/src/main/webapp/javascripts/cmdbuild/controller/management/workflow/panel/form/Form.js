@@ -38,7 +38,8 @@
 			'onWorkflowFormRemoveButtonClick',
 			'onWorkflowFormSaveButtonClick',
 			'onWorkflowFormWokflowSelect = onWorkflowWokflowSelect',
-			'workflowFormPanelTabActiveSet',
+			'workflowFormTemplateResolverFormGet = panelGridAndFormPanelFormTemplateResolverFormGet',
+			'workflowFormPanelTabActiveSet = panelGridAndFormPanelFormTabActiveSet',
 			'workflowFormReset',
 			'workflowFormWidgetExists'
 		],
@@ -49,9 +50,9 @@
 		controllerTabActivity: undefined,
 
 		/**
-		 * @property {CMDBuild.controller.management.workflow.panel.form.tabs.attachments.Attachments}
+		 * @property {CMDBuild.controller.management.workflow.panel.form.tabs.attachment.Attachment}
 		 */
-		controllerTabAttachments: undefined,
+		controllerTabAttachment: undefined,
 
 		/**
 		 * @property {CMDBuild.controller.management.workflow.panel.form.tabs.Email}
@@ -104,7 +105,7 @@
 			this.controllerTabActivity = this.buildTabControllerActivity();
 
 			if (!CMDBuild.configuration.userInterface.isDisabledProcessTab(CMDBuild.core.constants.Proxy.PROCESS_ATTACHMENT_TAB))
-				this.controllerTabAttachments = Ext.create('CMDBuild.controller.management.workflow.panel.form.tabs.attachments.Attachments', { parentDelegate: this });
+				this.controllerTabAttachment = Ext.create('CMDBuild.controller.management.workflow.panel.form.tabs.attachment.Attachment', { parentDelegate: this });
 
 			if (!CMDBuild.configuration.userInterface.isDisabledProcessTab(CMDBuild.core.constants.Proxy.PROCESS_EMAIL_TAB))
 				this.controllerTabEmail = Ext.create('CMDBuild.controller.management.workflow.panel.form.tabs.Email', { parentDelegate: this });
@@ -125,7 +126,7 @@
 				Ext.isEmpty(this.controllerTabRelations) ? null : this.controllerTabRelations.getView(),
 				Ext.isEmpty(this.controllerTabHistory) ? null : this.controllerTabHistory.getView(),
 				Ext.isEmpty(this.controllerTabEmail) ? null : this.controllerTabEmail.getView(),
-				Ext.isEmpty(this.controllerTabAttachments) ? null : this.controllerTabAttachments.getView()
+				Ext.isEmpty(this.controllerTabAttachment) ? null : this.controllerTabAttachment.getView()
 			]);
 		},
 
@@ -142,18 +143,6 @@
 			var activityPanelController = new CMDBuild.controller.management.workflow.panel.form.tabs.activity.Activity(view, this, this.widgetControllerManager);
 
 			return activityPanelController;
-		},
-
-		/**
-		 * Retrieve the form to use as target for the templateResolver
-		 *
-		 * @returns {Object or null}
-		 */
-		getFormForTemplateResolver: function() {
-			if (Ext.isObject(this.widgetManager) && !Ext.Object.isEmpty(this.widgetManager) && typeof this.widgetManager.getFormForTemplateResolver == 'function')
-				return this.widgetManager.getFormForTemplateResolver() || null;
-
-			return null;
 		},
 
 		/**
@@ -202,6 +191,9 @@
 			// Forward to sub-controllers
 			this.controllerTabActivity.onAddCardClick(id);
 
+			if (Ext.isObject(this.controllerTabAttachment) && !Ext.Object.isEmpty(this.controllerTabAttachment))
+				this.controllerTabAttachment.cmfg('onPanelModuleAttachmentTabAddButtonClick');
+
 			if (Ext.isObject(this.controllerTabEmail) && !Ext.Object.isEmpty(this.controllerTabEmail))
 				this.controllerTabEmail.onAddCardButtonClick();
 
@@ -212,7 +204,7 @@
 				this.controllerTabNote.cmfg('onWorkflowFormTabNoteAddButtonClick');
 
 			if (Ext.isObject(this.controllerTabRelations) && !Ext.Object.isEmpty(this.controllerTabRelations))
-				this.controllerTabRelations.onAddCardClick(id);
+				this.controllerTabRelations.onAddCardClick();
 		},
 
 		/**
@@ -234,6 +226,9 @@
 			this.workflowFormPanelTabSelectionManage();
 
 			// Forward to sub-controllers
+			if (Ext.isObject(this.controllerTabAttachment) && !Ext.Object.isEmpty(this.controllerTabAttachment))
+				this.controllerTabAttachment.cmfg('onWorkflowFormTabAttachmentInstanceSelect');
+
 			if (Ext.isObject(this.controllerTabNote) && !Ext.Object.isEmpty(this.controllerTabNote))
 				this.controllerTabNote.cmfg('onWorkflowFormTabNoteInstanceSelect');
 		},
@@ -244,7 +239,6 @@
 		 * @returns {Void}
 		 */
 		onWorkflowFormModifyButtonClick: function () {
-			// Forward to sub-controllers
 			this.controllerTabActivity.onModifyCardClick();
 
 			if (Ext.isObject(this.controllerTabEmail) && !Ext.Object.isEmpty(this.controllerTabEmail))
@@ -268,7 +262,6 @@
 		onWorkflowFormSaveButtonClick: function () {
 			this.controllerTabActivity.onSaveCardClick();
 
-			// Forward to sub-controllers
 			if (Ext.isObject(this.controllerTabEmail) && !Ext.Object.isEmpty(this.controllerTabEmail))
 				this.controllerTabEmail.onSaveCardClick();
 		},
@@ -291,6 +284,18 @@
 			);
 
 			this.workflowFormPanelTabSelectionManage(true);
+		},
+
+		/**
+		 * Retrieve the form to use as target for the templateResolver
+		 *
+		 * @returns {Ext.form.Basic or null}
+		 */
+		workflowFormTemplateResolverFormGet: function () {
+			if (Ext.isObject(this.controllerTabActivity) && !Ext.Object.isEmpty(this.controllerTabActivity))
+				return this.controllerTabActivity.getFormForTemplateResolver();
+
+			return null;
 		},
 
 		// Tab panel manage methods
@@ -343,8 +348,8 @@
 			// Forward to sub-controllers
 			this.controllerTabActivity.reset();
 
-			if (Ext.isObject(this.controllerTabAttachments) && !Ext.Object.isEmpty(this.controllerTabAttachments))
-				this.controllerTabAttachments.reset();
+			if (Ext.isObject(this.controllerTabAttachment) && !Ext.Object.isEmpty(this.controllerTabAttachment))
+				this.controllerTabAttachment.cmfg('panelModuleAttachmentTabReset');
 
 			if (Ext.isObject(this.controllerTabEmail) && !Ext.Object.isEmpty(this.controllerTabEmail))
 				this.controllerTabEmail.reset();
@@ -363,22 +368,25 @@
 		 * @param {String} type
 		 *
 		 * @returns {Boolean} exists
+		 *
+		 * FIXME: waiting for refactor (move in widget controller)
 		 */
 		workflowFormWidgetExists: function (type) {
 			var exists = false;
 
 			if (
-				Ext.isObject(this.widgetControllerManager) && !Ext.Object.isEmpty(this.widgetControllerManager)
-				&& Ext.isObject(this.widgetControllerManager.controllers) && !Ext.Object.isEmpty(this.widgetControllerManager.controllers)
-				&& Ext.isString(type) && !Ext.isEmpty(type)
+				Ext.isString(type) && !Ext.isEmpty(type)
+				&& !this.cmfg('workflowSelectedActivityIsEmpty')
 			) {
-				Ext.Object.each(this.widgetControllerManager.controllers, function (id, controller, myself) {
+				Ext.Array.each(this.cmfg('workflowSelectedActivityGet', CMDBuild.core.constants.Proxy.WIDGETS), function (configuration, i, allConfigurations) {
 					if (
-						Ext.isObject(controller) && !Ext.Object.isEmpty(controller)
-						&& Ext.isFunction(controller.cmfg) && controller.cmfg('widgetConfigurationGet', CMDBuild.core.constants.Proxy.TYPE) == type
+						Ext.isObject(configuration) && !Ext.Object.isEmpty(configuration)
+						&& configuration[CMDBuild.core.constants.Proxy.TYPE] == type
 					) {
 						exists = true;
 					}
+
+					return !exists;
 				}, this);
 			}
 

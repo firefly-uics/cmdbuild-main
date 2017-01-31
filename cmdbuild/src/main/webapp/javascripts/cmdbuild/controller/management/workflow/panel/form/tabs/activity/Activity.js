@@ -448,6 +448,10 @@
 			}
 		},
 
+		getFormForTemplateResolver: function() {
+			return this.view.getFormForTemplateResolver();
+		},
+
 		fillFormWithProcessInstanceData: function(processInstance) {
 			if (processInstance != null) {
 				this.view.loadCard(processInstance.asDummyModel());

@@ -10,7 +10,9 @@
 
 		fields: [
 			{ name: 'rawData', type: 'auto', defaultValue: [] }, // FIXME: legacy mode to remove on complete Workflow UI and wofkflowState modules refactor
+			{ name: CMDBuild.core.constants.Proxy.CLASS_DESCRIPTION, type: 'string' },
 			{ name: CMDBuild.core.constants.Proxy.CLASS_ID, type: 'int', useNull: true },
+			{ name: CMDBuild.core.constants.Proxy.FLOW_STATUS, type: 'string' },
 			{ name: CMDBuild.core.constants.Proxy.ID, type: 'int', useNull: true },
 			{ name: CMDBuild.core.constants.Proxy.VALUES, type: 'auto', defaultValue: {} }
 		]

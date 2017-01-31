@@ -1,5 +1,9 @@
 (function () {
 
+	/**
+	 * Required managed functions from upper structure:
+	 * 	- panelGridAndFormPanelFormTemplateResolverFormGet
+	 */
 	Ext.define('CMDBuild.controller.management.common.tabs.email.EmailWindow', {
 		extend: 'CMDBuild.controller.common.abstract.Base',
 
@@ -95,7 +99,7 @@
 				var xaVars = Ext.apply({}, record.getData(), record.get(CMDBuild.core.constants.Proxy.VARIABLES));
 
 				this.templateResolver = new CMDBuild.Management.TemplateResolver({
-					clientForm: this.cmfg('tabEmailGetFormForTemplateResolver'),
+					clientForm: this.cmfg('panelGridAndFormPanelFormTemplateResolverFormGet'),
 					xaVars: xaVars,
 					serverVars: CMDBuild.controller.common.abstract.Widget.getTemplateResolverServerVars(
 						this.cmfg('tabEmailSelectedEntityGet', CMDBuild.core.constants.Proxy.ENTITY)
