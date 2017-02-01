@@ -26,7 +26,6 @@
 		fieldMajor: undefined,
 
 		border: false,
-		cls: 'cmdb-blue-panel',
 		frame: false,
 
 		layout: {

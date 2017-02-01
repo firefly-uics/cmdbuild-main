@@ -43,7 +43,7 @@
 			'onPanelModuleAttachmentGridRemoveButtonClick',
 			'onPanelModuleAttachmentGridVersionsButtonClick',
 			'panelModuleAttachmentGridBorderBottomSet',
-			'panelModuleAttachmentGridCategoriesExists',
+			'panelModuleAttachmentGridCategoriesIsEmpty',
 			'panelModuleAttachmentGridCategoriesGet',
 			'panelModuleAttachmentGridReadAttachmentContext',
 			'panelModuleAttachmentGridReset',
@@ -134,7 +134,7 @@
 				attributes: Ext.Object.getKeys(mergedRoules),
 				scope: this,
 				callback: function (out, ctx) {
-					this.controllerWindowAdd.cmfg('panelModuleAttachmentWindowAddConfigureAndShow', { metadata: groupMergedRules(out) });
+					this.controllerWindowAdd.cmfg('panelModuleAttachmentWindowAddConfigureAndShow', { presets: groupMergedRules(out) });
 				}
 			});
 		},
@@ -224,22 +224,7 @@
 			 * @param {Object} parameters
 			 * @param {String} parameters.name
 			 *
-			 * @returns {Boolean}
-			 */
-			panelModuleAttachmentGridCategoriesExists: function (parameters) {
-				parameters = Ext.isObject(parameters) ? parameters : {};
-
-				if (Ext.isString(parameters.name) && !Ext.isEmpty(parameters.name))
-					return !Ext.isEmpty(this.categories[parameters.name]);
-
-				return false;
-			},
-
-			/**
-			 * @param {Object} parameters
-			 * @param {String} parameters.name
-			 *
-			 * @returns {CMDBuild.model.common.panel.module.attachment.category.Category or null}
+			 * @returns {CMDBuild.model.common.panel.module.attachment.category.Category or Object}
 			 */
 			panelModuleAttachmentGridCategoriesGet: function (parameters) {
 				parameters = Ext.isObject(parameters) ? parameters : {};
@@ -247,7 +232,22 @@
 				if (Ext.isString(parameters.name) && !Ext.isEmpty(parameters.name))
 					return this.categories[parameters.name];
 
-				return null;
+				return this.categories;
+			},
+
+			/**
+			 * @param {Object} parameters
+			 * @param {String} parameters.name
+			 *
+			 * @returns {Boolean}
+			 */
+			panelModuleAttachmentGridCategoriesIsEmpty: function (parameters) {
+				parameters = Ext.isObject(parameters) ? parameters : {};
+
+				if (Ext.isString(parameters.name) && !Ext.isEmpty(parameters.name))
+					return Ext.isEmpty(this.categories[parameters.name]);
+
+				return true;
 			},
 
 			/**

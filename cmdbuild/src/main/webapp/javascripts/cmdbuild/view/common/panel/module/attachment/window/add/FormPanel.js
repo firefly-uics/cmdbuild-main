@@ -15,11 +15,7 @@
 		 */
 		containerFieldsCommon: undefined,
 
-		/**
-		 * @property {CMDBuild.view.common.panel.module.attachment.window.add.ContainerFieldsMetadata}
-		 */
-		containerFieldsMetadata: undefined,
-
+		bodyCls: 'cmdb-blue-panel',
 		border: false,
 		encoding: 'multipart/form-data',
 		fileUpload: true,
@@ -39,8 +35,7 @@
 		initComponent: function () {
 			Ext.apply(this, {
 				items: [
-					this.containerFieldsCommon = Ext.create('CMDBuild.view.common.panel.module.attachment.window.add.ContainerFieldsCommon', { delegate: this.delegate }),
-					this.containerFieldsMetadata = Ext.create('CMDBuild.view.common.panel.module.attachment.window.add.ContainerFieldsMetadata', { delegate: this.delegate })
+					this.containerFieldsCommon = Ext.create('CMDBuild.view.common.panel.module.attachment.window.add.ContainerFieldsCommon', { delegate: this.delegate })
 				]
 			});
 

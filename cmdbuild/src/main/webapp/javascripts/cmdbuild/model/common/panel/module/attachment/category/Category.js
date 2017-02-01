@@ -24,8 +24,8 @@
 			// MetadataGroups setup
 			var metadataGroupArray = [];
 
-			if (Ext.isArray(data[CMDBuild.core.constants.Proxy.METADATA_GROUPS]) && !Ext.isEmpty(data[CMDBuild.core.constants.Proxy.METADATA_GROUPS]))
-				Ext.Array.forEach(data[CMDBuild.core.constants.Proxy.METADATA_GROUPS], function (groupObject, i, allGroupObjects) {
+			if (Ext.isArray(data[CMDBuild.core.constants.Proxy.META]) && !Ext.isEmpty(data[CMDBuild.core.constants.Proxy.META]))
+				Ext.Array.forEach(data[CMDBuild.core.constants.Proxy.META], function (groupObject, i, allGroupObjects) {
 					if (Ext.isObject(groupObject) && !Ext.Object.isEmpty(groupObject))
 						metadataGroupArray.push(Ext.create('CMDBuild.model.common.panel.module.attachment.category.MetadataGroup', groupObject));
 				}, this);

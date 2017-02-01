@@ -404,6 +404,7 @@
 		MESSAGE: 'message',
 		META: 'meta',
 		METADATA: 'metadata',
+		METADATA_GROUP_NAME: 'metadataGroupName',
 		METADATA_GROUPS: 'metadataGroups',
 		METADATA_OUTPUT: 'metadataOutput',
 		MIN_ZOOM: 'minZoom',
