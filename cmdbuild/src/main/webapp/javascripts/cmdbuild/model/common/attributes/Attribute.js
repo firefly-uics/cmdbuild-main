@@ -30,6 +30,7 @@
 			{ name: CMDBuild.core.constants.Proxy.TARGET_CLASS, type: 'string' },
 			{ name: CMDBuild.core.constants.Proxy.TYPE, type: 'string', convert: toLowerCase }, // Case insensitive types
 			{ name: CMDBuild.core.constants.Proxy.UNIQUE, type: 'boolean' },
+			{ name: CMDBuild.core.constants.Proxy.VALUES, type: 'auto', defaultValue: [] },
 			{ name: CMDBuild.core.constants.Proxy.WRITABLE, type: 'boolean', defaultValue: true }
 		],
 

@@ -56,7 +56,7 @@
 		 *
 		 * @private
 		 */
-		managedAttributesTypes: ['boolean', 'char', 'date', 'decimal', 'double', 'foreignkey', 'integer', 'text', 'time', 'timestamp', 'string'],
+		managedAttributesTypes: ['boolean', 'char', 'date', 'decimal', 'double', 'foreignkey', 'integer', 'list', 'text', 'time', 'timestamp', 'string'],
 
 		// AttributeModel methods
 			/**
@@ -137,6 +137,7 @@
 				case 'double': return Ext.create('CMDBuild.core.fieldManager.builders.Double', { parentDelegate: this });
 				case 'foreignkey': return Ext.create('CMDBuild.core.fieldManager.builders.ForeignKey', { parentDelegate: this });
 				case 'integer': return Ext.create('CMDBuild.core.fieldManager.builders.Integer', { parentDelegate: this });
+				case 'list': return Ext.create('CMDBuild.core.fieldManager.builders.List', { parentDelegate: this });
 				case 'string': return Ext.create('CMDBuild.core.fieldManager.builders.String', { parentDelegate: this });
 				case 'text': return Ext.create('CMDBuild.core.fieldManager.builders.text.Text', { parentDelegate: this });
 				case 'time': return Ext.create('CMDBuild.core.fieldManager.builders.Time', { parentDelegate: this });

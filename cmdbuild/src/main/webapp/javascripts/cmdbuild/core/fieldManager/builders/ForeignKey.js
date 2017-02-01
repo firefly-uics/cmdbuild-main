@@ -67,7 +67,7 @@
 		},
 
 		/**
-		 * @returns {Ext.form.field.Text}
+		 * @returns {CMDBuild.view.common.field.comboBox.Searchable}
 		 */
 		buildField: function () {
 			return Ext.create('CMDBuild.view.common.field.comboBox.Searchable', {
@@ -123,6 +123,8 @@
 
 		/**
 		 * @returns {Ext.data.Store or CMDBuild.core.cache.Store}
+		 *
+		 * @private
 		 */
 		buildFieldStore: function () {
 			var extraParams = {};
