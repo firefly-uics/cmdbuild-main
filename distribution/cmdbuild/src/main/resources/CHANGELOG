@@ -108,6 +108,8 @@ FIXES
 
  * The total count of lookup values ignores filter
 
+ * Sub-processes doesn't appear in start workflow button
+
 
 
 
