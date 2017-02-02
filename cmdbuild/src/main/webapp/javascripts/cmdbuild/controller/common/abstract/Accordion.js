@@ -30,9 +30,9 @@
 			'accordionNodeByIdGet',
 			'accordionNodeByIdSelect',
 			'accordionUpdateStore',
-			'onAccordionBeforeItemClick',
+			'onAccordionBeforeSelect',
 			'onAccordionExpand',
-			'onAccordionSelect'
+			'onAccordionSelectionChange'
 		],
 
 		/**
@@ -209,7 +209,6 @@
 			 */
 			accordionNodeByIdSelect: function (parameters) {
 				parameters = Ext.isObject(parameters) ? parameters : {};
-				parameters.mode = Ext.isString(parameters.mode) ? parameters.mode : 'normal';
 
 				if (!Ext.Object.isEmpty(parameters) && !Ext.isEmpty(parameters.id)) {
 					var node = this.cmfg('accordionNodeByIdGet', parameters.id);
@@ -223,10 +222,11 @@
 						this.expand();
 					});
 
-					this.view.getSelectionModel().select(node);
-
-					if (parameters.mode == 'normal')
-						this.cmfg('onAccordionSelect');
+					this.view.getSelectionModel().select(
+						node,
+						false,
+						Ext.isString(parameters.mode) && parameters.mode == 'silently' // Silently mode
+					);
 				}
 			},
 
@@ -266,23 +266,12 @@
 		},
 
 		/**
-		 * If node is not selectable stop selection event, otherwise launch that event also if item is already selected (permits to avoid to switch selection to refresh UI
-		 * and to change report parameters just by reclick on menu item)
-		 *
 		 * @param {CMDBuild.model.common.Accordion} node
 		 *
 		 * @returns {Boolean}
 		 */
-		onAccordionBeforeItemClick: function (node) {
-			if (this.isNodeSelectable(node)) {
-				this.view.getSelectionModel().select(node);
-
-				this.cmfg('onAccordionSelect');
-
-				return true;
-			}
-
-			return false;
+		onAccordionBeforeSelect: function (node) {
+			return this.isNodeSelectable(node);
 		},
 
 		/**
@@ -306,7 +295,7 @@
 		/**
 		 * @returns {Void}
 		 */
-		onAccordionSelect: function () {
+		onAccordionSelectionChange: function () {
 			if (this.view.getSelectionModel().hasSelection()) {
 				var selection = this.view.getSelectionModel().getSelection()[0];
 
@@ -319,8 +308,6 @@
 					// If the panel was not brought to front (report from the navigation menu), select the previous node or deselect the tree
 					if (!Ext.isEmpty(this.lastSelection)) {
 						this.view.getSelectionModel().select(this.lastSelection);
-
-						this.cmfg('onAccordionSelect');
 					} else {
 						this.view.getSelectionModel().deselectAll(true);
 					}
