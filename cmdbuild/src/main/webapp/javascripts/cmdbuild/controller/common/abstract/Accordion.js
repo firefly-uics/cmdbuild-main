@@ -30,6 +30,7 @@
 			'accordionNodeByIdGet',
 			'accordionNodeByIdSelect',
 			'accordionUpdateStore',
+			'onAccordionBeforeItemClick',
 			'onAccordionBeforeSelect',
 			'onAccordionExpand',
 			'onAccordionSelectionChange'
@@ -263,6 +264,22 @@
 				&& node.get(CMDBuild.core.constants.Proxy.SELECTABLE)
 				&& !Ext.isEmpty(node.get(CMDBuild.core.constants.Proxy.ID)) // Node without id property are not selectable
 			);
+		},
+
+		/**
+		 * If node is already selected launch selection change event to be able to reselect same node without switch selection
+		 *
+		 * @param {CMDBuild.model.common.Accordion} node
+		 *
+		 * @returns {Void}
+		 */
+		onAccordionBeforeItemClick: function (node) {
+			if (this.view.getSelectionModel().hasSelection()) {
+				var selection = this.view.getSelectionModel().getSelection()[0];
+
+				if (selection === node)
+					this.cmfg('onAccordionSelectionChange');
+			}
 		},
 
 		/**
