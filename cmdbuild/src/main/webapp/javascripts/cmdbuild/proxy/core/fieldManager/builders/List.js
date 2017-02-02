@@ -2,11 +2,7 @@
 
 	Ext.define('CMDBuild.proxy.core.fieldManager.builders.List', {
 
-		requires: [
-			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.index.Json',
-			'CMDBuild.model.common.attributes.ForeignKeyStore'
-		],
+		requires: ['CMDBuild.core.constants.Proxy'],
 
 		singleton: true,
 

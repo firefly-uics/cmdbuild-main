@@ -10,6 +10,19 @@
 		singleton: true,
 
 		/**
+		 * @property {Object} parameters
+		 *
+		 * @returns {Void}
+		 */
+		readCard: function (parameters) {
+			parameters = Ext.isEmpty(parameters) ? {} : parameters;
+
+			Ext.apply(parameters, { url: CMDBuild.proxy.index.Json.card.read });
+
+			CMDBuild.global.Cache.request(CMDBuild.core.constants.Proxy.CARD, parameters);
+		},
+
+		/**
 		 * @param {Object} parameters
 		 *
 		 * @returns {Void}

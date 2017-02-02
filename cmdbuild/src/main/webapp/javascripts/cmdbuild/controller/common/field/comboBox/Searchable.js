@@ -247,7 +247,7 @@
 					params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.view.attributeModel.get(CMDBuild.core.constants.Proxy.TARGET_CLASS);
 					params[CMDBuild.core.constants.Proxy.CARD_ID] = value;
 
-					CMDBuild.proxy.common.field.ForeignKey.readCard({
+					CMDBuild.proxy.common.field.comboBox.Searchable.readCard({
 						params: params,
 						scope: this,
 						success: function (response, options, decodedResponse) {
@@ -256,7 +256,7 @@
 							if (!Ext.isEmpty(decodedResponse)) {
 								if (!Ext.isEmpty(this.view.getStore()))
 									this.view.getStore().add(
-										Ext.create('CMDBuild.model.common.attributes.ForeignKeyStore', {
+										Ext.create('CMDBuild.model.common.field.comboBox.searchable.Card', {
 											Id: decodedResponse['Id'],
 											Description: decodedResponse['Description']
 										})

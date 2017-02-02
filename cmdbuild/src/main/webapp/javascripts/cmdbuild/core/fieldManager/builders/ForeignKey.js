@@ -11,7 +11,7 @@
 		requires: [
 			'CMDBuild.core.constants.FieldWidths',
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.common.field.ForeignKey'
+			'CMDBuild.proxy.core.fieldManager.builders.ForeignKey'
 		],
 
 		/**
@@ -133,7 +133,7 @@
 			if (!this.cmfg('fieldManagerAttributeModelIsEmpty', CMDBuild.core.constants.Proxy.FILTER))
 				extraParams[CMDBuild.core.constants.Proxy.FILTER] = Ext.encode({ CQL: this.cmfg('fieldManagerAttributeModelGet', CMDBuild.core.constants.Proxy.FILTER) });
 
-			return CMDBuild.proxy.common.field.ForeignKey.getStore({ extraParams: extraParams });
+			return CMDBuild.proxy.core.fieldManager.builders.ForeignKey.getStore({ extraParams: extraParams });
 		}
 	});
 

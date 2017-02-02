@@ -1,11 +1,11 @@
 (function () {
 
-	Ext.define('CMDBuild.proxy.common.field.ForeignKey', {
+	Ext.define('CMDBuild.proxy.core.fieldManager.builders.ForeignKey', {
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.proxy.index.Json',
-			'CMDBuild.model.common.attributes.ForeignKeyStore'
+			'CMDBuild.model.core.fieldManager.builder.ForeignKeyStore'
 		],
 
 		singleton: true,
@@ -21,7 +21,7 @@
 
 			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.CARD, {
 				autoLoad: true,
-				model: 'CMDBuild.model.common.attributes.ForeignKeyStore',
+				model: 'CMDBuild.model.core.fieldManager.builder.ForeignKeyStore',
 				pageSize: CMDBuild.configuration.instance.get(CMDBuild.core.constants.Proxy.REFERENCE_COMBO_STORE_LIMIT),
 				proxy: {
 					type: 'ajax',

@@ -1,6 +1,6 @@
-(function() {
+(function () {
 
-	Ext.define('CMDBuild.model.common.attributes.ForeignKeyStore', {
+	Ext.define('CMDBuild.model.core.fieldManager.builder.ForeignKeyStore', {
 		extend: 'Ext.data.Model',
 
 		fields: [
