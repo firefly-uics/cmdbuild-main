@@ -104,20 +104,25 @@
 
 			this.readEntity(parameters.entityId, function () {
 				this.readItem(parameters.id, function () {
-					CMDBuild.core.LoadMask.hide(); // Manual loadMask manage
+					this.controllerGrid.cmfg('panelModuleAttachmentGridReadAttachmentContext',{
+						scope: this,
+						callback:  function () {
+							CMDBuild.core.LoadMask.hide(); // Manual loadMask manage
 
-					this.setViewTitle([this.cmfg('panelModuleAttachmentWindowSelectedItemGet', CMDBuild.core.constants.Proxy.DESCRIPTION)]);
+							this.setViewTitle([this.cmfg('panelModuleAttachmentWindowSelectedItemGet', CMDBuild.core.constants.Proxy.DESCRIPTION)]);
 
-					this.grid.buttonAdd.setDisabled(
-						!this.cmfg('panelGridAndFormSelectedEntityGet', [
-							CMDBuild.core.constants.Proxy.PERMISSIONS,
-							CMDBuild.core.constants.Proxy.WRITE
-						])
-					);
+							this.grid.buttonAdd.setDisabled(
+								!this.cmfg('panelGridAndFormSelectedEntityGet', [
+									CMDBuild.core.constants.Proxy.PERMISSIONS,
+									CMDBuild.core.constants.Proxy.WRITE
+								])
+							);
 
-					this.controllerGrid.cmfg('panelModuleAttachmentGridStoreLoad');
+							this.controllerGrid.cmfg('panelModuleAttachmentGridStoreLoad');
 
-					this.view.show();
+							this.view.show();
+						}
+					});
 				});
 			});
 		},

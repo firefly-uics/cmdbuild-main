@@ -9,7 +9,7 @@
 		extend: "CMDBuild.controller.management.classes.CMModCardSubController",
 
 		/**
-		 * @property {CMDBuild.controller.common.panel.module.attachment.Window}
+		 * @property {CMDBuild.controller.management.classes.common.attachment.Window}
 		 */
 		controllerWindowAttachment: undefined,
 
@@ -54,7 +54,7 @@
 			};
 
 			// Build sub-controllers
-			this.controllerWindowAttachment = Ext.create('CMDBuild.controller.common.panel.module.attachment.Window', { parentDelegate: this });
+			this.controllerWindowAttachment = Ext.create('CMDBuild.controller.management.classes.common.attachment.Window', { parentDelegate: this });
 			this.controllerWindowNote = Ext.create('CMDBuild.controller.management.classes.panel.form.tabs.masterDetail.window.Note', { parentDelegate: this });
 		},
 

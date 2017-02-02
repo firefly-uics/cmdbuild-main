@@ -95,9 +95,7 @@
 		onPanelModuleAttachmentWindowModifyConfirmButtonClick: function () {
 			if (this.validate(this.form)) {
 				// Avoid to submit empty file property
-				this.containerFieldsCommon.fieldFile.submitValue = !Ext.isEmpty(
-					this.form.panelFunctionValueGet({ propertyName: CMDBuild.core.constants.Proxy.FILE })
-				);
+				this.containerFieldsCommon.fieldFile.submitValue = !Ext.isEmpty(this.containerFieldsCommon.fieldFile.getValue());
 
 				var params = {};
 				params[CMDBuild.core.constants.Proxy.CARD_ID] = this.cmfg('panelGridAndFormSelectedItemGet', CMDBuild.core.constants.Proxy.ID);

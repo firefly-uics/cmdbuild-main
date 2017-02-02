@@ -280,10 +280,16 @@
 			},
 
 		/**
+		 * @param {Object} parameters
+		 * @param {Function} parameters.callback
+		 * @param {Object} parameters.scope
+		 *
 		 * @returns {Void}
 		 */
-		panelModuleAttachmentGridReadAttachmentContext: function (callback) {
-			callback = Ext.isFunction(callback) ? callback : Ext.emptyFn;
+		panelModuleAttachmentGridReadAttachmentContext: function (parameters) {
+			parameters = Ext.isObject(parameters) ? parameters : {};
+			parameters.callback = Ext.isFunction(parameters.callback) ? parameters.callback : Ext.emptyFn;
+			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
 
 			CMDBuild.proxy.common.panel.module.attachment.Attachment.readAttachmentContext({
 				loadMask: false,
@@ -297,7 +303,7 @@
 					if (Ext.isArray(decodedResponse) && !Ext.isEmpty(decodedResponse))
 						this.panelModuleAttachmentCategoriesSet(decodedResponse);
 
-					Ext.callback(callback, this);
+					Ext.callback(parameters.callback, parameters.scope);
 				}
 			});
 		},

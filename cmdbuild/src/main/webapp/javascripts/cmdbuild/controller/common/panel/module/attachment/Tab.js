@@ -106,29 +106,32 @@
 
 			CMDBuild.core.LoadMask.show(); // Manual loadMask manage
 
-			this.controllerGrid.cmfg('panelModuleAttachmentGridReadAttachmentContext', function () {
-				CMDBuild.core.LoadMask.hide(); // Manual loadMask manage
+			this.controllerGrid.cmfg('panelModuleAttachmentGridReadAttachmentContext', {
+				scope: this,
+				callback: function () {
+					CMDBuild.core.LoadMask.hide(); // Manual loadMask manage
 
-				// History record save
-				CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
-					moduleId: this.cmfg('panelGridAndFormIdentifierGet'),
-					entryType: {
-						description: this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.DESCRIPTION),
-						id: this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.ID),
-						object: this.cmfg('panelGridAndFormSelectedEntityGet')
-					},
-					item: {
-						description: this.cmfg('panelGridAndFormSelectedItemGet', 'Description') || this.cmfg('panelGridAndFormSelectedItemGet','Code'),
-						id: this.cmfg('panelGridAndFormSelectedItemGet',CMDBuild.core.constants.Proxy.ID),
-						object: this.cmfg('panelGridAndFormSelectedItemGet')
-					},
-					section: {
-						description: this.view.title,
-						object: this.view
-					}
-				});
+					// History record save
+					CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
+						moduleId: this.cmfg('panelGridAndFormIdentifierGet'),
+						entryType: {
+							description: this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.DESCRIPTION),
+							id: this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.ID),
+							object: this.cmfg('panelGridAndFormSelectedEntityGet')
+						},
+						item: {
+							description: this.cmfg('panelGridAndFormSelectedItemGet', 'Description') || this.cmfg('panelGridAndFormSelectedItemGet','Code'),
+							id: this.cmfg('panelGridAndFormSelectedItemGet',CMDBuild.core.constants.Proxy.ID),
+							object: this.cmfg('panelGridAndFormSelectedItemGet')
+						},
+						section: {
+							description: this.view.title,
+							object: this.view
+						}
+					});
 
-				this.cmfg('onPanelModuleAttachmentTabShowCallback');
+					this.cmfg('onPanelModuleAttachmentTabShowCallback');
+				}
 			});
 		},
 

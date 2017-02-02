@@ -56,7 +56,7 @@
 		 */
 		managedGroupsArray: [
 			CMDBuild.core.constants.Proxy.GENERIC, // Default
-			CMDBuild.core.constants.Proxy.ATTACHMENT,
+//			CMDBuild.core.constants.Proxy.ATTACHMENT,
 			CMDBuild.core.constants.Proxy.ATTRIBUTE,
 			CMDBuild.core.constants.Proxy.CLASS,
 			CMDBuild.core.constants.Proxy.ENTRY_TYPE,

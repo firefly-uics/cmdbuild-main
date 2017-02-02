@@ -1,5 +1,8 @@
 (function () {
 
+	/**
+	 * Override to customize grid buttons disable action
+	 */
 	Ext.define('CMDBuild.controller.management.workflow.panel.form.tabs.attachment.Attachment', {
 		extend: 'CMDBuild.controller.common.panel.module.attachment.Tab',
 
@@ -37,8 +40,6 @@
 		view: undefined,
 
 		/**
-		 * Override to customize grid buttons disable action
-		 *
 		 * @param {Object} configurationObject
 		 * @param {Object} configurationObject.parentDelegate
 		 *
