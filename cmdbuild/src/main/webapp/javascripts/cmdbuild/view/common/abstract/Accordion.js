@@ -62,16 +62,10 @@
 					this.delegate.cmfg('onAccordionExpand');
 			}, this);
 
-			// Add listener to avoid selection of unselectable nodes
-			this.on('beforeselect', function (accordion, record, index, eOpts) {
+			// Add listener for beforeitemclick
+			this.on('beforeitemclick', function (view, record, item, index, e, eOpts) {
 				if (!Ext.isEmpty(this.delegate))
-					return this.delegate.cmfg('onAccordionBeforeSelect', record);
-			}, this);
-
-			// Add listener for selectionchange
-			this.getSelectionModel().on('selectionchange', function (selectionModel, selected, eOpts) {
-				if (!Ext.isEmpty(this.delegate))
-					this.delegate.cmfg('onAccordionSelectionChange');
+					return this.delegate.cmfg('onAccordionBeforeItemClick', record);
 			}, this);
 		}
 	});

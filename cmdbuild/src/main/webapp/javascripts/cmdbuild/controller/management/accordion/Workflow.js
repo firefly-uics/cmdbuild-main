@@ -15,13 +15,6 @@
 		parentDelegate: undefined,
 
 		/**
-		 * @cfg {Array}
-		 */
-		cmfgCatchedFunctions: [
-			'onAccordionWorkflowCollapse'
-		],
-
-		/**
 		 * @cfg {Boolean}
 		 */
 		hideIfEmpty: true,
@@ -45,6 +38,10 @@
 		 * @override
 		 */
 		constructor: function (configurationObject) {
+			Ext.apply(this, { // Apply custom methods
+				cmfgCatchedFunctions: Ext.Array.merge(this.cmfgCatchedFunctions, ['onAccordionWorkflowCollapse'])
+			});
+
 			this.callParent(arguments);
 
 			this.view = Ext.create('CMDBuild.view.management.accordion.Workflow', { delegate: this });

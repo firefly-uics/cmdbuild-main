@@ -1,7 +1,7 @@
 (function () {
 
 	// External implementation to avoid overrides
-	Ext.require(['CMDBuild.core.constants.Proxy']);
+	Ext.require('CMDBuild.core.constants.Proxy');
 
 	/**
 	 * Common methods
@@ -15,6 +15,25 @@
 		 * @cfg {CMDBuild.controller.common.MainViewport}
 		 */
 		parentDelegate: undefined,
+
+		/**
+		 * @cfg {Array}
+		 */
+		cmfgCatchedFunctions: [
+			'accordionBuildId',
+			'accordionDeselect',
+			'accordionExpand',
+			'accordionFirstSelectableNodeSelect',
+			'accordionFirtsSelectableNodeGet',
+			'accordionIdentifierGet',
+			'accordionNodeByIdExists',
+			'accordionNodeByIdGet',
+			'accordionNodeByIdSelect',
+			'accordionUpdateStore',
+			'onAccordionBeforeItemClick',
+			'onAccordionExpand',
+			'onAccordionSelect'
+		],
 
 		/**
 		 * Store update callback functions
@@ -63,36 +82,6 @@
 		 * @property {Object}
 		 */
 		view: undefined,
-
-		/**
-		 * @param {Object} configurationObject
-		 * @param {Object} configurationObject.parentDelegate
-		 *
-		 * @returns {Void}
-		 *
-		 * @override
-		 */
-		constructor: function (configurationObject) {
-			Ext.apply(this, { // Apply default managed methods
-				cmfgCatchedFunctions: Ext.Array.merge(this.cmfgCatchedFunctions, [
-					'accordionBuildId',
-					'accordionDeselect',
-					'accordionExpand',
-					'accordionFirstSelectableNodeSelect',
-					'accordionFirtsSelectableNodeGet',
-					'accordionIdentifierGet',
-					'accordionNodeByIdExists',
-					'accordionNodeByIdGet',
-					'accordionNodeByIdSelect',
-					'accordionUpdateStore',
-					'onAccordionBeforeSelect',
-					'onAccordionExpand',
-					'onAccordionSelectionChange'
-				])
-			});
-
-			this.callParent(arguments);
-		},
 
 		/**
 		 * Generates an unique id for the menu accordion, prepend to components array "accordion" string and identifier.
@@ -220,6 +209,7 @@
 			 */
 			accordionNodeByIdSelect: function (parameters) {
 				parameters = Ext.isObject(parameters) ? parameters : {};
+				parameters.mode = Ext.isString(parameters.mode) ? parameters.mode : 'normal';
 
 				if (!Ext.Object.isEmpty(parameters) && !Ext.isEmpty(parameters.id)) {
 					var node = this.cmfg('accordionNodeByIdGet', parameters.id);
@@ -233,11 +223,10 @@
 						this.expand();
 					});
 
-					this.view.getSelectionModel().select(
-						node,
-						false,
-						Ext.isString(parameters.mode) && parameters.mode == 'silently' // Silently mode
-					);
+					this.view.getSelectionModel().select(node);
+
+					if (parameters.mode == 'normal')
+						this.cmfg('onAccordionSelect');
 				}
 			},
 
@@ -277,12 +266,23 @@
 		},
 
 		/**
+		 * If node is not selectable stop selection event, otherwise launch that event also if item is already selected (permits to avoid to switch selection to refresh UI
+		 * and to change report parameters just by reclick on menu item)
+		 *
 		 * @param {CMDBuild.model.common.Accordion} node
 		 *
 		 * @returns {Boolean}
 		 */
-		onAccordionBeforeSelect: function (node) {
-			return this.isNodeSelectable(node);
+		onAccordionBeforeItemClick: function (node) {
+			if (this.isNodeSelectable(node)) {
+				this.view.getSelectionModel().select(node);
+
+				this.cmfg('onAccordionSelect');
+
+				return true;
+			}
+
+			return false;
 		},
 
 		/**
@@ -306,7 +306,7 @@
 		/**
 		 * @returns {Void}
 		 */
-		onAccordionSelectionChange: function () {
+		onAccordionSelect: function () {
 			if (this.view.getSelectionModel().hasSelection()) {
 				var selection = this.view.getSelectionModel().getSelection()[0];
 
@@ -319,6 +319,8 @@
 					// If the panel was not brought to front (report from the navigation menu), select the previous node or deselect the tree
 					if (!Ext.isEmpty(this.lastSelection)) {
 						this.view.getSelectionModel().select(this.lastSelection);
+
+						this.cmfg('onAccordionSelect');
 					} else {
 						this.view.getSelectionModel().deselectAll(true);
 					}

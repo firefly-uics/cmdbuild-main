@@ -110,6 +110,8 @@ FIXES
 
  * Sub-processes doesn't appear in start workflow button
 
+ * Reselect accordion item by clicking on selected item
+
 
 
 
