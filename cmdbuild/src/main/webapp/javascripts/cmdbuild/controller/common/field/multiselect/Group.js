@@ -14,10 +14,10 @@
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
-			'onFieldMultiselectGroupReset',
-			'onFieldMultiselectGroupStoreGet',
-			'onFieldMultiselectGroupSelectAll',
-			'onFieldMultiselectGroupValueGet'
+			'fieldMultiselectGroupReset',
+			'fieldMultiselectGroupStoreGet',
+			'fieldMultiselectGroupSelectAll',
+			'fieldMultiselectGroupValueGet'
 		],
 
 		/**
@@ -28,7 +28,7 @@
 		/**
 		 * @returns {Void}
 		 */
-		onFieldMultiselectGroupReset: function () {
+		fieldMultiselectGroupReset: function () {
 			this.view.setValue();
 		},
 
@@ -37,17 +37,17 @@
 		 *
 		 * @returns {Ext.data.Store}
 		 */
-		onFieldMultiselectGroupStoreGet: function () {
+		fieldMultiselectGroupStoreGet: function () {
 			return this.view.boundList.getStore();
 		},
 
 		/**
 		 * @returns {Void}
 		 */
-		onFieldMultiselectGroupSelectAll: function () {
+		fieldMultiselectGroupSelectAll: function () {
 			var arrayGroups = [];
 
-			Ext.Array.each(this.view.getStore().getRange(), function (record, i, allRecords) {
+			Ext.Array.forEach(this.view.getStore().getRange(), function (record, i, allRecords) {
 				if (Ext.isObject(record) && !Ext.Object.isEmpty(record) && Ext.isFunction(record.get))
 					arrayGroups.push(record.get(CMDBuild.core.constants.Proxy.NAME));
 			}, this);
@@ -60,8 +60,8 @@
 		 *
 		 * @returns {Array}
 		 */
-		onFieldMultiselectGroupValueGet: function (value) {
-			return Ext.isArray(value) ? value : [];
+		fieldMultiselectGroupValueGet: function (value) {
+			return Ext.isArray(value) ? Ext.Array.clean(value) : [];
 		}
 	});
 

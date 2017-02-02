@@ -390,10 +390,10 @@
 				moduleController = this.cmfg('mainViewportModuleControllerGet', CMDBuild.core.constants.ModuleIdentifiers.getWorkflow());
 
 			// Error handling
-				if (!Ext.isNumber(parameters[CMDBuild.core.constants.Proxy.INSTANCE_ID]) || Ext.isEmpty(parameters[CMDBuild.core.constants.Proxy.INSTANCE_ID]))
+				if (!Ext.isString(parameters[CMDBuild.core.constants.Proxy.INSTANCE_ID]) || Ext.isEmpty(parameters[CMDBuild.core.constants.Proxy.INSTANCE_ID]))
 					return _error('mainViewportActivitySelect(): unmanaged instanceId parameter', this, parameters[CMDBuild.core.constants.Proxy.INSTANCE_ID]);
 
-				if (!Ext.isNumber(parameters[CMDBuild.core.constants.Proxy.WORKFLOW_ID]) || Ext.isEmpty(parameters[CMDBuild.core.constants.Proxy.WORKFLOW_ID]))
+				if (!Ext.isString(parameters[CMDBuild.core.constants.Proxy.WORKFLOW_ID]) || Ext.isEmpty(parameters[CMDBuild.core.constants.Proxy.WORKFLOW_ID]))
 					return _error('mainViewportActivitySelect(): unmanaged workflowId parameter', this, parameters[CMDBuild.core.constants.Proxy.WORKFLOW_ID]);
 
 				if (!Ext.isObject(moduleController) || Ext.Object.isEmpty(moduleController) || !Ext.isFunction(moduleController.cmfg))
@@ -415,7 +415,9 @@
 						fn: function (store, node, records, successful, eOpts) {
 							moduleController.cmfg('workflowTreeActivitySelect', {
 								enableForceFlowStatus: true,
-								instanceId: parameters[CMDBuild.core.constants.Proxy.INSTANCE_ID]
+								instanceId: Ext.isString(parameters[CMDBuild.core.constants.Proxy.INSTANCE_ID])
+									? parseInt(parameters[CMDBuild.core.constants.Proxy.INSTANCE_ID])
+									: parameters[CMDBuild.core.constants.Proxy.INSTANCE_ID]
 							});
 						},
 						scope: this,

@@ -215,7 +215,7 @@
 				// Resize array to referenceComboStoreLimit configuration parameter
 				this.records = Ext.Array.slice(this.records, 0, CMDBuild.configuration.instance.get(CMDBuild.core.constants.Proxy.REFERENCE_COMBO_STORE_LIMIT));
 			} else {
-				_warning('invalid record field configuration', this, parameters);
+				_error('navigationChronologyRecordSave(): invalid record field configuration', this, parameters);
 			}
 		},
 

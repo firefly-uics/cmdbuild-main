@@ -108,13 +108,6 @@
 					activateFirstTab: record.isEmpty([CMDBuild.core.constants.Proxy.SECTION, CMDBuild.core.constants.Proxy.OBJECT])
 						? true : record.isEmpty([CMDBuild.core.constants.Proxy.SECTION, CMDBuild.core.constants.Proxy.OBJECT])
 				});
-
-				if (!record.isEmpty([CMDBuild.core.constants.Proxy.SECTION, CMDBuild.core.constants.Proxy.OBJECT]))
-					CMDBuild.global.controller.MainViewport.cmfg('mainViewportModuleControllerGet', record.get(CMDBuild.core.constants.Proxy.MODULE_ID)).gridController.view.getStore().on('load', function (store, records, successful, eOpts) {
-						CMDBuild.global.controller.MainViewport.cmfg('mainViewportModuleControllerGet', record.get(CMDBuild.core.constants.Proxy.MODULE_ID)).view.cardTabPanel.activeTabSet(
-							record.get([CMDBuild.core.constants.Proxy.SECTION, CMDBuild.core.constants.Proxy.OBJECT])
-						);
-					}, this, { single: true });
 			}
 		}
 	});
