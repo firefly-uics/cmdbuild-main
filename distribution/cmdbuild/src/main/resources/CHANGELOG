@@ -114,6 +114,8 @@ FIXES
 
  * Error while retrieving foreignKey class attributes
 
+ * Reference grid editors wider than column on first edit action
+
 
 
 

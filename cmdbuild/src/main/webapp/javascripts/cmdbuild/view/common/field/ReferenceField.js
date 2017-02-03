@@ -58,7 +58,8 @@
 				return Ext.create("CMDBuild.Management.ReferenceField.Field", {
 					parentDelegate: parentDelegate,
 					attribute: attribute,
-					templateResolver: templateResolver
+					templateResolver: templateResolver,
+					_growSizeFix: Ext.emptyFn // FIX: resolves grid editor wider than column
 				});
 			}
 		}
