@@ -22,37 +22,29 @@
 		};
 		this.execute = function(callback, callbackScope) {
 			this.compoundNode = this.model.getNode(this.params.id);
+			var compoundData = $.Cmdbuild.g3d.Model.getGraphData(this.compoundNode, "compoundData");
 			this.compoundEdge = this.model.connectedEdges(this.params.id)[0];
 			this.saveForUndoCompoundNode(this.compoundNode, this.compoundEdge);
-			var parentId = $.Cmdbuild.g3d.Model.getGraphData(this.compoundNode,
-					"previousPathNode");
+			var parentId = $.Cmdbuild.g3d.Model.getGraphData(this.compoundNode, "previousPathNode");
 			this.parentNode = this.model.getNode(parentId);
-			this.oldChildren = $.Cmdbuild.g3d.Model.getGraphData(
-					this.parentNode, "children");
-			var domainId = $.Cmdbuild.g3d.Model.getGraphData(this.compoundNode,
-					"domainId");
-			backend.openCompoundNode(this.params.id, this.elements, domainId,
-					function(elements) {
-						this.newElements = [];
-						for (var i = 0; i < elements.nodes.length; i++) {
-							var childId = elements.nodes[i].data.id;
-							if (this.model.getNode(childId).length === 0) {
-								this.newElements.push(childId);
-							}
-						}
-						this.saveForUndo(elements);
-						this.model.pushElements(elements, function() {
-							var allChildren = [];
-							if (this.oldChildren) {
-								allChildren = this.newElements
-										.concat(this.oldChildren);
-							}
-							$.Cmdbuild.g3d.Model.setGraphData(this.parentNode,
-									"children", allChildren);
-							this.model.changed();
-							callback.apply(callbackScope, []);
-						}, this);
-					}, this);
+			this.oldChildren = $.Cmdbuild.g3d.Model.getGraphData(this.parentNode, "children");
+			var domainId = $.Cmdbuild.g3d.Model.getGraphData(this.compoundNode, "domainId");
+			backend.openCompoundNode(compoundData, this.params, function(elements) {
+				var newElements = [];
+				this.model.pushElements(elements, function() {
+					for (var i = 0; i < elements.nodes.length; i++) {
+						var childId = elements.nodes[i].data.id;
+						newElements.push(childId);
+					}
+					if (this.oldChildren) {
+						newElements = newElements.concat(this.oldChildren);
+					}
+					$.Cmdbuild.g3d.Model.setGraphData(this.parentNode, "children", newElements);
+					this.model.changed();
+					this.newElements = this.newElements.concat(newElements);
+					callback.apply(callbackScope, [ this.newElements ]);
+				}, this);
+			}, this);
 		};
 		this.undo = function() {
 			if (this.compoundSavedNode.node.id === undefined) {
@@ -70,8 +62,7 @@
 				var id = this.newNodes[i];
 				this.model.remove(id);
 			}
-			var compoundNode = this.model
-					.getNode(this.compoundSavedNode.node.id);
+			var compoundNode = this.model.getNode(this.compoundSavedNode.node.id);
 			if (compoundNode.length === 0) {
 				this.model.pushElements({
 					nodes : [ {
@@ -89,8 +80,7 @@
 			this.model.changed(true);
 		};
 		this.saveForUndoCompoundNode = function(node, edge) {
-			var compoundData = $.Cmdbuild.g3d.Model.getGraphData(node,
-					"compoundData");
+			var compoundData = $.Cmdbuild.g3d.Model.getGraphData(node, "compoundData");
 			var data = {
 				classId : $.Cmdbuild.g3d.Model.getGraphData(node, "classId"),
 				id : node.id(),
@@ -104,10 +94,8 @@
 				},
 				domainId : $.Cmdbuild.g3d.Model.getGraphData(node, "domainId"),
 				compoundData : compoundData,
-				previousPathNode : $.Cmdbuild.g3d.Model.getGraphData(node,
-						"previousPathNode"),
-				fromDomain : $.Cmdbuild.g3d.Model.getGraphData(node,
-						"fromDomain")
+				previousPathNode : $.Cmdbuild.g3d.Model.getGraphData(node, "previousPathNode"),
+				fromDomain : $.Cmdbuild.g3d.Model.getGraphData(node, "fromDomain")
 			};
 			node = data;
 
@@ -117,10 +105,8 @@
 					source : edge.source().id(),
 					target : edge.target().id(),
 					label : $.Cmdbuild.g3d.Model.getGraphData(edge, "label"),
-					domainId : $.Cmdbuild.g3d.Model.getGraphData(edge,
-							"domainId"),
-					relationId : $.Cmdbuild.g3d.Model.getGraphData(edge,
-							"relationId"),
+					domainId : $.Cmdbuild.g3d.Model.getGraphData(edge, "domainId"),
+					relationId : $.Cmdbuild.g3d.Model.getGraphData(edge, "relationId"),
 					color : $.Cmdbuild.custom.configuration.edgeColor,
 					strength : 90
 				};

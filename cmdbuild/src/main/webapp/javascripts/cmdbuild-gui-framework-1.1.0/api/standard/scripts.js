@@ -60,7 +60,7 @@
 		},
 		select: function(param) {
 			try {
-				$('#' + param.id).selectmenu();
+				param = $.Cmdbuild.dataModel.resolveVariables(param);
 				$('#' + param.id).selectmenu({ 
 					select: function (event, ui) { 
 						var val = $.Cmdbuild.utilities.getHtmlFieldValue("#" + param.id);

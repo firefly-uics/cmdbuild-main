@@ -2,6 +2,7 @@
 	<params>
 		<type>popup</type>
 		<title>Attributes</title>
+		<i18nTitle>TITLEPOPUP_ATTRIBUTES</i18nTitle>
 	</params>
 	<div id="mainAttributesFormContainerGrid">
 	<onInit>

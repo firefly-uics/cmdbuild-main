@@ -3,6 +3,8 @@ CMDBuild 2.4.3 (released YYYY/MM/DD)
 
 NEW FEATURES
 
+ * Relation Graph: Filter on attributes
+
  * Searching on Gis: Dialog for search on map by description
 
  * Printing on Gis: Geo server service for printing the map and the thematic legend

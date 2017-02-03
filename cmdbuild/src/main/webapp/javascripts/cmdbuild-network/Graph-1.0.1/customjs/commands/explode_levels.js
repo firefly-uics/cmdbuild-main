@@ -45,7 +45,7 @@
 			} else {
 				$.Cmdbuild.g3d.Model.setGraphData(parentNode,
 						"exploded_children", true);
-				backend.getANodesBunch(id, function(elements) {
+				backend.getAllGrahicNodes(id, function(elements) {
 					this.explodeMyChildren(parentNode, elements, oldChildren,
 							batch, levels, callback, callbackScope);
 				}, this);

@@ -52,7 +52,7 @@
 			}
 			var parentNode = this.model.getNode(id);
 			var oldChildren = $.Cmdbuild.g3d.Model.getGraphData(parentNode, "children");
-			backend.getANodesBunch(id, function(elements) {
+			backend.getAllGrahicNodes(id, function(elements) {
 				var newElements = [];
 				this.model.pushElements(elements, function() {
 					for (var i = 0; i < elements.nodes.length; i++) {

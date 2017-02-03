@@ -19,6 +19,7 @@
 		PRINT_TEMPLATE : "print.html",
 		CMDBUILD_NETWORK_IMAGE : "CMDBUILD_NETWORK_IMAGE",
 		PRINT_NETWORK_IMAGE : "PRINT_NETWORK_IMAGE",
+		RELATED_CLASSES_FUNCTION: "_graph_get_related_classes",
 		COMPOUND_ATTRIBUTES : [ {
 			type : "string",
 			_id : "type",

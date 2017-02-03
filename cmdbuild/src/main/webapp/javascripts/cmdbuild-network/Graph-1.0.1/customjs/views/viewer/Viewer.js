@@ -49,8 +49,7 @@
 			this.camera.observe(this);
 			this.selected.observe(this);
 			$.Cmdbuild.customvariables.camera = this.camera;
-			this.commandsManager = new $.Cmdbuild.g3d.CommandsManager(
-					this.model);
+			this.commandsManager = new $.Cmdbuild.g3d.CommandsManager(this.model);
 			canvasDiv = $("#" + idCanvas)[0];
 			$.Cmdbuild.customvariables.commandsManager = this.commandsManager;
 
@@ -70,15 +69,11 @@
 			plane = $.Cmdbuild.g3d.ViewerUtilities.spacePlane();
 			scene.add(plane);
 			canvasDiv.appendChild(renderer.domElement);
-			controls = $.Cmdbuild.g3d.ViewerUtilities.trackballControls(camera,
-					renderer.domElement);
-			controls
-					.approxOnY($.Cmdbuild.custom.configuration.viewPointDistance);
-			$.Cmdbuild.g3d.ViewerUtilities.declareEvents(this,
-					renderer.domElement);
+			controls = $.Cmdbuild.g3d.ViewerUtilities.trackballControls(camera, renderer.domElement);
+			controls.approxOnY($.Cmdbuild.custom.configuration.viewPointDistance);
+			$.Cmdbuild.g3d.ViewerUtilities.declareEvents(this, renderer.domElement);
 			render();
-			var init = new $.Cmdbuild.g3d.commands.init_explode(
-					thisViewer.model, $.Cmdbuild.start.httpCallParameters);
+			var init = new $.Cmdbuild.g3d.commands.init_explode(thisViewer.model, $.Cmdbuild.start.httpCallParameters);
 			this.commandsManager.execute(init, {}, function(response) {
 				this.centerAndSelect();
 			}, this);
@@ -89,8 +84,7 @@
 				var box = me.boundingBox();
 				me.zoomAll(box);
 				$.Cmdbuild.customvariables.selected.erase();
-				$.Cmdbuild.customvariables.selected
-						.select($.Cmdbuild.start.httpCallParameters.cardId);
+				$.Cmdbuild.customvariables.selected.select($.Cmdbuild.start.httpCallParameters.cardId);
 			}, 500);
 
 		};
@@ -115,39 +109,33 @@
 			return scene;
 		};
 		this.getOpenCompoundCommands = function(node, callback, callbackScope) {
-			var compoundData = $.Cmdbuild.g3d.Model.getGraphData(node,
-					"compoundData");
-			var param = {
-				filter : compoundData.filter
-			};
-			$.Cmdbuild.utilities.proxy
-					.getRelations(
-							compoundData.domainId,
-							param,
-							function(elements) {
-								var arCommands = [];
-								var expandingThreshold = $.Cmdbuild.g3d.constants.EXPANDING_THRESHOLD;
-								for (var i = 0; i < elements.length; i += expandingThreshold) {
-									arCommands.push({
-										command : "openChildren",
-										id : node.id(),
-										elements : elements.slice(i, i
-												+ expandingThreshold)
-									});
-								}
-								callback.apply(callbackScope, [ arCommands ]);
-							}, this);
+			var compoundData = $.Cmdbuild.g3d.Model.getGraphData(node, "compoundData");
+			var domain = $.Cmdbuild.customvariables.cacheDomains.getDomain(compoundData.domainId);
+			var arCommands = [];
+			var clusteringThreshold = $.Cmdbuild.customvariables.options.clusteringThreshold;
+			for (var i = 0; i * clusteringThreshold < compoundData.total; i++) {
+				arCommands.push({
+					command : "openChildren",
+					id : node.id(),
+					page : i,
+					start : i * clusteringThreshold,
+					limit : clusteringThreshold,
+					domainId : compoundData.domainId,
+					sourceClassName : compoundData.sourceClassName,
+					destinationClassName : compoundData.destinationClassName
+
+				});
+
+			}
+			return arCommands;
 		};
 		this.openCompoundNode = function(node, callback, callbackScope) {
-			this.getOpenCompoundCommands(node, function(arCommands) {
-				var macroCommand = new $.Cmdbuild.g3d.commands.macroCommand(
-						thisViewer.model, arCommands);
-				$.Cmdbuild.customvariables.commandsManager.execute(
-						macroCommand, {}, function() {
-							callback.apply(callbackScope, []);
-						}, this);
-				this.clearSelection();
+			var arCommands = this.getOpenCompoundCommands(node);
+			var macroCommand = new $.Cmdbuild.g3d.commands.macroCommand(thisViewer.model, arCommands);
+			$.Cmdbuild.customvariables.commandsManager.execute(macroCommand, {}, function() {
+				callback.apply(callbackScope, []);
 			}, this);
+			this.clearSelection();
 		};
 		this.onDocumentMouseDblClick = function(event) {
 			if (!LASTSELECTED) {
@@ -169,15 +157,13 @@
 			}
 		};
 		this.explodeNode = function(params) {
-			var explode = new $.Cmdbuild.g3d.commands.explode_levels(
-					thisViewer.model, {
-						id : params.id,
-						levels : params.levels
-					});
+			var explode = new $.Cmdbuild.g3d.commands.explode_levels(thisViewer.model, {
+				id : params.id,
+				levels : params.levels
+			});
 			thisViewer.commandsManager.execute(explode, {}, function() {
 				var nodes = $.Cmdbuild.customvariables.model.getNodes();
-				$.Cmdbuild.g3d.Model
-						.removeGraphData(nodes, "exploded_children");
+				$.Cmdbuild.g3d.Model.removeGraphData(nodes, "exploded_children");
 				$.Cmdbuild.custom.commands.centerOnViewer();
 			}, this);
 		};
@@ -193,9 +179,8 @@
 				var intersects = raycaster.intersectObject(plane, true);
 				var node = thisViewer.model.getNode(SELECTED.elementId);
 				if (intersects.length <= 0) {
-					thisViewer.pushNewPosition(thisViewer.model,
-							SELECTED.elementId, node.position(),
-							SELECTED.position);
+					thisViewer
+							.pushNewPosition(thisViewer.model, SELECTED.elementId, node.position(), SELECTED.position);
 					SELECTED = LASTSELECTED = null;
 					return;
 				}
@@ -225,15 +210,12 @@
 			if (intersects.length > 0 && intersects[0].object.name) {
 				try {
 					var node = thisViewer.model.getNode(INTERSECTED.elementId);
-					$.Cmdbuild.g3d.ViewerUtilities.moveNodeTooltip(
-							intersects[0], node, event.clientX, event.clientY);
+					$.Cmdbuild.g3d.ViewerUtilities.moveNodeTooltip(intersects[0], node, event.clientX, event.clientY);
 					if (node.selectionOnNode) {
-						node.selectionOnNode.position
-								.copy(node.glObject.position);
+						node.selectionOnNode.position.copy(node.glObject.position);
 					}
 				} catch (e) {
-					console
-							.log("Viewer: onDocumentMouseMove error during tooltip show");
+					console.log("Viewer: onDocumentMouseMove error during tooltip show");
 				}
 			} else {
 				$.Cmdbuild.g3d.ViewerUtilities.closeTooltip();
@@ -241,10 +223,8 @@
 			}
 		};
 		this.tooltipLine = function(event) {
-			var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5)
-					.unproject(camera);
-			var raycaster = new THREE.Raycaster(camera.position, vector.sub(
-					camera.position).normalize());
+			var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5).unproject(camera);
+			var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
 			raycaster.linePrecision = 30;
 			var intersects = [];
 			try {
@@ -255,8 +235,7 @@
 			}
 			if (intersects.length > 0) {
 				var node = thisViewer.model.getNode(intersects[0].object.id);
-				$.Cmdbuild.g3d.ViewerUtilities.moveEdgeTooltip(intersects[0],
-						node, event.clientX, event.clientY);
+				$.Cmdbuild.g3d.ViewerUtilities.moveEdgeTooltip(intersects[0], node, event.clientX, event.clientY);
 			} else {
 				$.Cmdbuild.g3d.ViewerUtilities.closeTooltip();
 			}
@@ -267,23 +246,18 @@
 				var edge = nodes[i];
 				var p2 = {};
 				if (id == edge.source().id()) {
-					p2 = $.Cmdbuild.g3d.ViewerUtilities.getCenterPosition(edge
-							.target());
+					p2 = $.Cmdbuild.g3d.ViewerUtilities.getCenterPosition(edge.target());
 				} else if (id == edge.target().id()) {
-					p2 = $.Cmdbuild.g3d.ViewerUtilities.getCenterPosition(edge
-							.source());
+					p2 = $.Cmdbuild.g3d.ViewerUtilities.getCenterPosition(edge.source());
 				}
-				$.Cmdbuild.g3d.ViewerUtilities.modifyLine(scene, edge,
-						position, p2);
+				$.Cmdbuild.g3d.ViewerUtilities.modifyLine(scene, edge, position, p2);
 			}
 		};
 		this.onDocumentMouseDown = function(event) {
 			$.Cmdbuild.g3d.ViewerUtilities.closeTooltip();
 			event.preventDefault();
-			var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5)
-					.unproject(camera);
-			var raycaster = new THREE.Raycaster(camera.position, vector.sub(
-					camera.position).normalize());
+			var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5).unproject(camera);
+			var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
 			raycaster.linePrecision = 3;
 			var intersects = raycaster.intersectObjects(objects);
 			// LASTSELECTED = null;
@@ -316,28 +290,22 @@
 			}
 			if (INTERSECTED && SELECTED) {
 				plane.position.copy(INTERSECTED.position);
-				if (!$.Cmdbuild.g3d.ViewerUtilities.equals(node.position(),
-						INTERSECTED.position)) {
-					thisViewer.pushNewPosition(thisViewer.model,
-							SELECTED.elementId, node.position(),
+				if (!$.Cmdbuild.g3d.ViewerUtilities.equals(node.position(), INTERSECTED.position)) {
+					thisViewer.pushNewPosition(thisViewer.model, SELECTED.elementId, node.position(),
 							INTERSECTED.position);
 				} else {
 					if (node.selectionOnNode) {
-						node.selectionOnNode.position
-								.copy(node.glObject.position);
+						node.selectionOnNode.position.copy(node.glObject.position);
 					}
 
 				}
 			} else if (SELECTED) {
-				if (!$.Cmdbuild.g3d.ViewerUtilities.equals(node.position(),
-						SELECTED.position)) {
-					thisViewer.pushNewPosition(thisViewer.model,
-							SELECTED.elementId, node.position(),
-							SELECTED.position);
+				if (!$.Cmdbuild.g3d.ViewerUtilities.equals(node.position(), SELECTED.position)) {
+					thisViewer
+							.pushNewPosition(thisViewer.model, SELECTED.elementId, node.position(), SELECTED.position);
 				} else {
 					if (node.selectionOnNode) {
-						node.selectionOnNode.position
-								.copy(node.glObject.position);
+						node.selectionOnNode.position.copy(node.glObject.position);
 					}
 
 				}
@@ -350,10 +318,8 @@
 			if (node.selectionOnNode) {
 				node.selectionOnNode.position.copy(newPosition);
 			}
-			if (!$.Cmdbuild.g3d.ViewerUtilities
-					.equals(oldPosition, newPosition)) {
-				var modifyPosition = new $.Cmdbuild.g3d.commands.modifyPosition(
-						model, id, newPosition);
+			if (!$.Cmdbuild.g3d.ViewerUtilities.equals(oldPosition, newPosition)) {
+				var modifyPosition = new $.Cmdbuild.g3d.commands.modifyPosition(model, id, newPosition);
 				thisViewer.commandsManager.execute(modifyPosition, {});
 			}
 		};
@@ -366,8 +332,7 @@
 				name : "guisphere"// "guicircle"//"breadthfirst"//"concentric"//
 			});
 			if (rough) {
-				$.Cmdbuild.g3d.ViewerUtilities.clearScene(scene, this.model,
-						objects, edges);
+				$.Cmdbuild.g3d.ViewerUtilities.clearScene(scene, this.model, objects, edges);
 			}
 			objects = [];
 			edges = [];
@@ -376,13 +341,29 @@
 			}
 			this.refreshNodes(scene, rough);
 			this.refreshRelations(scene, rough);
+//			this.refreshDebugBox(scene);
 			this.duringRefresh = false;
-//			if (this.toRefreshAgain === true) {
-//				this.toRefreshAgain = false;
-//				this.refresh(false);
-//			} else {
-				this.refreshLabels();
-//			}
+			// if (this.toRefreshAgain === true) {
+			// this.toRefreshAgain = false;
+			// this.refresh(false);
+			// } else {
+			this.refreshLabels();
+			// }
+		};
+		this.refreshDebugBox = function(scene) {
+			var box = $.Cmdbuild.g3d.ViewerUtilities.boundingBox(objects);
+			var material = new THREE.LineBasicMaterial({
+				color : "#ff6666",
+				linewidth : 1
+			});
+			var vertices = $.Cmdbuild.g3d.ViewerUtilities.boundingBoxVertices(box);
+			for (var i = 0; vertices && i < vertices.length - 1; i++) {
+				var geometry = new THREE.Geometry();
+				geometry.vertices.push(vertices[i], vertices[i + 1]);
+				var line = new THREE.Line(geometry, material);
+				scene.add(line);
+
+			}
 		};
 		this.refreshNodes = function(scene, rough) {
 			var nodes = this.model.getNodes();
@@ -391,27 +372,22 @@
 				if (node.removed()) {
 					continue;
 				}
-				var glObject = scene.getObjectById($.Cmdbuild.g3d.Model
-						.getGraphData(node, "glId"));// node.glObject;//
+				var glObject = scene.getObjectById($.Cmdbuild.g3d.Model.getGraphData(node, "glId"));// node.glObject;//
 				var me = this;
 				if (glObject && !rough) {
-					if (!$.Cmdbuild.g3d.ViewerUtilities.equals(
-							glObject.position, node.position())) {
+					if (!$.Cmdbuild.g3d.ViewerUtilities.equals(glObject.position, node.position())) {
 						new $.Cmdbuild.g3d.ViewerUtilities.moveObject(me, node);
 					}
 					objects.push(glObject);
 				} else {
-					var parentId = $.Cmdbuild.g3d.Model.getGraphData(node,
-							"previousPathNode");
+					var parentId = $.Cmdbuild.g3d.Model.getGraphData(node, "previousPathNode");
 					var parentNode = this.model.getNode(parentId);
-					var p = (parentNode && parentNode.glObject) ? parentNode.glObject.position
-							: {
-								x : 0,
-								y : 0,
-								z : 0
-							};
-					var object = $.Cmdbuild.g3d.ViewerUtilities.objectFromNode(
-							node, p);
+					var p = (parentNode && parentNode.glObject) ? parentNode.glObject.position : {
+						x : 0,
+						y : 0,
+						z : 0
+					};
+					var object = $.Cmdbuild.g3d.ViewerUtilities.objectFromNode(node, p);
 					node.glObject = object;
 					scene.add(object);
 					objects.push(object);
@@ -425,27 +401,22 @@
 				var edge = modelEdges[i];
 				var source = edge.source();
 				var target = edge.target();
-				var p1 = $.Cmdbuild.g3d.ViewerUtilities
-						.getCenterPosition(source);
-				var p2 = $.Cmdbuild.g3d.ViewerUtilities
-						.getCenterPosition(target);
+				var p1 = $.Cmdbuild.g3d.ViewerUtilities.getCenterPosition(source);
+				var p2 = $.Cmdbuild.g3d.ViewerUtilities.getCenterPosition(target);
 				if (edge.glLine && !rough) {
 					var glP1 = edge.glLine.geometry.vertices[0];
 					var glP2 = edge.glLine.geometry.vertices[1];
-					if (!($.Cmdbuild.g3d.ViewerUtilities.equals(glP1, p1) && $.Cmdbuild.g3d.ViewerUtilities
-							.equals(glP2, p2))) {
-						$.Cmdbuild.g3d.ViewerUtilities.modifyLine(scene, edge,
-								p1, p2);
+					if (!($.Cmdbuild.g3d.ViewerUtilities.equals(glP1, p1) && $.Cmdbuild.g3d.ViewerUtilities.equals(
+							glP2, p2))) {
+						$.Cmdbuild.g3d.ViewerUtilities.modifyLine(scene, edge, p1, p2);
 					}
 					edges.push(edge.glLine);
 				} else {
-					var line = $.Cmdbuild.g3d.ViewerUtilities
-							.lineFromEdge(edge);
+					var line = $.Cmdbuild.g3d.ViewerUtilities.lineFromEdge(edge);
 					edge.glLine = line;
 					edges.push(line);
 					scene.add(line);
-					$.Cmdbuild.g3d.ViewerUtilities.modifyLine(scene, edge, p1,
-							p2);
+					$.Cmdbuild.g3d.ViewerUtilities.modifyLine(scene, edge, p1, p2);
 				}
 			}
 		};
@@ -479,15 +450,13 @@
 			var node = thisViewer.model.getNode(id);
 			var position = node.position();
 			if (!node.selectionOnNode) {
-				var object = $.Cmdbuild.g3d.ViewerUtilities
-						.selectionOnNode(node);
+				var object = $.Cmdbuild.g3d.ViewerUtilities.selectionOnNode(node);
 				scene.add(object);
 				node.selectionOnNode = object;
 				object.position.set(position.x, position.y, position.z);
 			} else {
 				var position = node.glObject.position;
-				node.selectionOnNode.position.set(position.x, position.y,
-						position.z);
+				node.selectionOnNode.position.set(position.x, position.y, position.z);
 
 			}
 		};
@@ -524,16 +493,14 @@
 				box.h += m * 2;
 
 			}
-			box.vertices = $.Cmdbuild.g3d.ViewerUtilities
-					.boundingBoxVertices(box);
+			box.vertices = $.Cmdbuild.g3d.ViewerUtilities.boundingBoxVertices(box);
 			return box;
 		};
 		this.zoomAll = function(vertices) {
 			this.scaleInView(vertices);
 			camera.updateProjectionMatrix();
 		};
-		this.vector2ScreenPosition = function(vector, camera, widthHalf,
-				heightHalf) {
+		this.vector2ScreenPosition = function(vector, camera, widthHalf, heightHalf) {
 			var v = new THREE.Vector3();
 			v.copy(vector);
 			vector.project(camera);
@@ -571,10 +538,8 @@
 				var nodes = this.model.getNodes();
 				for (var i = 0; i < nodes.length; i++) {
 					var node = nodes[i];
-					var label = $.Cmdbuild.g3d.Model
-							.getGraphData(node, "label");
-					if (showLabels === OPTIONS_LABEL_ON_SELECTED
-							&& !this.selected.isSelect(node.id())) {
+					var label = $.Cmdbuild.g3d.Model.getGraphData(node, "label");
+					if (showLabels === OPTIONS_LABEL_ON_SELECTED && !this.selected.isSelect(node.id())) {
 						continue;
 					}
 					labels.push({
@@ -585,55 +550,54 @@
 					strEvents += " onmousedown='$.Cmdbuild.customvariables.viewer.onDocumentMouseDown(event)' ";
 					strEvents += " onmouseup='$.Cmdbuild.customvariables.viewer.onDocumentMouseUp(event)' ";
 					strEvents += " ondblclick='$.Cmdbuild.customvariables.viewer.onDocumentDblClick(event)' ";
-					var strHtml = "<div id='label" + node.id()
-							+ "' class='labelText'><span " + strEvents + ">"
-							+ label + "</span></div>";
+					var strHtml = "<div id='label" + node.id() + "' class='labelText'><span " + strEvents + ">" + label
+							+ "</span></div>";
 					$("#" + idCanvas).after(strHtml);
 				}
 			}
-			labelsInterval = setInterval(
-					function() {
-						var showLabels = $.Cmdbuild.customvariables.options["displayLabel"];
-						if (showLabels === $.Cmdbuild.g3d.constants.NO_LABELS) {
-							clearInterval(labelsInterval);
-							return;
-						}
-						for (var i = 0; i < labels.length; i++) {
-							var p = labels[i].object.position.clone();
-							p.project(camera);
-							var y = parseInt(hCanvas / 2 - p.y * hCanvas / 2);
-							var x = parseInt(wCanvas / 2 + p.x * wCanvas / 2);
-							if (Math.abs(realMouse.y - y) < 40
-									&& (realMouse.x >= x - 40 && realMouse.x < x + 250)) {
-								y = realMouse.y - 60;
-							}
-							if (y < 0 || x < 0 || x > wCanvas
-									|| y > hCanvas - 40) {
-								$("#label" + labels[i].id).css({
-									display : "none"
-								});
+			labelsInterval = setInterval(function() {
+				var showLabels = $.Cmdbuild.customvariables.options["displayLabel"];
+				if (showLabels === $.Cmdbuild.g3d.constants.NO_LABELS) {
+					clearInterval(labelsInterval);
+					return;
+				}
+				for (var i = 0; i < labels.length; i++) {
+					var p = labels[i].object.position.clone();
+					p.project(camera);
+					var y = parseInt(hCanvas / 2 - p.y * hCanvas / 2);
+					var x = parseInt(wCanvas / 2 + p.x * wCanvas / 2);
+					if (Math.abs(realMouse.y - y) < 40 && (realMouse.x >= x - 40 && realMouse.x < x + 250)) {
+						y = realMouse.y - 60;
+					}
+					if (y < 0 || x < 0 || x > wCanvas || y > hCanvas - 40) {
+						$("#label" + labels[i].id).css({
+							display : "none"
+						});
 
-							} else if (!labels[i].x || !labels[i].y
-									|| Math.abs(labels[i].y - y) > 4
-									|| Math.abs(labels[i].x - x) > 4) {
-								$("#label" + labels[i].id).css({
-									top : y,
-									left : x,
-									display : "block"
-								});
-							}
-							labels[i].x = x;
-							labels[i].y = y;
-						}
-					}, 500);
+					} else if (!labels[i].x || !labels[i].y || Math.abs(labels[i].y - y) > 4
+							|| Math.abs(labels[i].x - x) > 4) {
+						$("#label" + labels[i].id).css({
+							top : y,
+							left : x,
+							display : "block"
+						});
+					}
+					labels[i].x = x;
+					labels[i].y = y;
+				}
+			}, 500);
 		};
 		this.stepZoom = function(box, w, h) {
 			var NORECURSE = 100;
 			var me = this;
+			var interval = -1;
 			function stepIn() {
-				setTimeout(function() {
-					if ($.Cmdbuild.g3d.ViewerUtilities.onVideo(box, w, h,
-							camera.projectionMatrix, camera.matrixWorld)
+				if (interval === -1) {
+					clearTimeout(interval);
+					interval = -1;
+				}
+				interval = setTimeout(function() {
+					if ($.Cmdbuild.g3d.ViewerUtilities.onVideo(box, w, h, camera.projectionMatrix, camera.matrixWorld)
 							&& NORECURSE-- > 0) {
 						controls.setY(+1);
 						stepIn();
@@ -641,9 +605,12 @@
 				}, 50);
 			}
 			function stepOut() {
-				setTimeout(function() {
-					if (!$.Cmdbuild.g3d.ViewerUtilities.onVideo(box, w, h,
-							camera.projectionMatrix, camera.matrixWorld)
+				if (interval === -1) {
+					clearTimeout(interval);
+					interval = -1;
+				}
+				interval = setTimeout(function() {
+					if (!$.Cmdbuild.g3d.ViewerUtilities.onVideo(box, w, h, camera.projectionMatrix, camera.matrixWorld)
 							&& NORECURSE-- > 0) {
 						controls.setY(-1);
 						stepOut();
@@ -667,12 +634,11 @@
 				z : z
 			};
 			controls.enabled = true;
-			$.Cmdbuild.customvariables.camera.zoomOnPosition(position,
-					function() {
-						if (box.w > 0 || box.h > 0) {
-							this.stepZoom(box, w, h);
-						}
-					}, this);
+			$.Cmdbuild.customvariables.camera.zoomOnPosition(position, function() {
+				if (box.w > 0 && box.h > 0) {
+					this.stepZoom(box, w, h);
+				}
+			}, this);
 		};
 		this.refreshOptions = function() {
 			this.refresh();

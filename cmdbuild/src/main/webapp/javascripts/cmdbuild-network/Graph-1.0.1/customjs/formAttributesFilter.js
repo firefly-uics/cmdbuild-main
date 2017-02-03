@@ -133,7 +133,6 @@
 			if ($
 					.isEmptyObject($.Cmdbuild.custom.configuration.temporaryFilterByAttributes[classId])) {
 				delete $.Cmdbuild.custom.configuration.temporaryFilterByAttributes[classId];
-
 			}
 			$.Cmdbuild.standard.commands.navigate({
 				form : navigationForm,

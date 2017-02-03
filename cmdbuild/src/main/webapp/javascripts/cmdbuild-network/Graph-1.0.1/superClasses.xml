@@ -29,15 +29,15 @@
 				<superClasses>true</superClasses>
 					<classId>$superClassesForm.id</classId>
 			</params>
-			<rowButton i18nTooltip="TOOLTIP_ATTRIBUTES" class="grid-btn btn-find" tooltip="Zoom on Card">
-				<onClick>
-					<command>navigateOnAttributes</command>
-					<form>searchOnAttributes</form>
-					<dialog>searchAttributesPanelDialog</dialog>
-					<classId>$superClassesForm.classId</classId>
-					<caller>superClassesForm</caller>
-				</onClick>
-			</rowButton>
+<!-- 			<rowButton i18nTooltip="TOOLTIP_ATTRIBUTES" class="grid-btn btn-find" tooltip="Zoom on Card"> -->
+<!-- 				<onClick> -->
+<!-- 					<command>navigateOnAttributes</command> -->
+<!-- 					<form>searchOnAttributes</form> -->
+<!-- 					<dialog>searchAttributesPanelDialog</dialog> -->
+<!-- 					<classId>$superClassesForm.classId</classId> -->
+<!-- 					<caller>superClassesForm</caller> -->
+<!-- 				</onClick> -->
+<!-- 			</rowButton> -->
 			<onChange>
 				<command>selectClass</command>
 				<node>$superClassesForm.id</node>

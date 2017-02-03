@@ -260,7 +260,8 @@ public class DatabaseConfigurator {
 				baseSqlPath + "10_system_functions_extras.sql", //
 				baseSqlPath + "11_workflow.sql", //
 				baseSqlPath + "12_tecnoteca_extras.sql", //
-				baseSqlPath + "13_bim.sql"
+				baseSqlPath + "13_bim.sql", //
+				baseSqlPath + "14_graph.sql"
 		);
 		for (final String file : sqlFiles) {
 			Log.CMDBUILD.info("applying '{}'", file);

@@ -480,8 +480,15 @@
 					"BOXLABEL_CLASS", "Class");
 			var itemDescription = $.Cmdbuild.g3d.Model.getGraphData(node,
 					"label");
-			var typeDescription = $.Cmdbuild.customvariables.cacheClasses
-					.getDescription(classId);
+			var typeDescription = "";
+			if (classId === $.Cmdbuild.g3d.constants.GUICOMPOUNDNODE) {
+				typeDescription = this.getCompoundDescription(node);
+				
+			} else {
+				typeDescription = $.Cmdbuild.customvariables.cacheClasses
+				.getDescription(classId);
+				
+			}
 
 			// create UI
 			var $img = $("<img></img>").attr("src", img_src)
@@ -500,7 +507,20 @@
 			$tooltip_window[0].style.top = mouseY - (h + 20);
 			$tooltip_window[0].style.left = mouseX - w / 2;
 			$tooltip_window[0].style.display = "block";
+		},
+		getCompoundDescription : function(node) {
+			var compoundData = $.Cmdbuild.g3d.Model.getGraphData(node, "compoundData");
+			var classId = $.Cmdbuild.g3d.Model.getGraphData(node, "classId");
+			var str = $.Cmdbuild.customvariables.cacheClasses
+			.getDescription(classId) + "<br/>";
+			for (var i = 0; i < compoundData.classes.length; i++) {
+				var type = compoundData.classes[i];
+				str += type.total + " - " + type.type + "<br/>";
+				
+			}
+			return str;
 		}
+
 	};
 	$.Cmdbuild.g3d.ViewerUtilities = ViewerUtilities;
 })(jQuery);

@@ -11,8 +11,7 @@
 		$.Cmdbuild.customvariables.cacheTrees = new cacheTrees();
 
 		// load icons data
-		$.Cmdbuild.customvariables.cacheImages
-				.loadData(callback, callbackScope);
+		$.Cmdbuild.customvariables.cacheImages.loadData(callback, callbackScope);
 	};
 	var cacheTrees = function() {
 		this.data = {};
@@ -29,8 +28,7 @@
 			};
 			return filter;
 		};
-		this.setTreeOnNavigationManager = function(node, callback,
-				callbackScope) {
+		this.setTreeOnNavigationManager = function(node, callback, callbackScope) {
 			this.navigationManager.setCurrentTree(node, function(value) {
 				callback.apply(callbackScope, [ value ]);
 			}, this);
@@ -66,8 +64,7 @@
 				$.Cmdbuild.g3d.proxy.getDomainTrees({
 					filter : filterContain
 				}, function(treesAboutClass) {
-					this.data[classId] = this.merge(treesWithClassLikeRoot,
-							treesAboutClass);
+					this.data[classId] = this.merge(treesWithClassLikeRoot, treesAboutClass);
 					callback.apply(callbackScope, []);
 				}, this);
 			}, this);
@@ -95,18 +92,15 @@
 			if (this.data[classId] && this.data[classId].length > 0) {
 				return this.data[classId];
 			}
-			var classType = $.Cmdbuild.customvariables.cacheClasses
-					.getClass(classId);
+			var classType = $.Cmdbuild.customvariables.cacheClasses.getClass(classId);
 			if (classType && classType.parent) {
 				return this.getTreesFromClass(classType.parent);
 			}
 			return [];
 		};
-		this.setCurrentNavigationTree = function(navigationTree, callback,
-				callbackScope) {
+		this.setCurrentNavigationTree = function(navigationTree, callback, callbackScope) {
 			if (navigationTree) {
-				$.Cmdbuild.g3d.proxy.getDomainTree(navigationTree, function(
-						tree) {
+				$.Cmdbuild.g3d.proxy.getDomainTree(navigationTree, function(tree) {
 					this.navigationManager.setServerTree(tree);
 					callback.apply(callbackScope, [ tree ]);
 				}, this);
@@ -146,8 +140,7 @@
 			}
 		};
 		this.getBaseImages = function(type) {
-			var base_url = $.Cmdbuild.global.getAppConfigUrl()
-					+ $.Cmdbuild.g3d.constants.SPRITES_PATH;
+			var base_url = $.Cmdbuild.global.getAppConfigUrl() + $.Cmdbuild.g3d.constants.SPRITES_PATH;
 			switch (type) {
 			case "default":
 				return base_url + "default.png";
@@ -178,19 +171,15 @@
 			if (icons && icons.length) {
 				var icon = icons[0];
 				try {
-					url = $.Cmdbuild.utilities.proxy
-							.getURIForFileStoreItemDownload(FILESTORE_IMAGES,
-									icon.image.details.folder,
-									icon.image.details.file);
+					url = $.Cmdbuild.utilities.proxy.getURIForFileStoreItemDownload(FILESTORE_IMAGES,
+							icon.image.details.folder, icon.image.details.file);
 
 				} catch (e) {
 					console.log("Error on file : ", icon.image.details.file);
-					url = $.Cmdbuild.customvariables.cacheImages
-							.getBaseImages("default");
+					url = $.Cmdbuild.customvariables.cacheImages.getBaseImages("default");
 				}
 			} else {
-				url = $.Cmdbuild.customvariables.cacheImages
-						.getBaseImages("default");
+				url = $.Cmdbuild.customvariables.cacheImages.getBaseImages("default");
 			}
 			return url;
 		};
@@ -199,9 +188,9 @@
 		this.data = {};
 		this.classInFilter = function(classId) {
 			var filterByAttributes = $.Cmdbuild.custom.configuration.filterByAttributes;
-			for (var key in filterByAttributes) {
+			for ( var key in filterByAttributes) {
 				if (this.sameClass(classId, key)) {
-					return filterByAttributes[key];	
+					return filterByAttributes[key];
 				}
 			}
 			return null;
@@ -210,8 +199,9 @@
 			var classes = [];
 			do {
 				var classAttributes = this.getClass(currentClass);
-				if (! classAttributes) {
-					// GUICOMPOUNDNODEconsole.log("Error!", currentClass, classes);
+				if (!classAttributes) {
+					// GUICOMPOUNDNODEconsole.log("Error!", currentClass,
+					// classes);
 					break;
 				}
 				currentClass = classAttributes.parent;
@@ -231,28 +221,25 @@
 			}
 			return this.sameClass(superClass, classAttributes.parent);
 		};
+		this.pushClass = function(classId, callback, callbackScope) {
+			$.Cmdbuild.g3d.proxy.getClass(classId, function(classAttributes) {
+				this.data[classId] = classAttributes;
+				$.Cmdbuild.customvariables.cacheTrees.pushTreeForClass(classId, function() {
+					if (!classAttributes.parent) {
+						callback.apply(callbackScope, [ classAttributes ]);
+					} else {
+						this.getLoadingClass(classAttributes.parent, callback, callbackScope);
+					}
+				}, this);
+			}, this);
+		};
 		this.getLoadingClass = function(classId, callback, callbackScope) {
 			if (this.data[classId]) {
 				callback.apply(callbackScope, [ this.data[classId] ]);
 			} else if (classId === $.Cmdbuild.g3d.constants.GUICOMPOUNDNODE) {
-				callback.apply(callbackScope,
-						[ [ $.Cmdbuild.g3d.constants.COMPOUND_ATTRIBUTES ] ]);
+				callback.apply(callbackScope, [ [ $.Cmdbuild.g3d.constants.COMPOUND_ATTRIBUTES ] ]);
 			} else {
-				$.Cmdbuild.g3d.proxy.getClass(classId,
-						function(classAttributes) {
-							this.data[classId] = classAttributes;
-							$.Cmdbuild.customvariables.cacheTrees
-									.pushTreeForClass(classId, function() {
-										if (!classAttributes.parent) {
-											callback.apply(callbackScope,
-													[ classAttributes ]);
-										} else {
-											this.getLoadingClass(
-													classAttributes.parent,
-													callback, callbackScope);
-										}
-									}, this);
-						}, this);
+				this.pushClass(classId, callback, callbackScope);
 			}
 		};
 		this.getClass = function(classId) {
@@ -262,8 +249,7 @@
 			if (classId === $.Cmdbuild.g3d.constants.GUICOMPOUNDNODE) {
 				return $.Cmdbuild.g3d.constants.GUICOMPOUNDNODEDESCRIPTION;
 			}
-			return (this.data[classId] && this.data[classId].description) ? this.data[classId].description
-					: "";
+			return (this.data[classId] && this.data[classId].description) ? this.data[classId].description : "";
 		};
 		this.getClasses = function() {
 			var classes = [];
@@ -275,17 +261,33 @@
 			}
 			return classes;
 		};
-		this.pushClassesRecursive = function(nodes, index, callback,
-				callbackScope) {
+		this.pushCompoundClassesRecursive = function(types, index, callback, callbackScope) {
+			if (index >= types.length) {
+				callback.apply(callbackScope, []);
+				return;
+			}
+			var type = types[index].type.replace(/"/g, '');
+			this.getLoadingClass(type, function() {
+				this.pushCompoundClassesRecursive(types, index + 1, callback, callbackScope);
+			}, this);
+		};
+		this.pushClassesRecursive = function(nodes, index, callback, callbackScope) {
 			if (index >= nodes.length) {
 				callback.apply(callbackScope, []);
 				return;
 			}
 			var node = nodes[index];
-			this.getLoadingClass(node.data.classId, function() {
-				this.pushClassesRecursive(nodes, index + 1, callback,
-						callbackScope);
-			}, this);
+			if (node.data.classId === $.Cmdbuild.g3d.constants.GUICOMPOUNDNODE) {
+				var compoundData = node.data.compoundData;
+				this.pushCompoundClassesRecursive(compoundData.classes, 0, function() {
+					this.pushClassesRecursive(nodes, index + 1, callback, callbackScope);
+				}, this);
+			}
+			else {
+				this.getLoadingClass(node.data.classId, function() {
+					this.pushClassesRecursive(nodes, index + 1, callback, callbackScope);
+				}, this);
+			}
 		};
 		this.pushClasses = function(elements, callback, callbackScope) {
 			this.pushClassesRecursive(elements.nodes, 0, function() {
@@ -296,26 +298,23 @@
 	var cacheDomains = function() {
 		this.data = [];
 		this.pushClass = function(classId, callback, callbackScope) {
-			$.Cmdbuild.customvariables.cacheClasses.getLoadingClass(classId,
-					function() {
-						this.getAllDomains(classId, function() {
-							callback.apply(callbackScope, []);
-						}, this);
-					}, this);
+			$.Cmdbuild.customvariables.cacheClasses.getLoadingClass(classId, function() {
+				this.getAllDomains(classId, function() {
+					callback.apply(callbackScope, []);
+				}, this);
+			}, this);
 		};
 		this.getAllDomains = function(classId, callback, callbackScope) {
 			var filter = this.getFilterForDomain(classId);
 			var param = {
 				filter : filter
 			};
-			if (! classId) {
+			if (!classId) {
 				callback.apply(callbackScope, []);
 			} else {
-				$.Cmdbuild.utilities.proxy.getDomains(param,
-						function(response) {
-							this.getAllDomainsRecursive(response, callback,
-									callbackScope);
-						}, this);
+				$.Cmdbuild.utilities.proxy.getDomains(param, function(response) {
+					this.getAllDomainsRecursive(response, callback, callbackScope);
+				}, this);
 			}
 		};
 
@@ -330,42 +329,35 @@
 				this.getAllDomainsRecursive(domains, callback, callbackScope);
 			} else {
 				this.loadSingleDomain(domain._id, function() {
-					this.getAllDomainsRecursive(domains, callback,
-							callbackScope);
+					this.getAllDomainsRecursive(domains, callback, callbackScope);
 				}, this);
 			}
 		};
 		this.loadSingleDomain = function(domainId, callback, callbackScope) {
-			$.Cmdbuild.utilities.proxy.getDomain(domainId, function(
-					domainAttributes) {
-				$.Cmdbuild.utilities.proxy.getDomainAttributes(domainId,
-						function(domainCustomAttributes) {
-							this.loadExtremeClasses(domainAttributes.source,
-									domainAttributes.destination, function() {
-										var retDomain = this.pushDomain(
-												domainAttributes,
-												domainCustomAttributes);
-										callback.apply(callbackScope,
-												[ retDomain ]);
-									}, this);
-						}, this);
+			$.Cmdbuild.utilities.proxy.getDomain(domainId, function(domainAttributes) {
+				$.Cmdbuild.utilities.proxy.getDomainAttributes(domainId, function(domainCustomAttributes) {
+					this.loadExtremeClasses(domainAttributes.source, domainAttributes.destination, function() {
+						var retDomain = this.pushDomain(domainAttributes, domainCustomAttributes);
+						callback.apply(callbackScope, [ retDomain ]);
+					}, this);
+				}, this);
 			}, this);
 		};
-		this.loadExtremeClasses = function(sourceId, destinationId, callback,
-				callbackScope) {
-			$.Cmdbuild.customvariables.cacheClasses.getLoadingClass(sourceId,
-					function() {
-						$.Cmdbuild.customvariables.cacheClasses
-								.getLoadingClass(destinationId, function() {
-									callback.apply(callbackScope, []);
-								}, this);
-					}, this);
+		this.loadExtremeClasses = function(sourceId, destinationId, callback, callbackScope) {
+			$.Cmdbuild.customvariables.cacheClasses.getLoadingClass(sourceId, function() {
+				$.Cmdbuild.customvariables.cacheClasses.getLoadingClass(destinationId, function() {
+					callback.apply(callbackScope, []);
+				}, this);
+			}, this);
 		};
 		this.pushDomain = function(domainAttributes, domainCustomAttributes) {
 			var destinationDescription = $.Cmdbuild.customvariables.cacheClasses
 					.getDescription(domainAttributes.destination);
-			var sourceDescription = $.Cmdbuild.customvariables.cacheClasses
-					.getDescription(domainAttributes.source);
+			var sourceDescription = $.Cmdbuild.customvariables.cacheClasses.getDescription(domainAttributes.source);
+			var index = this.getDomainIndex(domainAttributes._id);
+			if (index !== -1) {
+				return this.data[index];
+			}
 			this.data.push({
 				_id : domainAttributes._id,
 				active : true,
@@ -411,8 +403,7 @@
 				if (domains.length > 0) {
 					allDomains = allDomains.concat(domains);
 				}
-				var classAttributes = $.Cmdbuild.customvariables.cacheClasses
-						.getClass(classId);
+				var classAttributes = $.Cmdbuild.customvariables.cacheClasses.getClass(classId);
 				if (!(classAttributes && classAttributes.parent)) {
 					return allDomains;
 				}
@@ -422,8 +413,7 @@
 		this._getDomains4Class = function(classId) {
 			var domains = [];
 			for (var i = 0; i < this.data.length; i++) {
-				if (this.data[i].sourceId === classId
-						|| this.data[i].destinationId === classId) {
+				if (this.data[i].sourceId === classId || this.data[i].destinationId === classId) {
 					domains.push(this.data[i]);
 				}
 			}
@@ -432,11 +422,9 @@
 		this.getData = function() {
 			return this.data;
 		};
-		this.getLoadingDomains4Class = function(classId, callback,
-				callbackScope) {
+		this.getLoadingDomains4Class = function(classId, callback, callbackScope) {
 			this.pushClass(classId, function() {
-				callback.apply(callbackScope,
-						[ this.getDomains4Class(classId) ]);
+				callback.apply(callbackScope, [ this.getDomains4Class(classId) ]);
 			}, this);
 		};
 		this.getFilterForDomain = function(classId) {

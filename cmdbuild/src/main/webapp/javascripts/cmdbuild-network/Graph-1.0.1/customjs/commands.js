@@ -1,4 +1,12 @@
 (function($) {
+	var PRINT_NETWORK_CARD = "%PRINT_NETWORK_CARD";
+	var PRINT_NETWORK_IMAGE = "%PRINT_NETWORK_IMAGE";
+	var PRINT_NETWORK_ROWS = "%PRINT_NETWORK_ROWS";
+	var PRINT_NETWORK_TITLE = "%PRINT_NETWORK_TITLE";
+	var PRINT_NETWORK_SUBTITLE = "%PRINT_NETWORK_SUBTITLE";
+	var PRINT_NETWORK_FOOTER = "%PRINT_NETWORK_FOOTER";
+	var PRINT_NETWORK_TABLETITLE = "%PRINT_NETWORK_TABLETITLE";
+
 	var sliderValue = 1;
 	function reopenWithLevels(controlId, value) {
 		setTimeout(function() {
@@ -11,6 +19,8 @@
 		}, 1000);
 	}
 	var commands = {
+		sliderValueTimer : -1,
+
 		variables : {
 			BUTTONACTIVECLASS : "btn-active"
 		},
@@ -18,18 +28,81 @@
 			var paramActualized = $.Cmdbuild.dataModel.resolveVariables(param);
 			console.log("Test", param, paramActualized);
 		},
+		filterDomains : function(param) {
+			var classDescription = $.Cmdbuild.utilities.getHtmlFieldValue("#" + param.id);
+			$.Cmdbuild.standard.commands.navigate({
+				form : param.navigationForm,
+				container : param.navigationContainer,
+				classDescription : (classDescription) ? classDescription : "-1"
+			});
+		},
+		getPrintingRows : function() {
+			var data = $.Cmdbuild.customvariables.model.getCards(0, -1, {});
+			var classHeader = $.Cmdbuild.translations.getTranslation("PRINT_NETWORK_CLASSHEADER", "Class");
+			var cardHeader = $.Cmdbuild.translations.getTranslation("PRINT_NETWORK_CARDHEADER", "Card description");
+			var str = "<tr>";
+			str += "<th>" + classHeader + "</th>";
+			str += "<th>" + cardHeader + "</th>";
+			str += "</tr>";
+
+			for (var i = 0; i < data.rows.length; i++) {
+				var row = data.rows[i];
+				str += "<tr>";
+				str += "<td>" + (row.classDescription || "") + "</td>"
+				str += "<td>" + (row.label || "") + "</td>"
+				str += "</tr>";
+			}
+			return str;
+		},
+		getPrintingCard : function(callback, callbackScope) {
+			var data = $.Cmdbuild.customvariables.selected.getCards(0, 1);
+			if (data.rows.length === 0) {
+				callback.apply(callbackScope, []);
+				return;
+			}
+			var str = "<table class='card'>";
+			var className = data.rows[0].classId;
+			var cardId = data.rows[0].id;
+			$.Cmdbuild.g3d.proxy.getClassAttributes(className, function(attributes) {
+				$.Cmdbuild.g3d.proxy.getCardData(className, cardId, {}, function(data) {
+					for (var i = 0; i < attributes.length; i++) {
+						var attribute = attributes[i];
+						if (attribute.displayableInList && data[attribute._id]) {
+							str += "<tr>";
+							str += "<th>" + (attribute.description || "") + "</th>";
+							str += "<td>" + data[attribute._id] + "</td>";
+							str += "</tr>";
+						}
+					}
+					str += "</table>";
+					callback.apply(callbackScope, [ str ]);
+				}, this);
+			}, this);
+		},
 		print : function(param) {
-			var file = $.Cmdbuild.global.getAppConfigUrl()
-					+ $.Cmdbuild.g3d.constants.TEMPLATES_PATH
+			var file = $.Cmdbuild.global.getAppConfigUrl() + $.Cmdbuild.g3d.constants.TEMPLATES_PATH
 					+ $.Cmdbuild.g3d.constants.PRINT_TEMPLATE;
 
 			var mywindow = window.open('', 'my div', 'height=600,width=900');
+			var me = this;
 			$.Cmdbuild.g3d.Options.getFileFromServer(file, function(template) {
 				var renderer = $.Cmdbuild.customvariables.viewer.getRenderer();
-				var strImg = "<img src='"
-						+ renderer.domElement.toDataURL("image/png") + "'";
-				var res = template.replace("%PRINT_NETWORK_IMAGE", strImg);
-				Popup(res);
+				me.getPrintingCard(function(strCard) {
+					var strTitle = $.Cmdbuild.translations.getTranslation("PRINT_NETWORK_TITLE", "Relation Graph");
+					var strSubTitle = $.Cmdbuild.translations.getTranslation("PRINT_NETWORK_SUBTITLE", "Card");
+					var res = template.replace(PRINT_NETWORK_TITLE, strTitle);
+					res = res.replace(PRINT_NETWORK_SUBTITLE, strSubTitle);
+					res = res.replace(PRINT_NETWORK_CARD, strCard);
+					var strImg = "<img src='" + renderer.domElement.toDataURL("image/png") + "'</img>";
+					res = res.replace(PRINT_NETWORK_IMAGE, strImg);
+					var strTableTitle = $.Cmdbuild.translations.getTranslation("PRINT_NETWORK_TABLETITLE",
+							"Relationed entities");
+					res = res.replace(PRINT_NETWORK_TABLETITLE, strTableTitle);
+					var strRows = me.getPrintingRows();
+					res = res.replace(PRINT_NETWORK_ROWS, strRows);
+					res = res.replace(PRINT_NETWORK_FOOTER, "");
+					Popup(res);
+				}, this);
 
 				function Popup(data) {
 					mywindow.document.write(data);
@@ -48,8 +121,7 @@
 		},
 		showSearchByAttributes : function(param) {
 			var paramActualized = $.Cmdbuild.dataModel.resolveVariables(param);
-			var description = $.Cmdbuild.customvariables.cacheClasses
-					.getDescription(paramActualized.classId);
+			var description = $.Cmdbuild.customvariables.cacheClasses.getDescription(paramActualized.classId);
 			$("#cmdbuildSearchClassDescription").text(description);
 			$.Cmdbuild.standard.commands.navigate({
 				form : param.navigationForm,
@@ -58,31 +130,35 @@
 		},
 		showFilterByAttributes : function(param) {
 			var paramActualized = $.Cmdbuild.dataModel.resolveVariables(param);
-			var description = $.Cmdbuild.customvariables.cacheClasses
-					.getDescription(paramActualized.classId);
+			var description = $.Cmdbuild.customvariables.cacheClasses.getDescription(paramActualized.classId);
 			$("#cmdbuildClassDescription").text(description);
 			$.Cmdbuild.standard.commands.navigate({
 				form : param.navigationForm,
-				container : param.navigationContainer
+				container : param.navigationContainer,
+				classId : paramActualized.classId
 			});
 		},
 		slidingLevels : function(param) {
+			if (this.sliderValueTimer !== -1) {
+				clearTimeout(this.sliderValueTimer);
+				this.sliderValueTimer = -1;
+			}
 			var value = $("#" + param.id + " input").val();
-			if (value !== sliderValue
-					&& !$.Cmdbuild.customvariables.selected.isEmpty()) {
-				sliderValue = value;
-				reopenWithLevels(param.id, value);
-				$.Cmdbuild.customvariables.options.baseLevel = value;
-				$("#baseLevel").spinner("value",
-						$.Cmdbuild.customvariables.options.baseLevel);
+			if (value !== sliderValue && !$.Cmdbuild.customvariables.selected.isEmpty()) {
+				this.sliderValueTimer = setTimeout(function() {
+					sliderValue = value;
+					reopenWithLevels(param.id, value);
+					$.Cmdbuild.customvariables.options.baseLevel = value;
+					$("#baseLevel").spinner("value", $.Cmdbuild.customvariables.options.baseLevel);
+					this.sliderValueTimer = -1;
+				}, 1000);
 			}
 		},
 		navigateOnAttributes : function(param) {
 			var paramActualized = $.Cmdbuild.dataModel.resolveVariables(param);
 			var classes = $.Cmdbuild.custom.configuration.filterByAttributes;
 			$.Cmdbuild.custom.configuration.temporaryFilterByAttributes = (classes) ? $.Cmdbuild.utilities
-					.clone(classes)
-					: {};
+					.clone(classes) : {};
 			$.Cmdbuild.dataModel.prepareCallerParameters(param.caller, {
 				classId : param.classId
 			});
@@ -99,8 +175,7 @@
 			var temporaryClasses = $.Cmdbuild.custom.configuration.temporaryFilterByAttributes;
 			$.Cmdbuild.custom.commands.selectByFilter({
 				classId : param.classId,
-				filterByAttributes : $.Cmdbuild.utilities
-						.clone(temporaryClasses)
+				filterByAttributes : $.Cmdbuild.utilities.clone(temporaryClasses)
 			});
 		},
 		closeFilterAttributesDialog : function(param) {
@@ -108,8 +183,7 @@
 			if (!$.Cmdbuild.custom.configuration.filterByAttributes) {
 				$.Cmdbuild.custom.configuration.filterByAttributes = {};
 			}
-			$.Cmdbuild.custom.configuration.filterByAttributes = $.Cmdbuild.utilities
-					.clone(temporaryClasses);
+			$.Cmdbuild.custom.configuration.filterByAttributes = $.Cmdbuild.utilities.clone(temporaryClasses);
 			$.Cmdbuild.standard.commands.dialogClose(param);
 			$.Cmdbuild.standard.commands.navigate({
 				form : param.navigationForm,
@@ -120,8 +194,7 @@
 		addFilterAttribute : function(param) {
 			var formObject = $.Cmdbuild.dataModel.forms[param.navigationForm];
 			param = $.Cmdbuild.dataModel.resolveVariables(param);
-			var attributeId = $.Cmdbuild.utilities.getHtmlFieldValue("#"
-					+ param.id);
+			var attributeId = $.Cmdbuild.utilities.getHtmlFieldValue("#" + param.id);
 			if (!attributeId) {
 				$.Cmdbuild.standard.commands.navigate({
 					form : param.navigationForm,
@@ -129,9 +202,7 @@
 				});
 				return;
 			}
-			var attributeDescription = $(
-					"#" + param.id + " option[value='" + attributeId + "']")
-					.text();
+			var attributeDescription = $("#" + param.id + " option[value='" + attributeId + "']").text();
 			if (!$.Cmdbuild.custom.configuration.temporaryFilterByAttributes) {
 				$.Cmdbuild.custom.configuration.temporaryFilterByAttributes = {};
 			}
@@ -139,12 +210,10 @@
 			if (!fAttributes[param.classId]) {
 				fAttributes[param.classId] = {};
 			}
-			$.Cmdbuild.g3d.proxy.getClassAttributes(param.classId, function(
-					response) {
+			$.Cmdbuild.g3d.proxy.getClassAttributes(param.classId, function(response) {
 				var attribute = this.getAttribute(response, attributeId);
 				if (!attribute) {
-					console.log("Error on attribute", param.classId,
-							attributeId);
+					console.log("Error on attribute", param.classId, attributeId);
 				}
 				if (attribute.type === "hidden") {
 					attribute.type = "string";
@@ -173,8 +242,7 @@
 
 		},
 		firstOperatorOnType : function(attribute) {
-			var options = $.Cmdbuild.custom.formAttributesFilter
-					.getSpecificOperators(attribute);
+			var options = $.Cmdbuild.custom.formAttributesFilter.getSpecificOperators(attribute);
 			return options[0];
 		},
 		fieldChanged : function(configuration) {
@@ -196,8 +264,7 @@
 			return null;
 		},
 		filterDomains : function(param) {
-			var classDescription = $.Cmdbuild.utilities.getHtmlFieldValue("#"
-					+ param.id);
+			var classDescription = $.Cmdbuild.utilities.getHtmlFieldValue("#" + param.id);
 			$.Cmdbuild.standard.commands.navigate({
 				form : param.navigationForm,
 				container : param.navigationContainer,
@@ -212,43 +279,27 @@
 		},
 		applyNavigationTree : function(param) {
 			var treeValue = param.treeValue;
-			$.Cmdbuild.customvariables.cacheTrees
-					.setCurrentNavigationTree(
-							treeValue,
-							function(tree) {
-								var selected = $.Cmdbuild.customvariables.selected
-										.getCards(0, 1);
-								if (selected.total <= 0) {
-									return;
-								}
-								var classId = selected.rows[0].classId;
-								var cardId = selected.rows[0].id;
-								var navigationTree = $.Cmdbuild.customvariables.cacheTrees
-										.getCurrentNavigationTree();
-								if (navigationTree) {
-									var node = $.Cmdbuild.customvariables.model
-											.getNode(cardId);
-									$.Cmdbuild.customvariables.cacheTrees
-											.setTreeOnNavigationManager(
-													node,
-													function(value) {
-														if (!value) {
-															return;
-														}
-														$('#treeDisplay')
-																.text(
-																		tree.description);
-														$('#treeDisplayLabel')
-																.show();
-														$('#treeDisplay')
-																.show();
-														$.Cmdbuild.custom.commands
-																._navigateOnNode(
-																		classId,
-																		cardId);
-													}, this);
-								}
-							}, this);
+			$.Cmdbuild.customvariables.cacheTrees.setCurrentNavigationTree(treeValue, function(tree) {
+				var selected = $.Cmdbuild.customvariables.selected.getCards(0, 1);
+				if (selected.total <= 0) {
+					return;
+				}
+				var classId = selected.rows[0].classId;
+				var cardId = selected.rows[0].id;
+				var navigationTree = $.Cmdbuild.customvariables.cacheTrees.getCurrentNavigationTree();
+				if (navigationTree) {
+					var node = $.Cmdbuild.customvariables.model.getNode(cardId);
+					$.Cmdbuild.customvariables.cacheTrees.setTreeOnNavigationManager(node, function(value) {
+						if (!value) {
+							return;
+						}
+						$('#treeDisplay').text(tree.description);
+						$('#treeDisplayLabel').show();
+						$('#treeDisplay').show();
+						$.Cmdbuild.custom.commands._navigateOnNode(classId, cardId);
+					}, this);
+				}
+			}, this);
 		},
 		navigateOnNode : function(param, callback, callbackScope) {
 			var selected = $.Cmdbuild.customvariables.selected.getCards(0, 1);
@@ -262,21 +313,18 @@
 				return;
 			}
 			var cardId = selected.rows[0].id;
-			var navigationTree = $.Cmdbuild.customvariables.cacheTrees
-					.getCurrentNavigationTree();
+			var navigationTree = $.Cmdbuild.customvariables.cacheTrees.getCurrentNavigationTree();
 			if (navigationTree) {
 				var node = $.Cmdbuild.customvariables.model.getNode(cardId);
-				$.Cmdbuild.customvariables.cacheTrees
-						.setTreeOnNavigationManager(node, function(value) {
-							if (!value) {
-								if (callback) {
-									callback.apply(callbackScope, []);
-								}
-								return;
-							}
-							this._navigateOnNode(classId, cardId, callback,
-									callbackScope);
-						}, this);
+				$.Cmdbuild.customvariables.cacheTrees.setTreeOnNavigationManager(node, function(value) {
+					if (!value) {
+						if (callback) {
+							callback.apply(callbackScope, []);
+						}
+						return;
+					}
+					this._navigateOnNode(classId, cardId, callback, callbackScope);
+				}, this);
 			} else {
 				this._navigateOnNode(classId, cardId, callback, callbackScope);
 
@@ -290,8 +338,7 @@
 				$.Cmdbuild.customvariables.selected.erase();
 				for ( var key in formObject.checked) {
 					if (formObject.checked[key] === false) {
-						$.Cmdbuild.customvariables.selected.selectByClassName(
-								key, true);
+						$.Cmdbuild.customvariables.selected.selectByClassName(key, true);
 						configuration.filterClasses.push(key);
 					}
 				}
@@ -306,27 +353,23 @@
 			if (formObject) {
 				configuration.filterClassesDomains = [];
 				for ( var key in formObject.checked) {
-					$.Cmdbuild.customvariables.cacheDomains.setActive(key,
-							formObject.checked[key]);
+					$.Cmdbuild.customvariables.cacheDomains.setActive(key, formObject.checked[key]);
 					if (formObject.checked[key] === false) {
-						var domain = $.Cmdbuild.customvariables.cacheDomains
-								.getDomain(key);
+						var domain = $.Cmdbuild.customvariables.cacheDomains.getDomain(key);
 						if (!configuration.filterClassesDomains[domain.sourceId]) {
 							configuration.filterClassesDomains[domain.sourceId] = [];
 						}
 						if (!configuration.filterClassesDomains[domain.destinationId]) {
 							configuration.filterClassesDomains[domain.destinationId] = [];
 						}
-						configuration.filterClassesDomains[domain.sourceId]
-								.push({
-									_id : key,
-									description : key
-								});
-						configuration.filterClassesDomains[domain.destinationId]
-								.push({
-									_id : key,
-									description : key
-								});
+						configuration.filterClassesDomains[domain.sourceId].push({
+							_id : key,
+							description : key
+						});
+						configuration.filterClassesDomains[domain.destinationId].push({
+							_id : key,
+							description : key
+						});
 						$.Cmdbuild.customvariables.model.removeEdge({
 							domainId : key
 						});
@@ -337,38 +380,8 @@
 		},
 		attributeCascade : function(classId) {
 			var fAttributes = $.Cmdbuild.custom.configuration.temporaryFilterByAttributes;
-			var parents = $.Cmdbuild.customvariables.cacheClasses
-					.getAllParents(classId);
+			var parents = $.Cmdbuild.customvariables.cacheClasses.getAllParents(classId);
 			// /// EMPTY
-		},
-		applyFiltersByAttributeRecursive : function(index, classes, toDelete,
-				callback, callbackScope) {
-			if (index >= classes.length) {
-				callback.apply(callbackScope, []);
-				return;
-			}
-			var key = classes[index].key;
-			var nodesForClass = $.Cmdbuild.customvariables.model
-					.getNodesByClassName(key, true);
-			var attribute = $.Cmdbuild.g3d.backend.CmdbuildModel
-					.getJsonFilterAttributes(classes[index].data);
-			this.attributeCascade(key);
-			if (attribute && nodesForClass.length > 0) {
-				var jsonValues = this.getIdsArray(nodesForClass);
-				$.Cmdbuild.g3d.backend.CmdbuildModel
-						.getFilteredCardList(key, jsonValues, attribute,
-								function(response) {
-									this.deleteIfNotInFilter(nodesForClass,
-											this.toTable(response), toDelete);
-									this.applyFiltersByAttributeRecursive(
-											index + 1, classes, toDelete,
-											callback, callbackScope);
-								}, this);
-			} else {
-
-				this.applyFiltersByAttributeRecursive(index + 1, classes,
-						toDelete, callback, callbackScope);
-			}
 		},
 		getIdsArray : function(nodesForClass) {
 			var ids = [];
@@ -379,15 +392,12 @@
 		},
 		selectByFilter : function(param) {
 			param = $.Cmdbuild.dataModel.resolveVariables(param);
-			var nodesForClass = $.Cmdbuild.customvariables.model
-					.getNodesByClassName(param.classId, true);
+			var nodesForClass = $.Cmdbuild.customvariables.model.getNodesByClassName(param.classId, true);
 			var classes = param.filterByAttributes;
-			var attribute = $.Cmdbuild.g3d.backend.CmdbuildModel
-					.getJsonFilterAttributes(classes[param.classId]);
+			var attribute = $.Cmdbuild.g3d.backend.CmdbuildModel.getJsonFilterAttributes(classes[param.classId]);
 			if (attribute && nodesForClass.length > 0) {
 				var jsonValues = this.getIdsArray(nodesForClass);
-				$.Cmdbuild.g3d.backend.CmdbuildModel.getFilteredCardList(
-						param.classId, jsonValues, attribute,
+				$.Cmdbuild.g3d.backend.CmdbuildModel.getFilteredCardList(param.classId, jsonValues, attribute,
 						function(response) {
 							this.selectCards(response);
 						}, this);
@@ -395,27 +405,97 @@
 		},
 		selectCards : function(cards) {
 			for (var i = 0; i < cards.length; i++) {
-				$.Cmdbuild.customvariables.selected.select(
-						cards[i]._id, true);
+				$.Cmdbuild.customvariables.selected.select(cards[i]._id, true);
 			}
 			$.Cmdbuild.customvariables.selected.changed();
+		},
+		applyFiltersByAttributeRecursive : function(arClasses, index) {
+			if (index >= arClasses.length) {
+				return;
+			}
+			var key = arClasses[index].key;
+			var filter = arClasses[index].filter;
+			index++
+			var nodesForClass = $.Cmdbuild.customvariables.model.getNodesByClassName(key, true);
+			var ids = this.getIdsArray(nodesForClass);
+			if (ids.length === 0) {
+				this.applyFiltersByAttributeRecursive(arClasses, index);
+			} else {
+				$.Cmdbuild.g3d.backend.CmdbuildModel.getFilteredClasses(key, ids, function(cards) {
+					var toDelete = this.toDelete(cards, ids);
+					this.deleteBunch(toDelete);
+					this.applyFiltersByAttributeRecursive(arClasses, index);
+				}, this);
+			}
+		},
+
+		openCompoundsOnFilterRecursive : function(compounds, index, callback, callbackScope) {
+			if (index >= compounds.length) {
+				callback.apply(callbackScope, []);
+				return;
+			}
+			var compound = compounds[index];
+			index++;
+			var compoundData = $.Cmdbuild.g3d.Model.getGraphData(compound, "compoundData");
+			$.Cmdbuild.g3d.backend.CmdbuildModel.totalCompoundedElements(compoundData, function(total) {
+				var clusteringThreshold = $.Cmdbuild.customvariables.options.clusteringThreshold;
+				if (total <= clusteringThreshold) {
+					var compoundData = $.Cmdbuild.g3d.Model.getGraphData(compound, "compoundData");
+					var domain = $.Cmdbuild.customvariables.cacheDomains.getDomain(compoundData.domainId);
+					var model = $.Cmdbuild.customvariables.model;
+					var params = {
+						command : "openChildren",
+						id : compound.id(),
+						page : 1,
+						start : 0,
+						limit : clusteringThreshold,
+						domainId : compoundData.domainId,
+						sourceClassName : compoundData.sourceClassName,
+						destinationClassName : compoundData.destinationClassName
+					};
+					var openChildren = new $.Cmdbuild.g3d.commands.openChildren(model, params);
+					$.Cmdbuild.customvariables.commandsManager.execute(openChildren, {}, function() {
+						$.Cmdbuild.customvariables.viewer.clearSelection();
+						$.Cmdbuild.customvariables.viewer.model.remove(compound.id());
+						$.Cmdbuild.customvariables.viewer.model.changed(true);
+						this.openCompoundsOnFilterRecursive(compounds, index, callback, callbackScope);
+					}, this);
+				}
+			}, this);
+		},
+		openCompoundsOnFilter : function() {
+			var compounds = $.Cmdbuild.customvariables.model.getNodesByClassName(
+					$.Cmdbuild.g3d.constants.GUICOMPOUNDNODE, false);
+			this.openCompoundsOnFilterRecursive(compounds, 0, function() {
+			}, this);
 		},
 		applyFiltersByAttribute : function(param) {
 			var configuration = $.Cmdbuild.custom.configuration;
 			var toDelete = [];
 			var classes = $.Cmdbuild.custom.configuration.filterByAttributes;
-			this.applyFiltersByAttributeRecursive(0, this.toArray(classes),
-					toDelete, function() {
-						this.deleteBunch(toDelete);
-					}, this);
+			var arClasses = inArray(classes);
+			this.applyFiltersByAttributeRecursive(arClasses, 0);
+		},
+		toDelete : function(cards, ids) {
+			var toDelete = [];
+			var toMantain = [];
+			for (var i = 0; i < cards.length; i++) {
+				toMantain.push(parseInt(cards[i]._id));
+			}
+			for (var i = 0; i < ids.length; i++) {
+				var index = toMantain.indexOf(ids[i]);
+				if (index === -1) {
+					toDelete.push(ids[i]);
+				}
+			}
+			return toDelete;
 		},
 		deleteBunch : function(ids) {
 			$.Cmdbuild.customvariables.selected.erase();
 			for (var i = 0; i < ids.length; i++) {
 				$.Cmdbuild.customvariables.selected.select(ids[i], true);
 			}
-			var deleteCards = new $.Cmdbuild.g3d.commands.deleteCards(
-					$.Cmdbuild.customvariables.model,
+			var deleteCards = new $.Cmdbuild.g3d.commands.deleteCards($.Cmdbuild.customvariables.model,
 					$.Cmdbuild.customvariables.selected, "true");
 			$.Cmdbuild.customvariables.commandsManager.execute(deleteCards, {});
 		},
@@ -447,57 +527,45 @@
 		applyFilters : function(param) {
 			this.applyFiltersByClass(param);
 			this.applyFiltersByDomain(param);
-			this.applyFiltersByAttribute(param);
+			this.applyFiltersByAttribute();
+			this.openCompoundsOnFilter();
 			$.Cmdbuild.standard.commands.dialogClose(param);
 		},
 		switchOnSelected : function(param) {
-			var check = $.Cmdbuild.utilities.getHtmlFieldValue("#"
-					+ param.check);
+			var check = $.Cmdbuild.utilities.getHtmlFieldValue("#" + param.check);
 			$.Cmdbuild.standard.commands.tab({
 				form : param.form,
 				activeTab : (check) ? 1 : 0
 			});
 		},
 		initOptions : function(param) {
-			$("#nodeTooltipEnabled").prop("checked",
-					$.Cmdbuild.customvariables.options.nodeTooltipEnabled);
-			$("#edgeTooltipEnabled").prop("checked",
-					$.Cmdbuild.customvariables.options.edgeTooltipEnabled);
-			setTimeout(
-					function() {
-						$("#clusteringThreshold")
-								.spinner(
-										"value",
-										$.Cmdbuild.customvariables.options.clusteringThreshold);
-						$("#spriteDimension")
-								.spinner(
-										"value",
-										$.Cmdbuild.customvariables.options.spriteDimension);
-						$("#stepRadius").spinner("value",
-								$.Cmdbuild.customvariables.options.stepRadius);
-					}, 100);
+			$("#nodeTooltipEnabled").prop("checked", $.Cmdbuild.customvariables.options.nodeTooltipEnabled);
+			$("#edgeTooltipEnabled").prop("checked", $.Cmdbuild.customvariables.options.edgeTooltipEnabled);
+			setTimeout(function() {
+				$("#clusteringThreshold").spinner("value", $.Cmdbuild.customvariables.options.clusteringThreshold);
+				$("#spriteDimension").spinner("value", $.Cmdbuild.customvariables.options.spriteDimension);
+				$("#stepRadius").spinner("value", $.Cmdbuild.customvariables.options.stepRadius);
+			}, 100);
 		},
 		_navigateOnNode : function(classId, cardId, callback, callbackScope) {
 			$.Cmdbuild.customvariables.viewer.clearSelection();
 			$.Cmdbuild.customvariables.model.erase();
 			$.Cmdbuild.customvariables.viewer.refresh(true);
-			var init = new $.Cmdbuild.g3d.commands.init_explode(
-					$.Cmdbuild.customvariables.model, {
-						classId : classId,
-						cardId : cardId
-					});
-			$.Cmdbuild.customvariables.commandsManager.execute(init, {},
-					function(response) {
-						$.Cmdbuild.customvariables.selected.erase();
-						$.Cmdbuild.customvariables.selected.select(cardId);
-						var me = this;
-						setTimeout(function() {
-							me.centerOnViewer();
-							if (callback) {
-								callback.apply(callbackScope, []);
-							}
-						}, 500);
-					}, this);
+			var init = new $.Cmdbuild.g3d.commands.init_explode($.Cmdbuild.customvariables.model, {
+				classId : classId,
+				cardId : cardId
+			});
+			$.Cmdbuild.customvariables.commandsManager.execute(init, {}, function(response) {
+				$.Cmdbuild.customvariables.selected.erase();
+				$.Cmdbuild.customvariables.selected.select(cardId);
+				var me = this;
+				setTimeout(function() {
+					me.centerOnViewer();
+					if (callback) {
+						callback.apply(callbackScope, []);
+					}
+				}, 500);
+			}, this);
 		},
 		selectAll : function() {
 			$.Cmdbuild.customvariables.selected.erase();
@@ -516,17 +584,12 @@
 			var selected = $.Cmdbuild.customvariables.selected.getData();
 			var levels = $.Cmdbuild.customvariables.options.baseLevel;
 			var arCommands = getExplodeCommands(selected, levels);
-			var macroCommand = new $.Cmdbuild.g3d.commands.macroCommand(
-					$.Cmdbuild.customvariables.model, arCommands);
-			$.Cmdbuild.customvariables.commandsManager
-					.execute(macroCommand, {},
-							function() {
-								var nodes = $.Cmdbuild.customvariables.model
-										.getNodes();
-								$.Cmdbuild.g3d.Model.removeGraphData(nodes,
-										"exploded_children");
-								$.Cmdbuild.custom.commands.centerOnViewer();
-							}, $.Cmdbuild.customvariables.viewer);
+			var macroCommand = new $.Cmdbuild.g3d.commands.macroCommand($.Cmdbuild.customvariables.model, arCommands);
+			$.Cmdbuild.customvariables.commandsManager.execute(macroCommand, {}, function() {
+				var nodes = $.Cmdbuild.customvariables.model.getNodes();
+				$.Cmdbuild.g3d.Model.removeGraphData(nodes, "exploded_children");
+				$.Cmdbuild.custom.commands.centerOnViewer();
+			}, $.Cmdbuild.customvariables.viewer);
 
 		},
 		optionsOk : function(param) {
@@ -546,8 +609,8 @@
 			$.Cmdbuild.standard.commands.dialogClose(param);
 		},
 		boolean : function(param) {
-			var value = (param.type === "displayLabel") ? param.value
-					: $.Cmdbuild.utilities.getHtmlFieldValue("#" + param.type);
+			var value = (param.type === "displayLabel") ? param.value : $.Cmdbuild.utilities.getHtmlFieldValue("#"
+					+ param.type);
 			if (param.type === "baseLevel") {
 				$("#openLevelsSlider input").val(value);
 				$("#openLevelsSlider").slider("value", value);
@@ -562,27 +625,21 @@
 		},
 		selectClass : function(param) {
 			var paramActualized = $.Cmdbuild.dataModel.resolveVariables(param);
-			$.Cmdbuild.customvariables.selected.selectByClassName(
-					paramActualized.node, param.addSelection,
+			$.Cmdbuild.customvariables.selected.selectByClassName(paramActualized.node, param.addSelection,
 					param.superClasses === "true");
 			var form2Hook = $.Cmdbuild.dataModel.forms[paramActualized.id];
-			form2Hook.selectRows($.Cmdbuild.custom.classesGrid
-					.getAllSelected(paramActualized.node));
+			form2Hook.selectRows($.Cmdbuild.custom.classesGrid.getAllSelected(paramActualized.node));
 		},
 		selectNode : function(param) {
 			var paramActualized = $.Cmdbuild.dataModel.resolveVariables(param);
 			if (param.addSelection === false) {
 				$.Cmdbuild.customvariables.selected.erase();
-				$.Cmdbuild.customvariables.selected
-						.select(paramActualized.node);
+				$.Cmdbuild.customvariables.selected.select(paramActualized.node);
 			} else {
-				if ($.Cmdbuild.customvariables.selected
-						.isSelect(paramActualized.node)) {
-					$.Cmdbuild.customvariables.selected
-							.unSelect(paramActualized.node);
+				if ($.Cmdbuild.customvariables.selected.isSelect(paramActualized.node)) {
+					$.Cmdbuild.customvariables.selected.unSelect(paramActualized.node);
 				} else {
-					$.Cmdbuild.customvariables.selected
-							.select(paramActualized.node);
+					$.Cmdbuild.customvariables.selected.select(paramActualized.node);
 				}
 			}
 			var form2Hook = $.Cmdbuild.dataModel.forms[paramActualized.id];
@@ -616,8 +673,7 @@
 		},
 		initialize : function(callback) {
 			$.Cmdbuild.customvariables.model = new $.Cmdbuild.g3d.Model();
-			$.Cmdbuild.customvariables.selected = new $.Cmdbuild.g3d.Selected(
-					$.Cmdbuild.customvariables.model);
+			$.Cmdbuild.customvariables.selected = new $.Cmdbuild.g3d.Selected($.Cmdbuild.customvariables.model);
 
 			new $.Cmdbuild.g3d.cache(callback, this);
 			$.Cmdbuild.customvariables.filterClassSuperclasses = false;
@@ -638,30 +694,28 @@
 		},
 		deleteSelection : function(param) {
 			if (!$.Cmdbuild.customvariables.selected.isEmpty()) {
-				var deleteCards = new $.Cmdbuild.g3d.commands.deleteCards(
-						$.Cmdbuild.customvariables.model,
+				var deleteCards = new $.Cmdbuild.g3d.commands.deleteCards($.Cmdbuild.customvariables.model,
 						$.Cmdbuild.customvariables.selected, param.selected);
-				$.Cmdbuild.customvariables.commandsManager.execute(deleteCards,
-						{});
+				$.Cmdbuild.customvariables.commandsManager.execute(deleteCards, {});
 			}
 			$.Cmdbuild.customvariables.selected.erase();
 			$.Cmdbuild.customvariables.selected.changed({});
 		},
 		dijkstra : function(param) {
-			new $.Cmdbuild.g3d.algorithms.dijkstra(
-					$.Cmdbuild.customvariables.model,
+			new $.Cmdbuild.g3d.algorithms.dijkstra($.Cmdbuild.customvariables.model,
 					$.Cmdbuild.customvariables.selected);
 		},
 		connect : function(param) {
 			if ($.Cmdbuild.customvariables.selected.getCards(0, 100).total > 1) {
-				new $.Cmdbuild.g3d.algorithms.connect(
-						$.Cmdbuild.customvariables.model,
+				new $.Cmdbuild.g3d.algorithms.connect($.Cmdbuild.customvariables.model,
 						$.Cmdbuild.customvariables.selected);
 			}
 		},
 		zoomOn : function(param) {
 			var paramActualized = $.Cmdbuild.dataModel.resolveVariables(param);
-			$.Cmdbuild.customvariables.camera.zoomOn(paramActualized.node);
+			if (paramActualized.node) {
+				$.Cmdbuild.customvariables.camera.zoomOn(paramActualized.node);
+			}
 		},
 
 		/**
@@ -672,11 +726,8 @@
 			var $header = $(".mainContainerHeader");
 			var $body = $(".mainContainerBody");
 			var $footer = $(".mainContainerFooter");
-			$body.css("margin-top", ($header.outerHeight() - 1) + "px").css(
-					"height",
-					($container.height() - $header.outerHeight()
-							- $footer.outerHeight() + 2)
-							+ "px");
+			$body.css("margin-top", ($header.outerHeight() - 1) + "px").css("height",
+					($container.height() - $header.outerHeight() - $footer.outerHeight() + 2) + "px");
 		},
 
 		/**
@@ -719,13 +770,11 @@
 		 */
 		updateToggleTooltips : function(params) {
 			if (params.active) {
-				$("#" + params.id).parent().addClass(
-						$.Cmdbuild.custom.commands.variables.BUTTONACTIVECLASS);
+				$("#" + params.id).parent().addClass($.Cmdbuild.custom.commands.variables.BUTTONACTIVECLASS);
 				$.Cmdbuild.customvariables.options.nodeTooltipEnabled = true;
 				$.Cmdbuild.customvariables.options.edgeTooltipEnabled = true;
 			} else {
-				$("#" + params.id).parent().removeClass(
-						$.Cmdbuild.custom.commands.variables.BUTTONACTIVECLASS);
+				$("#" + params.id).parent().removeClass($.Cmdbuild.custom.commands.variables.BUTTONACTIVECLASS);
 				$.Cmdbuild.customvariables.options.nodeTooltipEnabled = false;
 				$.Cmdbuild.customvariables.options.edgeTooltipEnabled = false;
 			}
@@ -742,12 +791,10 @@
 		 */
 		updateToggleFilter : function(params) {
 			if (params.active) {
-				$("#" + params.id).parent().addClass(
-						$.Cmdbuild.custom.commands.variables.BUTTONACTIVECLASS);
+				$("#" + params.id).parent().addClass($.Cmdbuild.custom.commands.variables.BUTTONACTIVECLASS);
 				$.Cmdbuild.customvariables.options.filterEnabled = true;
 			} else {
-				$("#" + params.id).parent().removeClass(
-						$.Cmdbuild.custom.commands.variables.BUTTONACTIVECLASS);
+				$("#" + params.id).parent().removeClass($.Cmdbuild.custom.commands.variables.BUTTONACTIVECLASS);
 				$.Cmdbuild.customvariables.options.filterEnabled = false;
 			}
 		},
@@ -763,12 +810,10 @@
 		 */
 		blockLayout : function(params) {
 			if (params.active) {
-				$("#" + params.id).parent().addClass(
-						$.Cmdbuild.custom.commands.variables.BUTTONACTIVECLASS);
+				$("#" + params.id).parent().addClass($.Cmdbuild.custom.commands.variables.BUTTONACTIVECLASS);
 				$.Cmdbuild.customvariables.options.blockedLayout = true;
 			} else {
-				$("#" + params.id).parent().removeClass(
-						$.Cmdbuild.custom.commands.variables.BUTTONACTIVECLASS);
+				$("#" + params.id).parent().removeClass($.Cmdbuild.custom.commands.variables.BUTTONACTIVECLASS);
 				$.Cmdbuild.customvariables.options.blockedLayout = false;
 			}
 		}
@@ -791,19 +836,16 @@
 	/* Formatting function for row details - modify as you need */
 	function format(formid, d) {
 		var data = $.Cmdbuild.dataModel.getValues(formid);
-		var ddefinition = $.Cmdbuild.customvariables.cacheDomains
-				.getDomain(data.domainId);
+		var ddefinition = $.Cmdbuild.customvariables.cacheDomains.getDomain(data.domainId);
 		var cAttributes = data.attributes;
 		var result = '<table cellpadding="5" cellspacing="0" border="0" class="gridAttributesTable">';
 		if (ddefinition.domainCustomAttributes.length) {
-			result += '<tr><th colspan="2">'
-					+ $.Cmdbuild.translations.getTranslation(
-							"label_attributes", 'Attributes') + '</th></tr>';
-			$.each(ddefinition.domainCustomAttributes, function(index,
-					attribute) {
+			result += '<tr><th colspan="2">' + $.Cmdbuild.translations.getTranslation("label_attributes", 'Attributes')
+					+ '</th></tr>';
+			$.each(ddefinition.domainCustomAttributes, function(index, attribute) {
 				if (cAttributes[attribute._id]) {
-					result += '<tr><td>' + attribute.description + '</td><td>'
-							+ cAttributes[attribute._id] + '</td></tr>';
+					result += '<tr><td>' + attribute.description + '</td><td>' + cAttributes[attribute._id]
+							+ '</td></tr>';
 				}
 			});
 		}
@@ -840,12 +882,10 @@
 	function getCurrentClassDescription() {
 		var classId = $.Cmdbuild.dataModel.getValue("selectedForm", "classId");
 		if (!classId && firstTimeIsGone) {
-			return $.Cmdbuild.translations.getTranslation("TITLE_NOSELECTION",
-					"No selection")
+			return $.Cmdbuild.translations.getTranslation("TITLE_NOSELECTION", "No selection")
 		} else if (classId) {
 			firstTimeIsGone = true;
-			return $.Cmdbuild.customvariables.cacheClasses
-					.getDescription(classId);
+			return $.Cmdbuild.customvariables.cacheClasses.getDescription(classId);
 		} else {
 			return "";
 		}
@@ -860,4 +900,15 @@
 	window.cmdbUpdateCardTitle = function() {
 		$("#cmdbuildCardTitle").text(getCurrentClassDescription());
 	};
+	function inArray(obj) {
+		var ar = [];
+		for ( var key in obj) {
+			ar.push({
+				key : key,
+				object : obj[key]
+			})
+		}
+		return ar;
+
+	}
 })(jQuery);
