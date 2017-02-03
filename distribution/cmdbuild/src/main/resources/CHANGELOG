@@ -116,6 +116,8 @@ FIXES
 
  * Reference grid editors wider than column on first edit action
 
+ * Error creating attributes after class or workflow creation
+
 
 
 

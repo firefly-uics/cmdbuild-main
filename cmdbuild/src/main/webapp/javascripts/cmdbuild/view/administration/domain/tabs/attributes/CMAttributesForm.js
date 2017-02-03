@@ -439,11 +439,6 @@
 			this.hideContextualFields();
 		},
 
-		// private and overridden in subclasses
-		takeDataFromCache: function(idClass) {
-			return _CMCache.getClassById(idClass);
-		},
-
 		onAttributeSelected : function(attribute) {
 			this.reset();
 
