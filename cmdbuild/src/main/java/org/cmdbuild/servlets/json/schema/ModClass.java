@@ -586,7 +586,7 @@ public class ModClass extends JSONBaseWithSpringContext {
 					}
 
 					final CMClass referencedClass = logic.findClass(referencedClassName);
-					if (referencedClass.isAncestorOf(targetClass)) {
+					if (referencedClass != null && referencedClass.isAncestorOf(targetClass)) {
 						final boolean serializeAlsoClassId = true;
 						final AttributeSerializer attributeSerializer = AttributeSerializer.newInstance() //
 								.withDataView(systemDataView()) //

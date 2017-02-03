@@ -112,6 +112,8 @@ FIXES
 
  * Reselect accordion item by clicking on selected item
 
+ * Error while retrieving foreignKey class attributes
+
 
 
 
