@@ -85,6 +85,9 @@
 			return this.inEditing;
 		},
 		isANavigableClass : function(className) {
+			if (! CMDBuild.configuration.gis.get('cardBrowserByDomainConfiguration')['root']) {
+				return false;
+			}
 			return this.navigable.isANavigableClass(className) || className === CMDBuild.gis.constants.layers.GEOSERVER_LAYER;
 		},
 		getNavigableNode : function(card) {
