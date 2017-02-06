@@ -129,8 +129,8 @@
 		}
 
 		var data = this.view.formPanel.getData(withDisabled = true);
-		data[CMDBuild.core.constants.Proxy.CLASS_NAME] = _CMCache.getEntryTypeNameById(this.currentClassId);
-		data[CMDBuild.core.constants.Proxy.META] = Ext.JSON.encode(this.view.formPanel.referenceFilterMetadata);
+		data[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.parentDelegate.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.NAME);
+		data[CMDBuild.core.constants.Proxy.META] = Ext.encode(this.view.formPanel.referenceFilterMetadata);
 
 		var me = this;
 		CMDBuild.core.LoadMask.show();
