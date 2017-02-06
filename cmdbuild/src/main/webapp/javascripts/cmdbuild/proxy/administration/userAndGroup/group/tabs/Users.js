@@ -19,7 +19,7 @@
 		getStoreAvailable: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
 
-			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.GROUP, {
+			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.UNCACHED, {
 				autoLoad: false,
 				model: 'CMDBuild.model.administration.userAndGroup.group.UsersGrid',
 				pageSize: CMDBuild.configuration.instance.get(CMDBuild.core.constants.Proxy.ROW_LIMIT),

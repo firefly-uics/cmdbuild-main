@@ -413,7 +413,7 @@
 			fields.push({name: 'IdClass', type: 'int'});
 			fields.push('IdClass_value');
 
-			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.CARD, {
+			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.UNCACHED, {
 				autoLoad: false,
 				fields: fields,
 				pageSize: pageSize,

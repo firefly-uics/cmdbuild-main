@@ -41,7 +41,7 @@
 		 * @returns {Ext.data.Store or CMDBuild.core.cache.Store}
 		 */
 		getStore: function () {
-			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.USER, {
+			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.UNCACHED, {
 				autoLoad: false,
 				model: 'CMDBuild.model.administration.userAndGroup.user.User',
 				pageSize: CMDBuild.configuration.instance.get(CMDBuild.core.constants.Proxy.ROW_LIMIT),
