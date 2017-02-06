@@ -126,6 +126,16 @@ FIXES
 
  * The total count of lookup values ignores filter
 
+ * Sub-processes doesn't appear in start workflow button
+
+ * Reselect accordion item by clicking on selected item
+
+ * Error while retrieving foreignKey class attributes
+
+ * Reference grid editors wider than column on first edit action
+
+ * Error creating attributes after class or workflow creation
+
 
 
 

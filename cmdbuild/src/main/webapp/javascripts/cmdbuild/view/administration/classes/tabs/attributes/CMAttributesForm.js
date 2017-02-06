@@ -428,30 +428,43 @@
 			}, this);
 		},
 
-		onClassSelected: function(idClass, className) {
-			this.idClass = idClass;
-			this.classObj = this.takeDataFromCache(idClass);
+		/**
+		 * @param {Number} idClass
+		 * @param {String} className
+		 *
+		 * @returns {Void}
+		 */
+		onClassSelected: function (idClass, className) {
+			var params = {};
+			params[CMDBuild.core.constants.Proxy.NAME] = className;
 
-			if (this.classObj) {
-				var params = {};
-				params[CMDBuild.core.constants.Proxy.CLASS_NAME] = _CMCache.getEntryTypeNameById(idClass);
+			CMDBuild.proxy.common.tabs.attribute.Attribute.readClassByName({
+				params: params,
+				scope: this,
+				success: function (response, options, decodedResponse) {
+					decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.RESPONSE];
 
-				this.referenceDomains. getStore().load({ params: params });
+					if (Ext.isObject(decodedResponse) && !Ext.Object.isEmpty(decodedResponse)) {
+						this.classObj = Ext.create('CMDBuild.cache.CMEntryTypeModel', decodedResponse);
 
-				params = {};
-				params[CMDBuild.core.constants.Proxy.TABLE_TYPE] = getTableType(this.classObj);
+						var params = {};
+						params[CMDBuild.core.constants.Proxy.CLASS_NAME] = className;
 
-				this.comboType.getStore().load({ params: params });
+						this.referenceDomains. getStore().load({ params: params });
 
-				this.hideContextualFields();
-				this.attributeUnique.cmImmutable = cannotHaveUniqueAttributes(this.classObj);
-				this.attributeNotNull.cmImmutable = cannotHaveNotNullAttributes(this.classObj);
-			}
-		},
+						params = {};
+						params[CMDBuild.core.constants.Proxy.TABLE_TYPE] = tableTypeMap[decodedResponse[CMDBuild.core.constants.Proxy.TABLE_TYPE]];
 
-		// private and overridden in subclasses
-		takeDataFromCache: function(idClass) {
-			return _CMCache.getClassById(idClass);
+						this.comboType.getStore().load({ params: params });
+
+						this.hideContextualFields();
+						this.attributeUnique.cmImmutable = cannotHaveUniqueAttributes(this.classObj);
+						this.attributeNotNull.cmImmutable = cannotHaveNotNullAttributes(this.classObj);
+					} else {
+						_error('onClassSelected(): unmanaged response', this, decodedResponse);
+					}
+				}
+			});
 		},
 
 		/**

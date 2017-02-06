@@ -1,7 +1,7 @@
 (function () {
 
 	// External implementation to avoid overrides
-	Ext.require(['CMDBuild.core.constants.Proxy']);
+	Ext.require('CMDBuild.core.constants.Proxy');
 
 	/**
 	 * Common methods
@@ -15,6 +15,26 @@
 		 * @cfg {CMDBuild.controller.common.MainViewport}
 		 */
 		parentDelegate: undefined,
+
+		/**
+		 * @cfg {Array}
+		 */
+		cmfgCatchedFunctions: [
+			'accordionBuildId',
+			'accordionDeselect',
+			'accordionExpand',
+			'accordionFirstSelectableNodeSelect',
+			'accordionFirtsSelectableNodeGet',
+			'accordionIdentifierGet',
+			'accordionNodeByIdExists',
+			'accordionNodeByIdGet',
+			'accordionNodeByIdSelect',
+			'accordionUpdateStore',
+			'onAccordionBeforeItemClick',
+			'onAccordionBeforeSelect',
+			'onAccordionExpand',
+			'onAccordionSelectionChange'
+		],
 
 		/**
 		 * Store update callback functions
@@ -63,36 +83,6 @@
 		 * @property {Object}
 		 */
 		view: undefined,
-
-		/**
-		 * @param {Object} configurationObject
-		 * @param {Object} configurationObject.parentDelegate
-		 *
-		 * @returns {Void}
-		 *
-		 * @override
-		 */
-		constructor: function (configurationObject) {
-			Ext.apply(this, { // Apply default managed methods
-				cmfgCatchedFunctions: Ext.Array.merge(this.cmfgCatchedFunctions, [
-					'accordionBuildId',
-					'accordionDeselect',
-					'accordionExpand',
-					'accordionFirstSelectableNodeSelect',
-					'accordionFirtsSelectableNodeGet',
-					'accordionIdentifierGet',
-					'accordionNodeByIdExists',
-					'accordionNodeByIdGet',
-					'accordionNodeByIdSelect',
-					'accordionUpdateStore',
-					'onAccordionBeforeSelect',
-					'onAccordionExpand',
-					'onAccordionSelectionChange'
-				])
-			});
-
-			this.callParent(arguments);
-		},
 
 		/**
 		 * Generates an unique id for the menu accordion, prepend to components array "accordion" string and identifier.
@@ -274,6 +264,22 @@
 				&& node.get(CMDBuild.core.constants.Proxy.SELECTABLE)
 				&& !Ext.isEmpty(node.get(CMDBuild.core.constants.Proxy.ID)) // Node without id property are not selectable
 			);
+		},
+
+		/**
+		 * If node is already selected launch selection change event to be able to reselect same node without switch selection
+		 *
+		 * @param {CMDBuild.model.common.Accordion} node
+		 *
+		 * @returns {Void}
+		 */
+		onAccordionBeforeItemClick: function (node) {
+			if (this.view.getSelectionModel().hasSelection()) {
+				var selection = this.view.getSelectionModel().getSelection()[0];
+
+				if (selection === node)
+					this.cmfg('onAccordionSelectionChange');
+			}
 		},
 
 		/**
