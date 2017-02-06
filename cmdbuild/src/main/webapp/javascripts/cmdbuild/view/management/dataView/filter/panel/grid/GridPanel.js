@@ -37,11 +37,7 @@
 				this.delegate.cmfg('onDataViewFilterRecordDoubleClick');
 			},
 			select: function (row, record, index, eOpts) {
-				this.delegate.cmfg('dataViewFilterUiUpdate', {
-					cardId: record.get(CMDBuild.core.constants.Proxy.ID),
-					className: record.get(CMDBuild.core.constants.Proxy.CLASS_NAME),
-					position: index
-				});
+				this.delegate.cmfg('onDataViewFilterGridRecordSelect', record);
 			},
 			sortchange: function (ct, column, direction, eOpts) {
 				this.delegate.cmfg('onDataViewFilterGridSortChange');

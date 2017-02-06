@@ -1,7 +1,7 @@
 (function() {
 
 	/**
-	 * @deprecated CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter
+	 * @deprecated CMDBuild.model.common.Filter
 	 */
 	Ext.define('CMDBuild.model.CMFilterModel', {
 		extend: 'Ext.data.Model',

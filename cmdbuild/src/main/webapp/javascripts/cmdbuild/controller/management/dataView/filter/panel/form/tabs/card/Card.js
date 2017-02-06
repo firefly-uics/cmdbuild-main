@@ -86,7 +86,7 @@
 		 *
 		 * @legacy
 		 */
-		dataViewFilterFormTabCardUiUpdate: function (parameters) {
+		dataViewFilterFormTabCardUiUpdate: function () {
 			if (!this.parentDelegate.cmfg('dataViewFilterSourceEntryTypeIsEmpty'))
 				this.onEntryTypeSelected();
 
@@ -98,10 +98,21 @@
 				&& !this.parentDelegate.cmfg('dataViewFilterStartCardGet', CMDBuild.core.constants.Proxy.STATUS)
 			);
 
+			var privileges = CMDBuild.core.Utils.getEntryTypePrivileges(_CMCache.getEntryTypeById(
+				this.parentDelegate.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.ID))
+			);
+
 			this.view.enable();
 
-			if (state)
-				this.changeClassUIConfigurationForGroup(true, true);
+			if (state) {
+				this.changeClassUIConfigurationForGroup(true, true, true);
+			} else {
+				this.changeClassUIConfigurationForGroup(
+					!(privileges.write && !privileges.crudDisabled.modify),
+					!(privileges.write && !privileges.crudDisabled.clone),
+					!(privileges.write && !privileges.crudDisabled.remove)
+				);
+			}
 		},
 
 		/**
@@ -212,8 +223,7 @@
 
 					this.parentDelegate.cmfg('dataViewFilterUiUpdate', {
 						cardId: fakeOperation.result[CMDBuild.core.constants.Proxy.ID] || this.card.get("Id"), // if is a new card, the id is given by the request
-						className: params[CMDBuild.core.constants.Proxy.CLASS_NAME],
-						forceStoreLoad: true
+						storeLoadForce: true
 					});
 				}
 			});
@@ -251,21 +261,10 @@
 
 			// FIXME: legacy mode to remove on complete Cards UI and cardState modules refactor
 			this.entryType = Ext.create('CMDBuild.cache.CMEntryTypeModel', this.parentDelegate.cmfg('dataViewFilterSourceEntryTypeGet', 'rawData'));
-			this.loadFields(this.entryType.get("id"));
 
 			if (this.widgetControllerManager) {
 				this.widgetControllerManager.removeAll();
 			}
-
-			var privileges = CMDBuild.core.Utils.getEntryTypePrivileges(_CMCache.getEntryTypeById(
-				this.parentDelegate.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.ID))
-			);
-
-			this.changeClassUIConfigurationForGroup(
-				!(privileges.write && !privileges.crudDisabled.modify),
-				!(privileges.write && !privileges.crudDisabled.clone),
-				!(privileges.write && !privileges.crudDisabled.remove)
-			);
 		},
 
 		/**
@@ -299,10 +298,7 @@
 					success: function (response, options, decodedResponse) {
 						_CMCache.onClassContentChanged(this.entryType.get(CMDBuild.core.constants.Proxy.ID));
 
-						this.parentDelegate.cmfg('dataViewFilterUiUpdate', {
-							className: this.parentDelegate.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.NAME),
-							forceStoreLoad: true
-						});
+						this.parentDelegate.cmfg('dataViewFilterUiUpdate', { storeLoadForce: true });
 					}
 				});
 		},

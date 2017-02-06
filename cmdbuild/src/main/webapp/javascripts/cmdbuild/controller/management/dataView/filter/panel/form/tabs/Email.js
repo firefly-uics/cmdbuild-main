@@ -205,10 +205,10 @@
 		onTabEmailPanelShow: function() {
 			// Error handling
 				if (this.cmfg('dataViewSelectedDataViewIsEmpty'))
-					return _error('onTabEmailPanelShow(): empty selected dataView property', this, this.cmfg('dataViewSelectedDataViewGet'));
+					return _error('onTabEmailPanelShow(): empty selectedDataView property', this, this.cmfg('dataViewSelectedDataViewGet'));
 
 				if (this.cmfg('dataViewFilterSelectedCardIsEmpty'))
-					return _error('onTabEmailPanelShow(): empty selected card property', this, this.cmfg('dataViewFilterSelectedCardGet'));
+					return _error('onTabEmailPanelShow(): empty selectedCard property', this, this.cmfg('dataViewFilterSelectedCardGet'));
 			// END: Error handling
 
 			// History record save
@@ -247,6 +247,17 @@
 				default:
 					return this.onAbortCardClick();
 			}
+		},
+
+		/**
+		 * @returns {Void}
+		 *
+		 * @legacy
+		 */
+		reset: function () {
+			this.grid.getStore().removeAll();
+
+			this.view.disable();
 		}
 	});
 

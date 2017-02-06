@@ -51,7 +51,7 @@
 		grid: undefined,
 
 		/**
-		 * @property {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter}
+		 * @property {CMDBuild.model.common.Filter}
 		 *
 		 * @private
 		 */
@@ -163,7 +163,7 @@
 		},
 
 		/**
-		 * @param {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter} filter
+		 * @param {CMDBuild.model.common.Filter} filter
 		 *
 		 * @returns {Void}
 		 */
@@ -182,7 +182,7 @@
 		},
 
 		/**
-		 * @param {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter} filter
+		 * @param {CMDBuild.model.common.Filter} filter
 		 *
 		 * @returns {Void}
 		 */
@@ -197,7 +197,7 @@
 		},
 
 		/**
-		 * @param {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter} filter
+		 * @param {CMDBuild.model.common.Filter} filter
 		 *
 		 * @returns {Void}
 		 */
@@ -214,7 +214,7 @@
 		},
 
 		/**
-		 * @param {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter} filter
+		 * @param {CMDBuild.model.common.Filter} filter
 		 *
 		 * @returns {Void}
 		 */
@@ -276,7 +276,7 @@
 		},
 
 		/**
-		 * @param {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter} filter
+		 * @param {CMDBuild.model.common.Filter} filter
 		 *
 		 * @returns {Void}
 		 *
@@ -350,7 +350,7 @@
 							this.cmfg('panelGridAndFormCommonFilterAdvancedManagerViewClose'); // Close manager view
 
 							if (enableApply) { // Apply filter to store
-								this.cmfg('onPanelGridAndFormCommonFilterAdvancedFilterSelect', Ext.create('CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter', decodedResponse));
+								this.cmfg('onPanelGridAndFormCommonFilterAdvancedFilterSelect', Ext.create('CMDBuild.model.common.Filter', decodedResponse));
 								this.panelGridAndFormCommonFilterAdvancedManagerSelectedFilterReset();
 							} else { // Otherwise reopen manager window
 								this.cmfg('panelGridAndFormCommonFilterAdvancedManagerViewShow');
@@ -378,7 +378,7 @@
 							this.cmfg('panelGridAndFormCommonFilterAdvancedManagerViewClose'); // Close manager view
 
 							if (enableApply) {// Apply filter to store
-								this.cmfg('onPanelGridAndFormCommonFilterAdvancedFilterSelect', Ext.create('CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter', decodedResponse));
+								this.cmfg('onPanelGridAndFormCommonFilterAdvancedFilterSelect', Ext.create('CMDBuild.model.common.Filter', decodedResponse));
 								this.panelGridAndFormCommonFilterAdvancedManagerSelectedFilterReset();
 							} else { // Otherwise reopen manager window
 								this.cmfg('panelGridAndFormCommonFilterAdvancedManagerViewShow');
@@ -438,7 +438,7 @@
 			 */
 			panelGridAndFormCommonFilterAdvancedManagerSelectedFilterSet: function (parameters) {
 				if (Ext.isObject(parameters) && !Ext.Object.isEmpty(parameters)) {
-					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter';
+					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.common.Filter';
 					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedFilter';
 
 					this.propertyManageSet(parameters);

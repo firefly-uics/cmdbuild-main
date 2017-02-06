@@ -160,23 +160,23 @@
 			if (Ext.isObject(this.controllerTabCard) && !Ext.Object.isEmpty(this.controllerTabCard))
 				this.controllerTabCard.reset();
 
-//			if (Ext.isObject(this.controllerTabAttachments) && !Ext.Object.isEmpty(this.controllerTabAttachments)) // FIXME: not managed
-//				this.controllerTabAttachments.reset();
+			if (Ext.isObject(this.controllerTabAttachments) && !Ext.Object.isEmpty(this.controllerTabAttachments))
+				this.controllerTabAttachments.reset();
 
-//			if (Ext.isObject(this.controllerTabEmail) && !Ext.Object.isEmpty(this.controllerTabEmail)) // FIXME: not managed
-//				this.controllerTabEmail.reset();
+			if (Ext.isObject(this.controllerTabEmail) && !Ext.Object.isEmpty(this.controllerTabEmail))
+				this.controllerTabEmail.reset();
 
 			if (Ext.isObject(this.controllerTabHistory) && !Ext.Object.isEmpty(this.controllerTabHistory))
 				this.controllerTabHistory.cmfg('dataViewFilterFormTabHistoryReset');
 
-//			if (Ext.isObject(this.controllerTabMasterDetail) && !Ext.Object.isEmpty(this.controllerTabMasterDetail)) // FIXME: not managed
-//				this.controllerTabMasterDetail.reset();
+			if (Ext.isObject(this.controllerTabMasterDetail) && !Ext.Object.isEmpty(this.controllerTabMasterDetail))
+				this.controllerTabMasterDetail.reset();
 
 			if (Ext.isObject(this.controllerTabNote) && !Ext.Object.isEmpty(this.controllerTabNote))
 				this.controllerTabNote.cmfg('dataViewFilterFormTabNoteReset');
 
-//			if (Ext.isObject(this.controllerTabRelations) && !Ext.Object.isEmpty(this.controllerTabRelations)) // FIXME: not managed
-//				this.controllerTabRelations.reset();
+			if (Ext.isObject(this.controllerTabRelations) && !Ext.Object.isEmpty(this.controllerTabRelations))
+				this.controllerTabRelations.reset();
 		},
 
 		/**

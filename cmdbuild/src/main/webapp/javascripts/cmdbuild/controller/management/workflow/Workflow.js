@@ -122,7 +122,7 @@
 		selectedWorkflowAttributes: {},
 
 		/**
-		 * @property {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter}
+		 * @property {CMDBuild.model.common.Filter}
 		 *
 		 * @private
 		 */
@@ -1021,7 +1021,7 @@
 			 */
 			workflowSelectedWorkflowDefaultFilterSet: function (parameters) {
 				if (Ext.isObject(parameters) && !Ext.Object.isEmpty(parameters)) {
-					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter';
+					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.common.Filter';
 					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedWorkflowDefaultFilter';
 
 					this.propertyManageSet(parameters);
@@ -1077,7 +1077,7 @@
 		 * @param {Function} parameters.callback
 		 * @param {Boolean} parameters.disableFirstRowSelection
 		 * @param {Boolean} parameters.defaultFilterApplyIfExists
-		 * @param {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter} parameters.filter
+		 * @param {CMDBuild.model.common.Filter} parameters.filter
 		 * @param {Boolean} parameters.filterReset
 		 * @param {Boolean} parameters.filterForceEnabled
 		 * @param {String} parameters.flowStatus

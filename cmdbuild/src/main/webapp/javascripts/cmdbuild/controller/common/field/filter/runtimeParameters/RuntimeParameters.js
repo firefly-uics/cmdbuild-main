@@ -29,7 +29,7 @@
 		],
 
 		/**
-		 * @parameter {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter}
+		 * @parameter {CMDBuild.model.common.Filter}
 		 */
 		filter: undefined,
 

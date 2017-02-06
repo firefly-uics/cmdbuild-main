@@ -108,7 +108,7 @@
 
 					this.cmfg('panelGridAndFormUiUpdate', {
 						entityId: this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.ID),
-						filter: Ext.create('CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter', { configuration: appliedFilterConfigurationObject })
+						filter: Ext.create('CMDBuild.model.common.Filter', { configuration: appliedFilterConfigurationObject })
 					});
 				}
 			}
@@ -133,7 +133,7 @@
 		/**
 		 * Apply selected filter to store or clear grid and buttons state
 		 *
-		 * @param {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter} filter
+		 * @param {CMDBuild.model.common.Filter} filter
 		 *
 		 * @returns {Void}
 		 */
@@ -241,7 +241,7 @@
 
 		// LocalFilterCache property functions
 			/**
-			 * @param {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter} filterModel
+			 * @param {CMDBuild.model.common.Filter} filterModel
 			 *
 			 * @returns {Void}
 			 */
@@ -289,7 +289,7 @@
 			},
 
 			/**
-			 * @param {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter} filterModel
+			 * @param {CMDBuild.model.common.Filter} filterModel
 			 *
 			 * @returns {Void}
 			 */

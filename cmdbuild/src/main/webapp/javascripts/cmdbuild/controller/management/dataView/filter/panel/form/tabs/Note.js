@@ -304,10 +304,10 @@
 
 			// Error handling
 				if (this.cmfg('dataViewSelectedDataViewIsEmpty'))
-					return _error('onDataViewFilterFormTabNoteShow(): empty selected dataView property', this, this.cmfg('dataViewSelectedDataViewGet'));
+					return _error('panelListenerManagerShow(): empty selectedDataView property', this, this.cmfg('dataViewSelectedDataViewGet'));
 
 				if (this.cmfg('dataViewFilterSelectedCardIsEmpty'))
-					return _error('onDataViewFilterFormTabNoteShow(): empty selected card property', this, this.cmfg('dataViewFilterSelectedCardGet'));
+					return _error('panelListenerManagerShow(): empty selectedCard property', this, this.cmfg('dataViewFilterSelectedCardGet'));
 			// END: Error handling
 
 			// History record save

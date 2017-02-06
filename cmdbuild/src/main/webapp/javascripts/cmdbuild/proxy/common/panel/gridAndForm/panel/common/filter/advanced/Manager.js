@@ -4,7 +4,7 @@
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter',
+			'CMDBuild.model.common.Filter',
 			'CMDBuild.proxy.index.Json'
 		],
 
@@ -29,7 +29,7 @@
 		getStoreUser: function () {
 			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.FILTER, {
 				autoLoad: false,
-				model: 'CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter',
+				model: 'CMDBuild.model.common.Filter',
 				proxy: {
 					type: 'ajax',
 					url: CMDBuild.proxy.index.Json.filter.user.readAll,

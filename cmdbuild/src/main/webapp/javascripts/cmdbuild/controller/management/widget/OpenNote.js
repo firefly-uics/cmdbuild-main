@@ -1,5 +1,9 @@
 (function () {
 
+	/**
+	 * Required managed functions from upper structure:
+	 * 	- panelGridAndFormPanelFormTabActiveSet
+	 */
 	Ext.define('CMDBuild.controller.management.widget.OpenNote', {
 		extend: 'CMDBuild.controller.common.abstract.Widget',
 
@@ -71,3 +75,4 @@
 	});
 
 })();
+

@@ -17,7 +17,7 @@
 		parentDelegate: undefined,
 
 		/**
-		 * @property {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter}
+		 * @property {CMDBuild.model.common.Filter}
 		 *
 		 * @private
 		 */
@@ -29,14 +29,13 @@
 		cmfgCatchedFunctions: [
 			'dataViewFilterGridAppliedFilterGet = panelGridAndFormListPanelAppliedFilterGet',
 			'dataViewFilterGridAppliedFilterIsEmpty = panelGridAndFormListPanelAppliedFilterIsEmpty',
-			'dataViewFilterGridFilterApply = panelGridAndFormListPanelFilterApply',
-			'dataViewFilterGridFilterClear = panelGridAndFormListPanelFilterClear',
 			'dataViewFilterGridReset',
 			'dataViewFilterGridStoreGet = panelGridAndFormListPanelStoreGet',
 			'dataViewFilterGridStoreLoad = panelGridAndFormListPanelStoreLoad',
 			'dataViewFilterGridUiUpdate',
 			'onDataViewFilterGridColumnChanged',
-			'onDataViewFilterGridPrintButtonClick = onPanelGridAndFormCommonToolbarPrintButtonClick',
+			'onDataViewFilterGridPrintButtonClick',
+			'onDataViewFilterGridRecordSelect',
 			'onDataViewFilterGridSortChange'
 		],
 
@@ -51,7 +50,7 @@
 		controllerRuntimeParameters: undefined,
 
 		/**
-		 * @property {CMDBuild.controller.common.panel.gridAndForm.panel.common.toolbar.Paging}
+		 * @property {CMDBuild.controller.management.dataView.filter.panel.override.common.panel.gridAndForm.panel.common.toolbar.Paging}
 		 */
 		controllerToolbarPaging: undefined,
 
@@ -86,7 +85,7 @@
 			// Build sub-controllers
 			this.controllerPrintWindow = Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.print.Window', { parentDelegate: this });
 			this.controllerRuntimeParameters = Ext.create('CMDBuild.controller.common.field.filter.runtimeParameters.RuntimeParameters', { parentDelegate: this });
-			this.controllerToolbarPaging = Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.toolbar.Paging', { parentDelegate: this });
+			this.controllerToolbarPaging = Ext.create('CMDBuild.controller.management.dataView.filter.panel.override.common.panel.gridAndForm.panel.common.toolbar.Paging', { parentDelegate: this });
 			this.controllerToolbarTop = Ext.create('CMDBuild.controller.management.dataView.filter.panel.grid.toolbar.Top', { parentDelegate: this });
 			this.controllerWindowGraph = Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.graph.Window', { parentDelegate: this });
 
@@ -159,6 +158,59 @@
 			}
 		},
 
+		/**
+		 * Apply card selection
+		 *
+		 * @param {Object} parameters
+		 * @param {Function} parameters.callback
+		 * @param {Boolean} parameters.disableFirstRowSelection
+		 * @param {Number} parameters.id
+		 * @param {Object} parameters.scope
+		 * @param {Boolean} parameters.storeLoadForce
+		 *
+		 * @returns {Void}
+		 *
+		 * @private
+		 */
+		applySelection: function (parameters) {
+			parameters = Ext.isObject(parameters) ? parameters : {};
+			parameters.position = Ext.isNumber(parameters.position) ? parameters.position : null;
+
+			// Error handling
+				if (!Ext.isNumber(parameters.id) || Ext.isEmpty(parameters.id))
+					return _error('applySelection(): unmanaged id parameter', this, parameters.id);
+			// END: Error handling
+
+			var params = {};
+			params[CMDBuild.core.constants.Proxy.ID] = parameters.id;
+
+			if (!this.dataViewFilterGridAppliedFilterIsEmpty())
+				params[CMDBuild.core.constants.Proxy.FILTER] = Ext.encode(this.cmfg('dataViewFilterGridAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION));
+
+			this.positionCardGet({
+				params: params,
+				scope: this,
+				failure: this.positionCardGetFailure,
+				success: function (response, options, decodedResponse) {
+					// Error handling
+						if (!Ext.isObject(decodedResponse) || Ext.Object.isEmpty(decodedResponse))
+							return _error('applySelection(): unmanaged response', this, decodedResponse);
+					// END: Error handling
+
+					this.positionCardGetSuccess(
+						decodedResponse[CMDBuild.core.constants.Proxy.POSITION],
+						options.params[CMDBuild.core.constants.Proxy.FILTER],
+						{
+							disableFirstRowSelection: parameters.disableFirstRowSelection,
+							storeLoadForce: parameters.storeLoadForce,
+							callback: parameters.callback,
+							scope: parameters.scope
+						}
+					);
+				}
+			});
+		},
+
 		// AppliedFilter property functions
 			/**
 			 * @param {Array or String} attributePath
@@ -174,6 +226,8 @@
 			},
 
 			/**
+			 * Customized to use model isEmpty() function
+			 *
 			 * @param {Array or String} attributePath
 			 *
 			 * @returns {Mixed or undefined}
@@ -181,6 +235,10 @@
 			dataViewFilterGridAppliedFilterIsEmpty: function (attributePath) {
 				var parameters = {};
 				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'appliedFilter';
+
+				if (Ext.isEmpty(attributePath))
+					return this.propertyManageGet(parameters).isEmpty();
+
 				parameters[CMDBuild.core.constants.Proxy.ATTRIBUTE_PATH] = attributePath;
 
 				return this.propertyManageIsEmpty(parameters);
@@ -195,12 +253,6 @@
 			 */
 			dataViewFilterGridAppliedFilterReset: function () {
 				this.propertyManageReset('appliedFilter');
-
-				// Default filter manage: apply dataView's filter
-				var defaultFilter = this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.FILTER).getData();
-				defaultFilter[CMDBuild.core.constants.Proxy.DEFAULT] = true; // Setup default state
-
-				this.dataViewFilterGridAppliedFilterSet({ value: defaultFilter });
 			},
 
 			/**
@@ -212,7 +264,7 @@
 			 */
 			dataViewFilterGridAppliedFilterSet: function (parameters) {
 				if (Ext.isObject(parameters) && !Ext.Object.isEmpty(parameters)) {
-					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter';
+					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.common.Filter';
 					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'appliedFilter';
 
 					this.propertyManageSet(parameters);
@@ -323,225 +375,6 @@
 		},
 
 		/**
-		 * @param {Object} parameters
-		 * @param {Function} parameters.callback
-		 * @param {Boolean} parameters.forceStoreLoad
-		 * @param {Number} parameters.id
-		 * @param {Number} parameters.position
-		 * @param {Object} parameters.scope
-		 *
-		 * @returns {Void}
-		 *
-		 * @private
-		 */
-		dataViewFilterGridCardSelect: function (parameters) {
-			parameters = Ext.isObject(parameters) ? parameters : {};
-			parameters.position = Ext.isNumber(parameters.position) ? parameters.position : null;
-
-			// Error handling
-				if (!Ext.isNumber(parameters.id) || Ext.isEmpty(parameters.id))
-					return _error('dataViewFilterGridCardSelect(): unmanaged id parameter', this, parameters.id);
-			// END: Error handling
-
-			var params = {};
-			params[CMDBuild.core.constants.Proxy.ID] = parameters.id;
-
-			if (!this.dataViewFilterGridAppliedFilterIsEmpty())
-				params[CMDBuild.core.constants.Proxy.FILTER] = Ext.encode(this.cmfg('dataViewFilterGridAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION));
-
-			// If position parameter isn't already valorized calculate position in card's store
-			if (Ext.isEmpty(parameters.position))
-				return this.positionCardGet({
-					params: params,
-					scope: this,
-					failure: this.positionCardGetFailure,
-					success: function (response, options, decodedResponse) {
-						if (Ext.isObject(decodedResponse) && !Ext.Object.isEmpty(decodedResponse)) {
-							this.positionCardGetSuccess(
-								decodedResponse[CMDBuild.core.constants.Proxy.POSITION],
-								options.params[CMDBuild.core.constants.Proxy.FILTER],
-								{
-									forceStoreLoad: parameters.forceStoreLoad,
-									callback: parameters.callback,
-									scope: parameters.scope
-								}
-							);
-						} else {
-							_error('dataViewFilterGridCardSelect(): unmanaged response', this, decodedResponse);
-						}
-					}
-				});
-
-			// Directly select card in currently loaded store
-			return this.positionCardGetSuccessCallback(parameters.position, parameters);
-		},
-
-		// Filter management methods
-			/**
-			 * @param {Object} parameters
-			 * @param {Boolean} parameters.disableStoreLoad
-			 * @param {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter} parameters.filter
-			 * @param {Boolean} parameters.type
-			 *
-			 * @returns {Void}
-			 */
-			dataViewFilterGridFilterApply: function (parameters) {
-				parameters = Ext.isObject(parameters) ? parameters : {};
-				parameters.disableStoreLoad = Ext.isBoolean(parameters.disableStoreLoad) ? parameters.disableStoreLoad : false;
-
-				switch (parameters.type) {
-					case 'advanced': {
-						this.dataViewFilterGridFilterApplyAdvanced(parameters.filter);
-					} break;
-
-					case 'basic': {
-						this.dataViewFilterGridFilterApplyBasic(parameters.filter);
-					} break;
-
-					default:
-						return _error('dataViewFilterGridFilterApply(): unmanaged type parameter', this, parameters.type);
-				}
-
-				if (!parameters.disableStoreLoad)
-					this.cmfg('dataViewFilterGridStoreLoad');
-			},
-
-			/**
-			 * @param {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter} filter
-			 *
-			 * @returns {Void}
-			 *
-			 * @private
-			 */
-			dataViewFilterGridFilterApplyAdvanced: function (filter) {
-				// Error handling
-					if (!Ext.isObject(filter) || Ext.Object.isEmpty(filter) || !filter.isFilterAdvancedCompatible)
-						return _error('dataViewFilterGridFilterApplyAdvanced(): unmanaged filter parameter', this, filter);
-				// END: Error handling
-
-				var emptyRuntimeParameters = filter.getEmptyRuntimeParameters()
-					filterConfigurationObject = filter.get(CMDBuild.core.constants.Proxy.CONFIGURATION);
-
-				if (Ext.isArray(emptyRuntimeParameters) && !Ext.isEmpty(emptyRuntimeParameters))
-					return this.controllerRuntimeParameters.cmfg('fieldFilterRuntimeParametersShow', filter);
-
-				filter.resolveCalculatedParameters();
-
-				// Merge applied filter query parameter to filter object
-				if (!this.dataViewFilterGridAppliedFilterIsEmpty()) {
-					var appliedFilterConfigurationObject = this.cmfg('dataViewFilterGridAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION);
-
-					// Default filter manage: merge with dataView's filter
-					filter.mergeConfigurationWith(this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.FILTER));
-
-					if (!Ext.isEmpty(appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.QUERY]))
-						filter.set(CMDBuild.core.constants.Proxy.CONFIGURATION, Ext.apply(filterConfigurationObject, {
-							query: appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.QUERY]
-						}));
-				}
-
-				this.dataViewFilterGridAppliedFilterSet({ value: filter.getData() });
-			},
-
-			/**
-			 * @param {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter} filter
-			 *
-			 * @returns {Void}
-			 *
-			 * @private
-			 */
-			dataViewFilterGridFilterApplyBasic: function (filter) {
-				// Error handling
-					if (!Ext.isObject(filter) || Ext.Object.isEmpty(filter) || !filter.isFilterAdvancedCompatible)
-						return _error('dataViewFilterGridFilterApplyBasic(): unmanaged filter parameter', this, filter);
-				// END: Error handling
-
-				var filterConfigurationObject = filter.get(CMDBuild.core.constants.Proxy.CONFIGURATION),
-					newConfigurationObject = {};
-
-				// Merge filters objects
-				if (this.dataViewFilterGridAppliedFilterIsEmpty()) {
-					newConfigurationObject[CMDBuild.core.constants.Proxy.CONFIGURATION] = {};
-					newConfigurationObject[CMDBuild.core.constants.Proxy.CONFIGURATION][CMDBuild.core.constants.Proxy.QUERY] = filterConfigurationObject[CMDBuild.core.constants.Proxy.QUERY];
-					newConfigurationObject[CMDBuild.core.constants.Proxy.DEFAULT] = false; // Remove default state
-
-					this.dataViewFilterGridAppliedFilterSet({ value: newConfigurationObject });
-				} else {
-					newConfigurationObject = this.cmfg('dataViewFilterGridAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION);
-					newConfigurationObject[CMDBuild.core.constants.Proxy.QUERY] = filterConfigurationObject[CMDBuild.core.constants.Proxy.QUERY];
-
-					this.dataViewFilterGridAppliedFilterSet({
-						propertyName: CMDBuild.core.constants.Proxy.CONFIGURATION,
-						value: newConfigurationObject
-					});
-				}
-			},
-
-			/**
-			 * @param {Object} parameters
-			 * @param {Boolean} parameters.disableStoreLoad
-			 * @param {Boolean} parameters.type
-			 *
-			 * @returns {Void}
-			 */
-			dataViewFilterGridFilterClear: function (parameters) {
-				parameters = Ext.isObject(parameters) ? parameters : {};
-				parameters.disableStoreLoad = Ext.isBoolean(parameters.disableStoreLoad) ? parameters.disableStoreLoad : false;
-
-				if (!this.dataViewFilterGridAppliedFilterIsEmpty()) {
-					var appliedFilterConfigurationObject = Ext.clone(this.cmfg('dataViewFilterGridAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION));
-
-					switch (parameters.type) {
-						case 'advanced': {
-							if (
-								(
-									!Ext.isEmpty(appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.ATTRIBUTE])
-									|| !Ext.isEmpty(appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.RELATION])
-									|| !Ext.isEmpty(appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.FUNCTIONS])
-								)
-								&& !this.cmfg('dataViewFilterGridAppliedFilterGet', CMDBuild.core.constants.Proxy.DEFAULT)
-							) {
-								this.dataViewFilterGridAppliedFilterReset();
-
-								// Merge with previous filter query parameter if present
-								if (!Ext.isEmpty(appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.QUERY]))
-									this.dataViewFilterGridAppliedFilterSet({
-										value: this.cmfg('dataViewFilterGridAppliedFilterGet').mergeConfigurationWith(
-											Ext.create('CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter', {
-												configuration: appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.QUERY]
-											})
-										)
-									});
-							}
-						} break;
-
-						case 'basic': {
-							if (!Ext.isEmpty(appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.QUERY])) {
-								delete appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.QUERY];
-
-								if (Ext.Object.isEmpty(appliedFilterConfigurationObject)) {
-									this.dataViewFilterGridAppliedFilterReset();
-								} else {
-									this.dataViewFilterGridAppliedFilterSet({
-										propertyName: CMDBuild.core.constants.Proxy.CONFIGURATION,
-										value: appliedFilterConfigurationObject
-									});
-								}
-							}
-						} break;
-
-						default: {
-							if (!this.cmfg('dataViewFilterGridAppliedFilterGet', CMDBuild.core.constants.Proxy.DEFAULT))
-								this.dataViewFilterGridAppliedFilterReset();
-						}
-					}
-				}
-
-				if (!parameters.disableStoreLoad)
-					this.cmfg('dataViewFilterGridStoreLoad');
-			},
-
-		/**
 		 * @returns {Void}
 		 */
 		dataViewFilterGridReset: function () {
@@ -585,7 +418,7 @@
 
 			var params = Ext.isObject(parameters.params) ? parameters.params : {};
 			params[CMDBuild.core.constants.Proxy.ATTRIBUTES] = Ext.encode(this.displayedParametersNamesGet());
-			params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.SOURCE_ENTRY_TYPE_NAME);
+			params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.NAME);
 
 			if (!this.dataViewFilterGridAppliedFilterIsEmpty())
 				params[CMDBuild.core.constants.Proxy.FILTER] = Ext.encode(this.cmfg('dataViewFilterGridAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION));
@@ -600,31 +433,42 @@
 		},
 
 		/**
-		 * Setup store, columns, sorters and Ui view mode manage
+		 * Setup store, columns, sorters and UI view mode manage
 		 *
 		 * @param {Object} parameters
 		 * @param {Function} parameters.callback
-		 * @param {Boolean} parameters.enableFilterReset
-		 * @param {Boolean} parameters.forceStoreLoad
-		 * @param {Number} parameters.position
+		 * @param {Boolean} parameters.disableFirstRowSelection
+		 * @param {CMDBuild.model.common.Filter} parameters.filter
 		 * @param {Object} parameters.scope
 		 * @param {Boolean} parameters.sortersReset
+		 * @param {Boolean} parameters.storeLoadForce
 		 *
 		 * @returns {Void}
 		 */
 		dataViewFilterGridUiUpdate: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
-			parameters.enableFilterReset = Ext.isBoolean(parameters.enableFilterReset) ? parameters.enableFilterReset : false;
+			parameters.filterReset = Ext.isBoolean(parameters.filterReset) ? parameters.filterReset : false;
 			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
 			parameters.sortersReset = Ext.isBoolean(parameters.sortersReset) ? parameters.sortersReset : false;
-
-			if (parameters.enableFilterReset)
-				this.dataViewFilterGridAppliedFilterReset();
 
 			// Error handling
 				if (this.cmfg('dataViewSelectedDataViewIsEmpty'))
 					return _error('dataViewFilterGridUiUpdate(): empty selected dataView', this, this.cmfg('dataViewSelectedDataViewGet'));
 			// END: Error handling
+
+			this.dataViewFilterGridAppliedFilterReset();
+
+			// Default filter manage: merge every time with default filter or apply clean default filter
+			if (
+				Ext.isObject(parameters.filter) && !Ext.Object.isEmpty(parameters.filter) && parameters.filter.isFilterAdvancedCompatible
+				&& !parameters.filter.get(CMDBuild.core.constants.Proxy.DEFAULT)
+			) {
+				parameters.filter.mergeConfigurations(this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.FILTER));
+			} else {
+				parameters.filter = this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.FILTER);
+			}
+
+			this.dataViewFilterGridAppliedFilterSet({ value: parameters.filter });
 
 			switch (this.cmfg('dataViewFilterUiViewModeGet')) {
 				case 'add':
@@ -645,16 +489,17 @@
 
 					// Select selectedCard inside loaded store
 					if (!this.cmfg('dataViewFilterSelectedCardIsEmpty'))
-						return this.dataViewFilterGridCardSelect({
+						return this.applySelection({
+							disableFirstRowSelection: parameters.disableFirstRowSelection,
 							id: this.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.ID),
-							forceStoreLoad: parameters.forceStoreLoad,
-							position: parameters.position,
+							storeLoadForce: parameters.storeLoadForce,
 							scope: parameters.scope,
 							callback: parameters.callback
 						});
 
 					// Load store and select first card
 					return this.cmfg('dataViewFilterGridStoreLoad', {
+						disableFirstRowSelection: parameters.disableFirstRowSelection,
 						scope: parameters.scope,
 						callback: parameters.callback
 					});
@@ -723,21 +568,41 @@
 		},
 
 		/**
-		 * Reset grid and form on column sort change
+		 * @param {CMDBuild.model.management.dataView.filter.panel.grid.Record} record
+		 *
+		 * @returns {Void}
+		 */
+		onDataViewFilterGridRecordSelect: function (record) {
+			// Error handling
+				if (!Ext.isObject(record) || Ext.Object.isEmpty(record))
+					return _error('onDataViewFilterGridRecordSelect(): unmanaged record parameter', this, record);
+			// END: Error handling
+
+			var params = {};
+			params[CMDBuild.core.constants.Proxy.CARD_ID] = record.get(CMDBuild.core.constants.Proxy.ID);
+
+			if (!this.cmfg('dataViewFilterGridAppliedFilterIsEmpty'))
+				params[CMDBuild.core.constants.Proxy.FILTER] = this.cmfg('dataViewFilterGridAppliedFilterGet');
+
+			this.cmfg('dataViewFilterUiUpdate', params);
+		},
+
+		/**
+		 * Reset grid and form on column sort change if selected card is not found in loaded store
 		 *
 		 * @returns {Void}
 		 */
 		onDataViewFilterGridSortChange: function () {
 			this.cmfg('dataViewFilterGridStoreGet').on('load', function (store, records, successful, eOpts) {
-				if (this.cmfg('dataViewFilterSelectedCardIsEmpty')) {
-					this.cmfg('dataViewFilterReset');
-				} else {
+				if (!this.cmfg('dataViewFilterSelectedCardIsEmpty')) {
 					var selectedRecordIndex = store.find(CMDBuild.core.constants.Proxy.ID, this.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.ID));
 
 					this.view.getSelectionModel().select(Math.abs(selectedRecordIndex), false, true);
 
-					if (selectedRecordIndex < 0)
+					if (selectedRecordIndex < 0) {
+						this.cmfg('dataViewFilterSelectedCardReset');
 						this.cmfg('dataViewFilterReset');
+					}
 				}
 			}, this, { single: true });
 		},
@@ -809,7 +674,7 @@
 
 			var params = {};
 			params[CMDBuild.core.constants.Proxy.CARD_ID] = cardId;
-			params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.SOURCE_ENTRY_TYPE_NAME);
+			params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.NAME);
 
 			if (Ext.isString(filter) && !Ext.isEmpty(filter))
 				params[CMDBuild.core.constants.Proxy.FILTER] = filter;
@@ -894,8 +759,9 @@
 		 * @param {String} filter
 		 * @param {Object} parameters
 		 * @param {Function} parameters.callback
-		 * @param {Boolean} parameters.forceStoreLoad
+		 * @param {Boolean} parameters.disableFirstRowSelection
 		 * @param {Object} parameters.scope
+		 * @param {Boolean} parameters.storeLoadForce
 		 *
 		 * @returns {Void}
 		 *
@@ -903,7 +769,7 @@
 		 */
 		positionCardGetSuccess: function (position, filter, parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
-			parameters.forceStoreLoad = Ext.isBoolean(parameters.forceStoreLoad) ? parameters.forceStoreLoad : false;
+			parameters.storeLoadForce = Ext.isBoolean(parameters.storeLoadForce) ? parameters.storeLoadForce : false;
 
 			// Error handling
 				if (!Ext.isNumber(position) || Ext.isEmpty(position))
@@ -919,9 +785,10 @@
 
 			if (
 				this.cmfg('dataViewFilterGridStoreGet').currentPage != pageNumber
-				|| parameters.forceStoreLoad
+				|| parameters.storeLoadForce
 			) {
 				return this.cmfg('dataViewFilterGridStoreLoad', {
+					disableFirstRowSelection: parameters.disableFirstRowSelection,
 					page: pageNumber,
 					scope: this,
 					callback: function (records, operation, success) {

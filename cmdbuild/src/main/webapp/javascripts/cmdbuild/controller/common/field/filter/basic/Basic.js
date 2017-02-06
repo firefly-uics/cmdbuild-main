@@ -10,10 +10,7 @@
 	Ext.define('CMDBuild.controller.common.field.filter.basic.Basic', {
 		extend: 'CMDBuild.controller.common.abstract.Base',
 
-		requires: [
-			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.core.Utils'
-		],
+		requires: ['CMDBuild.core.constants.Proxy'],
 
 		/**
 		 * @cfg {Object}
@@ -87,7 +84,7 @@
 
 					this.cmfg('panelGridAndFormUiUpdate', {
 						entityId: this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.ID),
-						filter: Ext.create('CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter', { configuration: appliedFilterConfigurationObject })
+						filter: Ext.create('CMDBuild.model.common.Filter', { configuration: appliedFilterConfigurationObject })
 					});
 				}
 			}
@@ -140,7 +137,7 @@
 
 				this.cmfg('panelGridAndFormUiUpdate', {
 					entityId: this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.ID),
-					filter: Ext.create('CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter', { configuration: newConfigurationObject })
+					filter: Ext.create('CMDBuild.model.common.Filter', { configuration: newConfigurationObject })
 				});
 			} else { // Reset action on empty filter string
 				this.cmfg('fieldFilterBasicReset');

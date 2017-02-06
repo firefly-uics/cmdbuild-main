@@ -7,7 +7,7 @@
 
 		fields: [
 			{ name: CMDBuild.core.constants.Proxy.DESCRIPTION, type: 'string' },
-			{ name: CMDBuild.core.constants.Proxy.FILTER, type: 'auto', defaultValue: {} }, // CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter
+			{ name: CMDBuild.core.constants.Proxy.FILTER, type: 'auto', defaultValue: {} }, // CMDBuild.model.common.Filter
 			{ name: CMDBuild.core.constants.Proxy.ID, type: 'int', useNull: true },
 			{ name: CMDBuild.core.constants.Proxy.NAME, type: 'string' },
 			{ name: CMDBuild.core.constants.Proxy.SOURCE_ENTRY_TYPE_NAME, type: 'string' },
@@ -26,10 +26,13 @@
 			data = Ext.isObject(data) ? data : {};
 			data[CMDBuild.core.constants.Proxy.SOURCE_ENTRY_TYPE_NAME] = data[CMDBuild.core.constants.Proxy.SOURCE_CLASS_NAME] || data[CMDBuild.core.constants.Proxy.SOURCE_ENTRY_TYPE_NAME];
 
-			if (Ext.isString(data[CMDBuild.core.constants.Proxy.FILTER]) && !Ext.isEmpty(data[CMDBuild.core.constants.Proxy.FILTER]))
-				data[CMDBuild.core.constants.Proxy.FILTER] = Ext.create('CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter', {
-					configuration: Ext.decode(data[CMDBuild.core.constants.Proxy.FILTER])
-				});
+			if (Ext.isString(data[CMDBuild.core.constants.Proxy.FILTER]) && !Ext.isEmpty(data[CMDBuild.core.constants.Proxy.FILTER])) {
+				var filterObject = {};
+				filterObject[CMDBuild.core.constants.Proxy.CONFIGURATION] = Ext.decode(data[CMDBuild.core.constants.Proxy.FILTER]);
+				filterObject[CMDBuild.core.constants.Proxy.DEFAULT] = true;
+
+				data[CMDBuild.core.constants.Proxy.FILTER] = Ext.create('CMDBuild.model.common.Filter', filterObject);
+			}
 
 			this.callParent(arguments);
 		},

@@ -23,9 +23,10 @@
 			'dataViewFilterReset',
 			'dataViewFilterSelectedCardGet',
 			'dataViewFilterSelectedCardIsEmpty',
+			'dataViewFilterSelectedCardReset',
 			'dataViewFilterSourceEntryTypeAttributesGet',
 			'dataViewFilterSourceEntryTypeAttributesIsEmpty',
-			'dataViewFilterSourceEntryTypeGet',
+			'dataViewFilterSourceEntryTypeGet = panelGridAndFormSelectedEntityGet',
 			'dataViewFilterSourceEntryTypeIsEmpty',
 			'dataViewFilterStartCardGet',
 			'dataViewFilterUiUpdate',
@@ -140,15 +141,12 @@
 		onDataViewFilterAbortButtonClick: function () {
 			this.cmfg('dataViewFilterFullScreenUiSetup', { maximize: 'top' });
 			this.cmfg('dataViewFilterReset');
+			this.cmfg('dataViewFilterSelectedCardReset');
 			this.cmfg('dataViewFilterUiViewModeSet');
-			this.dataViewFilterSelectedCardReset();
 
 			// Forward to sub-controllers
 			if (!this.dataViewFilterPreviousSelectionIsEmpty())
-				return this.cmfg('dataViewFilterUiUpdate', {
-					cardId: this.dataViewFilterPreviousSelectionGet(CMDBuild.core.constants.Proxy.ID),
-					className: this.dataViewFilterPreviousSelectionGet(CMDBuild.core.constants.Proxy.CLASS_NAME)
-				});
+				return this.cmfg('dataViewFilterUiUpdate', { cardId: this.dataViewFilterPreviousSelectionGet(CMDBuild.core.constants.Proxy.ID) });
 
 			return this.controllerForm.cmfg('dataViewFilterFormUiUpdate');
 		},
@@ -175,7 +173,7 @@
 			this.cmfg('dataViewFilterUiViewModeSet', 'add');
 
 			// Local variables reset
-			this.dataViewFilterSelectedCardReset();
+			this.cmfg('dataViewFilterSelectedCardReset');
 			this.dataViewFilterStartCardReset();
 
 			this.dataViewFilterStartCardSet({
@@ -410,12 +408,10 @@
 		 * @param {Object} parameters
 		 * @param {Function} parameters.callback
 		 * @param {Number} parameters.cardId
-//		 * @param {String} parameters.className - internal use // TODO: remove
-		 * @param {Boolean} parameters.enableFilterReset // TODO: rename filterReset or filterForceEnabled
-		 * @param {Boolean} parameters.forceStoreLoad // TODO: rename storeLoadForce
-		 * @param {Number} parameters.position // TODO: remove
+		 * @param {CMDBuild.model.common.Filter} parameters.filter
 		 * @param {Boolean} parameters.sortersReset
 		 * @param {Object} parameters.scope
+		 * @param {Boolean} parameters.storeLoadForce
 		 * @param {Object} parameters.tabToSelect
 		 * @param {String} parameters.viewMode
 		 *
@@ -424,8 +420,6 @@
 		dataViewFilterUiUpdate: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
 			parameters.cardId = Ext.isNumber(parameters.cardId) ? parameters.cardId : null;
-//			parameters.className = Ext.isString(parameters.className) ? parameters.className
-//				: this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.SOURCE_ENTRY_TYPE_NAME);
 			parameters.viewMode = Ext.isString(parameters.viewMode) ? parameters.viewMode : 'read';
 
 			// Error handling
@@ -438,8 +432,8 @@
 			this.cmfg('dataViewFilterUiViewModeSet', parameters.viewMode);
 
 			// Local variables reset
+			this.cmfg('dataViewFilterSelectedCardReset');
 			this.dataViewFilterPreviousSelectionReset();
-			this.dataViewFilterSelectedCardReset();
 			this.dataViewFilterStartCardReset();
 
 			if (this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.TYPE) == 'filter') {
@@ -455,10 +449,9 @@
 							// Forward to sub-controllers
 							this.controllerForm.cmfg('dataViewFilterFormUiUpdate', { tabToSelect: parameters.tabToSelect });
 							this.controllerGrid.cmfg('dataViewFilterGridUiUpdate', {
-								enableFilterReset: parameters.enableFilterReset,
-								forceStoreLoad: parameters.forceStoreLoad,
-								position: parameters.position,
+								filter: parameters.filter,
 								sortersReset: parameters.sortersReset,
+								storeLoadForce: parameters.storeLoadForce,
 								scope: parameters.scope,
 								callback: parameters.callback
 							});
@@ -539,8 +532,7 @@
 		/**
 		 * @param {Object} parameters
 		 * @param {Object} parameters.callback
-		 * @param {Number} parameters.cardId
-		 * @param {String} parameters.className
+		 * @param {Number} parameters.id
 		 * @param {Object} parameters.scope
 		 *
 		 * @returns {Void}
@@ -610,8 +602,6 @@
 
 			/**
 			 * @returns {Void}
-			 *
-			 * @private
 			 */
 			dataViewFilterSelectedCardReset: function () {
 				this.propertyManageReset('selectedCard');

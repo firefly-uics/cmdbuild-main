@@ -72,7 +72,7 @@
 			this.mon(this.view, 'activate', this.loadData, this);
 
 			this.mon(this, 'cm-server-success', function () {
-				this.parentDelegate.cmfg('dataViewFilterUiUpdate', { id: this.parentDelegate.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.ID) });
+				this.parentDelegate.cmfg('dataViewFilterUiUpdate', { cardId: this.parentDelegate.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.ID) });
 			}, this);
 
 			// Build sub-controllers
@@ -113,26 +113,33 @@
 		 * @legacy
 		 */
 		panelListenerManagerShow: function () {
+			// Error handling
+				if (this.parentDelegate.cmfg('dataViewSelectedDataViewIsEmpty'))
+					return _error('panelListenerManagerShow(): empty selectedDataView property', this, this.parentDelegate.cmfg('dataViewSelectedDataViewGet'));
+
+				if (this.parentDelegate.cmfg('dataViewFilterSelectedCardIsEmpty'))
+					return _error('panelListenerManagerShow(): empty selectedCard property', this, this.parentDelegate.cmfg('dataViewFilterSelectedCardGet'));
+			// END: Error handling
+
 			// History record save
-			if (!this.parentDelegate.cmfg('dataViewSelectedDataViewIsEmpty') && !this.parentDelegate.cmfg('dataViewFilterSelectedCardIsEmpty'))
-				CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
-					moduleId: this.parentDelegate.cmfg('dataViewIdentifierGet'),
-					entryType: {
-						description: this.parentDelegate.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.DESCRIPTION),
-						id: this.parentDelegate.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.ID),
-						object: this.parentDelegate.cmfg('dataViewSelectedDataViewGet')
-					},
-					item: {
-						description: this.parentDelegate.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.DESCRIPTION)
-							|| this.parentDelegate.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.CODE),
-						id: this.parentDelegate.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.ID),
-						object: this.parentDelegate.cmfg('dataViewFilterSelectedCardGet')
-					},
-					section: {
-						description: this.view.title,
-						object: this.view
-					}
-				});
+			CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
+				moduleId: this.parentDelegate.cmfg('dataViewIdentifierGet'),
+				entryType: {
+					description: this.parentDelegate.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.DESCRIPTION),
+					id: this.parentDelegate.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.ID),
+					object: this.parentDelegate.cmfg('dataViewSelectedDataViewGet')
+				},
+				item: {
+					description: this.parentDelegate.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.DESCRIPTION)
+						|| this.parentDelegate.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.CODE),
+					id: this.parentDelegate.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.ID),
+					object: this.parentDelegate.cmfg('dataViewFilterSelectedCardGet')
+				},
+				section: {
+					description: this.view.title,
+					object: this.view
+				}
+			});
 
 			// UI view mode manage
 			switch (this.parentDelegate.cmfg('dataViewFilterUiViewModeGet')) {
@@ -182,6 +189,11 @@
 					}
 				});
 			}
+		},
+
+		reset: function () {
+			this.view.clearStore();
+			this.view.disable();
 		},
 
 		/**

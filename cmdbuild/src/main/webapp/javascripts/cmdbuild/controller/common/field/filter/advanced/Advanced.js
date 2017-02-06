@@ -274,7 +274,7 @@
 		onFieldFilterAdvancedFilterClearButtonClick: function() {
 			this.fieldFilterAdvancedFilterSet({
 				filterObject: Ext.create('CMDBuild.model.common.field.filter.advanced.Filter', {
-					entryType: this.fieldFilterAdvancedSelectedClassGet(CMDBuild.core.constants.Proxy.NAME)
+					entryType: this.cmfg('fieldFilterAdvancedSelectedClassGet', CMDBuild.core.constants.Proxy.NAME)
 				})
 			});
 

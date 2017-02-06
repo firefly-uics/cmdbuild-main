@@ -20,7 +20,7 @@
 		parentDelegate: undefined,
 
 		/**
-		 * @property {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter}
+		 * @property {CMDBuild.model.common.Filter}
 		 *
 		 * @private
 		 */
@@ -740,7 +740,7 @@
 			 */
 			workflowTreeAppliedFilterSet: function (parameters) {
 				if (Ext.isObject(parameters) && !Ext.Object.isEmpty(parameters)) {
-					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter';
+					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.common.Filter';
 					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'appliedFilter';
 
 					this.propertyManageSet(parameters);
@@ -964,7 +964,7 @@
 		 * @param {Function} parameters.callback
 		 * @param {Boolean} parameters.defaultFilterApplyIfExists
 		 * @param {Boolean} parameters.disableFirstRowSelection
-		 * @param {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter} parameters.filter
+		 * @param {CMDBuild.model.common.Filter} parameters.filter
 		 * @param {Boolean} parameters.filterReset
 		 * @param {Boolean} parameters.filterForceEnabled
 		 * @param {String} parameters.flowStatus
@@ -992,7 +992,7 @@
 
 			// Filter setup
 			if (!Ext.Object.isEmpty(parameters.filter)) { // Apply filter
-				this.workflowTreeAppliedFilterSet({ value: parameters.filter.getData() });
+				this.workflowTreeAppliedFilterSet({ value: parameters.filter });
 			} else if (parameters.defaultFilterApplyIfExists && !this.cmfg('workflowSelectedWorkflowDefaultFilterIsEmpty')) { // Apply default filter
 				this.workflowTreeAppliedFilterSet({ value: this.cmfg('workflowSelectedWorkflowDefaultFilterGet') });
 			} else if (parameters.filterReset) { // Reset applied filter

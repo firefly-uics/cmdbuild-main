@@ -10,6 +10,33 @@
 		singleton: true,
 
 		/**
+		 * Push item only if not already inside
+		 *
+		 * @param {Array} destination
+		 * @param {Mixed} item
+		 *
+		 * @returns {Array or mixed}
+		 */
+		arrayPushIfUnique: function (destination, item) {
+			if (Ext.isArray(destination)) {
+				var alreadyInside = false;
+
+				Ext.Array.each(destination, function (arrayItem, i, allArrayItems) {
+					alreadyInside = CMDBuild.core.Utils.objectDeepEqual(arrayItem, item);
+
+					return !alreadyInside;
+				}, this);
+
+				if (!alreadyInside)
+					return destination.push(item);
+
+				return destination;
+			}
+
+			return destination;
+		},
+
+		/**
 		 * Decode variable as boolean ('true', 'on', 'false', 'off') case unsensitive
 		 *
 		 * @param {Mixed} variable
@@ -345,6 +372,72 @@
 			}
 
 			return array;
+		},
+
+		/**
+		 * @param {Object} a
+		 * @param {Object} b
+		 *
+		 * @returns {Boolean}
+		 *
+		 * @resource https://stamat.wordpress.com/2013/06/22/javascript-object-comparison/
+		 */
+		objectDeepEqual: function (a, b) {
+			if (a !== b) {
+				var atype = Ext.typeOf(a),
+					btype = Ext.typeOf(b);
+
+				if (atype === btype)
+					switch (atype) {
+						case 'array': {
+							if (a === b)
+								return true;
+
+							if (a.length !== b.length)
+								return false;
+
+							for (var i = 0; i < a.length; i++){
+								if(!CMDBuild.core.Utils.objectDeepEqual(a[i], b[i]))
+									return false;
+							};
+
+							return true;
+						} break;
+
+						case 'object': {
+							if (a === b)
+								return true;
+
+							for (var i in a) {
+								if (b.hasOwnProperty(i)) {
+									if (!CMDBuild.core.Utils.objectDeepEqual(a[i],b[i]))
+										return false;
+								} else {
+									return false;
+								}
+							}
+
+							for (var i in b)
+								if (!a.hasOwnProperty(i))
+									return false;
+
+							return true;
+						} break;
+
+						case 'date':
+							return a.getTime() === b.getTime();
+
+						case 'regexp':
+							return a.toString() === b.toString();
+
+						default:
+							return a == b;
+					}
+
+				return false;
+			}
+
+			return true;
 		},
 
 		/**

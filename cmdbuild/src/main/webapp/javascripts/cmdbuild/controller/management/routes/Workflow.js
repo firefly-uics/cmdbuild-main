@@ -67,7 +67,7 @@
 
 								if (isClientFilterValid)
 									moduleController.cmfg('workflowUiUpdate', {
-										filter: Ext.create('CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter', { configuration: clientFilter }),
+										filter: Ext.create('CMDBuild.model.common.Filter', { configuration: clientFilter }),
 										sortersReset: true,
 										storeLoadForce: true,
 										workflowId: decodedResponse[CMDBuild.core.constants.Proxy.ID]

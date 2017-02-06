@@ -1,8 +1,11 @@
 (function () {
 
-	Ext.require('CMDBuild.core.constants.Proxy');
+	Ext.require([
+		'CMDBuild.core.constants.Proxy',
+		'CMDBuild.core.Utils'
+	]);
 
-	Ext.define('CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter', {
+	Ext.define('CMDBuild.model.common.Filter', {
 		extend: 'Ext.data.Model',
 
 		/**
@@ -44,7 +47,7 @@
 					return this.extractSimpleObjects(destinationContainer, item.or);
 
 				if (!Ext.isEmpty(item.simple))
-					return destinationContainer.push(item.simple);
+					return CMDBuild.core.Utils.arrayPushIfUnique(destinationContainer, item.simple);
 			} else if (Ext.isArray(item) && !Ext.isEmpty(item)) {
 				Ext.Array.forEach(item, function (filterObject, i, allFilterObjects) {
 					this.extractSimpleObjects(destinationContainer, filterObject);
@@ -157,95 +160,182 @@
 			return Ext.isEmpty(configuration[CMDBuild.core.constants.Proxy.QUERY]);
 		},
 
-		/**
-		 * Extract all simple objects from both filters (local and to be merged one) and rebuild merged filter
-		 *
-		 * @param {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter} filter
-		 *
-		 * @returns {Void}
-		 */
-		mergeConfigurationWith: function (filter) {
-			// Error handling
-				if (!Ext.isObject(filter) || Ext.Object.isEmpty(filter) || !filter.isFilterAdvancedCompatible)
-					return _error('mergeWith(): unmanaged filter parameter', this, filter);
-			// END: Error handling
+		// Merge manage methods
+			/**
+			 *
+			 *
+			 * @param {CMDBuild.model.common.Filter} filter
+			 *
+			 * @returns {Void}
+			 */
+			mergeConfigurations: function (filter) {
+				// Error handling
+					if (!Ext.isObject(filter) || Ext.Object.isEmpty(filter) || !filter.isFilterAdvancedCompatible)
+						return _error('mergeConfigurations(): unmanaged filter parameter', this, filter);
+				// END: Error handling
 
-			var configurationLocal = this.get(CMDBuild.core.constants.Proxy.CONFIGURATION),
-				configurationOther = filter.get(CMDBuild.core.constants.Proxy.CONFIGURATION),
-				mergedFilterConfiguration = {};
+				var configurationLocal = this.get(CMDBuild.core.constants.Proxy.CONFIGURATION),
+					configurationOther = filter.get(CMDBuild.core.constants.Proxy.CONFIGURATION),
+					mergedFilterConfiguration = {};
 
-			// Merge attribute
-			if (
-				!Ext.isEmpty(configurationLocal[CMDBuild.core.constants.Proxy.ATTRIBUTE])
-				&& !Ext.isEmpty(configurationOther[CMDBuild.core.constants.Proxy.ATTRIBUTE])
-			) {
-				var mergedFilterItems = [],
-					simpleObjects = [],
-					simpleObjectsGroupedByName = {};
+				// Merge attribute
+				var attribute = this.mergeConfigurationsAttributes(
+					configurationLocal[CMDBuild.core.constants.Proxy.ATTRIBUTE],
+					configurationOther[CMDBuild.core.constants.Proxy.ATTRIBUTE]
+				);
 
-				this.extractSimpleObjects(simpleObjects, configurationLocal[CMDBuild.core.constants.Proxy.ATTRIBUTE]);
-				this.extractSimpleObjects(simpleObjects, configurationOther[CMDBuild.core.constants.Proxy.ATTRIBUTE]);
+				if (!Ext.Object.isEmpty(attribute))
+					mergedFilterConfiguration[CMDBuild.core.constants.Proxy.ATTRIBUTE] = attribute;
 
-				if (!Ext.isEmpty(simpleObjects)) {
-					// Build filter attribute's groups
-					Ext.Array.forEach(Ext.Array.unique(simpleObjects), function (simpleObject, i, allSimpleObjects) {
-						var attributeName = simpleObject[CMDBuild.core.constants.Proxy.ATTRIBUTE];
+				// Merge relation
+					var relation = this.mergeConfigurationsRelation(
+						configurationLocal[CMDBuild.core.constants.Proxy.RELATION],
+						configurationOther[CMDBuild.core.constants.Proxy.RELATION]
+					);
 
-						if (Ext.isString(attributeName) && !Ext.isEmpty(attributeName)) {
-							var filterItemObject = {};
-							filterItemObject[CMDBuild.core.constants.Proxy.SIMPLE] = simpleObject;
+					if (!Ext.isEmpty(relation))
+						mergedFilterConfiguration[CMDBuild.core.constants.Proxy.RELATION] = relation;
 
-							if (Ext.isEmpty(simpleObjectsGroupedByName[attributeName]))
-								simpleObjectsGroupedByName[attributeName] = [];
+				// Merge functions
+					var functions = this.mergeConfigurationsFunctions(
+						configurationLocal[CMDBuild.core.constants.Proxy.FUNCTIONS],
+						configurationOther[CMDBuild.core.constants.Proxy.FUNCTIONS]
+					);
 
-							simpleObjectsGroupedByName[attributeName].push(filterItemObject);
-						}
-					}, this);
+					if (!Ext.isEmpty(functions))
+						mergedFilterConfiguration[CMDBuild.core.constants.Proxy.FUNCTIONS] = functions;
 
-					Ext.Object.each(simpleObjectsGroupedByName, function (name, objectsArray, myself) {
-						if (objectsArray.length == 1) {
-							mergedFilterItems.push(objectsArray[0]);
-						} else {
-							var itemObject = {};
-							itemObject[CMDBuild.core.constants.Proxy.OR] = objectsArray;
+				// Merge query
+					var query = this.mergeConfigurationsQuery(
+						configurationLocal[CMDBuild.core.constants.Proxy.QUERY],
+						configurationOther[CMDBuild.core.constants.Proxy.QUERY]
+					);
 
-							mergedFilterItems.push(itemObject);
-						}
-					}, this);
+					if (!Ext.isEmpty(query))
+						mergedFilterConfiguration[CMDBuild.core.constants.Proxy.QUERY] = query;
+
+				this.set(CMDBuild.core.constants.Proxy.CONFIGURATION, mergedFilterConfiguration);
+			},
+
+			/**
+			 * Extract all simple objects from both filters (local and to be merged one) and rebuild merged filter
+			 *
+			 * @param {Object} local
+			 * @param {Object} other
+			 *
+			 * @returns {Object}
+			 *
+			 * @private
+			 */
+			mergeConfigurationsAttributes: function (local, other) {
+				local = Ext.isObject(local) ? local : {};
+				other = Ext.isObject(other) ? other : {};
+
+				if (!Ext.Object.isEmpty(local) && !Ext.Object.isEmpty(other)) { // Merge objects
+					var mergedFilterItems = [],
+						simpleObjects = [],
+						simpleObjectsGroupedByName = {};
+
+					this.extractSimpleObjects(simpleObjects, local);
+					this.extractSimpleObjects(simpleObjects, other);
+
+					if (!Ext.isEmpty(simpleObjects)) {
+						// Build filter attribute's groups
+						Ext.Array.forEach(simpleObjects, function (simpleObject, i, allSimpleObjects) {
+							var attributeName = simpleObject[CMDBuild.core.constants.Proxy.ATTRIBUTE];
+
+							if (Ext.isString(attributeName) && !Ext.isEmpty(attributeName)) {
+								var filterItemObject = {};
+								filterItemObject[CMDBuild.core.constants.Proxy.SIMPLE] = simpleObject;
+
+								if (Ext.isEmpty(simpleObjectsGroupedByName[attributeName]))
+									simpleObjectsGroupedByName[attributeName] = [];
+
+								simpleObjectsGroupedByName[attributeName].push(filterItemObject);
+							}
+						}, this);
+
+						Ext.Object.each(simpleObjectsGroupedByName, function (name, objectsArray, myself) {
+							if (objectsArray.length == 1) {
+								mergedFilterItems.push(objectsArray[0]);
+							} else {
+								var itemObject = {};
+								itemObject[CMDBuild.core.constants.Proxy.OR] = objectsArray;
+
+								mergedFilterItems.push(itemObject);
+							}
+						}, this);
+					}
+
+					if (mergedFilterItems.length == 1)
+						return mergedFilterItems[0];
+
+					if (mergedFilterItems.length > 1) {
+						var returnObject = {};
+						returnObject[CMDBuild.core.constants.Proxy.AND] = mergedFilterItems;
+
+						return returnObject;
+					}
 				}
 
-				if (mergedFilterItems.length == 1) {
-					mergedFilterConfiguration[CMDBuild.core.constants.Proxy.ATTRIBUTE] = mergedFilterItems[0];
-				} else if (mergedFilterItems.length > 1) {
-					mergedFilterConfiguration[CMDBuild.core.constants.Proxy.ATTRIBUTE] = {};
-					mergedFilterConfiguration[CMDBuild.core.constants.Proxy.ATTRIBUTE][CMDBuild.core.constants.Proxy.AND] = mergedFilterItems;
-				}
-			}
+				if (!Ext.Object.isEmpty(local) && Ext.Object.isEmpty(other)) // Return local
+					return local;
 
-			// Merge relation
-			if (
-				!Ext.isEmpty(configurationLocal[CMDBuild.core.constants.Proxy.RELATION])
-				&& !Ext.isEmpty(configurationOther[CMDBuild.core.constants.Proxy.RELATION])
-			) {
-				mergedFilterConfiguration[CMDBuild.core.constants.Proxy.RELATION] = Ext.Array.merge(
-					configurationOther[CMDBuild.core.constants.Proxy.RELATION],
-					configurationLocal[CMDBuild.core.constants.Proxy.RELATION]
-				);
-			}
+				if (Ext.Object.isEmpty(local) && !Ext.Object.isEmpty(other)) // Return other
+					return other;
 
-			// Merge functions
-			if (
-				!Ext.isEmpty(configurationLocal[CMDBuild.core.constants.Proxy.FUNCTIONS])
-				&& !Ext.isEmpty(configurationOther[CMDBuild.core.constants.Proxy.FUNCTIONS])
-			) {
-				mergedFilterConfiguration[CMDBuild.core.constants.Proxy.FUNCTIONS] = Ext.Array.merge(
-					configurationOther[CMDBuild.core.constants.Proxy.FUNCTIONS],
-					configurationLocal[CMDBuild.core.constants.Proxy.FUNCTIONS]
-				);
-			}
+				return {};
+			},
 
-			this.set(CMDBuild.core.constants.Proxy.CONFIGURATION, mergedFilterConfiguration);
-		},
+			/**
+			 * @param {Array} local
+			 * @param {Array} other
+			 *
+			 * @returns {Array}
+			 *
+			 * @private
+			 */
+			mergeConfigurationsFunctions: function (local, other) {
+				local = Ext.isArray(local) ? local : [];
+				other = Ext.isArray(other) ? other : [];
+
+				return Ext.Array.merge(local, other);
+			},
+
+			/**
+			 * Prioritize local filter value
+			 *
+			 * @param {String} local
+			 * @param {String} other
+			 *
+			 * @returns {String}
+			 *
+			 * @private
+			 */
+			mergeConfigurationsQuery: function (local, other) {
+				if (Ext.isString(local) && !Ext.isEmpty(local))
+					return local;
+
+				if (Ext.isString(other) && !Ext.isEmpty(other))
+					return other;
+
+				return '';
+			},
+
+			/**
+			 * @param {Array} local
+			 * @param {Array} other
+			 *
+			 * @returns {Array}
+			 *
+			 * @private
+			 */
+			mergeConfigurationsRelation: function (local, other) {
+				local = Ext.isArray(local) ? local : [];
+				other = Ext.isArray(other) ? other : [];
+
+				return Ext.Array.merge(local, other);
+			},
 
 		/**
 		 * @returns {Void}
@@ -314,9 +404,6 @@
 		},
 
 		/**
-		 * Implementation of model get custom routines:
-		 * - on get description if description is empty return name property
-		 *
 		 * @param {String} fieldName
 		 * @param {Object} newValue
 		 *

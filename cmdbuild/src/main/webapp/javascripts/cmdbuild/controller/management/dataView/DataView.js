@@ -19,7 +19,7 @@
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
-			'dataViewSelectedDataViewGet = panelGridAndFormSelectedEntityGet',
+			'dataViewSelectedDataViewGet',
 			'dataViewSelectedDataViewIsEmpty',
 			'dataViewUiUpdate = panelGridAndFormUiUpdate',
 			'identifierGet = dataViewIdentifierGet',
@@ -147,9 +147,11 @@
 
 			if (Ext.isObject(parameters.node) && !Ext.Object.isEmpty(parameters.node))
 				this.cmfg('dataViewUiUpdate', {
+					// defaultFilterApplyIfExists: true, // Disabled because DataViews doesn't have default filter
 					enableFilterReset: true,
 					entityId: parameters.node.get(CMDBuild.core.constants.Proxy.ENTITY_ID),
-					sortersReset: true
+					sortersReset: true,
+					storeLoadForce: true
 				});
 
 			this.onModuleInit(parameters); // Custom callParent() implementation
@@ -159,10 +161,11 @@
 		 * @param {Object} parameters
 		 * @param {Function} parameters.callback
 		 * @param {Number} parameters.cardId
-		 * @param {Boolean} parameters.enableFilterReset // TODO: rename
 		 * @param {Number} parameters.entityId
+		 * @param {CMDBuild.model.common.Filter} parameters.filter
 		 * @param {Object} parameters.scope
 		 * @param {Boolean} parameters.sortersReset
+		 * @param {Boolean} parameters.storeLoadForce
 		 * @param {Object} parameters.tabToSelect
 		 * @param {String} parameters.viewMode
 		 *
@@ -172,7 +175,7 @@
 			parameters = Ext.isObject(parameters) ? parameters : {};
 			parameters.cardId = Ext.isNumber(parameters.cardId) ? parameters.cardId : null;
 			parameters.entityId = Ext.isNumber(parameters.entityId) ? parameters.entityId : null;
-_debug('dataViewUiUpdate', parameters);
+
 			// Error handling
 				if (!Ext.isNumber(parameters.entityId) || Ext.isEmpty(parameters.entityId))
 					return _error('dataViewUiUpdate(): unmanaged entityId parameter', this, parameters.entityId);
@@ -199,8 +202,9 @@ _debug('dataViewUiUpdate', parameters);
 							// Forward to sub-controllers
 							this.controllerFilter.cmfg('dataViewFilterUiUpdate', {
 								cardId: parameters.cardId,
-								enableFilterReset: parameters.enableFilterReset,
+								filter: parameters.filter,
 								sortersReset: parameters.sortersReset,
+								storeLoadForce: parameters.storeLoadForce,
 								tabToSelect: parameters.tabToSelect,
 								viewMode: parameters.viewMode,
 								scope: parameters.scope,
@@ -208,8 +212,9 @@ _debug('dataViewUiUpdate', parameters);
 							});
 							this.controllerSql.cmfg('dataViewSqlUiUpdate', {
 								cardId: parameters.cardId,
-								enableFilterReset: parameters.enableFilterReset,
+								filter: parameters.filter,
 								sortersReset: parameters.sortersReset,
+								storeLoadForce: parameters.storeLoadForce,
 								tabToSelect: parameters.tabToSelect,
 								viewMode: parameters.viewMode,
 								scope: parameters.scope,

@@ -11,7 +11,7 @@
 		parentDelegate: undefined,
 
 		/**
-		 * @property {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter}
+		 * @property {CMDBuild.model.common.Filter}
 		 *
 		 * @private
 		 */
@@ -198,7 +198,7 @@
 			 */
 			dataViewSqlGridAppliedFilterSet: function (parameters) {
 				if (Ext.isObject(parameters) && !Ext.Object.isEmpty(parameters)) {
-					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter';
+					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.common.Filter';
 					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'appliedFilter';
 
 					this.propertyManageSet(parameters);
@@ -310,7 +310,7 @@
 			/**
 			 * @param {Object} parameters
 			 * @param {Boolean} parameters.disableStoreLoad
-			 * @param {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter} parameters.filter
+			 * @param {CMDBuild.model.common.Filter} parameters.filter
 			 * @param {Boolean} parameters.type
 			 *
 			 * @returns {Void}
@@ -337,7 +337,7 @@
 			},
 
 			/**
-			 * @param {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter} filter
+			 * @param {CMDBuild.model.common.Filter} filter
 			 *
 			 * @returns {Void}
 			 *
@@ -371,7 +371,7 @@
 			},
 
 			/**
-			 * @param {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter} filter
+			 * @param {CMDBuild.model.common.Filter} filter
 			 *
 			 * @returns {Void}
 			 *
@@ -433,8 +433,8 @@
 								// Merge with previous filter query parameter if present
 								if (!Ext.isEmpty(appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.QUERY]))
 									this.dataViewSqlGridAppliedFilterSet({
-										value: this.cmfg('dataViewSqlGridAppliedFilterGet').mergeConfigurationWith(
-											Ext.create('CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter', {
+										value: this.cmfg('dataViewSqlGridAppliedFilterGet').mergeConfigurations(
+											Ext.create('CMDBuild.model.common.Filter', {
 												configuration: appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.QUERY]
 											})
 										)

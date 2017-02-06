@@ -12,7 +12,7 @@
 		parentDelegate: undefined,
 
 		/**
-		 * @property {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter}
+		 * @property {CMDBuild.model.common.Filter}
 		 *
 		 * @private
 		 */
@@ -143,7 +143,7 @@
 			 */
 			panelGridAndFormCommonFilterAdvancedAppliedFilterSet: function (parameters) {
 				if (Ext.isObject(parameters) && !Ext.Object.isEmpty(parameters)) {
-					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter';
+					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.common.Filter';
 					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'appliedFilter';
 
 					this.propertyManageSet(parameters);
@@ -229,7 +229,7 @@
 
 		// LocalFilterCache property functions
 			/**
-			 * @param {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter} filterModel
+			 * @param {CMDBuild.model.common.Filter} filterModel
 			 *
 			 * @returns {Void}
 			 */
@@ -276,7 +276,7 @@
 			},
 
 			/**
-			 * @param {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter} filterModel
+			 * @param {CMDBuild.model.common.Filter} filterModel
 			 *
 			 * @returns {Void}
 			 */
@@ -346,7 +346,7 @@
 		},
 
 		/**
-		 * @param {CMDBuild.model.common.panel.gridAndForm.panel.common.filter.Filter} filter
+		 * @param {CMDBuild.model.common.Filter} filter
 		 *
 		 * @returns {Void}
 		 */
