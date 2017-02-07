@@ -505,12 +505,16 @@
 			if (!data) {
 				continue;
 			}
+			var values = [ data.data.firstParameter ];
+			if (data.data.secondParameter) {
+				values.push(data.data.secondParameter)
+			}
 			filters.push({
 				simple : {
 					ClassName : classId,
 					attribute : attribute.attribute._id,
 					operator : data.operator[0],
-					value : [ data.data.firstParameter ]
+					value : values
 				}
 			});
 

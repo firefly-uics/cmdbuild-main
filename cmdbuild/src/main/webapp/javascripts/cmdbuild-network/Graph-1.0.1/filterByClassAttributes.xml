@@ -38,7 +38,7 @@
 					<form>filterByAttributesForm</form>
 					<container>filterByAttributesContainer</container>
 				</onInit>
-		<form id="filterByAttributesForm" class="cmdbuildCard">
+		<form id="filterByAttributesForm" class="filterByAttributesForm">
   			<params>
 				<type>formAttributesFilter</type>
 				<backend>FilterAttributesNavigation</backend>

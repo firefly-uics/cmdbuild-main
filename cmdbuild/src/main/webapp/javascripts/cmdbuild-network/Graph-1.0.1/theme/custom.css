@@ -593,6 +593,7 @@ body.waitMe_container {
 	width: 80px;
 	height: 100%
 }
+
 .waitMe_container .waitMe {
 	position: absolute;
 	top: 50%;
@@ -801,6 +802,26 @@ div.jqi .jqibuttons .ui-button {
 .attribute-filter-row {
 	display: block;
 }
-.cell-filter-attribute {
-	display: inline;
+span.cell-filter-select {
+	width:16em !important;
+	margin-left:5;
+	vertical-align:middle !important;
+}
+span.cell-filter-select span.ui-selectmenu-text {
+	display: inline !important;
+	width:16em !important;
+	margin-left:5;
+	vertical-align:middle !important;
+}
+input[type="text"].cell-filter-attribute {
+	display: inline !important;
+	width:16em !important;
+	height:1.2em !important;
+	margin-left:5;
+	vertical-align:middle !important;
+}
+input[type="image"].cell-filter-attribute {
+	display: inline !important;
+	margin-left:5;
+	vertical-align:middle !important;
 }
