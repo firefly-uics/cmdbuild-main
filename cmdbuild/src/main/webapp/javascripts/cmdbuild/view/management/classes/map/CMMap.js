@@ -118,6 +118,8 @@
 							}
 							var icon = CMDBuild.view.management.classes.map.proxy.Icon.readIcon(style.externalGraphic, function(iconSize, icon) {
 								this.iconCache[style.externalGraphic] = iconSize;								
+								geoAttribute.iconSize = iconSize;
+								callback.apply(callbackScope, []);
 							}, this);
 
 						},
