@@ -73,7 +73,7 @@
 					type: this.type,
 					groupId: this.groupId,
 					serviceEndpoint: this.proxy.url,
-					params: Ext.clone(options.params)
+					params: Ext.clone(Ext.Object.merge(this.getProxy().extraParams, options.params)) // Merge params and extraParams
 				};
 
 				// Avoid different stores to join results adding store model to parameters

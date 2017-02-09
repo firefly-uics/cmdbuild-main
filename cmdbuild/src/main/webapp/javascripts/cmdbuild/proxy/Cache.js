@@ -59,7 +59,7 @@
 		 * @returns {Ext.data.Store or CMDBuild.core.cache.Store}
 		 */
 		getStoreLookup: function (type) {
-			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.UNCACHED, {
+			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.LOOKUP, {
 				autoLoad: true,
 				model: 'CMDBuild.model.cache.LookupFieldStore',
 				proxy: {

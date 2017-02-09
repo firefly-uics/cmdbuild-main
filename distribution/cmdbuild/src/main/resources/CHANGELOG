@@ -136,6 +136,8 @@ FIXES
 
  * Error creating attributes after class or workflow creation
 
+ * Multilevel lookups validation errors
+
 
 
 

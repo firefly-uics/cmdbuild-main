@@ -61,6 +61,7 @@
 			CMDBuild.core.constants.Proxy.CLASS,
 			CMDBuild.core.constants.Proxy.ENTRY_TYPE,
 			CMDBuild.core.constants.Proxy.GROUP,
+			CMDBuild.core.constants.Proxy.LOOKUP,
 			CMDBuild.core.constants.Proxy.USER,
 			CMDBuild.core.constants.Proxy.WORKFLOW
 		],
