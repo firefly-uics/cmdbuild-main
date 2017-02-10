@@ -610,18 +610,24 @@
 				case 'activity': {
 					var parent = record.parentNode;
 
-					if (!parent.isRoot())
+					if (
+						Ext.isObject(parent) && !Ext.Object.isEmpty(parent)
+						&& Ext.isFunction(parent.isRoot) && !parent.isRoot()
+					) {
 						parent.eachChild(function (childNode) {
 							childNode.set(CMDBuild.core.constants.Proxy.VALUES, instanceValues);
 						}, this);
+					}
 				} break;
 
 				// Complete record and children models with additional values (to correctly manage AdditionalActivityLabel metadata also if relative column is not displayed)
 				case 'instance': {
 					record.set(CMDBuild.core.constants.Proxy.VALUES, instanceValues);
-					record.eachChild(function (childNode) {
-						childNode.set(CMDBuild.core.constants.Proxy.VALUES, instanceValues);
-					}, this);
+
+					if (record.hasChildNodes())
+						record.eachChild(function (childNode) {
+							childNode.set(CMDBuild.core.constants.Proxy.VALUES, instanceValues);
+						}, this);
 				} break;
 
 				default:

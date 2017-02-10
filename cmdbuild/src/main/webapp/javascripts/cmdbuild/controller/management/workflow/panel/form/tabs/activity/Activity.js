@@ -179,21 +179,15 @@
 		 * @returns {Void}
 		 */
 		onAddCardClick: function (id) {
+			var me = this;
+
 			this.view.setDisabled(!Ext.isNumber(id) || Ext.isEmpty(id));
 
 			if (Ext.isNumber(id) && !Ext.isEmpty(id)) {
 				_CMWFState.setProcessInstance(
 					Ext.create('CMDBuild.model.CMProcessInstance', { classId: id }),
 					function () {
-						CMDBuild.proxy.management.workflow.panel.form.tabs.Activity.readStart({ // FIXME: moved to main module controller
-							params: {
-								classId: id
-							},
-							scope: this,
-							success: function (response, options, decodedResponse) {
-								_CMWFState.setActivityInstance(new CMDBuild.model.CMActivityInstance(decodedResponse.response || {}));
-							}
-						});
+						_CMWFState.setActivityInstance(new CMDBuild.model.CMActivityInstance(me.superController.cmfg('workflowSelectedActivityGet', 'rawData')));
 					}
 				);
 			}
