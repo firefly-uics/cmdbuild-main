@@ -62,7 +62,7 @@
 		 */
 		getStoreLokup: function () {
 			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.LOOKUP, {
-				autoLoad: true,
+				autoLoad: false,
 				model: 'CMDBuild.model.common.panel.module.attachment.window.Lookup',
 				proxy: {
 					type: 'ajax',

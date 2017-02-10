@@ -15,6 +15,11 @@
 		 */
 		delegate: undefined,
 
+		/**
+		 * @property {Ext.form.field.ComboBox}
+		 */
+		fieldComboCategory: undefined,
+
 		border: false,
 		cls: 'cmdb-blue-panel',
 		frame: false,
@@ -32,7 +37,7 @@
 		initComponent: function () {
 			Ext.apply(this, {
 				items: [
-					Ext.create('Ext.form.field.ComboBox', {
+					this.fieldComboCategory = Ext.create('Ext.form.field.ComboBox', {
 						name: CMDBuild.core.constants.Proxy.CATEGORY,
 						fieldLabel: CMDBuild.core.Utils.prependMandatoryLabel(CMDBuild.Translation.category),
 						labelWidth: CMDBuild.core.constants.FieldWidths.LABEL,

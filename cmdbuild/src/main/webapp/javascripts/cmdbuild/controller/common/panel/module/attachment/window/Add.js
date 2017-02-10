@@ -132,12 +132,17 @@
 					return _error('panelModuleAttachmentWindowAddConfigureAndShow(): unmanaged selectedItem property', this, this.cmfg('panelGridAndFormSelectedItemGet'));
 			// END: Error handling
 
-			// Form setup
-			this.form.reset();
+			this.containerFieldsCommon.fieldComboCategory.getStore().load({ // Load combo store before setup window
+				scope: this,
+				callback: function (records, operation, success) {
+					// Form setup
+					this.form.reset();
 
-			this.controllerContainerMetadata.cmfg('panelModuleAttachmentWindowContainerMetadataValuesSet', parameters.presets);
+					this.controllerContainerMetadata.cmfg('panelModuleAttachmentWindowContainerMetadataValuesSet', parameters.presets);
 
-			this.view.show();
+					this.view.show();
+				}
+			});
 		}
 	});
 
