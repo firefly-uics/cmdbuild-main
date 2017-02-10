@@ -201,6 +201,8 @@
 
 		/**
 		 * @returns {Void}
+		 *
+		 * FIXME: waiting for refactor (rename)
 		 */
 		onWorkflowTabPropertiesSaveButtonClick: function () {
 			if (this.validate(this.propertiesPanel)) {
