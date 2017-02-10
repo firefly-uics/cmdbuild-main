@@ -138,6 +138,8 @@ FIXES
 
  * Multilevel lookups validation errors
 
+ * ReadOnly reference attribute not displayed in openReport widget's parameters window
+
 
 
 

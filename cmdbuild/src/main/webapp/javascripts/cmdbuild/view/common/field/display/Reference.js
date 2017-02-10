@@ -9,6 +9,13 @@
 		delegate: undefined,
 
 		/**
+		 * @property {CMDBuild.model.common.field.display.Reference}
+		 *
+		 * @private
+		 */
+		displayedValueObject: {},
+
+		/**
 		 * @cfg {String}
 		 */
 		targetClassName: undefined,
@@ -27,14 +34,23 @@
 		},
 
 		/**
+		 * @returns {Number}
+		 *
+		 * @override
+		 */
+		getValue: function () {
+			return this.delegate.cmfg('fieldDisplayReferenceValueGet');
+		},
+
+		/**
 		 * @param {String or Object} value
 		 *
-		 * @returns {Void}
+		 * @returns {Object}
 		 *
 		 * @override
 		 */
 		setValue: function (value) {
-			this.callParent([this.delegate.cmfg('fieldDisplayReferenceDecodeValue', value)]);
+			return this.callParent([this.delegate.cmfg('fieldDisplayReferenceValueSet', value)]);
 		}
 	});
 
