@@ -83,7 +83,7 @@
 					var cachedValues = CMDBuild.global.Cache.get(parameters);
 
 					this.loadData(cachedValues.records);
-_debug('asd');
+
 					// Interceptor to manage error/warning messages
 					options.callback = Ext.Function.createInterceptor(options.callback, this.callbackInterceptor, this);
 
