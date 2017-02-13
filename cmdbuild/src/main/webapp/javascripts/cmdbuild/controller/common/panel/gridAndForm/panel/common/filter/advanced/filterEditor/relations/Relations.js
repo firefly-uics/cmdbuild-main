@@ -158,47 +158,29 @@
 		 * @returns {Object} out
 		 */
 		panelGridAndFormFilterAdvancedFilterEditorRelationsDataGet: function () {
-			var out = {};
+			var data = [],
+				out = {};
 
-			if (this.controllerGridDomain.getView().getSelectionModel().hasSelection()) {
-				var data = [];
+			this.controllerGridDomain.getView().getStore().each(function (domain) {
+				var type = domain.getType();
 
-				this.controllerGridDomain.getView().getStore().each(function (domain) {
-					var type = domain.getType();
+				if (!Ext.isEmpty(type)) {
+					var domainFilterConfiguration = {};
+					domainFilterConfiguration[CMDBuild.core.constants.Proxy.DESTINATION] = domain.get([CMDBuild.core.constants.Proxy.DESTINATION, CMDBuild.core.constants.Proxy.NAME]);
+					domainFilterConfiguration[CMDBuild.core.constants.Proxy.DIRECTION] = domain.get(CMDBuild.core.constants.Proxy.DIRECTION);
+					domainFilterConfiguration[CMDBuild.core.constants.Proxy.DOMAIN] = domain.get([CMDBuild.core.constants.Proxy.DOMAIN, CMDBuild.core.constants.Proxy.NAME]);
+					domainFilterConfiguration[CMDBuild.core.constants.Proxy.SOURCE] = domain.get([CMDBuild.core.constants.Proxy.SOURCE, CMDBuild.core.constants.Proxy.NAME]);
+					domainFilterConfiguration[CMDBuild.core.constants.Proxy.TYPE] = type;
 
-					if (!Ext.isEmpty(type)) {
-						var domainFilterConfiguration = {};
-						domainFilterConfiguration[CMDBuild.core.constants.Proxy.DESTINATION] = domain.get([CMDBuild.core.constants.Proxy.DESTINATION, CMDBuild.core.constants.Proxy.NAME]);
-						domainFilterConfiguration[CMDBuild.core.constants.Proxy.DIRECTION] = domain.get(CMDBuild.core.constants.Proxy.DIRECTION);
-						domainFilterConfiguration[CMDBuild.core.constants.Proxy.DOMAIN] = domain.get([CMDBuild.core.constants.Proxy.DOMAIN, CMDBuild.core.constants.Proxy.NAME]);
-						domainFilterConfiguration[CMDBuild.core.constants.Proxy.SOURCE] = domain.get([CMDBuild.core.constants.Proxy.SOURCE, CMDBuild.core.constants.Proxy.NAME]);
-						domainFilterConfiguration[CMDBuild.core.constants.Proxy.TYPE] = type;
+					if (type == 'oneof')
+						domainFilterConfiguration[CMDBuild.core.constants.Proxy.CARDS] = domain.get(CMDBuild.core.constants.Proxy.CHECKED_CARDS);
 
-						if (
-							type == 'oneof'
-							&& this.controllerGridCard.getView().getSelectionModel().hasSelection()
-						) {
-							var checkedCards = [];
+					data.push(domainFilterConfiguration);
+				}
+			}, this);
 
-							Ext.Array.each(this.controllerGridCard.getView().getSelectionModel().getSelection(), function (record, i, allRecords) {
-								if (!Ext.isEmpty(record)) {
-									var checkedCardObject = {};
-									checkedCardObject[CMDBuild.core.constants.Proxy.CLASS_NAME] = record.get('IdClass_value');
-									checkedCardObject[CMDBuild.core.constants.Proxy.ID] = record.get('Id');
-
-									checkedCards.push(checkedCardObject);
-								}
-							}, this);
-
-							domainFilterConfiguration[CMDBuild.core.constants.Proxy.CARDS] = checkedCards;
-						}
-
-						data.push(domainFilterConfiguration);
-					}
-				}, this);
-
+			if (!Ext.isEmpty(data))
 				out[CMDBuild.core.constants.Proxy.RELATION] = data;
-			}
 
 			return out;
 		},

@@ -154,6 +154,8 @@ FIXES
 
  * Utility bulk update bypass classes permissions
 
+ * Relation advanced filter not correctly managed if no selection action on domain grid
+
 
 
 
