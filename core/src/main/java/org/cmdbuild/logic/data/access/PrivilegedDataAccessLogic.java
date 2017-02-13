@@ -6,6 +6,7 @@ import static org.cmdbuild.exception.AuthException.AuthExceptionType.AUTH_CLASS_
 import java.util.Map;
 
 import org.cmdbuild.auth.acl.PrivilegeContext;
+import org.cmdbuild.dao.entrytype.CMClass;
 import org.cmdbuild.model.data.Card;
 
 public class PrivilegedDataAccessLogic extends ForwardingDataAccessLogic {
@@ -37,7 +38,8 @@ public class PrivilegedDataAccessLogic extends ForwardingDataAccessLogic {
 	}
 
 	private void assureWrite(final String className) {
-		if (!privilegeContext.hasWriteAccess(delegate.findClass(className))) {
+		final CMClass found = delegate.findClass(className);
+		if ((found == null) || !privilegeContext.hasWriteAccess(found)) {
 			throw AUTH_CLASS_NOT_AUTHORIZED.createException(className);
 		}
 	}
