@@ -45,7 +45,7 @@
 			// Failure defered function initialization
 			if (Ext.isFunction(parameters.failure))
 				Ext.defer(function () {
-					if (!this.barrierBufferIsEmpty(id))
+					if (!this.barrierBufferIsEmpty(parameters.id))
 						Ext.callback(
 							this.barrierBufferGet({
 								id: parameters.id,
