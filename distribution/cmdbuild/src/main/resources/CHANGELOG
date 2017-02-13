@@ -148,6 +148,8 @@ FIXES
 
  * Workflow with no start permission can be started from super activity button
 
+ * "User stoppable" for processes is wrongly serialized within administration module
+
 
 
 

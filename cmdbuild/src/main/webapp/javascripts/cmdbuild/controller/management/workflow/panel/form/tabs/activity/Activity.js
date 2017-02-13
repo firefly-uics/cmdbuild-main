@@ -268,20 +268,6 @@
 			}
 		},
 
-		changeClassUIConfigurationForGroup: function(disabledModify, disabledRemove) {
-			this.view.form.modifyCardButton.disabledForGroup = disabledModify;
-			this.view.form.deleteCardButton.disabledForGroup = disabledRemove;
-			if (this.view.form.modifyCardButton.disabledForGroup)
-				this.view.form.modifyCardButton.disable();
-			else
-				this.view.form.modifyCardButton.enable();
-
-			if (this.view.form.deleteCardButton.disabledForGroup)
-				this.view.form.deleteCardButton.disable();
-			else
-				this.view.form.deleteCardButton.enable();
-		},
-
 		onModifyCardClick: function() {
 			var processInstance = _CMWFState.getProcessInstance();
 			var activityInstance = _CMWFState.getActivityInstance();
@@ -692,7 +678,7 @@
 		if (processClassId) {
 			var processClass = _CMCache.getEntryTypeById(processClassId);
 			if (processClass) {
-				var theUserCanStopTheProcess = processClass.isUserStoppable() || CMDBuild.configuration.runtime.get(CMDBuild.core.constants.Proxy.IS_ADMINISTRATOR);
+				var theUserCanStopTheProcess = me.superController.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.STOPPABLE);
 				var theProcessIsNotAlreadyTerminated = processInstance.isStateOpen() || processInstance.isStateSuspended();
 
 				if (theUserCanStopTheProcess && theProcessIsNotAlreadyTerminated) {

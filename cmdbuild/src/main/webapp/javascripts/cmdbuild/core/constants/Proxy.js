@@ -599,6 +599,7 @@
 		STATE: 'state',
 		STATUS: 'status',
 		STEP_RADIUS: 'stepRadius',
+		STOPPABLE: 'stoppable',
 		STROKE_COLOR: 'strokeColor',
 		STROKE_DASHSTYLE: 'strokeDashstyle',
 		STROKE_OPACITY: 'strokeOpacity',

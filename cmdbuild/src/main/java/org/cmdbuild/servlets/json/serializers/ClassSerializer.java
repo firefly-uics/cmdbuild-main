@@ -7,8 +7,10 @@ import static org.cmdbuild.servlets.json.CommunicationConstants.ID;
 import static org.cmdbuild.servlets.json.CommunicationConstants.META;
 import static org.cmdbuild.servlets.json.CommunicationConstants.NAME;
 import static org.cmdbuild.servlets.json.CommunicationConstants.PARENT;
+import static org.cmdbuild.servlets.json.CommunicationConstants.STOPPABLE;
 import static org.cmdbuild.servlets.json.CommunicationConstants.SUPERCLASS;
 import static org.cmdbuild.servlets.json.CommunicationConstants.UI_CARD_EDIT_MODE;
+import static org.cmdbuild.servlets.json.CommunicationConstants.USER_STOPPABLE;
 import static org.cmdbuild.servlets.json.schema.ModSecurity.LOGIC_TO_JSON;
 
 import org.cmdbuild.auth.UserStore;
@@ -59,8 +61,7 @@ public class ClassSerializer {
 		this.notifier = notifier;
 	}
 
-	private JSONObject toClient(final UserProcessClass element, final String wrapperLabel,
-			final boolean addManagementInfo) throws JSONException, CMWorkflowException {
+	private JSONObject toClient(final UserProcessClass element, final String wrapperLabel) throws JSONException {
 		final JSONObject jsonObject = toClient(CMClass.class.cast(element), wrapperLabel);
 		jsonObject.put("type", "processclass");
 
@@ -74,11 +75,8 @@ public class ClassSerializer {
 			}
 		}
 
-		if (addManagementInfo) {
-			jsonObject.put("userstoppable", element.isStoppable());
-		} else {
-			jsonObject.put("userstoppable", element.isUserStoppable());
-		}
+		jsonObject.put(STOPPABLE, element.isStoppable());
+		jsonObject.put(USER_STOPPABLE, element.isUserStoppable());
 
 		return jsonObject;
 	}
@@ -90,7 +88,7 @@ public class ClassSerializer {
 			final UserProcessClass userProcessClass = workflowLogic.findProcessClass(cmClass.getName());
 			if (userProcessClass != null) {
 				jsonObject.put("type", "processclass");
-				jsonObject.put("userstoppable", userProcessClass.isUserStoppable());
+				jsonObject.put(USER_STOPPABLE, userProcessClass.isUserStoppable());
 				try {
 					jsonObject.put("startable", userProcessClass.isStartable());
 				} catch (final CMWorkflowException e) {
@@ -142,9 +140,8 @@ public class ClassSerializer {
 		json.put(UI_CARD_EDIT_MODE, LOGIC_TO_JSON.apply(cardEditMode));
 	}
 
-	public JSONObject toClient(final UserProcessClass element, final boolean addManagementInfo)
-			throws JSONException, CMWorkflowException {
-		return toClient(element, null, addManagementInfo);
+	public JSONObject toClient(final UserProcessClass element) throws JSONException {
+		return toClient(element, null);
 	}
 
 	public JSONObject toClient(final CMClass element) throws JSONException {
