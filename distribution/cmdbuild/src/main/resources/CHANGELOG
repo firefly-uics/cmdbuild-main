@@ -140,6 +140,8 @@ FIXES
 
  * ReadOnly reference attribute not displayed in openReport widget's parameters window
 
+ * Configuration email notification display errors
+
 
 
 

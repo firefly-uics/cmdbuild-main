@@ -59,6 +59,7 @@
 			CMDBuild.core.constants.Proxy.ATTACHMENT,
 			CMDBuild.core.constants.Proxy.ATTRIBUTE,
 			CMDBuild.core.constants.Proxy.CLASS,
+			CMDBuild.core.constants.Proxy.EMAIL,
 			CMDBuild.core.constants.Proxy.ENTRY_TYPE,
 			CMDBuild.core.constants.Proxy.GROUP,
 			CMDBuild.core.constants.Proxy.LOOKUP,

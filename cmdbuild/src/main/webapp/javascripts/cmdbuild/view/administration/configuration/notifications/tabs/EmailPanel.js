@@ -85,14 +85,7 @@
 						fieldLabel: CMDBuild.Translation.enabled,
 						labelWidth: CMDBuild.core.constants.FieldWidths.LABEL_CONFIGURATION,
 						inputValue: true,
-						uncheckedValue: false,
-
-						listeners: {
-							scope: this,
-							change: function (field, newValue, oldValue, eOpts) {
-								this.delegate.cmfg('onConfigurationNotificationsTabEmailEnabledChange');
-							}
-						}
+						uncheckedValue: false
 					}),
 					this.fieldTemplate = Ext.create('CMDBuild.view.common.field.comboBox.Erasable', {
 						name: CMDBuild.core.constants.Proxy.TEMPLATE,
@@ -108,8 +101,8 @@
 
 						listeners: {
 							scope: this,
-							change: function (field, newValue, oldValue, eOpts) {
-								this.delegate.cmfg('onConfigurationNotificationsTabEmailTemplateSelect', newValue);
+							select: function (field, records, eOpts) {
+								this.delegate.cmfg('onConfigurationNotificationsTabEmailTemplateSelect');
 							}
 						}
 					}),

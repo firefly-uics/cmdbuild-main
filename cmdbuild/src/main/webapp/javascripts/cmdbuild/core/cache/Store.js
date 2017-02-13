@@ -79,11 +79,11 @@
 				// Avoid different stores to join results adding store model to parameters
 				parameters.params.modelName = this.model.getName();
 
-				if (!CMDBuild.global.Cache.isExpired(parameters)) { // Emulation of success and callback execution
+				if (!CMDBuild.global.Cache.isExpired(parameters)) { // Emulation of callback execution
 					var cachedValues = CMDBuild.global.Cache.get(parameters);
 
 					this.loadData(cachedValues.records);
-
+_debug('asd');
 					// Interceptor to manage error/warning messages
 					options.callback = Ext.Function.createInterceptor(options.callback, this.callbackInterceptor, this);
 

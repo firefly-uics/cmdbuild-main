@@ -16,7 +16,7 @@
 		 */
 		getStoreAccount: function () {
 			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.EMAIL, {
-				autoLoad: true,
+				autoLoad: false,
 				model: 'CMDBuild.model.administration.configuration.notifications.Account',
 				proxy: {
 					type: 'ajax',
@@ -42,7 +42,7 @@
 		 */
 		getStoreTemplate: function (autoLoad) {
 			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.EMAIL, {
-				autoLoad: true,
+				autoLoad: false,
 				model: 'CMDBuild.model.administration.configuration.notifications.Template',
 				proxy: {
 					type: 'ajax',
