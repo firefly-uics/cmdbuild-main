@@ -144,6 +144,8 @@ FIXES
 
  * Class privileges are ignored on bulk update
 
+ * Print card errors
+
 
 
 

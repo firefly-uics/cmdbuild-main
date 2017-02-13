@@ -139,12 +139,14 @@
 
 		/**
 		 * @param {String} format
+		 *
+		 * @returns {Void}
 		 */
-		onPrintCardMenuClick: function(format) {
-			if (!Ext.isEmpty(format)) {
+		onPrintCardMenuClick: function (format) {
+			if (Ext.isString(format) && !Ext.isEmpty(format)) {
 				var params = {};
 				params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.entryType.get(CMDBuild.core.constants.Proxy.NAME);
-				params[CMDBuild.core.constants.Proxy.CARD_ID] = this.card.get(CMDBuild.core.constants.Proxy.ID);
+				params[CMDBuild.core.constants.Proxy.CARD_ID] = this.card.get('Id');
 				params[CMDBuild.core.constants.Proxy.FORMAT] = format;
 
 				this.controllerPrintWindow = Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.print.Window', { parentDelegate: this });
