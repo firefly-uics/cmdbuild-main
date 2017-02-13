@@ -98,6 +98,7 @@
 				var params = {};
 				params[CMDBuild.core.constants.Proxy.CARD_ID] = this.cmfg('panelGridAndFormSelectedItemGet', CMDBuild.core.constants.Proxy.ID);
 				params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.NAME);
+				params[CMDBuild.core.constants.Proxy.MAJOR] = true;
 				params[CMDBuild.core.constants.Proxy.META] = Ext.encode(this.controllerContainerMetadata.cmfg('panelModuleAttachmentWindowContainerMetadataValuesGet'));
 
 				CMDBuild.proxy.common.panel.module.attachment.Add.create({
