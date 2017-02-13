@@ -150,6 +150,8 @@ FIXES
 
  * "User stoppable" for processes is wrongly serialized within administration module
 
+ * Class privileges are ignored on CSV import
+
 
 
 

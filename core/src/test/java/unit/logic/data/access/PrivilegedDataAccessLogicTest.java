@@ -25,6 +25,152 @@ import org.junit.Test;
 public class PrivilegedDataAccessLogicTest {
 
 	@Test
+	public void cardIsVerifiedBeforeCreation() throws Exception {
+		// given
+		final DataAccessLogic delegate = mock(DataAccessLogic.class);
+		final PrivilegeContext privilegeContext = mock(PrivilegeContext.class);
+		final PrivilegedDataAccessLogic underTest = new PrivilegedDataAccessLogic(delegate, privilegeContext);
+		final CMClass foo = mock(CMClass.class);
+		doReturn(foo) //
+				.when(delegate).findClass(anyString());
+		doReturn(true) //
+				.when(privilegeContext).hasWriteAccess(any(CMPrivilegedObject.class));
+		final Card card = Card.newInstance() //
+				.withClassName("foo") //
+				.build();
+
+		// when
+		underTest.createCard(card);
+
+		// then
+		verify(delegate).findClass(eq("foo"));
+		verify(privilegeContext).hasWriteAccess(eq(foo));
+		verify(delegate).createCard(eq(card));
+		verifyNoMoreInteractions(delegate, privilegeContext);
+	}
+
+	@Test
+	public void cardClassHasNoWritePrivilegesOnCreation() throws Exception {
+		// given
+		final DataAccessLogic delegate = mock(DataAccessLogic.class);
+		final PrivilegeContext privilegeContext = mock(PrivilegeContext.class);
+		final PrivilegedDataAccessLogic underTest = new PrivilegedDataAccessLogic(delegate, privilegeContext);
+		final CMClass foo = mock(CMClass.class);
+		doReturn(foo) //
+				.when(delegate).findClass(anyString());
+		doReturn(true) //
+				.when(privilegeContext).hasWriteAccess(any(CMPrivilegedObject.class));
+		final Card card = Card.newInstance() //
+				.withClassName("foo") //
+				.build();
+
+		// when
+		try {
+			underTest.createCard(card);
+		} catch (final AuthException e) {
+			// then
+			verify(delegate).findClass(eq("foo"));
+			verify(privilegeContext).hasWriteAccess(eq(foo));
+			verifyNoMoreInteractions(delegate, privilegeContext);
+		}
+	}
+
+	@Test
+	public void cardClassNotFoundCreation() throws Exception {
+		// given
+		final DataAccessLogic delegate = mock(DataAccessLogic.class);
+		final PrivilegeContext privilegeContext = mock(PrivilegeContext.class);
+		final PrivilegedDataAccessLogic underTest = new PrivilegedDataAccessLogic(delegate, privilegeContext);
+		doReturn(null) //
+				.when(delegate).findClass(anyString());
+		final Card card = Card.newInstance() //
+				.withClassName("foo") //
+				.build();
+
+		// when
+		try {
+			underTest.createCard(card);
+		} catch (final AuthException e) {
+			// then
+			verify(delegate).findClass(eq("foo"));
+			verifyNoMoreInteractions(delegate, privilegeContext);
+		}
+	}
+
+	@Test
+	public void cardIsVerifiedBeforeCreationWithDomainAttributesManagement() throws Exception {
+		// given
+		final DataAccessLogic delegate = mock(DataAccessLogic.class);
+		final PrivilegeContext privilegeContext = mock(PrivilegeContext.class);
+		final PrivilegedDataAccessLogic underTest = new PrivilegedDataAccessLogic(delegate, privilegeContext);
+		final CMClass foo = mock(CMClass.class);
+		doReturn(foo) //
+				.when(delegate).findClass(anyString());
+		doReturn(true) //
+				.when(privilegeContext).hasWriteAccess(any(CMPrivilegedObject.class));
+		final Card card = Card.newInstance() //
+				.withClassName("foo") //
+				.build();
+
+		// when
+		underTest.createCard(card, true);
+
+		// then
+		verify(delegate).findClass(eq("foo"));
+		verify(privilegeContext).hasWriteAccess(eq(foo));
+		verify(delegate).createCard(eq(card), eq(true));
+		verifyNoMoreInteractions(delegate, privilegeContext);
+	}
+
+	@Test
+	public void cardClassHasNoWritePrivilegesOnCreationWithDomainAttributesManagement() throws Exception {
+		// given
+		final DataAccessLogic delegate = mock(DataAccessLogic.class);
+		final PrivilegeContext privilegeContext = mock(PrivilegeContext.class);
+		final PrivilegedDataAccessLogic underTest = new PrivilegedDataAccessLogic(delegate, privilegeContext);
+		final CMClass foo = mock(CMClass.class);
+		doReturn(foo) //
+				.when(delegate).findClass(anyString());
+		doReturn(true) //
+				.when(privilegeContext).hasWriteAccess(any(CMPrivilegedObject.class));
+		final Card card = Card.newInstance() //
+				.withClassName("foo") //
+				.build();
+
+		// when
+		try {
+			underTest.createCard(card, true);
+		} catch (final AuthException e) {
+			// then
+			verify(delegate).findClass(eq("foo"));
+			verify(privilegeContext).hasWriteAccess(eq(foo));
+			verifyNoMoreInteractions(delegate, privilegeContext);
+		}
+	}
+
+	@Test
+	public void cardClassNotFoundOnCreationWithDomainAttributesManagement() throws Exception {
+		// given
+		final DataAccessLogic delegate = mock(DataAccessLogic.class);
+		final PrivilegeContext privilegeContext = mock(PrivilegeContext.class);
+		final PrivilegedDataAccessLogic underTest = new PrivilegedDataAccessLogic(delegate, privilegeContext);
+		doReturn(null) //
+				.when(delegate).findClass(anyString());
+		final Card card = Card.newInstance() //
+				.withClassName("foo") //
+				.build();
+
+		// when
+		try {
+			underTest.createCard(card, true);
+		} catch (final AuthException e) {
+			// then
+			verify(delegate).findClass(eq("foo"));
+			verifyNoMoreInteractions(delegate, privilegeContext);
+		}
+	}
+
+	@Test
 	public void eachCardIsVerifiedBeforeMassiveUpdate() throws Exception {
 		// given
 		final DataAccessLogic delegate = mock(DataAccessLogic.class);

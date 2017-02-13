@@ -25,20 +25,32 @@ public class PrivilegedDataAccessLogic extends ForwardingDataAccessLogic {
 	}
 
 	@Override
+	public Long createCard(final Card card) {
+		assureWrite(card.getClassName());
+		return delegate().createCard(card);
+	}
+
+	@Override
+	public Long createCard(final Card userGivenCard, final boolean manageAlsoDomainsAttributes) {
+		assureWrite(userGivenCard.getClassName());
+		return delegate().createCard(userGivenCard, manageAlsoDomainsAttributes);
+	}
+
+	@Override
 	public void updateCards(final Iterable<Card> cards) {
 		stream(cards.spliterator(), false) //
 				.forEach(input -> assureWrite(input.getClassName()));
-		super.updateCards(cards);
+		delegate().updateCards(cards);
 	}
 
 	@Override
 	public void updateFetchedCard(final Card card, final Map<String, Object> attributes) {
 		assureWrite(card.getClassName());
-		super.updateFetchedCard(card, attributes);
+		delegate().updateFetchedCard(card, attributes);
 	}
 
 	private void assureWrite(final String className) {
-		final CMClass found = delegate.findClass(className);
+		final CMClass found = delegate().findClass(className);
 		if ((found == null) || !privilegeContext.hasWriteAccess(found)) {
 			throw AUTH_CLASS_NOT_AUTHORIZED.createException(className);
 		}
