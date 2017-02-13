@@ -146,6 +146,8 @@ FIXES
 
  * Print card errors
 
+ * Workflow with no start permission can be started from super activity button
+
 
 
 

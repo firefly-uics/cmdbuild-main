@@ -74,9 +74,9 @@
 			if (this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.IS_SUPER_CLASS)) {
 				var menuItems = [],
 					selectedWorkflowDescendants = this.workflowToolbarTopWorkflowRelationshipTreeGet(
-					this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.ID),
-					CMDBuild.core.constants.Proxy.CHILDREN
-				);
+						this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.ID),
+						CMDBuild.core.constants.Proxy.CHILDREN
+					);
 
 				this.buildMenuChildren(selectedWorkflowDescendants, menuItems);
 
@@ -145,12 +145,13 @@
 		buildMenuItem: function (workflowObject, parent) {
 			if (Ext.isObject(workflowObject) && !Ext.Object.isEmpty(workflowObject)) {
 				var menuObject = {
+					disabled: !workflowObject.get(CMDBuild.core.constants.Proxy.IS_STARTABLE),
 					text: workflowObject.get(CMDBuild.core.constants.Proxy.DESCRIPTION),
 					workflowId: workflowObject.get(CMDBuild.core.constants.Proxy.ID),
 					scope: this
 				};
 
-				// Add handler function only if isn't superclass
+				// Add handler function based on isSuperClass, isStartable, capabilities parameters
 				if (
 					!workflowObject.get(CMDBuild.core.constants.Proxy.IS_SUPER_CLASS)
 					&& workflowObject.get(CMDBuild.core.constants.Proxy.IS_STARTABLE)
