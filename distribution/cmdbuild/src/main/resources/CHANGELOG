@@ -152,6 +152,8 @@ FIXES
 
  * Class privileges are ignored on CSV import
 
+ * Utility bulk update bypass classes permissions
+
 
 
 

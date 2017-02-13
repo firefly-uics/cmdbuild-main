@@ -13,11 +13,12 @@
 		 */
 		delegate: undefined,
 
-		autoRender: true,
 		border: true,
-		floatable: false,
-		layout: 'border',
+		forceFit: true,
+		frame: false,
+		hideHeaders: true,
 		rootVisible: false,
+		scroll: 'vertical',
 
 		bodyStyle: {
 			background: '#ffffff'
@@ -30,15 +31,29 @@
 		 */
 		initComponent: function () {
 			Ext.apply(this, {
+				columns: [
+					{
+						xtype: 'treecolumn',
+						dataIndex: CMDBuild.core.constants.Proxy.TEXT,
+						draggable: false,
+						flex: true,
+						hideable: false,
+						sortable: false
+					}
+				],
 				store: CMDBuild.proxy.utility.BulkUpdate.getStoreClassesTree()
 			});
 
 			this.callParent(arguments);
+		},
 
-			this.getSelectionModel().on('selectionchange', function (selectionModel, selected, eOpts) {
-				if (!Ext.isEmpty(this.delegate))
-					this.delegate.cmfg('onUtilityBulkUpdateClassSelected', selected[0]);
-			}, this);
+		listeners: {
+			beforeselect: function (panel, record, index, eOpts) {
+				return this.delegate.cmfg('onUtilityBulkUpdateClassBeforeSelect', record);
+			},
+			selectionchange: function (panel, selected, eOpts) {
+				this.delegate.cmfg('onUtilityBulkUpdateClassSelected', selected[0]);
+			}
 		}
 	});
 

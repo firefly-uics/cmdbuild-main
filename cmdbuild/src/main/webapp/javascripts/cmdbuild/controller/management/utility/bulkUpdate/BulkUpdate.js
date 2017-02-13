@@ -20,6 +20,7 @@
 		 */
 		cmfgCatchedFunctions: [
 			'onUtilityBulkUpdateAbortButtonClick',
+			'onUtilityBulkUpdateClassBeforeSelect',
 			'onUtilityBulkUpdateClassSelected',
 			'onUtilityBulkUpdatePanelShow',
 			'onUtilityBulkUpdateSaveButtonClick'
@@ -123,6 +124,25 @@
 			this.grid.reload(false);
 
 			this.form.getForm().reset();
+		},
+
+		/**
+		 * Avoid unselectable node's selection
+		 *
+		 * @param {CMDBuild.model.utility.bulkUpdate.ClassesTree} record
+		 *
+		 * @returns {Boolean}
+		 */
+		onUtilityBulkUpdateClassBeforeSelect: function (record) {
+			// Error handling
+				if (!Ext.isObject(record) || Ext.Object.isEmpty(record))
+					return _error('onUtilityBulkUpdateClassBeforeSelect(): unmanaged record parameter', this, record);
+			// END: Error handling
+
+			return (
+				!record.isRoot() // Root is hidden by default
+				&& record.get(CMDBuild.core.constants.Proxy.SELECTABLE)
+			);
 		},
 
 		/**
