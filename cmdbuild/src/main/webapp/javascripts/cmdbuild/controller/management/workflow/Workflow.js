@@ -472,6 +472,7 @@
 
 			this.cmfg('workflowFullScreenUiSetup', { maximize: 'bottom' });
 			this.cmfg('workflowSelectedActivityReset');
+			this.workflowSelectedPreviousActivityReset();
 
 			var params = {};
 			params[CMDBuild.core.constants.Proxy.CLASS_ID] = id;
