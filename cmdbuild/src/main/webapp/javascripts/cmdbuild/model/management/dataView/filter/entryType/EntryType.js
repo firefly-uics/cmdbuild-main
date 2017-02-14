@@ -10,6 +10,7 @@
 
 		fields: [
 			{ name: 'rawData', type: 'auto', defaultValue: {} }, // FIXME: legacy mode to remove on complete Cards UI and cardState modules refactor
+			{ name: CMDBuild.core.constants.Proxy.CAPABILITIES, type: 'auto', defaultValue: {} }, // CMDBuild.model.management.dataView.filter.entryType.Capabilities
 			{ name: CMDBuild.core.constants.Proxy.DESCRIPTION, type: 'string' },
 			{ name: CMDBuild.core.constants.Proxy.ID, type: 'int', useNull: true },
 			{ name: CMDBuild.core.constants.Proxy.IS_SUPER_CLASS, type: 'boolean' },
@@ -32,10 +33,19 @@
 			data[CMDBuild.core.constants.Proxy.DESCRIPTION] = Ext.isString(data[CMDBuild.core.constants.Proxy.TEXT]) ? data[CMDBuild.core.constants.Proxy.TEXT] : data[CMDBuild.core.constants.Proxy.DESCRIPTION];
 			data[CMDBuild.core.constants.Proxy.IS_SUPER_CLASS] = Ext.isBoolean(data['superclass']) ? data['superclass'] : data[CMDBuild.core.constants.Proxy.IS_SUPER_CLASS];
 
+			// Capabilities setup
+			var decodedProperty = Ext.decode(data['ui_card_edit_mode']);
+
+			data[CMDBuild.core.constants.Proxy.CAPABILITIES] = Ext.create('CMDBuild.model.management.dataView.filter.entryType.Capabilities', {
+				addDisabled: decodedProperty['create'],
+				cloneDisabled: decodedProperty['clone'],
+				deleteDisabled: decodedProperty['remove'],
+				modifyDisabled: decodedProperty['modify']
+			});
+
 			// Permissions setup
 			data[CMDBuild.core.constants.Proxy.PERMISSIONS] = Ext.create('CMDBuild.model.management.dataView.filter.entryType.Permissions', {
 				create: data['priv_create'],
-				disabledFeatures: Ext.decode(data['ui_card_edit_mode']),
 				write: data['priv_write']
 			});
 

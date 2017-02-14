@@ -274,9 +274,8 @@
 					CMDBuild.core.constants.Proxy.WRITE
 				]),
 				permissionsDisabledFeaturesCreate = this.cmfg('dataViewFilterSourceEntryTypeGet', [
-					CMDBuild.core.constants.Proxy.PERMISSIONS,
-					CMDBuild.core.constants.Proxy.DISABLED_FEATURES,
-					CMDBuild.core.constants.Proxy.CREATE
+					CMDBuild.core.constants.Proxy.CAPABILITIES,
+					CMDBuild.core.constants.Proxy.ADD_DISABLED
 				]);
 
 			if (this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.IS_SUPER_CLASS))
