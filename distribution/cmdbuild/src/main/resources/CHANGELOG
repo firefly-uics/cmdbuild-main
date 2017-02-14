@@ -156,6 +156,8 @@ FIXES
 
  * Relation advanced filter not correctly managed if no selection action on domain grid
 
+ * Previous selected card not correctly managed after abort
+
 
 
 
