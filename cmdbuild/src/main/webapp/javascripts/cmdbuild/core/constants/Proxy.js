@@ -360,6 +360,7 @@
 		IS_MASTER_DETAIL: 'isMasterDetail',
 		IS_RELATION: 'isRelation',
 		IS_STARTABLE: 'isStartable',
+		IS_STOPPABLE: 'isStoppable',
 		IS_SUPER_CLASS: 'isSuperClass',
 		IS_VISIBLE: 'isVisible',
 		ITEM: 'item',

@@ -281,22 +281,26 @@
 			propertyManageIsEmpty: function (parameters) {
 				var requiredValue = this.propertyManageGet(parameters);
 
-				if (Ext.isObject(requiredValue) && Ext.isFunction(requiredValue.getData)) { // Model manage
-					var result = true;
+				if (Ext.isObject(requiredValue) && !Ext.Object.isEmpty(requiredValue)) {
+					if (Ext.isFunction(requiredValue.isEmpty)) // Model manage with isEmpty() method
+						return requiredValue.isEmpty();
 
-					Ext.Object.each(requiredValue.getData(), function (key, value, myself) {
-						result = Ext.isEmpty(value);
+					if (Ext.isFunction(requiredValue.getData)) { // Model manage
+						var result = true;
+
+						Ext.Object.each(requiredValue.getData(), function (key, value, myself) {
+							result = Ext.isEmpty(value);
+
+							return result;
+						}, this);
 
 						return result;
-					}, this);
+					}
 
-					return result;
-				} else if (Ext.isObject(requiredValue)) { // Simple object manage
-					return Ext.Object.isEmpty(requiredValue);
+					return Ext.Object.isEmpty(requiredValue); // Simple object manage
 				}
 
-				// Other variable types manage
-				return Ext.isEmpty(requiredValue);
+				return Ext.isEmpty(requiredValue); // Other variable types manage
 			},
 
 			/**

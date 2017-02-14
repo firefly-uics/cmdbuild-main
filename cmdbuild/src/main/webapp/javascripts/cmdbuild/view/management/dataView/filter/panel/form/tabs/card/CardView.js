@@ -9,10 +9,7 @@
 	Ext.define("CMDBuild.view.management.dataView.filter.panel.form.tabs.card.CardView", {
 		extend: "Ext.panel.Panel",
 
-		requires: [
-			'CMDBuild.core.constants.ModuleIdentifiers',
-			'CMDBuild.core.Utils'
-		],
+		requires: ['CMDBuild.core.Utils'],
 
 		mixins: {
 			widgetManagerDelegate: "CMDBuild.view.management.common.widgets.CMWidgetManagerDelegate"

@@ -25,8 +25,8 @@
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
+			'identifierGet = workflowIdentifierGet',
 			'onWorkflowAbortButtonClick',
-			'onWorkflowActivityRemoveCallback',
 			'onWorkflowAddButtonClick',
 			'onWorkflowExternalServicesNavigationChronologyRecordSelect', // From mixins
 			'onWorkflowExternalServicesTreePrintButtonClick', // From mixins
@@ -106,7 +106,7 @@
 		selectedInstance: undefined,
 
 		/**
-		 * @property {CMDBuild.model.management.workflow.Workflow}
+		 * @property {CMDBuild.model.management.workflow.workflow.Workflow}
 		 *
 		 * @private
 		 */
@@ -271,19 +271,6 @@
 				});
 
 			return this.cmfg('workflowUiUpdate', { workflowId: this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.ID) });
-		},
-
-		/**
-		 * @returns {Void}
-		 */
-		onWorkflowActivityRemoveCallback: function () { // TODO: remove
-			this.workflowSelectedActivityReset();
-
-			// Form setup
-			this.controllerForm.cmfg('workflowFormReset');
-
-			// Tree setup
-			this.controllerTree.cmfg('workflowTreeStoreLoad', { disableFirstRowSelection: true });
 		},
 
 		/**
@@ -628,7 +615,7 @@
 			 * @param {Number} parameters.id
 			 * @param {String} parameters.name
 			 *
-			 * @returns {CMDBuild.model.management.workflow.Workflow or null}
+			 * @returns {CMDBuild.model.management.workflow.workflow.Workflow or null}
 			 *
 			 * @private
 			 */
@@ -666,7 +653,7 @@
 						if (Ext.isObject(workflowObject) && !Ext.Object.isEmpty(workflowObject)) {
 							workflowObject['rawData'] = workflowObject; // FIXME: legacy mode to remove on complete Workflow UI and wofkflowState modules refactor
 
-							var model = Ext.create('CMDBuild.model.management.workflow.Workflow', workflowObject);
+							var model = Ext.create('CMDBuild.model.management.workflow.workflow.Workflow', workflowObject);
 
 							this.localCacheWorkflow.byId[model.get(CMDBuild.core.constants.Proxy.ID)] = model;
 							this.localCacheWorkflow.byName[model.get(CMDBuild.core.constants.Proxy.NAME)] = model;
@@ -909,7 +896,7 @@
 			 */
 			workflowSelectedWorkflowSet: function (parameters) {
 				if (Ext.isObject(parameters) && !Ext.Object.isEmpty(parameters)) {
-					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.management.workflow.Workflow';
+					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.management.workflow.workflow.Workflow';
 					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedWorkflow';
 
 					this.propertyManageSet(parameters);

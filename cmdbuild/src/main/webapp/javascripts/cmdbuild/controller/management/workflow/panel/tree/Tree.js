@@ -708,6 +708,8 @@
 			},
 
 			/**
+			 * Customized to use model isEmpty() function
+			 *
 			 * @param {Array or String} attributePath
 			 *
 			 * @returns {Mixed or undefined}

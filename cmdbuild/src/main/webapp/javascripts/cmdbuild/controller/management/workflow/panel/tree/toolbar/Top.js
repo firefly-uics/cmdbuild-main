@@ -124,7 +124,7 @@
 		},
 
 		/**
-		 * @param {CMDBuild.model.management.workflow.panel.tree.toolbar.top.Parent} workflowObject
+		 * @param {CMDBuild.model.management.workflow.workflow.Workflow} workflowObject
 		 * @param {Object} parent
 		 *
 		 * @returns {void}
@@ -135,7 +135,7 @@
 			if (
 				Ext.isObject(workflowObject) && !Ext.Object.isEmpty(workflowObject)
 				&& workflowObject.get(CMDBuild.core.constants.Proxy.IS_STARTABLE)
-				&& !workflowObject.get(CMDBuild.core.constants.Proxy.CAPABILITIES).create
+				&& !workflowObject.get([CMDBuild.core.constants.Proxy.CAPABILITIES, CMDBuild.core.constants.Proxy.ADD_DISABLED])
 			) {
 				var menuObject = {
 					text: workflowObject.get(CMDBuild.core.constants.Proxy.DESCRIPTION),
@@ -171,11 +171,20 @@
 		 */
 		isAddButtonDisabled: function (menuItems) {
 			if (this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.IS_SUPER_CLASS))
-				return Ext.isEmpty(menuItems) || this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.CAPABILITIES).create;
+				return (
+					Ext.isEmpty(menuItems)
+ 					|| this.cmfg('workflowSelectedWorkflowGet', [
+						CMDBuild.core.constants.Proxy.CAPABILITIES,
+						CMDBuild.core.constants.Proxy.ADD_DISABLED
+					])
+				);
 
 			return (
 				!this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.IS_STARTABLE)
-				|| this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.CAPABILITIES).create
+				|| this.cmfg('workflowSelectedWorkflowGet', [
+					CMDBuild.core.constants.Proxy.CAPABILITIES,
+					CMDBuild.core.constants.Proxy.ADD_DISABLED
+				])
 			);
 		},
 
@@ -212,7 +221,7 @@
 		// WorkflowRelationshipTree property functions
 			/**
 			 * @param {Number} id
-			 * @param {CMDBuild.model.management.workflow.panel.tree.toolbar.top.Parent} child
+			 * @param {CMDBuild.model.management.workflow.workflow.Workflow} child
 			 *
 			 * @returns {Void}
 			 *
@@ -223,7 +232,7 @@
 					Ext.isNumber(id) && !Ext.isEmpty(id)
 					&& !Ext.isEmpty(this.workflowRelationshipTree[id])
 					&& Ext.isObject(child) && !Ext.Object.isEmpty(child)
-					&& Ext.getClassName(child) == 'CMDBuild.model.management.workflow.panel.tree.toolbar.top.Parent'
+					&& Ext.getClassName(child) == 'CMDBuild.model.management.workflow.workflow.Workflow'
 				) {
 					var children = this.workflowRelationshipTree[id].get(CMDBuild.core.constants.Proxy.CHILDREN);
 					children = Ext.Array.merge(children, [child]); // Merge with unique items
@@ -273,15 +282,13 @@
 			 * @private
 			 */
 			workflowToolbarTopWorkflowRelationshipTreeSet: function (parameters) {
+				parameters = Ext.isObject(parameters) ? parameters : {};
+
 				if (
-					Ext.isObject(parameters) && !Ext.Object.isEmpty(parameters)
-					&& !Ext.isEmpty(parameters.value[CMDBuild.core.constants.Proxy.ID])
+					!Ext.isEmpty(parameters.value[CMDBuild.core.constants.Proxy.ID])
 					&& Ext.isObject(parameters.value) && !Ext.Object.isEmpty(parameters.value)
 				) {
-					this.workflowRelationshipTree[parameters.value[CMDBuild.core.constants.Proxy.ID]] = Ext.create(
-						'CMDBuild.model.management.workflow.panel.tree.toolbar.top.Parent',
-						parameters.value
-					);
+					this.workflowRelationshipTree[parameters.value[CMDBuild.core.constants.Proxy.ID]] = parameters.value;
 				}
 			},
 
@@ -324,7 +331,7 @@
 				// Build workflow map
 				Ext.Array.forEach(this.cmfg('workflowLocalCacheWorkflowGetAll'), function (workflowObject, i, allWorkflowObjects) {
 					if (Ext.isObject(workflowObject) && !Ext.Object.isEmpty(workflowObject))
-						this.workflowToolbarTopWorkflowRelationshipTreeSet({ value: workflowObject.getData() });
+						this.workflowToolbarTopWorkflowRelationshipTreeSet({ value: workflowObject });
 				}, this);
 
 				// Build relationship tree

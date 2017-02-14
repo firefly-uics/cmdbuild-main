@@ -12,7 +12,6 @@
 
 		requires: [
 			'CMDBuild.core.constants.Global',
-			'CMDBuild.core.constants.ModuleIdentifiers',
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.core.LoadMask',
 			'CMDBuild.core.Message',
@@ -114,7 +113,7 @@
 
 			// History record save
 			CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
-				moduleId: CMDBuild.core.constants.ModuleIdentifiers.getWorkflow(),
+				moduleId: this.parentDelegate.cmfg('workflowIdentifierGet'),
 				entryType: {
 					description: this.parentDelegate.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.DESCRIPTION),
 					id: this.parentDelegate.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.ID),

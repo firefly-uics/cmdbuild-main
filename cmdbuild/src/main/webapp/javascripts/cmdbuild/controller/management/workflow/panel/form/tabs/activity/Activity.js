@@ -19,7 +19,6 @@
 			'CMDBuild.controller.management.workflow.panel.form.tabs.activity.StaticsController',
 			'CMDBuild.core.constants.Global',
 			'CMDBuild.core.constants.Metadata',
-			'CMDBuild.core.constants.ModuleIdentifiers',
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.core.Message',
 			'CMDBuild.core.Utils',
@@ -151,7 +150,7 @@
 			if (!this.parentDelegate.cmfg('workflowSelectedWorkflowIsEmpty') && !this.parentDelegate.cmfg('workflowSelectedInstanceIsEmpty')) {
 				// History record save
 				CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
-					moduleId: CMDBuild.core.constants.ModuleIdentifiers.getWorkflow(),
+					moduleId: this.parentDelegate.cmfg('workflowIdentifierGet'),
 					entryType: {
 						description: this.parentDelegate.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.DESCRIPTION),
 						id: this.parentDelegate.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.ID),
@@ -542,7 +541,10 @@
 			},
 			scope: this,
 			success: function (response, options, decodedResponse) {
-				this.parentDelegate.cmfg('onWorkflowActivityRemoveCallback');
+				this.parentDelegate.cmfg('workflowUiUpdate', {
+					disableFirstRowSelection: true,
+					storeLoadForce: true
+				});
 			}
 		});
 	}

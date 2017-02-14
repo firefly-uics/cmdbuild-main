@@ -235,10 +235,6 @@
 			dataViewFilterGridAppliedFilterIsEmpty: function (attributePath) {
 				var parameters = {};
 				parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'appliedFilter';
-
-				if (Ext.isEmpty(attributePath))
-					return this.propertyManageGet(parameters).isEmpty();
-
 				parameters[CMDBuild.core.constants.Proxy.ATTRIBUTE_PATH] = attributePath;
 
 				return this.propertyManageIsEmpty(parameters);

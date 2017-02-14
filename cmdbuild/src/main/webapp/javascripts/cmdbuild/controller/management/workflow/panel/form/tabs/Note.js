@@ -4,7 +4,6 @@
 		extend: 'CMDBuild.controller.common.abstract.Base',
 
 		requires: [
-			'CMDBuild.core.constants.ModuleIdentifiers',
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.core.constants.WidgetType',
 			'CMDBuild.core.Message',
@@ -247,7 +246,7 @@
 
 			// History record save
 			CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
-				moduleId: CMDBuild.core.constants.ModuleIdentifiers.getWorkflow(),
+				moduleId: this.cmfg('workflowIdentifierGet'),
 				entryType: {
 					description: this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.DESCRIPTION),
 					id: this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.ID),

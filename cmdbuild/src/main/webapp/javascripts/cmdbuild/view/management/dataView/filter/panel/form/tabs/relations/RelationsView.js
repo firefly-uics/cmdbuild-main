@@ -27,10 +27,7 @@
 	Ext.define("CMDBuild.view.management.dataView.filter.panel.form.tabs.relations.RelationsView", {
 		extend: "Ext.tree.Panel",
 
-		requires: [
-			'CMDBuild.core.constants.ModuleIdentifiers',
-			'CMDBuild.core.Utils'
-		],
+		requires: ['CMDBuild.core.Utils'],
 
 		/**
 		 * @cfg {CMDBuild.controller.management.dataView.filter.panel.form.tabs.Relations}

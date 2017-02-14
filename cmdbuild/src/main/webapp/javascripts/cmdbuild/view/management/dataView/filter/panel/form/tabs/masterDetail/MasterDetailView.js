@@ -11,7 +11,6 @@
 
 		requires: [
 			'CMDBuild.core.constants.Global',
-			'CMDBuild.core.constants.ModuleIdentifiers',
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.proxy.management.dataView.filter.panel.form.tabs.MasterDetail'
 		],

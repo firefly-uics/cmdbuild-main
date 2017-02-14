@@ -7,7 +7,6 @@
 		extend: 'CMDBuild.controller.management.common.tabs.email.Email',
 
 		requires: [
-			'CMDBuild.core.constants.ModuleIdentifiers',
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.proxy.common.tabs.email.Email'
 		],

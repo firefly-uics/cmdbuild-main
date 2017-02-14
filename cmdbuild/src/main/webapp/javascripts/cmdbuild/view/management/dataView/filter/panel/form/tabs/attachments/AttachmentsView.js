@@ -11,7 +11,6 @@
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.core.constants.ModuleIdentifiers',
 			'CMDBuild.proxy.management.dataView.filter.panel.form.tabs.Attachment'
 		],
 
