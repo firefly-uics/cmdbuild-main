@@ -158,6 +158,8 @@ FIXES
 
  * Previous selected card not correctly managed after abort
 
+ * System classes not displayed in domain comboboxes
+
 
 
 
