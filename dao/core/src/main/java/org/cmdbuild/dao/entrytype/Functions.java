@@ -288,6 +288,23 @@ public class Functions {
 		return SYSTEM;
 	}
 
+	private static class SystemButUsable<T extends CMEntryType> extends AbstractFunction<T, Boolean> {
+
+		@Override
+		public Boolean apply(final T input) {
+			return input.isSystemButUsable();
+		}
+
+	}
+
+	@SuppressWarnings("rawtypes")
+	private static final SystemButUsable SYSTEM_BUT_USABLE = new SystemButUsable<>();
+
+	@SuppressWarnings("unchecked")
+	public static <T extends CMEntryType> Function<T, Boolean> systemButUsable() {
+		return SYSTEM_BUT_USABLE;
+	}
+
 	private static class Id<T extends CMTypeObject> extends AbstractFunction<T, Long> {
 
 		@Override
