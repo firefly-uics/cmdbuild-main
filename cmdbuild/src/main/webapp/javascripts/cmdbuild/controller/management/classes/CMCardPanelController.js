@@ -81,6 +81,8 @@
 		},
 
 		onCloneCardClick: function() {
+			_CMCardModuleState.setPreviousCard(_CMCardModuleState.card);
+
 			this.cloneCard = true;
 			this.onModifyCardClick();
 			this.fireEvent(this.CMEVENTS.cloneCard);
@@ -119,11 +121,7 @@
 
 		onAbortCardClick: function() {
 			if (this.cloneCard) {
-				// Set the current card to null
-				// like if wanna add a new card
-				// Than is possible select again
-				// the card that you are try to clone
-				_CMCardModuleState.setCard(null);
+				_CMCardModuleState.setCard(_CMCardModuleState.getPreviousCard());
 			} else {
 				this.callParent(arguments);
 			}
