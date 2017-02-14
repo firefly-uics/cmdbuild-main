@@ -87,6 +87,10 @@
 					// Interceptor to manage error/warning messages
 					options.callback = Ext.Function.createInterceptor(options.callback, this.callbackInterceptor, this);
 
+					// onProxyLoad() callback emulation
+					if (this.hasListeners.load)
+						this.fireEvent('load', this, cachedValues.records, cachedValues.success);
+
 					return Ext.callback(options.callback, options.scope, [cachedValues.records, cachedValues.operation, cachedValues.success]);
 				} else { // Execute real Ajax call
 					options.callback = Ext.Function.createSequence(function (records, operation, success) {
