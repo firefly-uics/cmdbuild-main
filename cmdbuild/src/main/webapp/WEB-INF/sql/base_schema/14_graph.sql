@@ -19,6 +19,5 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100
   ROWS 1000;
-ALTER FUNCTION public._graph_get_related_classes(character varying, character varying, integer)
-  OWNER TO postgres;
+ALTER FUNCTION public._graph_get_related_classes(character varying, character varying, integer);
 COMMENT ON FUNCTION public._graph_get_related_classes(character varying, character varying, integer) IS 'TYPE: function';
