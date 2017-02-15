@@ -38,6 +38,7 @@ import org.cmdbuild.logic.cache.CachingLogic;
 import org.cmdbuild.logic.custompages.CustomPagesLogic;
 import org.cmdbuild.logic.data.DataDefinitionLogic;
 import org.cmdbuild.logic.data.LockLogic;
+import org.cmdbuild.logic.data.UserDataDefinitionLogic;
 import org.cmdbuild.logic.data.access.DataAccessLogic;
 import org.cmdbuild.logic.data.access.SystemDataAccessLogicBuilder;
 import org.cmdbuild.logic.data.access.UserDataAccessLogicBuilder;
@@ -200,7 +201,7 @@ public class JSONBaseWithSpringContext extends JSONBase {
 	}
 
 	protected DataDefinitionLogic dataDefinitionLogic() {
-		return applicationContext().getBean(DataDefinitionLogic.class);
+		return applicationContext().getBean(UserDataDefinitionLogic.class);
 	}
 
 	protected DmsLogic dmsLogic() {
