@@ -19,7 +19,7 @@
 				/**
 				 * @param {Object}
 				 *            parameters
-				 * 
+				 *
 				 * @returns {generic value}
 				 */
 				value : function(parameters, callback, callbackScope) {
@@ -34,7 +34,7 @@
 
 		/**
 		 * Custom client functions
-		 * 
+		 *
 		 * @returns {Array}
 		 */
 		getFieldStrategies : function(callback, callbackScope) {
@@ -77,7 +77,7 @@
 		/**
 		 * @param {Object}
 		 *            parameters
-		 * 
+		 *
 		 * @returns {generic value}
 		 */
 		value4Function : function(parameters) {
@@ -86,7 +86,7 @@
 		/**
 		 * @param {Object}
 		 *            parameters
-		 * 
+		 *
 		 * @returns {generic value}
 		 */
 		functionValue : function(parameters, callback, callbackScope) {
@@ -109,7 +109,7 @@
 		/**
 		 * @param {Array}
 		 *            strategies
-		 * 
+		 *
 		 * @returns {Mixed}
 		 */
 		completeStrategyByStrategy : function(strategies, index, callback, callbackScope) {
@@ -136,7 +136,7 @@
 		/**
 		 * @param {Object}
 		 *            strategy
-		 * 
+		 *
 		 * @returns {Void}
 		 */
 		completeOneStrategy : function(strategy, callback, callbackScope) {
@@ -150,7 +150,7 @@
 					callback.apply(callbackScope, []);
 				}
 			});
-		},
+		}
 	});
 
 })();

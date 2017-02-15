@@ -4,28 +4,28 @@
 
 		/**
 		 * @property {ol.style.Icon}
-		 * 
+		 *
 		 */
 		classBitmap : undefined,
 
 		/**
-		 * 
+		 *
 		 * @property {String}
-		 * 
+		 *
 		 */
 		attributeType : undefined,
 
 		/**
-		 * 
+		 *
 		 * @property {String}
-		 * 
+		 *
 		 */
 		status : undefined,
 		visibleFeatures : [],
 		notVisibleFeatures : [],
 
 		/**
-		 * 
+		 *
 		 * @property {Style}
 		 * @property {String} externalGraphic
 		 * @property {String} fillColor
@@ -34,7 +34,7 @@
 		 * @property {String} strokeColor
 		 * @property {Number} strokeOpacity
 		 * @property {Integer} strokeWidth
-		 * 
+		 *
 		 */
 		style : undefined,
 
@@ -45,9 +45,9 @@
 		 *            options
 		 * @param {ol.Map}
 		 *            map
-		 * 
+		 *
 		 * @returns {ol.layer.Vector}
-		 * 
+		 *
 		 */
 		buildGisLayer : function(attributeName, options, map) {
 			var me = this;
@@ -179,18 +179,18 @@
 		},
 
 		/**
-		 * 
+		 *
 		 * @returns {String}
-		 * 
+		 *
 		 */
 		getAttributeType : function() {
 			return this.attributeType;
 		},
 
 		/**
-		 * 
+		 *
 		 * @returns {Array} ids
-		 * 
+		 *
 		 */
 		getCardsOnLayer : function() {
 			var source = this.getSource();
@@ -205,27 +205,27 @@
 		/**
 		 * @param {Integer}
 		 *            cardId
-		 * 
+		 *
 		 * @returns {Array[ol.Feature]} features
-		 * 
+		 *
 		 */
 		getFeaturesByCardId : function(cardId) {
 			return this.interactionDocument.getFeaturesOnLayerByCardId(cardId, this.layer);
 		},
 
 		/**
-		 * 
+		 *
 		 * @returns {ol.layer.Vector}
-		 * 
+		 *
 		 */
 		getLayer : function() {
 			return this.layer;
 		},
 
 		/**
-		 * 
+		 *
 		 * @returns {ol.Source}
-		 * 
+		 *
 		 */
 		getSource : function() {
 			return this.layer.getSource();
@@ -271,7 +271,7 @@
 							vectorSource.addFeatures(jsonFeatures);
 							me.interactionDocument.onLoadedfeatures(me.layer.get("name"), jsonFeatures);
 							me.removeNotVisibleFeatures(visibleFeatures);
-						},
+						}
 
 					});
 				},
@@ -321,7 +321,7 @@
 			}
 			var card = {
 				className : feature.properties.master_className,
-				cardId : feature.properties.master_card,
+				cardId : feature.properties.master_card
 			};
 			if (this.interactionDocument.isANavigableCard(card)) {
 				return true;
@@ -331,26 +331,26 @@
 		},
 
 		/**
-		 * 
+		 *
 		 * @returns {Void}
-		 * 
+		 *
 		 */
 		refresh : function() {
 		},
 		/**
-		 * 
+		 *
 		 * @returns {Void}
-		 * 
+		 *
 		 */
 		refreshNavigables : function() {
 			this.layer.getSource().clear();
 		},
 
 		/**
-		 * 
+		 *
 		 * @param {String}
 		 *            status
-		 * 
+		 *
 		 */
 		setStatus : function(status) {
 			var map = this.interactionDocument.getMap();
@@ -368,9 +368,9 @@
 		},
 
 		/**
-		 * 
+		 *
 		 * @returns {Void}
-		 * 
+		 *
 		 */
 		refreshCurrentFeature : function() {
 			var feature = this.interactionDocument.getCurrentFeature();
@@ -403,9 +403,9 @@
 		},
 
 		/**
-		 * 
+		 *
 		 * @returns {Void}
-		 * 
+		 *
 		 */
 		newFeature : function(feature) {
 			var currentCard = this.interactionDocument.getCurrentCard();
@@ -518,7 +518,7 @@
 				}),
 				fill : new ol.style.Fill({
 					color : 'rgba(255, 100, 0, .5)'
-				}),
+				})
 			});
 			return new ol.interaction.Select({
 				filter : function(feature, layer) {
@@ -640,8 +640,8 @@
 						lineDash : undefined
 					}),
 					fill : new ol.style.Fill({
-						color : fillColor,
-					}),
+						color : fillColor
+					})
 				});
 			case 'Circle':
 			default:

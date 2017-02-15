@@ -17,7 +17,7 @@
 				}
 			}
 			return colorsTable;
-		},
+		}
 	});
 	function genericToRgba(color) {
 		return (color.substr(0, 1) === "#") ? toRgba(color.substr(1)) : color;

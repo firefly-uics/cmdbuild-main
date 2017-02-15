@@ -19,7 +19,7 @@
 		 *            geoAttribute.masterTableName // class name
 		 * @param {String}
 		 *            geoAttribute.externalGraphic //icon url
-		 * 
+		 *
 		 */
 		constructor : function(geoAttribute, withEditWindow, interactionDocument) {
 			this.interactionDocument = interactionDocument;
@@ -48,7 +48,7 @@
 	 *            geoAttribute.masterTableName // class name
 	 * @param {String}
 	 *            geoAttribute.externalGraphic //icon url
-	 * 
+	 *
 	 */
 	function buildGeoserverLayer(geoAttribute) {
 		var geoserver_ws = CMDBuild.configuration.gis.get([ CMDBuild.core.constants.Proxy.GEO_SERVER, 'workspace' ]);
@@ -62,7 +62,7 @@
 				transparent : true,
 				SRS : 'EPSG:3857'
 
-			},
+			}
 		});
 
 		var layer = new ol.layer.Tile({

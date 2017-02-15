@@ -18,7 +18,7 @@
 
 						/**
 						 * @returns {Void}
-						 * 
+						 *
 						 * @override
 						 */
 						initComponent : function() {
@@ -29,7 +29,7 @@
 							});
 							Ext.apply(this, {
 								items : [ this.configurationPanel ].concat(this.items),
-								buttons : getButtons(this.parentWindow, this.itemId),
+								buttons : getButtons(this.parentWindow, this.itemId)
 							});
 							this.callParent(arguments);
 						},
@@ -69,7 +69,7 @@
 	 * parentWindow
 	 * @param {String}
 	 *            itemId
-	 * 
+	 *
 	 * @returns {Array} extjs items
 	 */
 	function getButtons(parentWindow, itemId) {

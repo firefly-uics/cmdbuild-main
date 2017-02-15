@@ -35,7 +35,7 @@
 		initComponent: function () {
 			Ext.apply(this, {
 				store: CMDBuild.proxy.administration.taskManager.task.common.WorkflowForm.getStore(),
-				queryMode: 'local',
+				queryMode: 'local'
 			});
 
 			this.callParent(arguments);

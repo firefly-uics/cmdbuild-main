@@ -143,7 +143,7 @@
 								}
 							}
 							this.interactionDocument.setStarted(true);
-							
+
 							this.interactionDocument.setNavigables(allNodes);
 						},
 						navigateOnCard : function(record) {
@@ -164,7 +164,7 @@
 								cardId : record.get("cardId"),
 								className : record.get("className")
 							} ]);
-						},
+						}
 					});
 
 	Ext.define('CMDBuild.view.management.classes.map.NavigationTreeModel', {

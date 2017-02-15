@@ -15,7 +15,7 @@
 
 						/**
 						 * @returns {Void}
-						 * 
+						 *
 						 * @override
 						 */
 						configure : function() {
@@ -27,7 +27,7 @@
 						baseLayer : false,
 						/**
 						 * @returns {Void}
-						 * 
+						 *
 						 * @override
 						 */
 						refresh : function() {
@@ -48,7 +48,7 @@
 						},
 						/**
 						 * @returns {Void}
-						 * 
+						 *
 						 * @override
 						 */
 						_refresh : function() {
@@ -117,7 +117,7 @@
 								return;
 							}
 							var icon = CMDBuild.view.management.classes.map.proxy.Icon.readIcon(style.externalGraphic, function(iconSize, icon) {
-								this.iconCache[style.externalGraphic] = iconSize;								
+								this.iconCache[style.externalGraphic] = iconSize;
 								geoAttribute.iconSize = iconSize;
 								callback.apply(callbackScope, []);
 							}, this);
@@ -139,7 +139,7 @@
 						 *            currentClassName
 						 * @param {Integer}
 						 *            currentCardId
-						 * 
+						 *
 						 * @returns {Void}
 						 */
 						refreshThematicLayer : function(currentClassName, currentCardId) {
@@ -200,12 +200,12 @@
 						 *            layer.description
 						 * @param {String} :
 						 *            layer.masterTableName // className
-						 * 
+						 *
 						 * @param {String}
 						 *            currentClassName
 						 * @param {Integer}
 						 *            currentCardId
-						 * 
+						 *
 						 * @returns {Void}
 						 */
 						refreshAllLayers : function(layers, currentClassName, currentCardId) {
@@ -301,7 +301,7 @@
 						 *            allLayers : layers from _CMCACHE
 						 * @param {Array}
 						 *            visibles : layers from _CMCACHE
-						 * 
+						 *
 						 * @returns {Void}
 						 */
 						removeNotVisibleLayers : function(allLayers, visibles) {
@@ -327,7 +327,7 @@
 						 *            geoAttribute
 						 * @param {Array}
 						 *            visibles : layers from _CMCACHE
-						 * 
+						 *
 						 * @returns {Void}
 						 */
 						remove4GeoAttribute : function(mapLayer, geoAttribute, visibles) {
@@ -352,7 +352,7 @@
 						/**
 						 * @param {Array}
 						 *            visibles : layers from _CMCACHE
-						 * 
+						 *
 						 * @returns {Void}
 						 */
 						removeThematicsNotVisibleLayers : function(currentThematicLayerName) {
@@ -403,7 +403,7 @@
 								style : [ selectPoints ],
 								wrapX : false
 							})
-						},
+						}
 					});
 	function isVisible(visibles, layer) {
 		for (var i = 0; i < visibles.length; i++) {

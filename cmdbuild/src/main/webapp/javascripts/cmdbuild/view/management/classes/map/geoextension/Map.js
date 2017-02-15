@@ -53,7 +53,7 @@
 				POINT_LINE : '#FF9966',
 				POLYGON_FILL : 'rgba(0, 0, 255, 0.1)',
 				POLYGON_LINE : 'blue',
-				LINE_LINE : 'green',
+				LINE_LINE : 'green'
 			},
 			legend : {
 				START_WIDTH : 500,
@@ -94,7 +94,7 @@
 
 		/**
 		 * @property {"CMDBuild.view.management.classes.map.thematism.Legend"}
-		 * 
+		 *
 		 */
 		legend : undefined,
 		configuration : {
@@ -108,7 +108,7 @@
 
 		/**
 		 * @returns {Void}
-		 * 
+		 *
 		 * @override
 		 */
 		initComponent : function() {
@@ -191,9 +191,9 @@
 		// interface
 
 		/**
-		 * 
+		 *
 		 * @returns {Void}
-		 * 
+		 *
 		 */
 		clearSelection : function() {
 			this.map.getLayers().forEach(function(layer) {
@@ -240,9 +240,9 @@
 		/**
 		 * @param {String}
 		 *            name
-		 * 
+		 *
 		 * @returns {ol.Layer}
-		 * 
+		 *
 		 */
 		getLayerByClassAndName : function(className, name) {
 			var retLayer = undefined
@@ -263,10 +263,10 @@
 		 *            cardId
 		 * @param {String}
 		 *            className
-		 * 
+		 *
 		 * @returns {Array} ol.Feature pay attention there is a translation of
 		 *          the feature's type (Point -> POINT)
-		 * 
+		 *
 		 */
 		getGeometries : function(cardId, className) {
 			var layers = this.getLayers();
@@ -287,9 +287,9 @@
 		/**
 		 * @param {String}
 		 *            layerName
-		 * 
+		 *
 		 * @returns {Void}
-		 * 
+		 *
 		 */
 		removeLayerByName : function(className, layerName) {
 			var layer = this.getLayerByClassAndName(className, layerName);
@@ -303,9 +303,9 @@
 		 *            configuration
 		 * @param {Array}
 		 *            configuration.center
-		 * 
+		 *
 		 * @returns {Void}
-		 * 
+		 *
 		 */
 		center : function(configuration) {
 			this.view.setCenter(configuration.center);
@@ -335,18 +335,18 @@
 		},
 
 		/**
-		 * 
+		 *
 		 * @returns {ol.Map}
-		 * 
+		 *
 		 */
 		getMap : function() {
 			return this.map;
 		},
 
 		/**
-		 * 
+		 *
 		 * @returns {Array} ol.Layer
-		 * 
+		 *
 		 */
 		getLayers : function() {
 			return this.map.getLayers();
@@ -357,9 +357,9 @@
 		 *            layer
 		 * @param {Integer}
 		 *            index
-		 * 
+		 *
 		 * @returns {Void}
-		 * 
+		 *
 		 */
 		setLayerIndex : function(layer, index) {
 			this.map.addLayer(layer);
@@ -370,9 +370,9 @@
 		/**
 		 * @param {Integer}
 		 *            newId
-		 * 
+		 *
 		 * @returns {Void}
-		 * 
+		 *
 		 */
 		changeFeatureOnLayers : function(newId) {
 			this.map.getLayers().forEach(function(layer) {
@@ -396,9 +396,9 @@
 		 *            geoValues.externalGraphic //icon url
 		 * @param {Boolean}
 		 *            withEditWindow
-		 * 
+		 *
 		 * @returns {ol.Layer}
-		 * 
+		 *
 		 */
 		makeLayer : function(geoValues, withEditWindow) {
 			var layer;
@@ -418,9 +418,9 @@
 		/**
 		 * @param {Integer}
 		 *            newId
-		 * 
+		 *
 		 * @returns {Void}
-		 * 
+		 *
 		 */
 		setLongPress : function() {
 			var startPixel = undefined;

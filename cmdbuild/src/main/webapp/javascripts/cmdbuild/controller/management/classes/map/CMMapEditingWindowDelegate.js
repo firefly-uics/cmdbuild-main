@@ -20,7 +20,7 @@
 		geoAttributeMenuItemHasBeenClicked : function(item) {
 			this.interactionDocument.setCurrentFeature(item.name, item.geoType, 'Modify');
 			this.interactionDocument.changedFeature();
-		},
+		}
 
 	});
 
