@@ -1318,7 +1318,7 @@ Ext.Number = new function() {
                 array.length = lengthAfterRemove;
                 array.push.apply(array, insert);
             } else {
-                array.length = lengthAfterRemove + add;
+                array.length = lengthAfterRemove + add || 0; // FIX: fixes IE8 error that freeze all loading action at startup
                 for (i = 0; i < add; ++i) {
                     array[pos+i] = insert[i];
                 }
