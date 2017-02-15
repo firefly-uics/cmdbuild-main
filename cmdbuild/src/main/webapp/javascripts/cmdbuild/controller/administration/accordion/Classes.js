@@ -6,6 +6,7 @@
 		requires: [
 			'CMDBuild.core.constants.Global',
 			'CMDBuild.core.constants.Proxy',
+			'CMDBuild.core.Utils',
 			'CMDBuild.proxy.administration.classes.Classes'
 		],
 
@@ -65,21 +66,13 @@
 				success: function (response, options, decodedResponse) {
 					decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.RESPONSE];
 
-					var nodes = [];
-					var standard = [];
-					var simple = [];
-					var standardNodesMap = {};
+					var nodes = [],
+						standard = [],
+						simple = [],
+						standardNodesMap = {};
 
 					if (Ext.isArray(decodedResponse) && !Ext.isEmpty(decodedResponse)) {
-						// Removes root and system classes from response
-						decodedResponse = Ext.Array.filter(decodedResponse, function (item, i, array) {
-							return (
-								item[CMDBuild.core.constants.Proxy.NAME] != CMDBuild.core.constants.Global.getRootNameClasses() // Discard root class of all classes
-								&& !item[CMDBuild.core.constants.Proxy.SYSTEM] // Discard system classes
-							);
-						}, this);
-
-						Ext.Array.each(decodedResponse, function (classObject, i, allClassObjects) {
+						Ext.Array.forEach(decodedResponse, function (classObject, i, allClassObjects) {
 							if (
 								Ext.isObject(classObject) && !Ext.Object.isEmpty(classObject)
 								&& classObject[CMDBuild.core.constants.Proxy.NAME] != CMDBuild.core.constants.Global.getRootNameClasses() // Discard root class of all classes
