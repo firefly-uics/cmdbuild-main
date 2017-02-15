@@ -121,13 +121,14 @@
 						store: CMDBuild.proxy.navigationTree.NavigationTree.getStoreTargetClass(),
 						queryMode: 'local'
 					}),
-					Ext.create('Ext.form.field.Checkbox',{
-						name: CMDBuild.core.constants.Proxy.ACTIVE,
-						fieldLabel: CMDBuild.Translation.active,
-						labelWidth: CMDBuild.core.constants.FieldWidths.LABEL,
-						inputValue: true,
-						uncheckedValue: false
-					}),
+					// FIXME: implementation of server management functions
+					//Ext.create('Ext.form.field.Checkbox',{
+					//	name: CMDBuild.core.constants.Proxy.ACTIVE,
+					//	fieldLabel: CMDBuild.Translation.active,
+					//	labelWidth: CMDBuild.core.constants.FieldWidths.LABEL,
+					//	inputValue: true,
+					//	uncheckedValue: false
+					//}),
 					Ext.create('Ext.form.field.Hidden', { name: CMDBuild.core.constants.Proxy.ID })
 				]
 			});
