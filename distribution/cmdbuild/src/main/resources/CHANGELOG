@@ -166,6 +166,8 @@ FIXES
 
  * IE8 freezed on startup
 
+ * NavigationTree: not managed active state on administration
+
 
 
 
