@@ -550,7 +550,9 @@
 			if (this.cmfg('mainViewportAccordionIsCollapsed') && !Ext.isEmpty(node))
 				this.cmfg('mainViewportModuleShow', {
 					identifier: node.get('cmName'),
-					params: node
+					params: {
+						node: node
+					}
 				});
 		},
 
@@ -656,7 +658,7 @@
 			mainViewportModuleShow: function (parameters) {
 				parameters = Ext.isObject(parameters) ? parameters : {};
 				parameters.params = Ext.isObject(parameters.params) ? parameters.params : {};
-
+_debug('mainViewportModuleShow', parameters);
 				if (this.cmfg('mainViewportModuleControllerExists', parameters.identifier)) {
 					var controllerModule = this.cmfg('mainViewportModuleControllerGet', parameters.identifier);
 
@@ -676,7 +678,7 @@
 						 *
 						 * @deprecated
 						 */
-						viewModule.fireEvent('CM_iamtofront', parameters.params);
+						viewModule.fireEvent('CM_iamtofront', parameters.params.node);
 
 						if (
 							Ext.isObject(controllerModule) && !Ext.Object.isEmpty(controllerModule) && Ext.isFunction(controllerModule.cmfg)
