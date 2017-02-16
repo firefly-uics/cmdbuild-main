@@ -20,7 +20,7 @@
 
 			Ext.apply(parameters, { url: CMDBuild.proxy.index.Json.email.template.create });
 
-			CMDBuild.global.Cache.request(CMDBuild.core.constants.Proxy.EMAIL, parameters, true);
+			CMDBuild.global.Cache.request(CMDBuild.core.constants.Proxy.EMAIL_TEMPLATE, parameters, true);
 		},
 
 		/**
@@ -29,7 +29,7 @@
 		 * @returns {Ext.data.Store or CMDBuild.core.cache.Store}
 		 */
 		getStore: function (autoLoad) {
-			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.EMAIL, {
+			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.EMAIL_TEMPLATE, {
 				autoLoad: autoLoad || false,
 				model: 'CMDBuild.model.email.template.Store',
 				proxy: {
@@ -61,7 +61,7 @@
 
 			Ext.apply(parameters, { url: CMDBuild.proxy.index.Json.email.template.read });
 
-			CMDBuild.global.Cache.request(CMDBuild.core.constants.Proxy.EMAIL, parameters);
+			CMDBuild.global.Cache.request(CMDBuild.core.constants.Proxy.EMAIL_TEMPLATE, parameters);
 		},
 
 		/**
@@ -74,7 +74,7 @@
 
 			Ext.apply(parameters, { url: CMDBuild.proxy.index.Json.email.template.readAll });
 
-			CMDBuild.global.Cache.request(CMDBuild.core.constants.Proxy.EMAIL, parameters);
+			CMDBuild.global.Cache.request(CMDBuild.core.constants.Proxy.EMAIL_TEMPLATE, parameters);
 		},
 
 		/**
@@ -87,7 +87,7 @@
 
 			Ext.apply(parameters, { url: CMDBuild.proxy.index.Json.email.template.remove });
 
-			CMDBuild.global.Cache.request(CMDBuild.core.constants.Proxy.EMAIL, parameters, true);
+			CMDBuild.global.Cache.request(CMDBuild.core.constants.Proxy.EMAIL_TEMPLATE, parameters, true);
 		},
 
 		/**
@@ -100,7 +100,7 @@
 
 			Ext.apply(parameters, { url: CMDBuild.proxy.index.Json.email.template.update });
 
-			CMDBuild.global.Cache.request(CMDBuild.core.constants.Proxy.EMAIL, parameters, true);
+			CMDBuild.global.Cache.request(CMDBuild.core.constants.Proxy.EMAIL_TEMPLATE, parameters, true);
 		}
 	});
 

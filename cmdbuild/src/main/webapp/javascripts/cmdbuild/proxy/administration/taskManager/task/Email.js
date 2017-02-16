@@ -50,7 +50,7 @@
 		 * @returns {Ext.data.Store or CMDBuild.core.cache.Store}
 		 */
 		getStoreAccount: function () {
-			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.EMAIL, {
+			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.EMAIL_ACCOUNT, {
 				autoLoad: true,
 				model: 'CMDBuild.model.administration.taskManager.task.email.Account',
 				proxy: {
