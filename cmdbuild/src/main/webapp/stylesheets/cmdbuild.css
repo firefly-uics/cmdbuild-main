@@ -427,8 +427,6 @@ em { font-style: oblique !important; }
 
 .cm-bold { font-weight: bold; }
 
-.cm-action-col-icon-spacer { margin: 0px 3px; }
-
 /* Other */
 	.cmdbuild-nodisplay { display: none !important; }
 

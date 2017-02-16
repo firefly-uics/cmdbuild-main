@@ -152,7 +152,7 @@
 		 */
 		onClassesModuleInit: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
-_debug('onClassesModuleInit', parameters);
+
 			this.cmfg('classesSelectedClassReset');
 
 			if (Ext.isObject(parameters.node) && !Ext.Object.isEmpty(parameters.node)) {

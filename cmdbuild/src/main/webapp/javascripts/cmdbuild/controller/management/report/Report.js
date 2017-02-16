@@ -65,7 +65,7 @@
 		 */
 		onReportModuleInit: function(parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
-_debug('onReportModuleInit', parameters);
+
 			if (Ext.isObject(parameters.node) && !Ext.Object.isEmpty(parameters.node)) {
 				var nodeData = parameters.node.getData();
 				nodeData[CMDBuild.core.constants.Proxy.TYPE] = nodeData[CMDBuild.core.constants.Proxy.ENTITY_ID];

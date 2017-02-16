@@ -79,7 +79,6 @@
 		 * @returns {Void}
 		 */
 		setValue: function (value) {
-_debug('setValue', value);
 			return this.delegate.cmfg('taskManagerCommonFieldStringListValueSet', value);
 		}
 	});

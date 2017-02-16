@@ -658,7 +658,7 @@
 			mainViewportModuleShow: function (parameters) {
 				parameters = Ext.isObject(parameters) ? parameters : {};
 				parameters.params = Ext.isObject(parameters.params) ? parameters.params : {};
-_debug('mainViewportModuleShow', parameters);
+
 				if (this.cmfg('mainViewportModuleControllerExists', parameters.identifier)) {
 					var controllerModule = this.cmfg('mainViewportModuleControllerGet', parameters.identifier);
 
