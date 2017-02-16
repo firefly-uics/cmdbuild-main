@@ -24,6 +24,7 @@
 		 */
 		cmfgCatchedFunctions: [
 			'dataViewFilterFormReset',
+			'dataViewFilterFormTemplateResolverFormGet = panelGridAndFormPanelFormTemplateResolverFormGet',
 			'dataViewFilterFormUiUpdate',
 			'dataViewFilterFormWidgetExists',
 			'onDataViewFilterFormPrintButtonClick',
@@ -34,9 +35,9 @@
 		],
 
 		/**
-		 * @property {CMDBuild.controller.management.dataView.filter.panel.form.tabs.attachments.Attachments}
+		 * @property {CMDBuild.controller.management.dataView.filter.panel.form.tabs.Attachment}
 		 */
-		controllerTabAttachments: undefined,
+		controllerTabAttachment: undefined,
 
 		/**
 		 * @property {CMDBuild.controller.management.dataView.filter.panel.form.tabs.card.Card}
@@ -100,22 +101,22 @@
 			// Build sub-controllers
 			this.controllerTabCard = this.buildTabControllerCard();
 
-//			if (!CMDBuild.configuration.userInterface.isDisabledCardTab(CMDBuild.core.constants.Proxy.PROCESS_ATTACHMENT_TAB))
-//				this.controllerTabAttachments = Ext.create('CMDBuild.controller.management.dataView.filter.panel.form.tabs.attachments.Attachments', { parentDelegate: this });
+			if (!CMDBuild.configuration.userInterface.isDisabledCardTab(CMDBuild.core.constants.Proxy.CLASS_ATTACHMENT_TAB))
+				this.controllerTabAttachment = Ext.create('CMDBuild.controller.management.dataView.filter.panel.form.tabs.Attachment', { parentDelegate: this });
 
-			if (!CMDBuild.configuration.userInterface.isDisabledCardTab(CMDBuild.core.constants.Proxy.PROCESS_EMAIL_TAB))
+			if (!CMDBuild.configuration.userInterface.isDisabledCardTab(CMDBuild.core.constants.Proxy.CLASS_EMAIL_TAB))
 				this.controllerTabEmail = Ext.create('CMDBuild.controller.management.dataView.filter.panel.form.tabs.Email', { parentDelegate: this });
 
-			if (!CMDBuild.configuration.userInterface.isDisabledCardTab(CMDBuild.core.constants.Proxy.PROCESS_HISTORY_TAB))
+			if (!CMDBuild.configuration.userInterface.isDisabledCardTab(CMDBuild.core.constants.Proxy.CLASS_HISTORY_TAB))
 				this.controllerTabHistory = Ext.create('CMDBuild.controller.management.dataView.filter.panel.form.tabs.History', { parentDelegate: this });
 
 			if (!CMDBuild.configuration.userInterface.isDisabledCardTab(CMDBuild.core.constants.Proxy.CLASS_DETAIL_TAB))
 				this.controllerTabMasterDetail = Ext.create('CMDBuild.controller.management.dataView.filter.panel.form.tabs.MasterDetail', { parentDelegate: this });
 
-			if (!CMDBuild.configuration.userInterface.isDisabledCardTab(CMDBuild.core.constants.Proxy.PROCESS_NOTE_TAB))
+			if (!CMDBuild.configuration.userInterface.isDisabledCardTab(CMDBuild.core.constants.Proxy.CLASS_NOTE_TAB))
 				this.controllerTabNote = Ext.create('CMDBuild.controller.management.dataView.filter.panel.form.tabs.Note', { parentDelegate: this });
 
-			if (!CMDBuild.configuration.userInterface.isDisabledCardTab(CMDBuild.core.constants.Proxy.PROCESS_RELATION_TAB))
+			if (!CMDBuild.configuration.userInterface.isDisabledCardTab(CMDBuild.core.constants.Proxy.CLASS_RELATION_TAB))
 				this.controllerTabRelations = Ext.create('CMDBuild.controller.management.dataView.filter.panel.form.tabs.Relations', { parentDelegate: this });
 
 			// View build (sorted)
@@ -126,7 +127,7 @@
 				Ext.isEmpty(this.controllerTabRelations) ? null : this.controllerTabRelations.getView(),
 				Ext.isEmpty(this.controllerTabHistory) ? null : this.controllerTabHistory.getView(),
 				Ext.isEmpty(this.controllerTabEmail) ? null : this.controllerTabEmail.getView(),
-				Ext.isEmpty(this.controllerTabAttachments) ? null : this.controllerTabAttachments.getView()
+				Ext.isEmpty(this.controllerTabAttachment) ? null : this.controllerTabAttachment.getView()
 			]);
 
 			this.cmfg('dataViewFilterFormTabSelectionManage');
@@ -160,8 +161,8 @@
 			if (Ext.isObject(this.controllerTabCard) && !Ext.Object.isEmpty(this.controllerTabCard))
 				this.controllerTabCard.reset();
 
-			if (Ext.isObject(this.controllerTabAttachments) && !Ext.Object.isEmpty(this.controllerTabAttachments))
-				this.controllerTabAttachments.reset();
+			if (Ext.isObject(this.controllerTabAttachment) && !Ext.Object.isEmpty(this.controllerTabAttachment))
+				this.controllerTabAttachment.cmfg('panelModuleAttachmentTabReset');
 
 			if (Ext.isObject(this.controllerTabEmail) && !Ext.Object.isEmpty(this.controllerTabEmail))
 				this.controllerTabEmail.reset();
@@ -180,6 +181,18 @@
 		},
 
 		/**
+		 * Retrieve the form to use as target for the templateResolver
+		 *
+		 * @returns {Ext.form.Basic or null}
+		 */
+		dataViewFilterFormTemplateResolverFormGet: function () {
+			if (Ext.isObject(this.controllerTabCard) && !Ext.Object.isEmpty(this.controllerTabCard))
+				return this.controllerTabCard.getFormForTemplateResolver();
+
+			return null;
+		},
+
+		/**
 		 * @param {Object} parameters
 		 * @param {Object} parameters.tabToSelect
 		 *
@@ -194,8 +207,8 @@
 			if (Ext.isObject(this.controllerTabCard) && !Ext.Object.isEmpty(this.controllerTabCard))
 				this.controllerTabCard.dataViewFilterFormTabCardUiUpdate();
 
-			if (Ext.isObject(this.controllerTabAttachments) && !Ext.Object.isEmpty(this.controllerTabAttachments))
-				this.controllerTabAttachments.dataViewFilterFormTabAttachmentsUiUpdate();
+			if (Ext.isObject(this.controllerTabAttachment) && !Ext.Object.isEmpty(this.controllerTabAttachment))
+				this.controllerTabAttachment.cmfg('dataViewFilterFormTabAttachmentsUiUpdate');
 
 			if (Ext.isObject(this.controllerTabEmail) && !Ext.Object.isEmpty(this.controllerTabEmail))
 				this.controllerTabEmail.cmfg('dataViewFilterFormTabEmailUiUpdate');

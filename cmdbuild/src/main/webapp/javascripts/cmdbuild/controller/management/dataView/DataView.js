@@ -22,7 +22,7 @@
 			'dataViewSelectedDataViewGet',
 			'dataViewSelectedDataViewIsEmpty',
 			'dataViewUiUpdate = panelGridAndFormUiUpdate',
-			'identifierGet = dataViewIdentifierGet',
+			'identifierGet = dataViewIdentifierGet, panelGridAndFormIdentifierGet',
 			'onDataViewExternalServicesNavigationChronologyRecordSelect', // From mixins
 			'onDataViewModuleInit = onModuleInit'
 		],

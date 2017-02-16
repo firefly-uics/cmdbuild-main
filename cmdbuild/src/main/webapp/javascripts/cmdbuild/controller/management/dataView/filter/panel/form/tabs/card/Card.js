@@ -116,6 +116,13 @@
 		},
 
 		/**
+		 * @returns {Ext.form.Base}
+		 */
+		getFormForTemplateResolver: function () {
+			return this.view.getFormForTemplateResolver();
+		},
+
+		/**
 		 * @legacy
 		 */
 		getView: function () {
