@@ -15,7 +15,7 @@
 		 * @returns {Ext.data.Store or CMDBuild.core.cache.Store}
 		 */
 		getStoreAccount: function () {
-			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.EMAIL, {
+			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.EMAIL_ACCOUNT, {
 				autoLoad: true,
 				model: 'CMDBuild.model.administration.taskManager.task.common.notificationForm.Account',
 				proxy: {
@@ -41,7 +41,7 @@
 		 * @returns {Ext.data.Store or CMDBuild.core.cache.Store}
 		 */
 		getStoreTemplate: function () {
-			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.EMAIL, {
+			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.EMAIL_TEMPLATE, {
 				autoLoad: true,
 				model: 'CMDBuild.model.administration.taskManager.task.common.notificationForm.Template',
 				proxy: {
