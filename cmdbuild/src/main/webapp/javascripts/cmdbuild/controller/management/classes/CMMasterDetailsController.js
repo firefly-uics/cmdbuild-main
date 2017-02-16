@@ -14,6 +14,11 @@
 		controllerWindowAttachment: undefined,
 
 		/**
+		 * @property {CMDBuild.controller.common.panel.gridAndForm.panel.common.graph.Window}
+		 */
+		controllerWindowGraph: undefined,
+
+		/**
 		 * @property {CMDBuild.controller.management.classes.panel.form.tabs.masterDetail.window.Note}
 		 */
 		controllerWindowNote: undefined,
@@ -55,6 +60,7 @@
 
 			// Build sub-controllers
 			this.controllerWindowAttachment = Ext.create('CMDBuild.controller.management.classes.common.attachment.Window', { parentDelegate: this });
+			this.controllerWindowGraph = Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.graph.Window', { parentDelegate: this });
 			this.controllerWindowNote = Ext.create('CMDBuild.controller.management.classes.panel.form.tabs.masterDetail.window.Note', { parentDelegate: this });
 		},
 
@@ -208,8 +214,7 @@
 		},
 
 		onOpenGraphClick: function(model) {
-			Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.graph.Window', {
-				parentDelegate: this,
+			this.controllerWindowGraph.cmfg('onPanelGridAndFormGraphWindowConfigureAndShow', {
 				classId: model.get('IdClass'),
 				cardId: model.get('id')
 			});

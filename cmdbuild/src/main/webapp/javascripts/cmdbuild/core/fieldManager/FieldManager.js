@@ -23,6 +23,8 @@
 		attributeModel: undefined,
 
 		/**
+		 * Template resolver target form
+		 *
 		 * @cfg {Ext.form.Panel}
 		 */
 		targetForm: undefined,
@@ -47,6 +49,7 @@
 		cmfgCatchedFunctions: [
 			'fieldManagerAttributeModelGet',
 			'fieldManagerAttributeModelIsEmpty',
+			'fieldManagerObjectHasTemplates',
 			'fieldManagerTemplateResolverBuild',
 			'fieldManagerTemplateResolverResolveFunctionGet'
 		],
@@ -56,7 +59,7 @@
 		 *
 		 * @private
 		 */
-		managedAttributesTypes: ['boolean', 'char', 'date', 'decimal', 'double', 'foreignkey', 'integer', 'list', 'text', 'time', 'timestamp', 'string'],
+		managedAttributesTypes: ['boolean', 'char', 'date', 'decimal', 'double', 'foreignkey', 'integer', 'list', 'string', 'text', 'time', 'timestamp'],
 
 		// AttributeModel methods
 			/**
@@ -65,7 +68,7 @@
 			 * @returns {Mixed}
 			 */
 			fieldManagerAttributeModelGet: function (attributePath) {
-				attributePath = Ext.isArray(attributePath) ? attributePath : [attributePath];
+				attributePath = Ext.isArray(attributePath) ? Ext.Array.clean(attributePath) : Ext.Array.clean([attributePath]);
 
 				var requiredAttribute = this.attributeModel;
 
@@ -106,8 +109,6 @@
 			 * @param {CMDBuild.model.common.attributes.Attribute} attributeModel
 			 *
 			 * @returns {Void}
-			 *
-			 * @public
 			 */
 			attributeModelSet: function (attributeModel) {
 				if (
@@ -136,15 +137,19 @@
 				case 'decimal': return Ext.create('CMDBuild.core.fieldManager.builders.Decimal', { parentDelegate: this });
 				case 'double': return Ext.create('CMDBuild.core.fieldManager.builders.Double', { parentDelegate: this });
 				case 'foreignkey': return Ext.create('CMDBuild.core.fieldManager.builders.ForeignKey', { parentDelegate: this });
+				case 'inet': return Ext.create('CMDBuild.core.fieldManager.builders.inet.Inet', { parentDelegate: this }); // TODO: partial implementation
 				case 'integer': return Ext.create('CMDBuild.core.fieldManager.builders.Integer', { parentDelegate: this });
 				case 'list': return Ext.create('CMDBuild.core.fieldManager.builders.List', { parentDelegate: this });
+				case 'lookup': return Ext.create('CMDBuild.core.fieldManager.builders.Lookup', { parentDelegate: this }); // TODO: partial implementation
+				case 'reference': return Ext.create('CMDBuild.core.fieldManager.builders.Reference', { parentDelegate: this }); // TODO: partial implementation
 				case 'string': return Ext.create('CMDBuild.core.fieldManager.builders.String', { parentDelegate: this });
 				case 'text': return Ext.create('CMDBuild.core.fieldManager.builders.text.Text', { parentDelegate: this });
 				case 'time': return Ext.create('CMDBuild.core.fieldManager.builders.Time', { parentDelegate: this });
 				case 'timestamp': return Ext.create('CMDBuild.core.fieldManager.builders.TimeStamp', { parentDelegate: this });
-			}
 
-			_error('buildAttributeController(): invalid attributeType property', this, attributeType);
+				default:
+					return _error('buildAttributeController(): unmanaged attribute type property', this, attributeType);
+			}
 		},
 
 		// Builder methods
@@ -155,8 +160,6 @@
 			 * @param {Boolean} parameters.withEditor
 			 *
 			 * @returns {Object}
-			 *
-			 * @public
 			 */
 			buildColumn: function (parameters) {
 				parameters = Ext.isObject(parameters) ? parameters : {};
@@ -168,11 +171,7 @@
 			/**
 			 * Builds Ext.form.field.* object
 			 *
-			 * @param {CMDBuild.model.common.attributes.Attribute} attributeModel
-			 *
 			 * @returns {Object}
-			 *
-			 * @public
 			 */
 			buildEditor: function () {
 				return this.buildAttributeController().buildEditor();
@@ -185,8 +184,6 @@
 			 * @param {Boolean} parameters.readOnly
 			 *
 			 * @returns {Object}
-			 *
-			 * @public
 			 */
 			buildField: function (parameters) {
 				parameters = Ext.isObject(parameters) ? parameters : {};
@@ -206,8 +203,6 @@
 			 * Builds Ext.data.Store field definition object
 			 *
 			 * @returns {Object}
-			 *
-			 * @public
 			 */
 			buildStoreField: function () {
 				return this.buildAttributeController().buildStoreField();
@@ -219,13 +214,24 @@
 		 * @param {String} attributeType
 		 *
 		 * @returns {Boolean}
-		 *
-		 * @public
 		 */
 		isAttributeManaged: function (attributeType) {
 			attributeType = attributeType.toLowerCase();
 
 			return Ext.Array.contains(this.managedAttributesTypes, attributeType);
+		},
+
+		/**
+		 * @param {Object} object
+		 *
+		 * @returns {Boolean}
+		 */
+		fieldManagerObjectHasTemplates: function (object) {
+			var encodedAttributesModel = Ext.encode(object);
+
+			return !Ext.Array.every(this.templateList, function (template, i, allTemplates) {
+				return encodedAttributesModel.indexOf(template) < 0; // Stops loop at first template found
+			}, this);
 		},
 
 		// TemplateResolver property methods
@@ -283,7 +289,7 @@
 			/**
 			 * @param {Array} attributes
 			 *
-			 * @returns {CMDBuild.Management.TemplateResolver} templateResolver
+			 * @returns {CMDBuild.Management.TemplateResolver or null}
 			 *
 			 * @private
 			 */
@@ -293,17 +299,17 @@
 				if (
 					!Ext.isEmpty(this.targetForm)
 					&& this.targetForm instanceof Ext.form.Panel
-					&& this.templateResolverAttributesHasTemplates()
+					&& this.cmfg('fieldManagerObjectHasTemplates', this.cmfg('fieldManagerAttributeModelGet').getData())
 				) {
 					this.templateResolverAttributesSet(attributes);
 
-					templateResolver = new CMDBuild.Management.TemplateResolver({
+					return new CMDBuild.Management.TemplateResolver({
 						clientForm: this.targetForm.getForm(),
 						xaVars: this.templateResolverAttributesDataGet()
 					});
 				}
 
-				return templateResolver;
+				return null;
 			},
 
 			/**
@@ -340,6 +346,9 @@
 								}, this);
 							}
 						});
+					} else {
+						if (!this.getStore().isLoading())
+							this.getStore().load();
 					}
 				};
 			}

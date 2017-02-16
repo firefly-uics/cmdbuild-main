@@ -29,6 +29,8 @@
 			'onUserAndGroupUserSaveButtonClick',
 			'onUserAndGroupUserServiceChange',
 			'onUserAndGroupUserShow',
+			'panelGridAndFormFullScreenUiSetup',
+			'panelGridAndFormToolsArrayBuild',
 			'userAndGroupUserGridFilterApply = panelGridAndFormGridFilterApply',
 			'userAndGroupUserGridFilterClear = panelGridAndFormGridFilterClear',
 			'userAndGroupUserGridStoreGet = panelGridAndFormListPanelStoreGet',

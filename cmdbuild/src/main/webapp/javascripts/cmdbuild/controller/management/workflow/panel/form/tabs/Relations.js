@@ -16,19 +16,13 @@
 		],
 
 		mixins: {
-			observable: "Ext.util.Observable",
-			wfStateDelegate: 'CMDBuild.state.CMWorkflowStateDelegate'
+			observable: "Ext.util.Observable"
 		},
 
 		/**
 		 * @cfg {CMDBuild.controller.management.workflow.panel.form.Form}
 		 */
 		parentDelegate: undefined,
-
-		/**
-		 * @property {CMDBuild.controller.common.panel.module.attachment.Window}
-		 */
-		controllerWindowAttachment: undefined,
 
 		/**
 		 * @property {CMDBuild.view.management.workflow.panel.form.tabs.relations.RelationsView}
@@ -76,13 +70,78 @@
 			this.addEvents(this.CMEVENTS.serverOperationSuccess);
 
 			// Build sub-controllers
-			this.controllerWindowAttachment = Ext.create('CMDBuild.controller.common.panel.module.attachment.Window', { parentDelegate: this });
-
-			_CMWFState.addDelegate(this);
+			this.controllerWindowGraph = Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.graph.Window', { parentDelegate: this });
 		},
 
-		onAddCardClick: function () {
-			this.view.disable();
+		/**
+		 * Enable/Disable tab selection based
+		 *
+		 * @returns {Void}
+		 *
+		 * @legacy
+		 */
+		workflowFormTabRelationsUiUpdate: function () {
+			if (!this.parentDelegate.cmfg('workflowSelectedWorkflowIsEmpty'))
+				this.onProcessClassRefChange(Ext.create('CMDBuild.cache.CMEntryTypeModel', this.parentDelegate.cmfg('workflowSelectedWorkflowGet', 'rawData')));
+
+			if (!this.parentDelegate.cmfg('workflowSelectedInstanceIsEmpty'))
+				this.onProcessInstanceChange(Ext.create('CMDBuild.model.CMProcessInstance', this.parentDelegate.cmfg('workflowSelectedInstanceGet', 'rawData')));
+
+			if (!this.parentDelegate.cmfg('workflowSelectedActivityIsEmpty'))
+				this.onActivityInstanceChange(Ext.create('CMDBuild.model.CMActivityInstance', this.parentDelegate.cmfg('workflowSelectedActivityGet', 'rawData')));
+
+			// UI view mode manage
+			switch (this.parentDelegate.cmfg('workflowUiViewModeGet')) {
+				case 'add':
+					return this.view.disable();
+
+				default:
+					return this.view.setDisabled(
+						this.parentDelegate.cmfg('workflowSelectedInstanceIsEmpty')
+						&& this.parentDelegate.cmfg('workflowSelectedActivityIsEmpty')
+					);
+			}
+		},
+
+		/**
+		 * @returns {Void}
+		 *
+		 * @private
+		 * @legacy
+		 */
+		panelListenerManagerShow: function () {
+			// Error handling
+				if (this.parentDelegate.cmfg('workflowSelectedWorkflowIsEmpty'))
+					return _error('panelListenerManagerShow(): empty selected workflow property', this, this.parentDelegate.cmfg('workflowSelectedWorkflowGet'));
+
+				if (this.parentDelegate.cmfg('workflowSelectedInstanceIsEmpty'))
+					return _error('panelListenerManagerShow(): empty selected instance property', this, this.parentDelegate.cmfg('workflowSelectedInstanceGet'));
+			// END: Error handling
+
+			// History record save
+			CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
+				moduleId: this.parentDelegate.cmfg('workflowIdentifierGet'),
+				entryType: {
+					description: this.parentDelegate.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.DESCRIPTION),
+					id: this.parentDelegate.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.ID),
+					object: this.parentDelegate.cmfg('workflowSelectedWorkflowGet')
+				},
+				item: {
+					description: null, // Instances hasn't description property so display ID and no description
+					id: this.parentDelegate.cmfg('workflowSelectedInstanceGet', CMDBuild.core.constants.Proxy.ID),
+					object: this.parentDelegate.cmfg('workflowSelectedInstanceGet')
+				},
+				section: {
+					description: this.view.title,
+					object: this.view
+				}
+			});
+
+			// UI view mode manage
+			switch (this.parentDelegate.cmfg('workflowUiViewModeGet')) {
+				case 'add':
+					return this.view.disable();
+			}
 		},
 
 		/**
@@ -250,8 +309,7 @@
 		},
 
 		onShowGraphClick: function() {
-			Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.graph.Window', {
-				parentDelegate: this,
+			this.controllerWindowGraph.cmfg('onPanelGridAndFormGraphWindowConfigureAndShow', {
 				classId: this.card.get("IdClass"),
 				cardId: this.card.get("Id")
 			});
@@ -279,21 +337,23 @@
 
 		/**
 		 * @param {CMRelationPanelModel} model
-		 *
-		 * @returns {Void}
 		 */
-		onOpenAttachmentClick: function (model) {
-			// Error handling
-				if (!Ext.isObject(model) || Ext.Object.isEmpty(model))
-					return _error('onOpenAttachmentClick(): unmanaged model parameter', this, model);
-			// END: Error handling
+		onOpenAttachmentClick: function(model) {
+			var w = new CMDBuild.view.management.common.CMAttachmentsWindow();
 
-			this.controllerWindowAttachment.cmfg('panelModuleAttachmentWindowConfigureAndShow', {
-				entityId: model.get('dst_cid'),
-				id: model.get('dst_id')
-			});
+			new CMDBuild.controller.management.common.CMAttachmentsWindowController(w, modelToCardInfo(model));
+
+			w.show();
 		}
 	});
+
+	function modelToCardInfo(model) {
+		return {
+			Id: model.get('dst_id'),
+			IdClass: model.get('dst_cid'),
+			Description: model.get('dst_desc')
+		};
+	}
 
 	function openCardWindow(model, editable) {
 		var w = Ext.create('CMDBuild.view.management.common.CMCardWindow', {

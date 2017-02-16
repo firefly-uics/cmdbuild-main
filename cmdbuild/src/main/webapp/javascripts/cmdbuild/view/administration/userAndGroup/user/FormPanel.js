@@ -17,7 +17,7 @@
 		delegate: undefined,
 
 		/**
-		 * @property {CMDBuild.core.buttons.iconized.state.Double}
+		 * @property {CMDBuild.core.buttons.icon.state.Double}
 		 */
 		buttonToggleEnableDisable: undefined,
 
@@ -72,7 +72,7 @@
 						dock: 'top',
 						itemId: CMDBuild.core.constants.Proxy.TOOLBAR_TOP,
 						items: [
-							Ext.create('CMDBuild.core.buttons.iconized.Modify', {
+							Ext.create('CMDBuild.core.buttons.icon.modify.Modify', {
 								text: CMDBuild.Translation.modifyUser,
 								scope: this,
 
@@ -80,7 +80,7 @@
 									this.delegate.cmfg('onUserAndGroupUserModifyButtonClick');
 								}
 							}),
-							Ext.create('CMDBuild.core.buttons.iconized.Password', {
+							Ext.create('CMDBuild.core.buttons.icon.Password', {
 								text: CMDBuild.Translation.changePassword,
 								forceDisabledState: CMDBuild.configuration.userInterface.get(CMDBuild.core.constants.Proxy.CLOUD_ADMIN),
 								scope: this,
@@ -89,7 +89,7 @@
 									this.delegate.cmfg('onUserAndGroupUserChangePasswordButtonClick');
 								}
 							}),
-							this.buttonToggleEnableDisable = Ext.create('CMDBuild.core.buttons.iconized.state.Double', {
+							this.buttonToggleEnableDisable = Ext.create('CMDBuild.core.buttons.icon.state.Double', {
 								state1text: CMDBuild.Translation.disableUser,
 								state2text: CMDBuild.Translation.enableUser,
 								scope: this,
@@ -163,7 +163,7 @@
 								labelWidth: CMDBuild.core.constants.FieldWidths.LABEL,
 								maxWidth: CMDBuild.core.constants.FieldWidths.ADMINISTRATION_BIG,
 								allowBlank: true,
-								vtype: 'emailOrBlank'
+								vtype: 'emailorblank'
 							}),
 							this.defaultGroupCombo = Ext.create('CMDBuild.view.common.field.comboBox.Erasable', {
 								name: CMDBuild.core.constants.Proxy.DEFAULT_GROUP_ID,

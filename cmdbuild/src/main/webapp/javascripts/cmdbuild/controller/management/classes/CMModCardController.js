@@ -3,6 +3,7 @@
 	// TODO: fix to use class property requires (unusable at the moment because of class wrong name)
 	Ext.require([
 		'CMDBuild.core.constants.Proxy',
+		'CMDBuild.core.Utils',
 		'CMDBuild.proxy.administration.userAndGroup.group.tabs.DefaultFilters'
 	]);
 
@@ -10,7 +11,6 @@
 		extend: 'CMDBuild.controller.CMBasePanelController',
 
 		mixins: {
-			commonFunctions: 'CMDBuild.controller.management.common.CMModClassAndWFCommons',
 			observable: 'Ext.util.Observable'
 		},
 
@@ -31,8 +31,6 @@
 				var dc = CMDBuild.global.controller.MainViewport.cmfg('mainViewportDanglingCardGet');
 				var filter = entryType.get(CMDBuild.core.constants.Proxy.FILTER);
 				var newEntryId = entryType.get(idPropertyName);
-
-				this.selectedAccordionNode = entryType; // FIXME: hack to temporary fix DataView bug
 
 				if (CMDBuild.configuration.userInterface.get(CMDBuild.core.constants.Proxy.FULL_SCREEN_MODE))
 					_CMUIState.onlyGrid();
@@ -378,7 +376,10 @@
 		 * @param {Number} classId
 		 */
 		changeClassUIConfigurationForGroup: function (classId) {
-			var privileges = _CMUtils.getClassPrivileges(classId);
+			if (!classId)
+				return false;
+
+			var privileges = CMDBuild.core.Utils.getEntryTypePrivileges(_CMCache.getEntryTypeById(classId));
 
 			this.view.addCardButton.disabledForGroup = ! (privileges.write && ! privileges.crudDisabled.create);
 
@@ -495,17 +496,6 @@
 			_CMUIState.onlyGridIfFullScreen();
 
 			this.changeClassUIConfigurationForGroup(entryTypeId);
-
-			// FIXME: hack to temporary fix DataView bug
-			if (
-				Ext.isString(filter) && !Ext.isEmpty(filter)
-				&& Ext.Array.contains(this.selectedAccordionNode.get(CMDBuild.core.constants.Proxy.SECTION_HIERARCHY), 'filter')
-			) {
-				CMDBuild.global.dataViewHack = {
-					filter: filter,
-					entryType: entryType
-				};
-			}
 		}
 	});
 
@@ -517,7 +507,10 @@
 			me.mon(me.gridController, me.gridController.CMEVENTS.gridVisible, me.onGridVisible, me);
 			me.mon(me.gridController, me.gridController.CMEVENTS.load, me.onGridLoad, me);
 			me.mon(me.gridController, me.gridController.CMEVENTS.itemdblclick, function() {
-				var privileges = _CMUtils.getEntryTypePrivilegesByCard(me.cardPanelController.card);
+				if (!me.cardPanelController.card)
+					return false;
+
+				var privileges = CMDBuild.core.Utils.getEntryTypePrivileges(_CMCache.getEntryTypeById(me.cardPanelController.card.get('IdClass')));
 				if (! privileges.crudDisabled.modify) {
 					me.cardPanelController.onModifyCardClick();
 					_CMUIState.onlyFormIfFullScreen();

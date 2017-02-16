@@ -82,7 +82,7 @@
 						fixed: true,
 
 						items: [
-							Ext.create('CMDBuild.core.buttons.iconized.Download', {
+							Ext.create('CMDBuild.core.buttons.icon.Download', {
 								withSpacer: true,
 								tooltip: CMDBuild.Translation.download,
 								scope: this,

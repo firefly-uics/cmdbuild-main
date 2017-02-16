@@ -31,7 +31,7 @@
 
 		listeners: {
 			beforeitemclick: function (view, record, item, index, e, eOpts) {
-				this.delegate.cmfg('onWorkflowTreeBeforeItemClick', record);
+				return this.delegate.cmfg('onWorkflowTreeBeforeItemClick', record);
 			},
 			columnhide: function (ct, column, eOpts) {
 				this.delegate.cmfg('onWorkflowTreeColumnChanged');
@@ -39,10 +39,10 @@
 			columnshow: function (ct, column, eOpts) {
 				this.delegate.cmfg('onWorkflowTreeColumnChanged');
 			},
-			itemdblclick: function (grid, record, item, index, e, eOpts) {
+			itemdblclick: function (view, record, item, index, e, eOpts) {
 				this.delegate.cmfg('onWorkflowActivityItemDoubleClick');
 			},
-			select: function (row, record, index) {
+			select: function (row, record, index, eOpts) {
 				this.delegate.cmfg('onWorkflowTreeRecordSelect', record);
 			},
 			sortchange: function (ct, column, direction, eOpts) {

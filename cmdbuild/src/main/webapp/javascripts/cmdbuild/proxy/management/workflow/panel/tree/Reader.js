@@ -2,8 +2,12 @@
 
 	/**
 	 * Applied attributes translations:
+	 * 	- Workflow:
+	 * 		- classDescription -> workflowDescription
+	 * 		- classId -> workflowId
+	 * 		- className -> workflowName
 	 * 	- Instance data
-	 * 		- id -> cardId
+	 * 		- id -> instanceId
 	 * 	- ActivityInstanceInfoList item data
 	 * 		- description -> activityDescription
 	 * 		- id -> activityId
@@ -33,11 +37,12 @@
 				var activityNewObject = {};
 
 				// Workflow attributes
-				activityNewObject[CMDBuild.core.constants.Proxy.CARD_ID] = parentObject[CMDBuild.core.constants.Proxy.ID];
-				activityNewObject[CMDBuild.core.constants.Proxy.CLASS_DESCRIPTION] = parentObject[CMDBuild.core.constants.Proxy.CLASS_DESCRIPTION];
-				activityNewObject[CMDBuild.core.constants.Proxy.CLASS_ID] = parentObject[CMDBuild.core.constants.Proxy.CLASS_ID];
-				activityNewObject[CMDBuild.core.constants.Proxy.CLASS_NAME] = parentObject[CMDBuild.core.constants.Proxy.CLASS_NAME];
-				activityNewObject[CMDBuild.core.constants.Proxy.VALUES] = parentObject[CMDBuild.core.constants.Proxy.VALUES];
+				activityNewObject[CMDBuild.core.constants.Proxy.WORKFLOW_DESCRIPTION] = parentObject[CMDBuild.core.constants.Proxy.CLASS_DESCRIPTION];
+				activityNewObject[CMDBuild.core.constants.Proxy.WORKFLOW_ID] = parentObject[CMDBuild.core.constants.Proxy.CLASS_ID];
+				activityNewObject[CMDBuild.core.constants.Proxy.WORKFLOW_NAME] = parentObject[CMDBuild.core.constants.Proxy.CLASS_NAME];
+
+				// Instance attributes
+				activityNewObject[CMDBuild.core.constants.Proxy.INSTANCE_ID] = parentObject[CMDBuild.core.constants.Proxy.ID];
 
 				// Activity attributes
 				activityNewObject[CMDBuild.core.constants.Proxy.ACTIVITY_DESCRIPTION] = activityObject[CMDBuild.core.constants.Proxy.DESCRIPTION];
@@ -48,6 +53,7 @@
 
 				// Commons
 				activityNewObject[CMDBuild.core.constants.Proxy.LEAF] = true;
+				activityNewObject[CMDBuild.core.constants.Proxy.VALUES] = parentObject[CMDBuild.core.constants.Proxy.VALUES];
 				activityNewObject['rawData'] = parentObject; // FIXME: legacy mode to remove on complete Workflow UI and wofkflowState modules refactor
 
 				return activityNewObject;
@@ -66,15 +72,23 @@
 				Ext.isObject(rowObject) && !Ext.Object.isEmpty(rowObject)
 				&& Ext.isArray(rowObject[CMDBuild.core.constants.Proxy.ACTIVITY_INSTANCE_INFO_LIST]) && !Ext.isEmpty(rowObject[CMDBuild.core.constants.Proxy.ACTIVITY_INSTANCE_INFO_LIST])
 			) {
-				var activityInfoList = rowObject[CMDBuild.core.constants.Proxy.ACTIVITY_INSTANCE_INFO_LIST];
-				var children = [];
+				var activityInfoList = rowObject[CMDBuild.core.constants.Proxy.ACTIVITY_INSTANCE_INFO_LIST],
+					children = [];
 
-				Ext.Array.each(activityInfoList, function (activityInfoObject, i, allActivityInfoObjects) {
+				Ext.Array.forEach(activityInfoList, function (activityInfoObject, i, allActivityInfoObjects) {
 					if (Ext.isObject(activityInfoObject) && !Ext.Object.isEmpty(activityInfoObject))
 						children.push(this.buildNodeActivity(activityInfoObject, rowObject));
 				}, this);
 
-				rowObject[CMDBuild.core.constants.Proxy.CARD_ID] = rowObject[CMDBuild.core.constants.Proxy.ID];
+				// Workflow attributes
+				rowObject[CMDBuild.core.constants.Proxy.WORKFLOW_DESCRIPTION] = rowObject[CMDBuild.core.constants.Proxy.CLASS_DESCRIPTION];
+				rowObject[CMDBuild.core.constants.Proxy.WORKFLOW_ID] = rowObject[CMDBuild.core.constants.Proxy.CLASS_ID];
+				rowObject[CMDBuild.core.constants.Proxy.WORKFLOW_NAME] = rowObject[CMDBuild.core.constants.Proxy.CLASS_NAME];
+
+				// Instance attributes
+				rowObject[CMDBuild.core.constants.Proxy.INSTANCE_ID] = rowObject[CMDBuild.core.constants.Proxy.ID];
+
+				// Commons
 				rowObject[CMDBuild.core.constants.Proxy.LEAF] = activityInfoList.length < 2;
 				rowObject['rawData'] = rowObject; // FIXME: legacy mode to remove on complete Workflow UI and wofkflowState modules refactor
 
@@ -140,7 +154,7 @@
 			var structure = [];
 
 			if (Ext.isArray(data) && !Ext.isEmpty(data))
-				Ext.Array.each(data, function (rowObject, i, allRowObjects) {
+				Ext.Array.forEach(data, function (rowObject, i, allRowObjects) {
 					var activityInfoList = rowObject[CMDBuild.core.constants.Proxy.ACTIVITY_INSTANCE_INFO_LIST];
 
 					if (Ext.isArray(activityInfoList))

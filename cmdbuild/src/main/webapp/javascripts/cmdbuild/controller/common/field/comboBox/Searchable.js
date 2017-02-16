@@ -22,17 +22,17 @@
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
+			'fieldComboBoxSearchableExternalValueSet = fieldValueSet',
 			'fieldComboBoxSearchableNormalizeValue',
 			'fieldComboBoxSearchableStoreExceedsLimit',
 			'fieldComboBoxSearchableStoreGet = fieldStoreGet',
 			'fieldComboBoxSearchableValueFieldGet = fiedlValueFieldGet',
 			'fieldComboBoxSearchableValueGet = fieldValueGet',
-			'fieldComboBoxSearchableValueSet = fieldValueSet',
+			'fieldComboBoxSearchableValueSet',
 			'onFieldComboBoxSearchableKeyUp',
 			'onFieldComboBoxSearchableTrigger1Click',
 			'onFieldComboBoxSearchableTrigger2Click',
-			'onFieldComboBoxSearchableTrigger3Click',
-			'onFieldComboBoxSearchableValueSet'
+			'onFieldComboBoxSearchableTrigger3Click'
 		],
 
 		/**
@@ -60,7 +60,12 @@
 
 			this.configurationSet({ value: this.view.configuration });
 
-			// Controller build
+			// Error handling
+				if (!Ext.isObject(this.view.attributeModel) || Ext.Object.isEmpty(this.view.attributeModel))
+					return _error('constructor(): unmanaged attributeModel parameter', this, this.view.attributeModel);
+			// END: Error handling
+
+			// Build sub-controller
 			this.controllerSearchWindow = Ext.create('CMDBuild.controller.common.field.searchWindow.SearchWindow', { parentDelegate: this });
 		},
 
@@ -95,6 +100,18 @@
 					this.propertyManageSet(parameters);
 				}
 			},
+
+		/**
+		 * @param {Ext.data.Model} selectedRecord
+		 *
+		 * @returns {Void}
+		 */
+		fieldComboBoxSearchableExternalValueSet: function (selectedRecord) {
+			if (!Ext.isEmpty(selectedRecord)) {
+				this.view.blur(); // Allow 'change' event that occurs on blur
+				this.view.setValue(selectedRecord.get(this.view.valueField));
+			}
+		},
 
 		/**
 		 * @returns {Ext.data.Store}
@@ -142,18 +159,6 @@
 		},
 
 		/**
-		 * @param {Ext.data.Model} selectedRecord
-		 *
-		 * @returns {Void}
-		 */
-		fieldComboBoxSearchableValueSet: function (selectedRecord) {
-			if (!Ext.isEmpty(selectedRecord)) {
-				this.view.blur(); // Allow 'change' event that occurs on blur
-				this.view.setValue(selectedRecord.get(this.view.valueField));
-			}
-		},
-
-		/**
 		 * @returns {Boolean}
 		 */
 		fieldComboBoxSearchableStoreExceedsLimit: function () {
@@ -168,6 +173,60 @@
 		 */
 		fieldComboBoxSearchableValueFieldGet: function () {
 			return this.view.valueField;
+		},
+
+		/**
+		 * Adds values in store if not already inside
+		 *
+		 * @param {Mixed} value
+		 *
+		 * @returns {Void}
+		 */
+		fieldComboBoxSearchableValueSet: function (value) {
+			value = this.cmfg('fieldComboBoxSearchableNormalizeValue', value);
+
+			if (Ext.isNumber(value) && !Ext.isEmpty(value)) {
+				if (!this.view.getStore().isLoading())
+					if (this.view.getStore().find(this.view.valueField, value) >= 0) { // Value in store
+						return [value];
+					} else if (value > 0) { // Value not in store, avoids to execute call for 'calculated values' for My User and My Group
+						var params = {};
+						params[CMDBuild.core.constants.Proxy.CARD_ID] = value;
+						params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.view.attributeModel.get(CMDBuild.core.constants.Proxy.TARGET_CLASS);
+
+						CMDBuild.proxy.common.field.comboBox.Reference.readCard({
+							params: params,
+							scope: this,
+							success: function (response, options, decodedResponse) {
+								decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.CARD];
+
+								if (Ext.isObject(decodedResponse) && !Ext.Object.isEmpty(decodedResponse)) {
+									this.view.getStore().add(
+											Ext.create('CMDBuild.model.common.field.comboBox.searchable.StoreRecord', {
+												Id: decodedResponse['Id'],
+												Description: decodedResponse['Description']
+											})
+									);
+
+									this.view.setValue(decodedResponse[this.view.valueField]);
+								}
+
+								this.view.validate();
+							}
+						});
+
+						return [value];
+					}
+
+				// Defer value set because store is loading
+				this.view.getStore().on('load', function (store, records, successful, eOpts) {
+					this.view.setValue(value);
+				}, this, { single: true });
+
+				return [value];
+			}
+
+			return [];
 		},
 
 		/**
@@ -207,7 +266,6 @@
 			value = Ext.isString(value) ? value : '';
 
 			if (!this.view.isDisabled()) {
-				// Get class data from server
 				var params = {};
 				params[CMDBuild.core.constants.Proxy.NAME] = this.view.attributeModel.get(CMDBuild.core.constants.Proxy.TARGET_CLASS);
 
@@ -225,50 +283,11 @@
 
 							this.controllerSearchWindow.cmfg('fieldSearchWindowConfigurationSet', { value: configurationObject });
 							this.controllerSearchWindow.getView().show();
+						} else {
+							_error('onFieldComboBoxSearchableTrigger3Click(): unmanaged response', this, decodedResponse);
 						}
 					}
 				});
-			}
-		},
-
-		/**
-		 * Adds values in store if not already inside
-		 *
-		 * @param {Mixed} value
-		 *
-		 * @returns {Void}
-		 */
-		onFieldComboBoxSearchableValueSet: function (value) {
-			if (!Ext.isEmpty(value)) {
-				value = this.cmfg('fieldComboBoxSearchableNormalizeValue', value);
-
-				if (this.view.getStore().find(this.view.valueField, value) < 0) {
-					var params = {};
-					params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.view.attributeModel.get(CMDBuild.core.constants.Proxy.TARGET_CLASS);
-					params[CMDBuild.core.constants.Proxy.CARD_ID] = value;
-
-					CMDBuild.proxy.common.field.comboBox.Searchable.readCard({
-						params: params,
-						scope: this,
-						success: function (response, options, decodedResponse) {
-							decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.CARD];
-
-							if (!Ext.isEmpty(decodedResponse)) {
-								if (!Ext.isEmpty(this.view.getStore()))
-									this.view.getStore().add(
-										Ext.create('CMDBuild.model.common.field.comboBox.searchable.Card', {
-											Id: decodedResponse['Id'],
-											Description: decodedResponse['Description']
-										})
-									);
-
-								this.view.setValue(decodedResponse[this.view.valueField]);
-							}
-
-							this.view.validate();
-						}
-					});
-				}
 			}
 		},
 

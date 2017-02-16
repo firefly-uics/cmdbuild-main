@@ -684,7 +684,7 @@
 			synchronize: 'services/json/workflow/sync',
 
 			activity: {
-				create: '',
+				create: '', // TODO: waiting for refactor (crud)
 				read: 'services/json/workflow/getactivityinstance', // TODO: waiting for refactor (crud)
 				update: 'services/json/workflow/saveactivity', // TODO: waiting for refactor (crud)
 				remove: '',

@@ -1,7 +1,7 @@
 (function () {
 
 	Ext.define('CMDBuild.view.common.panel.module.attachment.window.modify.ModifyView', {
-		extend: 'CMDBuild.core.window.AbstractCustomModal',
+		extend: 'CMDBuild.core.window.AbstractModal',
 
 		requires: ['CMDBuild.core.constants.Proxy'],
 

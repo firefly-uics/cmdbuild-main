@@ -171,7 +171,7 @@
 				params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.cmfg('classesSelectedClassGet', CMDBuild.core.constants.Proxy.NAME);
 				params[CMDBuild.core.constants.Proxy.FORMAT] = format;
 
-				this.controllerPrintWindow.cmfg('panelGridAndFormPrintWindowShow', {
+				this.controllerPrintWindow.cmfg('panelGridAndFormCommonPrintWindowShow', {
 					format: format,
 					mode: 'classSchema',
 					params: params
@@ -288,7 +288,7 @@
 		success: function (response, options, decodedResponse) {
 			decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.TABLE];
 
-			CMDBuild.view.common.field.translatable.Utils.commit(this.panelProperties);
+			CMDBuild.controller.common.field.translatable.Utils.commit(this.panelProperties);
 
 			this.cmfg('mainViewportAccordionDeselect', this.cmfg('classesIdentifierGet'));
 			this.cmfg('mainViewportAccordionControllerUpdateStore', {

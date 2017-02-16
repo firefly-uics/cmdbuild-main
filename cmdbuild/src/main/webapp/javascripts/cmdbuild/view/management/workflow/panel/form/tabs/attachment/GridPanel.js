@@ -20,17 +20,17 @@
 		delegate: undefined,
 
 		/**
-		 * @property {CMDBuild.core.buttons.iconized.Modify}
+		 * @property {CMDBuild.core.buttons.icon.modify.Modify}
 		 */
 		buttonActionModify: undefined,
 
 		/**
-		 * @property {CMDBuild.core.buttons.iconized.Remove}
+		 * @property {CMDBuild.core.buttons.icon.Remove}
 		 */
 		buttonActionRemove: undefined,
 
 		/**
-		 * @property {CMDBuild.core.buttons.iconized.add.Add}
+		 * @property {CMDBuild.core.buttons.icon.add.Add}
 		 */
 		buttonAdd: undefined,
 
@@ -64,7 +64,7 @@
 						itemId: CMDBuild.core.constants.Proxy.TOOLBAR_TOP,
 
 						items: [
-							this.buttonAdd = Ext.create('CMDBuild.core.buttons.iconized.add.Add', {
+							this.buttonAdd = Ext.create('CMDBuild.core.buttons.icon.add.Add', {
 								text: CMDBuild.Translation.addAttachment,
 								scope: this,
 
@@ -123,7 +123,7 @@
 						fixed: true,
 
 						items: [
-							Ext.create('CMDBuild.core.buttons.iconized.Download', {
+							Ext.create('CMDBuild.core.buttons.icon.Download', {
 								withSpacer: true,
 								tooltip: CMDBuild.Translation.download,
 								scope: this,
@@ -132,7 +132,7 @@
 									this.delegate.cmfg('onPanelModuleAttachmentGridDownloadButtonClick', record);
 								}
 							}),
-							Ext.create('CMDBuild.core.buttons.iconized.Versions', {
+							Ext.create('CMDBuild.core.buttons.icon.Versions', {
 								withSpacer: true,
 								tooltip: CMDBuild.Translation.versions,
 								scope: this,
@@ -145,7 +145,7 @@
 									return !record.get(CMDBuild.core.constants.Proxy.VERSIONABLE);
 								}
 							}),
-							this.buttonActionModify = Ext.create('CMDBuild.core.buttons.iconized.Modify', {
+							this.buttonActionModify = Ext.create('CMDBuild.core.buttons.icon.modify.Modify', {
 								withSpacer: true,
 								tooltip: CMDBuild.Translation.modify,
 								scope: this,
@@ -158,7 +158,7 @@
 									return !this.delegate.cmfg('workflowSelectedActivityGet', CMDBuild.core.constants.Proxy.WRITABLE);
 								}
 							}),
-							this.buttonActionRemove = Ext.create('CMDBuild.core.buttons.iconized.Remove', {
+							this.buttonActionRemove = Ext.create('CMDBuild.core.buttons.icon.Remove', {
 								withSpacer: true,
 								tooltip: CMDBuild.Translation.remove,
 								scope: this,

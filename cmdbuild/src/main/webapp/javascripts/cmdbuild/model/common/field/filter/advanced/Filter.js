@@ -2,6 +2,9 @@
 
 	Ext.require('CMDBuild.core.constants.Proxy');
 
+	/**
+	 * @deprecated CMDBuild.model.common.Filter
+	 */
 	Ext.define('CMDBuild.model.common.field.filter.advanced.Filter', {
 		extend: 'Ext.data.Model',
 

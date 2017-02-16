@@ -8,9 +8,16 @@
 	Ext.define("CMDBuild.view.management.workflow.panel.form.tabs.activity.FormPanel", {
 		extend: "Ext.form.Panel",
 
+		requires: ['CMDBuild.core.Utils'],
+
 		mixins: {
-			cmFormFunctions: "CMDBUild.view.common.CMFormFunctions"
+			cmFormFunctions: "CMDBuild.view.common.CMFormFunctions"
 		},
+
+		/**
+		 * @cfg {CMDBuild.controller.management.workflow.panel.form.tabs.activity.Activity}
+		 */
+		delegate: undefined,
 
 		_lastCard: null, // to sync the editable panel when goes in edit mode
 
@@ -75,7 +82,7 @@
 		},
 
 		buildTBar: function() {
-			this.graphButton = Ext.create('CMDBuild.core.buttons.iconized.RelationGraph', {
+			this.graphButton = Ext.create('CMDBuild.core.buttons.icon.RelationGraph', {
 				scope: this,
 
 				handler: function(button, e) {
@@ -100,20 +107,20 @@
 			};
 
 			this.cmTBar = [
-				this.modifyCardButton = Ext.create('CMDBuild.core.buttons.iconized.Modify', {
+				this.modifyCardButton = Ext.create('CMDBuild.core.buttons.icon.modify.Modify', {
 					text: CMDBuild.Translation.modifyActivity,
 					scope: this,
 
 					handler: function (button, e) {
-						this.delegate.superController.cmfg('onWorkflowModifyButtonClick');
+						this.delegate.parentDelegate.cmfg('onWorkflowModifyButtonClick');
 					}
 				}),
-				this.deleteCardButton = Ext.create('CMDBuild.core.buttons.iconized.Remove', {
+				this.deleteCardButton = Ext.create('CMDBuild.core.buttons.icon.Remove', {
 					text: CMDBuild.Translation.abortProcess,
 					scope: this,
 
 					handler: function (button, e) {
-						this.delegate.superController.cmfg('onWorkflowFormRemoveButtonClick');
+						this.delegate.onRemoveCardClick();
 					}
 				}),
 				CMDBuild.configuration.graph.get(CMDBuild.core.constants.Proxy.ENABLED) ? this.graphButton : null,
@@ -130,14 +137,14 @@
 					scope: this,
 
 					handler: function (button, e) {
-						this.delegate.superController.cmfg('onWorkflowFormSaveButtonClick');
+						this.delegate.parentDelegate.cmfg('onWorkflowFormSaveButtonClick');
 					}
 				}),
 				this.advanceButton = Ext.create('CMDBuild.core.buttons.text.Advance', {
 					scope: this,
 
 					handler: function (button, e) {
-						this.delegate.superController.cmfg('onWorkflowFormAdvanceButtonClick');
+						this.delegate.onAdvanceCardButtonClick();
 					}
 				}),
 				this.cancelButton = Ext.create('CMDBuild.core.buttons.text.Abort', {
@@ -145,7 +152,7 @@
 					scope: this,
 
 					handler: function (button, e) {
-						this.delegate.superController.cmfg('onWorkflowAbortButtonClick');
+						this.delegate.parentDelegate.cmfg('onWorkflowAbortButtonClick');
 					}
 				})
 			];
@@ -403,7 +410,7 @@
 		this._lastCard = null;
 
 		var panels = [],
-			groupedAttr = CMDBuild.Utils.groupAttributes(attributes, false);
+			groupedAttr = CMDBuild.core.Utils.groupAttributesObjects(attributes);
 
 		this.suspendLayouts();
 

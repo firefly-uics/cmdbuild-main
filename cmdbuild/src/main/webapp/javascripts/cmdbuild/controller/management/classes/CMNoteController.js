@@ -1,12 +1,14 @@
 (function() {
 
 	Ext.require([
+		'CMDBuild.core.constants.Global',
+		'CMDBuild.core.Utils',
 		'CMDBuild.proxy.Card',
 		'CMDBuild.proxy.management.classes.tabs.Note'
 	]);
 
 	/**
-	 * @link CMDBuild.controller.management.workflow.panel.form.tabs.Note
+	 * @link CMDBuild.controller.management.dataView.filter.panel.form.tabs.Note
 	 */
 	Ext.define("CMDBuild.controller.management.classes.CMNoteController", {
 		extend: "CMDBuild.controller.management.classes.CMModCardSubController",
@@ -48,7 +50,16 @@
 		},
 
 		disableTheTabBeforeCardSelection: function(card) {
-			return !card || CMDBuild.Utils.isSimpleTable(card.get("IdClass"));
+			if (!card)
+				return true;
+
+			var table = _CMCache.getEntryTypeById(card.get("IdClass"));
+
+			if (table) {
+				return table.data.tableType == CMDBuild.core.constants.Global.getTableTypeSimpleTable();
+			} else {
+				return false;
+			}
 		},
 
 		updateView: function(card) {
@@ -58,7 +69,10 @@
 		},
 
 		updateViewPrivilegesForCard: function(card) {
-			var privileges = _CMUtils.getEntryTypePrivilegesByCard(card);
+			if (!card)
+				return false;
+
+			var privileges = CMDBuild.core.Utils.getEntryTypePrivileges(_CMCache.getEntryTypeById(card.get('IdClass')));
 			this.view.updateWritePrivileges(privileges.write && ! privileges.crudDisabled.modify);
 		},
 
@@ -157,7 +171,9 @@
 	});
 
 	function isEditable(card) {
-		return _CMUtils.getEntryTypePrivilegesByCard(card).write;
+		var privileges = CMDBuild.core.Utils.getEntryTypePrivileges(_CMCache.getEntryTypeById(card.get('IdClass')));
+
+		return privileges.write;
 	}
 
 })();

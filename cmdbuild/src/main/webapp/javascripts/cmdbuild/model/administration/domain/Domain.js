@@ -3,7 +3,7 @@
 	Ext.require('CMDBuild.core.constants.Proxy');
 
 	/**
-	 * @link CMDBuild.model.core.buttons.iconized.add.relation.Domain
+	 * @link CMDBuild.model.core.buttons.icon.add.relation.Domain
 	 *
 	 * TODO: waiting for refactor (rename)
 	 */

@@ -7,7 +7,7 @@
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.core.interfaces.FormSubmit',
 			'CMDBuild.core.Message',
-			'CMDBuild.proxy.common.panel.gridAndForm.Print',
+			'CMDBuild.proxy.common.panel.gridAndForm.panel.common.Print',
 			'CMDBuild.proxy.index.Json'
 		],
 
@@ -20,9 +20,9 @@
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
-			'onPanelGridAndFormPrintWindowDownloadButtonClick',
-			'onPanelGridAndFormPrintWindowShow',
-			'panelGridAndFormPrintWindowShow'
+			'onPanelGridAndFormCommonPrintWindowDownloadButtonClick',
+			'onPanelGridAndFormCommonPrintWindowShow',
+			'panelGridAndFormCommonPrintWindowShow'
 		],
 
 		/**
@@ -107,19 +107,19 @@
 		decodeMode: function () {
 			switch (this.mode) {
 				case 'cardDetails':
-					return CMDBuild.proxy.common.panel.gridAndForm.Print.createCardDetails;
+					return CMDBuild.proxy.common.panel.gridAndForm.panel.common.Print.createCardDetails;
 
 				case 'classSchema':
-					return CMDBuild.proxy.common.panel.gridAndForm.Print.createClassSchema;
+					return CMDBuild.proxy.common.panel.gridAndForm.panel.common.Print.createClassSchema;
 
 				case 'dataViewSql':
-					return CMDBuild.proxy.common.panel.gridAndForm.Print.createDataViewSqlSchema;
+					return CMDBuild.proxy.common.panel.gridAndForm.panel.common.Print.createDataViewSqlSchema;
 
 				case 'schema':
-					return CMDBuild.proxy.common.panel.gridAndForm.Print.createSchema;
+					return CMDBuild.proxy.common.panel.gridAndForm.panel.common.Print.createSchema;
 
 				case 'view':
-					return CMDBuild.proxy.common.panel.gridAndForm.Print.createView;
+					return CMDBuild.proxy.common.panel.gridAndForm.panel.common.Print.createView;
 
 				default: {
 					_error('decodeMode(): unmanaged mode property', this, this.mode);
@@ -132,7 +132,7 @@
 		/**
 		 * @returns {Void}
 		 */
-		onPanelGridAndFormPrintWindowDownloadButtonClick: function () {
+		onPanelGridAndFormCommonPrintWindowDownloadButtonClick: function () {
 			this.forceDownload = true;
 
 			this.createDocument();
@@ -141,7 +141,7 @@
 		/**
 		 * @returns {Void}
 		 */
-		onPanelGridAndFormPrintWindowShow: function () {
+		onPanelGridAndFormCommonPrintWindowShow: function () {
 			this.forceDownload = false; // Reset value on show
 
 			if (!Ext.isEmpty(this.format))
@@ -156,7 +156,7 @@
 		 *
 		 * @returns {Void}
 		 */
-		panelGridAndFormPrintWindowShow: function (parameters) {
+		panelGridAndFormCommonPrintWindowShow: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
 			parameters.format = Ext.isString(parameters.format) && Ext.Array.contains(this.managedFormats, parameters.format)
 				? parameters.format : CMDBuild.core.constants.Proxy.PDF;
