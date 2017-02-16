@@ -311,7 +311,7 @@
 		var tableId = record.get("dst_cid");
 		var table = _CMCache.getClassById(tableId);
 		var entryType = _CMCache.getEntryTypeById(tableId);
-		var privileges =  _CMUtils.getEntryTypePrivileges(entryType);
+		var privileges = CMDBuild.core.Utils.getEntryTypePrivileges(entryType);
 
 		if (table && table.get('priv_write') && ! privileges.crudDisabled.modify) {
 			actionsHtml += '<img style="cursor:pointer" title="' + CMDBuild.Translation.management.modcard.modify_card + '" class="action-relation-editcard" src="images/icons/modify.png"/>';

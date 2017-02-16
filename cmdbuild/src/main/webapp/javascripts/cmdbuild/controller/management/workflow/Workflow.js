@@ -25,7 +25,7 @@
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
-			'identifierGet = workflowIdentifierGet',
+			'identifierGet = workflowIdentifierGet, panelGridAndFormIdentifierGet',
 			'onWorkflowAbortButtonClick',
 			'onWorkflowAddButtonClick',
 			'onWorkflowExternalServicesNavigationChronologyRecordSelect', // From mixins
@@ -41,15 +41,15 @@
 			'workflowReset',
 			'workflowSelectedActivityGet',
 			'workflowSelectedActivityIsEmpty',
-			'workflowSelectedInstanceGet',
-			'workflowSelectedInstanceIsEmpty',
+			'workflowSelectedInstanceGet = panelGridAndFormSelectedItemGet',
+			'workflowSelectedInstanceIsEmpty = panelGridAndFormSelectedItemIsEmpty',
 			'workflowSelectedWorkflowAttributesGet',
 			'workflowSelectedWorkflowAttributesGetAll',
 			'workflowSelectedWorkflowAttributesIsEmpty',
 			'workflowSelectedWorkflowDefaultFilterGet',
 			'workflowSelectedWorkflowDefaultFilterIsEmpty',
 			'workflowSelectedWorkflowGet = panelGridAndFormSelectedEntityGet',
-			'workflowSelectedWorkflowIsEmpty',
+			'workflowSelectedWorkflowIsEmpty = panelGridAndFormSelectedEntityIsEmpty',
 			'workflowStartActivityGet',
 			'workflowUiUpdate = panelGridAndFormUiUpdate'
 		],

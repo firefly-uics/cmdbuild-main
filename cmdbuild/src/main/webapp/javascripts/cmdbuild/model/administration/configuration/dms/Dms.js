@@ -39,6 +39,12 @@
 			data = Ext.isObject(data) ? data : {};
 			data[CMDBuild.core.constants.Proxy.TYPE] = data[CMDBuild.core.constants.Proxy.TYPE] || data['dms.service.type'];
 
+			// Removes unwanted values if type is an array
+			if (Ext.isArray(data[CMDBuild.core.constants.Proxy.TYPE]) && !Ext.isEmpty(data[CMDBuild.core.constants.Proxy.TYPE]))
+				data[CMDBuild.core.constants.Proxy.TYPE] = Ext.Array.filter(data[CMDBuild.core.constants.Proxy.TYPE], function (item, i, allItems) {
+					return item != 'off' && item != 'on';
+				}, this);
+
 			// Alfresco configuration translations
 			data[CMDBuild.core.constants.Proxy.ALFRESCO_DELAY] = data[CMDBuild.core.constants.Proxy.ALFRESCO_DELAY] || data['delay'];
 			data[CMDBuild.core.constants.Proxy.ALFRESCO_FILE_SERVER_PORT] = data[CMDBuild.core.constants.Proxy.ALFRESCO_FILE_SERVER_PORT] || data['fileserver.port'];

@@ -28,6 +28,7 @@
 			'panelGridAndFormPanelFormTabSelectionManage = workflowFormTabSelectionManage',
 			'workflowFormReset',
 			'workflowFormTabNoteValueGet',
+			'workflowFormTemplateResolverFormGet = panelGridAndFormPanelFormTemplateResolverFormGet',
 			'workflowFormUiUpdate',
 			'workflowFormWidgetExists'
 		],
@@ -147,18 +148,6 @@
 		},
 
 		/**
-		 * Retrieve the form to use as target for the templateResolver
-		 *
-		 * @returns {Object or null}
-		 */
-		getFormForTemplateResolver: function() {
-			if (Ext.isObject(this.widgetManager) && !Ext.Object.isEmpty(this.widgetManager) && typeof this.widgetManager.getFormForTemplateResolver == 'function')
-				return this.widgetManager.getFormForTemplateResolver() || null;
-
-			return null;
-		},
-
-		/**
 		 * Forward to sub-controllers
 		 *
 		 * @returns {Void}
@@ -208,6 +197,18 @@
 		},
 
 		/**
+		 * Retrieve the form to use as target for the templateResolver
+		 *
+		 * @returns {Ext.form.Basic or null}
+		 */
+		workflowFormTemplateResolverFormGet: function () {
+			if (Ext.isObject(this.controllerTabActivity) && !Ext.Object.isEmpty(this.controllerTabActivity))
+				return this.controllerTabActivity.getFormForTemplateResolver();
+
+			return null;
+		},
+
+		/**
 		 * @param {Object} parameters
 		 * @param {Object or String or Number} parameters.tabToSelect
 		 *
@@ -223,7 +224,7 @@
 				this.controllerTabActivity.workflowFormTabActivityUiUpdate();
 
 			if (Ext.isObject(this.controllerTabAttachment) && !Ext.Object.isEmpty(this.controllerTabAttachment))
-				this.controllerTabAttachment.cmfg('workflowFormTabAttachmentsUiUpdate'); // TODO
+				this.controllerTabAttachment.cmfg('workflowFormTabAttachmentsUiUpdate');
 
 			if (Ext.isObject(this.controllerTabEmail) && !Ext.Object.isEmpty(this.controllerTabEmail))
 				this.controllerTabEmail.cmfg('workflowFormTabEmailUiUpdate');

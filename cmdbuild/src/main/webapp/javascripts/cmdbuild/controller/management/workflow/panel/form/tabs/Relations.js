@@ -25,6 +25,16 @@
 		parentDelegate: undefined,
 
 		/**
+		 * @property {CMDBuild.controller.common.panel.module.attachment.Window}
+		 */
+		controllerWindowAttachment: undefined,
+
+		/**
+		 * @property {CMDBuild.controller.common.panel.gridAndForm.panel.common.graph.Window}
+		 */
+		controllerWindowGraph: undefined,
+
+		/**
 		 * @property {CMDBuild.view.management.workflow.panel.form.tabs.relations.RelationsView}
 		 */
 		view: undefined,
@@ -70,6 +80,7 @@
 			this.addEvents(this.CMEVENTS.serverOperationSuccess);
 
 			// Build sub-controllers
+			this.controllerWindowAttachment = Ext.create('CMDBuild.controller.common.panel.module.attachment.Window', { parentDelegate: this });
 			this.controllerWindowGraph = Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.graph.Window', { parentDelegate: this });
 		},
 
@@ -337,13 +348,19 @@
 
 		/**
 		 * @param {CMRelationPanelModel} model
+		 *
+		 * @returns {Void}
 		 */
-		onOpenAttachmentClick: function(model) {
-			var w = new CMDBuild.view.management.common.CMAttachmentsWindow();
+		onOpenAttachmentClick: function (model) {
+			// Error handling
+				if (!Ext.isObject(model) || Ext.Object.isEmpty(model))
+					return _error('onOpenAttachmentClick(): unmanaged model parameter', this, model);
+			// END: Error handling
 
-			new CMDBuild.controller.management.common.CMAttachmentsWindowController(w, modelToCardInfo(model));
-
-			w.show();
+			this.controllerWindowAttachment.cmfg('panelModuleAttachmentWindowConfigureAndShow', {
+				entityId: model.get('dst_cid'),
+				id: model.get('dst_id')
+			});
 		}
 	});
 

@@ -63,7 +63,7 @@
 		 */
 		onConfigurationDmsSaveButtonClick: function () {
 			var configurationModel = Ext.create('CMDBuild.model.administration.configuration.dms.Dms', this.view.panelFunctionDataGet({ includeDisabled: true }));
-
+debugger;
 			CMDBuild.proxy.administration.configuration.Dms.update({
 				params: configurationModel.getSubmitData(),
 				scope: this,
