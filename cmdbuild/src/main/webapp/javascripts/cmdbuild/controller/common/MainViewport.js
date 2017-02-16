@@ -550,9 +550,7 @@
 			if (this.cmfg('mainViewportAccordionIsCollapsed') && !Ext.isEmpty(node))
 				this.cmfg('mainViewportModuleShow', {
 					identifier: node.get('cmName'),
-					params: {
-						node: node
-					}
+					params: node
 				});
 		},
 
@@ -678,7 +676,7 @@
 						 *
 						 * @deprecated
 						 */
-						viewModule.fireEvent('CM_iamtofront', parameters.params.node);
+						viewModule.fireEvent('CM_iamtofront', parameters.params);
 
 						if (
 							Ext.isObject(controllerModule) && !Ext.Object.isEmpty(controllerModule) && Ext.isFunction(controllerModule.cmfg)
