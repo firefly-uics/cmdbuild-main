@@ -333,11 +333,14 @@
 						remove4GeoAttribute : function(mapLayer, geoAttribute, visibles) {
 							var mapLayerName = geoAttribute.name;
 							var mapClassName = geoAttribute.masterTableName;
-							function compare(layer) {
-								return (layer.name === mapLayerName && layer.masterTableName === mapClassName);
-
+							var found = false;
+							for (var i = 0; i < visibles.length; i++) {
+								var layer = visibles[i];
+								if (layer.name === mapLayerName && layer.masterTableName === mapClassName) {
+									found = true;
+								}
 							}
-							if (!visibles.find(compare)) {
+							if (!found) {
 								var adapter = mapLayer.get("adapter");
 								if (adapter) {
 									adapter.refresh();
