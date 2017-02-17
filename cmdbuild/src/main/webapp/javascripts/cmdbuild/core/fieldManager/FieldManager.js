@@ -200,6 +200,15 @@
 			},
 
 			/**
+			 * Builds filter attribute tab condition Ext.form.FieldContainer
+			 *
+			 * @returns {CMDBuild.view.common.field.filter.advanced.configurator.tabs.attributes.ConditionView}
+			 */
+			buildFilterCondition: function () {
+				return this.buildAttributeController().buildFilterCondition();
+			},
+
+			/**
 			 * Builds Ext.data.Store field definition object
 			 *
 			 * @returns {Object}
