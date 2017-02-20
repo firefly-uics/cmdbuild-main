@@ -170,6 +170,8 @@ FIXES
 
  * Class with no write permissions selectable in import CSV
 
+ * System classes not displayed in administration
+
 
 
 
