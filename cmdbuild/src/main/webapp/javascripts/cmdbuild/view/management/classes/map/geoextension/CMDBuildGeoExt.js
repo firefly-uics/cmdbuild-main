@@ -7,7 +7,9 @@
 		scalesTable : undefined,
 
 		constructor : function() {
-			this.initBaseLayer();
+			if (CMDBuild.gis.values.browserEnabled) {
+				this.initBaseLayer();
+			}
 			this.callParent(arguments);
 		},
 		setMap : function(mapPanel) {

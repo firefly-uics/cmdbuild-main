@@ -270,7 +270,7 @@
 		isGeoServerLayer : function(layer) {
 			return layer.masterTableName === CMDBuild.gis.constants.layers.GEOSERVER_LAYER;
 		},
-		isGeoServerEnabled : function(layer) {
+		isGeoServerEnabled : function() {
 			var configurationGeoserver = CMDBuild.configuration.gis.get("geoServer");
 			return (configurationGeoserver && configurationGeoserver.get("enabled"));
 		},
@@ -509,7 +509,7 @@
 		_CMCache.getAllLayers(function(layers) {
 			var layer = null;
 			for (var i = 0; i < layers.length; i++) {
-				if (layer.name === name && layer.masterTableName === className) {
+				if (layers[i].name === name && layers[i].masterTableName === className) {
 					layer = layers[i]
 				}
 			}

@@ -112,6 +112,10 @@
 		},
 
 		initComponent : function() {
+			if (!CMDBuild.gis.values.browserEnabled) {
+				this.callParent(arguments);
+				return;
+			}
 			var me = this;
 			this.geoExtension = Ext.create('CMDBuild.view.management.classes.map.geoextension.CMDBuildGeoExt');
 			var thematicDocument = Ext.create('CMDBuild.view.management.classes.map.thematism.ThematicDocument');

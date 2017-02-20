@@ -1,5 +1,8 @@
 (function() {
 	CMDBuild.gis = {
+		values : {
+			browserEnabled : browserEnabled() 
+		},
 		constants : {
 			MAP_DIV : 'cmdbBaseBuildMap',
 			MAP_OSM : 'osm',
@@ -482,4 +485,13 @@
 		}
 
 	});
+	function browserEnabled() {
+		if (Ext.isIE7) {
+			return false;
+		}
+		if (Ext.isIE8) {
+			return false;
+		}
+		return true;
+	}
 })();
