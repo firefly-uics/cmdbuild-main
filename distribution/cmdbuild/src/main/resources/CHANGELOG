@@ -168,6 +168,8 @@ FIXES
 
  * NavigationTree: not managed active state on administration
 
+ * Class with no write permissions selectable in import CSV
+
 
 
 
