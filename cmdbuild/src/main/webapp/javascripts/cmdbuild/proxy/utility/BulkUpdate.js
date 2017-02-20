@@ -77,15 +77,19 @@
 					}, this);
 
 					if (!Ext.isEmpty(decodedResponse)) {
-						Ext.Array.each(decodedResponse, function (classObject, i, allClassObjects) {
+						Ext.Array.forEach(decodedResponse, function (classObject, i, allClassObjects) {
 							var nodeObject = {};
 							nodeObject['iconCls'] = classObject['superclass'] ? 'cmdb-tree-superclass-icon' : 'cmdb-tree-class-icon';
-							nodeObject[CMDBuild.core.constants.Proxy.TEXT] = classObject[CMDBuild.core.constants.Proxy.TEXT];
 							nodeObject[CMDBuild.core.constants.Proxy.DESCRIPTION] = classObject[CMDBuild.core.constants.Proxy.TEXT];
 							nodeObject[CMDBuild.core.constants.Proxy.ID] = classObject[CMDBuild.core.constants.Proxy.ID];
-							nodeObject[CMDBuild.core.constants.Proxy.NAME] = classObject[CMDBuild.core.constants.Proxy.NAME];
 							nodeObject[CMDBuild.core.constants.Proxy.LEAF] = true;
+							nodeObject[CMDBuild.core.constants.Proxy.NAME] = classObject[CMDBuild.core.constants.Proxy.NAME];
 							nodeObject[CMDBuild.core.constants.Proxy.PARENT] = classObject[CMDBuild.core.constants.Proxy.PARENT];
+							nodeObject[CMDBuild.core.constants.Proxy.SELECTABLE] = classObject['priv_write'];
+							nodeObject[CMDBuild.core.constants.Proxy.TEXT] = classObject[CMDBuild.core.constants.Proxy.TEXT];
+
+							if (!nodeObject[CMDBuild.core.constants.Proxy.SELECTABLE])
+								nodeObject['cls'] = 'cmdb-tree-node-disabled';
 
 							standardNodesMap[nodeObject[CMDBuild.core.constants.Proxy.ID]] = nodeObject;
 						}, this);

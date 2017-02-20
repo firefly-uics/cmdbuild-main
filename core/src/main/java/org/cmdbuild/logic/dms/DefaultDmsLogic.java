@@ -187,7 +187,7 @@ public class DefaultDmsLogic implements DmsLogic {
 	@Override
 	public List<StoredDocument> search(final String className, final Long cardId) {
 		try {
-			final DocumentSearch document = createDocumentFactory(className) //
+			final DocumentSearch document = createDocumentFactory(className, cardId) //
 					.createDocumentSearch(className, cardId);
 			return service.search(document);
 		} catch (final DmsError e) {
@@ -215,7 +215,7 @@ public class DefaultDmsLogic implements DmsLogic {
 		if (!search(className, cardId, filename).isPresent()) {
 			throw DMS_ATTACHMENT_NOT_FOUND.createException(filename, className, cardId.toString());
 		}
-		final SingleDocumentSearch document = createDocumentFactory(className) //
+		final SingleDocumentSearch document = createDocumentFactory(className, cardId) //
 				.createSingleDocumentSearch(className, cardId, filename);
 		return service.searchVersions(document);
 	}
@@ -242,7 +242,7 @@ public class DefaultDmsLogic implements DmsLogic {
 				.getCard(type) //
 				.getType() //
 				.getName();
-		final StorableDocument document = createDocumentFactory(realClassName) //
+		final StorableDocument document = createDocumentFactory(realClassName, cardId) //
 				.createStorableDocument(author, realClassName, cardId, inputStream, fileName, metadata.category(),
 						metadata.description(), metadata.metadataGroups(), major);
 		try {
@@ -266,7 +266,7 @@ public class DefaultDmsLogic implements DmsLogic {
 			throw DMS_ATTACHMENT_NOT_VERSIONABLE.createException(fileName, className, cardId.toString());
 		}
 		try {
-			final DocumentDownload document = createDocumentFactory(className) //
+			final DocumentDownload document = createDocumentFactory(className, cardId) //
 					.createDocumentDownload(className, cardId, fileName, version);
 			final DataHandler dataHandler = service.download(document);
 			return dataHandler;
@@ -280,7 +280,7 @@ public class DefaultDmsLogic implements DmsLogic {
 
 	@Override
 	public void delete(final String className, final Long cardId, final String fileName) throws DmsException {
-		final DocumentDelete document = createDocumentFactory(className) //
+		final DocumentDelete document = createDocumentFactory(className, cardId) //
 				.createDocumentDelete(className, cardId, fileName);
 		try {
 			service.delete(document);
@@ -299,7 +299,7 @@ public class DefaultDmsLogic implements DmsLogic {
 			throw DMS_ATTACHMENT_NOT_FOUND.createException(filename, className, cardId.toString());
 		}
 		try {
-			final DocumentCreator documents = createDocumentFactory(className);
+			final DocumentCreator documents = createDocumentFactory(className, cardId);
 			if (inputStream == null) {
 				final DocumentUpdate update = documents //
 						.createDocumentUpdate(className, cardId, filename, metadata.category(), metadata.description(),
@@ -323,11 +323,11 @@ public class DefaultDmsLogic implements DmsLogic {
 	public void copy(final String sourceClassName, final Long sourceId, final String filename,
 			final String destinationClassName, final Long destinationId) {
 		try {
-			final DocumentSearch source = createDocumentFactory(sourceClassName) //
+			final DocumentSearch source = createDocumentFactory(sourceClassName, sourceId) //
 					.createDocumentSearch(sourceClassName, sourceId);
 			for (final StoredDocument document : service.search(source)) {
 				if (document.getName().equals(filename)) {
-					final DocumentSearch destination = createDocumentFactory(destinationClassName) //
+					final DocumentSearch destination = createDocumentFactory(destinationClassName, destinationId) //
 							.createDocumentSearch(destinationClassName, destinationId);
 					service.copy(document, source, destination);
 				}
@@ -344,11 +344,11 @@ public class DefaultDmsLogic implements DmsLogic {
 	public void move(final String sourceClassName, final Long sourceId, final String filename,
 			final String destinationClassName, final Long destinationId) {
 		try {
-			final DocumentSearch source = createDocumentFactory(sourceClassName) //
+			final DocumentSearch source = createDocumentFactory(sourceClassName, sourceId) //
 					.createDocumentSearch(sourceClassName, sourceId);
 			for (final StoredDocument document : service.search(source)) {
 				if (document.getName().equals(filename)) {
-					final DocumentSearch destination = createDocumentFactory(destinationClassName) //
+					final DocumentSearch destination = createDocumentFactory(destinationClassName, destinationId) //
 							.createDocumentSearch(destinationClassName, destinationId);
 					service.move(document, source, destination);
 				}
@@ -361,9 +361,28 @@ public class DefaultDmsLogic implements DmsLogic {
 		}
 	}
 
-	private DocumentCreator createDocumentFactory(final String className) {
-		final CMClass fetchedClass = dataView.findClass(className);
-		return documentCreatorFactory.create(fetchedClass);
+	private DocumentCreator createDocumentFactory(final String className, final Long cardId) {
+		final CMClass type = dataView.findClass(className);
+		final CMClass realType;
+		if (type.isSuperclass()) {
+			realType = dataView //
+					/*
+					 * we need at least one attribute and the code has more
+					 * probabilities to be shorter than the description
+					 */
+					.select(attribute(type, type.getCodeAttributeName())) //
+					.from(type) //
+					.where(condition(attribute(type, ID_ATTRIBUTE), eq(cardId))) //
+					.limit(1) //
+					.skipDefaultOrdering() //
+					.run() //
+					.getOnlyRow() //
+					.getCard(type) //
+					.getType();
+		} else {
+			realType = type;
+		}
+		return documentCreatorFactory.create(realType);
 	}
 
 	@Override

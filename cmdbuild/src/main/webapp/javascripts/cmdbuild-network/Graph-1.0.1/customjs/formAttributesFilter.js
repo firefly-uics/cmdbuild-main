@@ -65,14 +65,18 @@
 				var $legend = $("<legend>" + attribute.description
 						+ "</legend>");
 				$fieldset.append($legend);
+				var selects = [];
 				this.showOperatorsRows(classId, attribute, $fieldset, formId,
-						data);
+						data, selects);
 				$form.append($fieldset);
 				$.Cmdbuild.scriptsManager.execute();
+				for (var j = 0; j < selects.length; j++) {
+					$('#' + selects[j]).selectmenu("widget" ).addClass(  "cell-filter-select" );
+				}
 			}
 		};
 		this.showOperatorsRows = function(classId, attribute, $fieldset,
-				formId, data) {
+				formId, data, selects) {
 			var attributeData = data[attribute._id];
 			var base_url = $.Cmdbuild.global.getAppConfigUrl()
 					+ $.Cmdbuild.g3d.constants.ICONS_PATH;
@@ -85,6 +89,8 @@
 				var $button = $("<input></input>").attr('type', 'image').attr(
 						"src", deleteImage).attr("indexData", i).on("click",
 						deleteAttributeOnClass);
+				selects.push(selectId);
+				$button.attr("class", "cell-filter-attribute");
 				$button.attr("classId", classId);
 				$button.attr("attributeId", attribute._id);
 				$button.attr("indexData", i);
@@ -97,8 +103,6 @@
 				$operatorsSelect.val(row.operator);
 				$rowDiv.append($button);
 				$rowDiv.append($operatorsSelect);
-//				$button.attr("class", "cell-filter-attribute");
-//				$operatorsSelect.attr("class", "cell-filter-attribute");
 				$fieldset.append($rowDiv);
 				this.showOperatorsFields(row, attribute, $rowDiv, i, formId);
 				var operatorsList = $.Cmdbuild.custom.formAttributesFilter
@@ -148,11 +152,11 @@
 				currentAttribute._id += "_" + currentAttributeIndex + "_" + i;
 				var $field = $.Cmdbuild.fieldsManager.getFormField(
 						currentAttribute, formId, this.config.container,
-						row.data.firstParameter);
+						((i === 0) ? row.data.firstParameter: row.data.secondParameter));
 				this.prepareSelect(attribute, $field, row,
 						currentAttributeIndex);
 				if ($field.change) {
-					this.setChange($field, row);
+					this.setChange($field, row, i);
 				}
 				$.each($field,function(k) {
 					$(this).attr("class", "cell-filter-attribute");
@@ -168,22 +172,22 @@
 			}
 		};
 		this.changedSelect = function(configuration) {
-			var field = $("#" + configuration.id);
-			if (this.selectValues[configuration.id]) { // from form
-				this.selectValues[configuration.id].data.firstParameter = field
-						.val();
-			}
+//			var field = $("#" + configuration.id);
+//			if (this.selectValues[configuration.id]) { // from form
+//				this.selectValues[configuration.id].data.firstParameter = field
+//						.val();
+//			}
 		};
-		this.setChange = function($field, row) {
+		this.setChange = function($field, row, indexParameter) {
 			var closureRow = row;
 			$field.change(function() {
-				closureRow.data.firstParameter = this.value;
-			});
-		};
-		this.setOnChange = function($field, row) {
-			var closureRow = row;
-			$field[0].onchange(function() {
-				closureRow.data.firstParameter = this.value;
+				var dt = $.Cmdbuild.utilities.convertDateGUI2DB(this.value);//$.datepicker.formatDate('yy-mm-dd', new Date(this.value));
+				if (indexParameter === 1) {
+					closureRow.data.secondParameter = dt;
+				}
+				else {
+					closureRow.data.firstParameter = dt;
+				}
 			});
 		};
 		this.appendSpecificOperators = function(jqueryfield, attribute) {

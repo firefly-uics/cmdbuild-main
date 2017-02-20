@@ -1,7 +1,6 @@
 package org.cmdbuild.servlets.json;
 
 import static com.google.common.base.Predicates.alwaysTrue;
-import static org.cmdbuild.servlets.json.CommunicationConstants.ACTIVE;
 import static org.cmdbuild.servlets.json.CommunicationConstants.DESCRIPTION;
 import static org.cmdbuild.servlets.json.CommunicationConstants.NAME;
 
@@ -74,13 +73,12 @@ public class NavigationTree extends JSONBaseWithSpringContext {
 	@JSONExported
 	public JsonResponse create(@Parameter(NAME) final String name, //
 			@Parameter(DESCRIPTION) final String description, //
-			@Parameter(ACTIVE) final boolean isActive, //
 			@Parameter("structure") final String jsonConfiguration) throws JSONException {
 		final NavigationTreeLogic logic = navigationTreeLogic();
 		final JSONObject structure = new JSONObject(jsonConfiguration);
 		final DomainTreeNode root = DomainTreeNodeJSONMapper.deserialize(structure);
 
-		logic.create(name, description, isActive, root);
+		logic.create(name, description, root);
 		return JsonResponse.success();
 	}
 
@@ -88,13 +86,12 @@ public class NavigationTree extends JSONBaseWithSpringContext {
 	@JSONExported
 	public JsonResponse save(@Parameter(NAME) final String name, //
 			@Parameter(DESCRIPTION) final String description, //
-			@Parameter(ACTIVE) final boolean isActive, //
 			@Parameter("structure") final String jsonConfiguration) throws JSONException {
 		final NavigationTreeLogic logic = navigationTreeLogic();
 		final JSONObject structure = new JSONObject(jsonConfiguration);
 		final DomainTreeNode root = DomainTreeNodeJSONMapper.deserialize(structure);
 
-		logic.save(name, description, isActive, root);
+		logic.save(name, description, root);
 		return JsonResponse.success();
 	}
 

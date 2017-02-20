@@ -258,7 +258,7 @@
 	});
 
 	function buildMapButton(tbar) {
-		if (CMDBuild.configuration.gis.get('enabled')) { // TODO: use proxy constants
+		if (CMDBuild.configuration.gis.get('enabled') && CMDBuild.gis.values.browserEnabled) { // TODO: use proxy constants
 
 			this.showMapButton = new Ext.button.Button({
 				text : CMDBuild.Translation.management.modcard.tabs.map,
@@ -274,7 +274,7 @@
 	}
 
 	function buildMapPanel() {
-		if (CMDBuild.configuration.gis.get('enabled') && this.whitMap) { // TODO: use proxy constants
+		if (CMDBuild.configuration.gis.get('enabled') && this.whitMap && CMDBuild.gis.values.browserEnabled) { // TODO: use proxy constants
 			this.showGridButton = new Ext.button.Button({
 				text : CMDBuild.Translation.management.modcard.add_relations_window.list_tab,
 				iconCls : 'table',

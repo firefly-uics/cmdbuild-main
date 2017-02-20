@@ -1,4 +1,7 @@
 (function() {
+
+	Ext.require('CMDBuild.proxy.Cache');
+
 Ext.define("CMDBuild.view.common.field.LookupField", {
 	extend: "CMDBuild.view.common.field.CMErasableCombo",
 	plugins: new CMDBuild.SetValueOnLoadPlugin(),
@@ -306,7 +309,6 @@ var bindHiddenFieldToLastCombo = function(hiddenField, lastCombo) {
 
 //private
 var buildSingleLookupField = function(attribute, hideLabel) {
-	var store = _CMCache.getLookupStore(attribute.lookup);
 	var fieldLabel;
 	var labelSeparator;
 	var padding;
@@ -331,7 +333,7 @@ var buildSingleLookupField = function(attribute, hideLabel) {
 		padding: padding,
 		name: attribute.name,
 		hiddenName: attribute.name,
-		store: store,
+		store: CMDBuild.proxy.Cache.getStoreLookup(attribute.lookup),
 		queryMode: 'local',
 		triggerAction: "all",
 		lazyInit: false,

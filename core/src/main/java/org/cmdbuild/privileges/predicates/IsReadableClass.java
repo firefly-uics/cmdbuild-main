@@ -29,7 +29,7 @@ public class IsReadableClass implements Predicate<CMCard> {
 		if (referencedClass == null) {
 			return false;
 		}
-		return privilegeContext.hasReadAccess(referencedClass);
+		return referencedClass.isActive() ? privilegeContext.hasReadAccess(referencedClass) : false;
 	}
 
 }

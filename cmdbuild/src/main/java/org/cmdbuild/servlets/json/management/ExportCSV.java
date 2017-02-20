@@ -37,7 +37,7 @@ public class ExportCSV extends JSONBaseWithSpringContext {
 			@Parameter(SEPARATOR) final String separator, //
 			@Parameter(CLASS_NAME) final String className) //
 			throws IOException {
-		final File csvFile = systemDataAccessLogic().exportClassAsCsvFile(className, separator);
+		final File csvFile = userDataAccessLogic().exportClassAsCsvFile(className, separator);
 		return createDataHandler(csvFile);
 	}
 

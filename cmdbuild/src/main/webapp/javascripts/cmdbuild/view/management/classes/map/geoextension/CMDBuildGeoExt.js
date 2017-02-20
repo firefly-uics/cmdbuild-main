@@ -7,7 +7,9 @@
 		scalesTable : undefined,
 
 		constructor : function() {
-			this.initBaseLayer();
+			if (CMDBuild.gis.values.browserEnabled) {
+				this.initBaseLayer();
+			}
 			this.callParent(arguments);
 		},
 		setMap : function(mapPanel) {
@@ -141,7 +143,7 @@
 						type : 'FeatureCollection',
 						features : geoJsonFeatures,
 						opacity : 1,
-						styleProperty : "_gx_style",
+						styleProperty : "_gx_style"
 					};
 					serialized = {
 						geoJson : geojsonFeatureCollection,

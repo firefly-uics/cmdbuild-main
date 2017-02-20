@@ -1,6 +1,6 @@
 (function () {
 
-	Ext.define('CMDBuild.proxy.utility.ImportCsv', {
+	Ext.define('CMDBuild.proxy.utility.importCsv.ImportCsv', {
 
 		requires: [
 			'CMDBuild.core.configurations.Timeout',
@@ -8,7 +8,8 @@
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.core.interfaces.FormSubmit',
 			'CMDBuild.model.utility.importCsv.Class',
-			'CMDBuild.proxy.index.Json'
+			'CMDBuild.proxy.index.Json',
+			'CMDBuild.proxy.utility.importCsv.ReaderClasses'
 		],
 
 		singleton: true,
@@ -24,7 +25,7 @@
 					type: 'ajax',
 					url: CMDBuild.proxy.index.Json.classes.readAll,
 					reader: {
-						type: 'json',
+						type: 'classstore',
 						root: CMDBuild.core.constants.Proxy.RESPONSE
 					},
 					extraParams: {
@@ -35,11 +36,14 @@
 				},
 				filters: [
 					function (record) { // Filters root class
-						return record.get(CMDBuild.core.constants.Proxy.NAME) != CMDBuild.core.constants.Global.getRootNameClasses();
+						return (
+							record.get(CMDBuild.core.constants.Proxy.NAME) != CMDBuild.core.constants.Global.getRootNameClasses()
+							&& record.get([CMDBuild.core.constants.Proxy.PERMISSIONS, CMDBuild.core.constants.Proxy.CREATE])
+						);
 					}
 				],
 				sorters: [
-					{ property: CMDBuild.core.constants.Proxy.TEXT, direction: 'ASC' }
+					{ property: CMDBuild.core.constants.Proxy.DESCRIPTION, direction: 'ASC' }
 				]
 			});
 		},

@@ -10,35 +10,35 @@
 						thematisms : [],
 
 						/**
-						 * 
+						 *
 						 * @property {CMDBuild.view.management.classes.map.thematism.ThematicStrategiesManager}
-						 * 
+						 *
 						 */
 						strategiesManager : undefined,
 
 						/**
-						 * 
+						 *
 						 * @property {CMDBuild.view.management.classes.map.geoextension.InteractionDocument}
-						 * 
+						 *
 						 */
 						interactionDocument : undefined,
 
 						/**
-						 * 
+						 *
 						 * @property {CMDBuild.view.management.classes.map.thematism.ThematicColors}
-						 * 
+						 *
 						 */
 						thematicColors : undefined,
 
 						/**
-						 * 
+						 *
 						 * @property {String}
-						 * 
+						 *
 						 */
 						currentClassName : undefined,
 						currentLayers : {},
 						/**
-						 * 
+						 *
 						 * @returns {Void}
 						 */
 						addThematism : function(thematism, bModify) {
@@ -54,7 +54,7 @@
 						 * @param
 						 * {CMDBuild.view.management.classes.map.thematism.ThematicStrategiesManager}
 						 * strategiesManager
-						 * 
+						 *
 						 * @returns {Void}
 						 */
 						configureStrategiesManager : function(strategiesManager) {
@@ -62,17 +62,17 @@
 						},
 
 						/**
-						 * 
+						 *
 						 * @returns {CMDBuild.view.management.classes.map.thematism.ThematicStrategiesManager}
 						 *          strategiesManager
-						 * 
+						 *
 						 */
 						getStrategiesManager : function() {
 							return this.strategiesManager;
 						},
 
 						/**
-						 * 
+						 *
 						 * @returns {Void}
 						 */
 						forceRefreshThematism : function() {
@@ -138,9 +138,9 @@
 						},
 
 						/**
-						 * 
+						 *
 						 * @returns {Array} ol.Layer
-						 * 
+						 *
 						 */
 						getLayers : function() {
 							var layers = [];
@@ -154,7 +154,7 @@
 						/**
 						 * @param {String}
 						 *            description
-						 * 
+						 *
 						 * @returns {Object} strategy
 						 */
 						getStrategyByDescription : function(description) {
@@ -164,7 +164,7 @@
 						/**
 						 * @param {String}
 						 *            name
-						 * 
+						 *
 						 * @returns {Array} ol.Layer
 						 */
 						getThematicLayersBySourceName : function(name) {
@@ -196,7 +196,7 @@
 						},
 
 						/**
-						 * 
+						 *
 						 * @returns {Void}
 						 */
 						modifyThematism : function(thematism) {
@@ -205,7 +205,7 @@
 						},
 
 						/**
-						 * 
+						 *
 						 * @returns {Void}
 						 */
 						refreshFeatures : function(layerName, features) {
@@ -216,7 +216,7 @@
 						},
 
 						/**
-						 * 
+						 *
 						 * @returns {Void}
 						 */
 						removeAllThematicLayers : function() {
@@ -233,7 +233,7 @@
 						},
 
 						/**
-						 * 
+						 *
 						 * @returns {Void}
 						 */
 						removeThematism : function(thematism) {
@@ -252,7 +252,7 @@
 						},
 
 						/**
-						 * 
+						 *
 						 * @returns {Void}
 						 */
 						recover : function(thematisms4Class) {
@@ -268,7 +268,7 @@
 						 *            card.cardId
 						 * @param {String}
 						 *            card.className
-						 * 
+						 *
 						 * @returns {Void}
 						 */
 						setCurrentCard : function(card) {
@@ -284,7 +284,7 @@
 							this.currentClassName = card.className;
 						},
 						/**
-						 * 
+						 *
 						 * @returns {Void}
 						 */
 						refreshLayerButton : function(className) {
@@ -305,7 +305,7 @@
 						 */
 						setThematismButton : function(thematismButton) {
 							this.thematismButton = thematismButton;
-						},
+						}
 					});
 
 
@@ -316,7 +316,7 @@
 		configuration : {
 			thematismConfiguration : {},
 			functionConfiguration : {},
-			layoutConfiguration : {},
+			layoutConfiguration : {}
 		}
 	};
 	function clone(obj) {

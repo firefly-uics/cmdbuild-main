@@ -5,6 +5,7 @@ import java.util.List;
 import org.cmdbuild.dao.entrytype.CMAttribute;
 import org.cmdbuild.dao.entrytype.CMClass;
 import org.cmdbuild.dao.entrytype.CMDomain;
+import org.cmdbuild.dao.entrytype.CMEntryType;
 import org.cmdbuild.dao.view.CMDataView;
 import org.cmdbuild.logic.Logic;
 import org.cmdbuild.model.data.Attribute;
@@ -34,6 +35,8 @@ public interface DataDefinitionLogic extends Logic {
 	 * TODO: delete also privileges that refers to the deleted class
 	 */
 	void deleteOrDeactivate(String className);
+
+	CMEntryType findOwnerOf(Attribute attribute);
 
 	CMAttribute createOrUpdate(Attribute attribute);
 

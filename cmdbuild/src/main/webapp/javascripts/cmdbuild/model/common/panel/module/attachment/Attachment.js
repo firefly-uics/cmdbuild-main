@@ -16,7 +16,7 @@
 			{ name: CMDBuild.core.constants.Proxy.FILE_NAME, type: 'string' },
 			{ name: CMDBuild.core.constants.Proxy.META, type: 'auto', defaultValue: {} },
 			{ name: CMDBuild.core.constants.Proxy.MODIFICATION, type: 'date', dateFormat: CMDBuild.core.configurations.DataFormat.getDateTime() },
-			{ name: CMDBuild.core.constants.Proxy.VERSION, type: 'string' },
+			{ name: CMDBuild.core.constants.Proxy.VERSION, type: 'string', sortType: 'asNatural' },
 			{ name: CMDBuild.core.constants.Proxy.VERSIONABLE, type: 'boolean' }
 		]
 	});

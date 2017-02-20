@@ -386,7 +386,8 @@ public class DefaultDataDefinitionLogic implements DataDefinitionLogic {
 		return createdOrUpdatedAttribute;
 	}
 
-	private CMEntryType findOwnerOf(final Attribute attribute) {
+	@Override
+	public CMEntryType findOwnerOf(final Attribute attribute) {
 		logger.debug("getting entry type with name '{}' and namespace '{}'", attribute.getOwnerName(),
 				attribute.getOwnerNamespace());
 		CMEntryType entryType;

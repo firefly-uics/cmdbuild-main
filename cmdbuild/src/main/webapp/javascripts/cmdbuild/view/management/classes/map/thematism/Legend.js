@@ -43,7 +43,7 @@
 			this.createControls();
 			Ext.apply(this, {
 				items : [ this.grid ],
-				hidden : true,
+				hidden : true
 			});
 			this.interactionDocument.observeThematicDocument(this);
 			this.callParent(arguments);

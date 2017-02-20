@@ -439,7 +439,9 @@
 			var compoundData = $.Cmdbuild.g3d.Model.getGraphData(compound, "compoundData");
 			$.Cmdbuild.g3d.backend.CmdbuildModel.totalCompoundedElements(compoundData, function(total) {
 				var clusteringThreshold = $.Cmdbuild.customvariables.options.clusteringThreshold;
-				if (total <= clusteringThreshold) {
+				if (total > clusteringThreshold) {
+					this.openCompoundsOnFilterRecursive(compounds, index, callback, callbackScope);
+				} else {
 					var compoundData = $.Cmdbuild.g3d.Model.getGraphData(compound, "compoundData");
 					var domain = $.Cmdbuild.customvariables.cacheDomains.getDomain(compoundData.domainId);
 					var model = $.Cmdbuild.customvariables.model;
@@ -469,7 +471,7 @@
 			this.openCompoundsOnFilterRecursive(compounds, 0, function() {
 			}, this);
 		},
-		applyFiltersByAttribute : function(param) {
+		applyFiltersByAttribute : function() {
 			var configuration = $.Cmdbuild.custom.configuration;
 			var toDelete = [];
 			var classes = $.Cmdbuild.custom.configuration.filterByAttributes;
@@ -903,10 +905,12 @@
 	function inArray(obj) {
 		var ar = [];
 		for ( var key in obj) {
-			ar.push({
-				key : key,
-				object : obj[key]
-			})
+			if (!$.isEmptyObject(obj[key])) {
+				ar.push({
+					key : key,
+					object : obj[key]
+				});
+			}
 		}
 		return ar;
 

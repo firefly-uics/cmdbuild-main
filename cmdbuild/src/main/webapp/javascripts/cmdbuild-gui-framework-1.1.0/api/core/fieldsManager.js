@@ -297,7 +297,7 @@
 			$input.attr("isDate", true).attr("date-input-type", attribute.type);
 
 			if (value) {
-				value = $.Cmdbuild.utilities.convertDateDB2GUI(text, param.type)
+				value = $.Cmdbuild.utilities.convertDateDB2GUI(value, param.type)
 				$input.val(value);
 			}
 			switch (attribute.type) {

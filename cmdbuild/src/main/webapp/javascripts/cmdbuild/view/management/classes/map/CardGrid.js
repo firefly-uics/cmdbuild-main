@@ -4,7 +4,7 @@
 		extend : "Ext.toolbar.Paging",
 
 		// configuration
-		grid : undefined,
+		grid : undefined
 	// configuration
 	});
 
@@ -333,7 +333,7 @@
 				headers : headers,
 				fields : fields
 			};
-		},
+		}
 	});
 	function buildPagingBar(me) {
 		var items = [];

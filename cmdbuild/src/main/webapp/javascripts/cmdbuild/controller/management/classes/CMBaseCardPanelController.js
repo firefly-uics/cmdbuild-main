@@ -178,7 +178,7 @@
 
 		onAbortCardClick: function() {
 			if (this.card && this.card.get("Id") == -1) {
-				this.onCardSelected(null);
+				_CMCardModuleState.setCard(_CMCardModuleState.getPreviousCard());
 			} else {
 				this.onCardSelected(this.card);
 			}
@@ -192,6 +192,8 @@
 			if (!classIdOfNewCard) {
 				return;
 			}
+
+			_CMCardModuleState.setPreviousCard(_CMCardModuleState.card);
 
 			this.onCardSelected(new CMDBuild.DummyModel({
 				IdClass: classIdOfNewCard,

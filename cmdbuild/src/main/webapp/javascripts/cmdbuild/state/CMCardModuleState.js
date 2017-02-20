@@ -24,6 +24,11 @@
 			delegable: 'CMDBuild.core.CMDelegable'
 		},
 
+		/**
+		 * @cfg {Object}
+		 */
+		previousCard: {},
+
 		constructor: function() {
 			this.mixins.delegable.constructor.call(this, 'CMDBuild.state.CMCardModuleStateDelegate');
 
@@ -95,8 +100,29 @@
 				if (typeof cb == 'function')
 					cb(card);
 			}
-		}
+		},
 
+		/**
+		 * @param {Object} card
+		 *
+		 * @returns {Void}
+		 */
+		setPreviousCard: function (card) {
+			if (Ext.isObject(card) && !Ext.Object.isEmpty(card))
+				return this.previousCard = Ext.clone(card);
+
+			return this.previousCard = {};
+		},
+
+		/**
+		 * @returns {Object or null}
+		 */
+		getPreviousCard: function () {
+			if (Ext.isObject(this.previousCard) && !Ext.Object.isEmpty(this.previousCard))
+				return this.previousCard;
+
+			return null;
+		}
 	});
 
 	// Define a global variable

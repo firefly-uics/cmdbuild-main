@@ -136,19 +136,24 @@
 					return _error('panelModuleAttachmentWindowModifyConfigureAndShow(): unmanaged record parameter', this, parameters.record);
 				// END: Error handling
 
-			// Form setup
-			this.form.reset();
-			this.form.loadRecord(parameters.record);
+			this.containerFieldsCommon.fieldComboCategory.getStore().load({ // Load combo store before setup window
+				scope: this,
+				callback: function (records, operation, success) {
+					// Form setup
+					this.form.reset();
+					this.form.loadRecord(parameters.record);
 
-			this.controllerContainerMetadata.cmfg('panelModuleAttachmentWindowContainerMetadataValuesSet', parameters.record.get(CMDBuild.core.constants.Proxy.META));
+					this.controllerContainerMetadata.cmfg('panelModuleAttachmentWindowContainerMetadataValuesSet', parameters.record.get(CMDBuild.core.constants.Proxy.META));
 
-			// Fields setup
-			this.containerFieldsCommon.fieldFile.setDisabled(!parameters.record.get(CMDBuild.core.constants.Proxy.VERSIONABLE));
-			this.containerFieldsCommon.fieldFile.setEmptyText('C:\\fakepath\\' + parameters.record.get(CMDBuild.core.constants.Proxy.FILE_NAME));
+					// Fields setup
+					this.containerFieldsCommon.fieldFile.setDisabled(!parameters.record.get(CMDBuild.core.constants.Proxy.VERSIONABLE));
+					this.containerFieldsCommon.fieldFile.setEmptyText('C:\\fakepath\\' + parameters.record.get(CMDBuild.core.constants.Proxy.FILE_NAME));
 
-			this.containerFieldsCommon.fieldMajor.setDisabled(!parameters.record.get(CMDBuild.core.constants.Proxy.VERSIONABLE));
+					this.containerFieldsCommon.fieldMajor.setDisabled(!parameters.record.get(CMDBuild.core.constants.Proxy.VERSIONABLE));
 
-			this.view.show();
+					this.view.show();
+				}
+			});
 		}
 	});
 

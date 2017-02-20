@@ -30,50 +30,49 @@ Ext.define("CMDBuild.view.management.classes.map.geoextension.SearchPlaceForm", 
 		});
 		this.comboPlaces = Ext.create("Ext.grid.Panel", {
 			store : this.placesStore,
-            height: 400,
-            columns: [{
-                text: CMDBuild.Translation.descriptionLabel,
-                flex: 1,
-                sortable: true,
-                dataIndex: 'name'
-            }, {
-                text: CMDBuild.Translation.longitudeAbbr,
-                width: 75,
-                sortable: true,
-                dataIndex: 'lon'
-            }, {
-                text: CMDBuild.Translation.latitudeAbbr,
-                width: 80,
-                sortable: true,
-                renderer: this.changeRenderer,
-                dataIndex: 'lat'
-            }],
-            listeners : {
-            	beforeitemdblclick : function(control, row) {
-            		var lat = row.get("lat");
-            		var lon = row.get("lon");
-              		lat = parseInt(lat * 10000) / 10000.0;
-              		lon = parseInt(lon * 10000) / 10000.0;
-              		var center = ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:3857');
-     				var mapPanel = me.mainWindow.interactionDocument.getMapPanel();
-    				mapPanel.view.setCenter(center);
-    				mapPanel.map.renderSync();
-    				mapPanel.view.setZoom(18);
-            	}
-            }
+			height : 400,
+			columns : [ {
+				text : CMDBuild.Translation.descriptionLabel,
+				flex : 1,
+				sortable : true,
+				dataIndex : 'name'
+			}, {
+				text : CMDBuild.Translation.longitudeAbbr,
+				width : 75,
+				sortable : true,
+				dataIndex : 'lon'
+			}, {
+				text : CMDBuild.Translation.latitudeAbbr,
+				width : 80,
+				sortable : true,
+				renderer : this.changeRenderer,
+				dataIndex : 'lat'
+			} ],
+			listeners : {
+				beforeitemdblclick : function(control, row) {
+					var lat = row.get("lat");
+					var lon = row.get("lon");
+					lat = parseInt(lat * 10000) / 10000.0;
+					lon = parseInt(lon * 10000) / 10000.0;
+					var center = ol.proj.transform([ lon, lat ], 'EPSG:4326', 'EPSG:3857');
+					var mapPanel = me.mainWindow.interactionDocument.getMapPanel();
+					mapPanel.view.setCenter(center);
+					mapPanel.map.renderSync();
+					mapPanel.view.setZoom(18);
+				}
+			}
 		});
 		this.place = Ext.create("Ext.form.field.Text", {
 			fieldLabel : CMDBuild.Translation.descriptionLabel,
 			value : "",
-			enableKeyEvents : true,
 			listeners : {
-				keypress : function(field, e, eOpts) {
-					if (e.charCode === Ext.EventObject.ENTER) {
-						me.search(field.value)
-					}
+				scope: this,
+				specialkey: function (field, e, eOpts) {
+					if (e.getKey() == e.ENTER)
+						me.search(field.value);
 				},
 				blur : function(field, e, eOpts) {
-					me.search(field.value)
+					me.search(field.value);
 				}
 			}
 

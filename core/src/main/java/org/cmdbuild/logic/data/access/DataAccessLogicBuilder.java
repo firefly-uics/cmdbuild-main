@@ -14,13 +14,8 @@ public abstract class DataAccessLogicBuilder implements Builder<DataAccessLogic>
 	private final OperationUser operationUser;
 	private final LockLogic lockLogic;
 
-	protected DataAccessLogicBuilder( //
-			final CMDataView systemDataView, //
-			final LookupStore lookupStore, //
-			final CMDataView dataView, //
-			final OperationUser operationUser, //
-			final LockLogic lockLogic //
-	) {
+	protected DataAccessLogicBuilder(final CMDataView systemDataView, final LookupStore lookupStore,
+			final CMDataView dataView, final OperationUser operationUser, final LockLogic lockLogic) {
 		this.systemDataView = systemDataView;
 		this.lookupStore = lookupStore;
 		this.dataView = dataView;
@@ -30,12 +25,9 @@ public abstract class DataAccessLogicBuilder implements Builder<DataAccessLogic>
 
 	@Override
 	public DataAccessLogic build() {
-		return new DefaultDataAccessLogic( //
-				systemDataView, //
-				lookupStore, //
-				dataView, //
-				operationUser, //
-				lockLogic);
+		final DataAccessLogic delegate =
+				new DefaultDataAccessLogic(systemDataView, lookupStore, dataView, operationUser, lockLogic);
+		return new PrivilegedDataAccessLogic(delegate, operationUser.getPrivilegeContext());
 	}
 
 }

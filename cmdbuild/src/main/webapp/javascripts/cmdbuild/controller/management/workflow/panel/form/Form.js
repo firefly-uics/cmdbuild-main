@@ -169,11 +169,9 @@
 				Ext.create('CMDBuild.model.CMActivityInstance', this.cmfg('workflowSelectedActivityGet', 'rawData'))
 			);
 
-			var activityInstance = _CMWFState.getActivityInstance();
-
-			this.operativeInstructionsPanel.update(activityInstance.getInstructions() || '');
-
 			this.workflowFormPanelTabSelectionManage();
+
+			this.operativeInstructionsPanel.update(this.cmfg('workflowSelectedActivityGet', CMDBuild.core.constants.Proxy.INSTRUCTIONS));
 
 			// Forward to sub-controllers
 			if (Ext.isObject(this.controllerTabNote) && !Ext.Object.isEmpty(this.controllerTabNote))
@@ -187,6 +185,8 @@
 		 */
 		onWorkflowFormAddButtonClick: function (id) {
 			this.cmfg('workflowFormPanelTabActiveSet');
+
+			this.operativeInstructionsPanel.update(this.cmfg('workflowSelectedActivityGet', CMDBuild.core.constants.Proxy.INSTRUCTIONS));
 
 			// Forward to sub-controllers
 			this.controllerTabActivity.onAddCardClick(id);

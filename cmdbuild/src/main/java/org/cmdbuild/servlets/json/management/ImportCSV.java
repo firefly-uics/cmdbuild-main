@@ -240,9 +240,9 @@ public class ImportCSV extends JSONBaseWithSpringContext {
 	) throws IOException, JSONException {
 		clearSession();
 		final Collection<String> notFoundAttributes = new HashSet<>();
-		final CSVData importedCsvData = systemDataAccessLogic().importCsvFileFor(
+		final CSVData importedCsvData = userDataAccessLogic().importCsvFileFor(
 				new DataHandler(FileItemDataSource.of(file)), classId, separatorString, notFoundAttributes);
-		final CMClass target = systemDataAccessLogic().findClass(classId);
+		final CMClass target = userDataAccessLogic().findClass(classId);
 		for (final String element : notFoundAttributes) {
 			final Optional<CMDBContext> context = contextStore().get();
 			if (context.isPresent()) {
@@ -262,7 +262,7 @@ public class ImportCSV extends JSONBaseWithSpringContext {
 		final JSONArray rows = new JSONArray();
 		out.put("rows", rows);
 		final CSVData csvData = sessionVars().getCsvData();
-		final DataAccessLogic dataAccessLogic = systemDataAccessLogic();
+		final DataAccessLogic dataAccessLogic = userDataAccessLogic();
 		out.put("headers", from(csvData.getHeaders()).toList());
 
 		final CMClass entryType = dataAccessLogic.findClass(csvData.getImportedClassName());
@@ -279,7 +279,7 @@ public class ImportCSV extends JSONBaseWithSpringContext {
 			@Parameter("data") final JSONArray jsonCards //
 	) throws JSONException {
 
-		final DataAccessLogic dataAccessLogic = systemDataAccessLogic();
+		final DataAccessLogic dataAccessLogic = userDataAccessLogic();
 		final CSVData csvData = sessionVars().getCsvData();
 		final CMClass importedClass = dataAccessLogic.findClass(csvData.getImportedClassName());
 		final CardFiller cardFiller = new CardFiller(importedClass, userDataView(), lookupStore());
@@ -312,7 +312,7 @@ public class ImportCSV extends JSONBaseWithSpringContext {
 
 	@JSONExported
 	public void storeCSVRecords() {
-		final DataAccessLogic dataAccessLogic = systemDataAccessLogic();
+		final DataAccessLogic dataAccessLogic = userDataAccessLogic();
 		final CSVData csvData = sessionVars().getCsvData();
 
 		final List<Long> createdCardFakeIdList = new LinkedList<Long>();
@@ -354,7 +354,7 @@ public class ImportCSV extends JSONBaseWithSpringContext {
 
 	) throws JSONException {
 
-		final DataAccessLogic dataAccessLogic = systemDataAccessLogic();
+		final DataAccessLogic dataAccessLogic = userDataAccessLogic();
 		final CMCard cmCard = dataAccessLogic.resolveCardReferences(entryType, csvCard.getCMCard());
 		final Card card = CardStorableConverter.of(cmCard).convert(cmCard);
 

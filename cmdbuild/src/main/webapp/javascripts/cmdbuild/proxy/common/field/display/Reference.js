@@ -4,6 +4,7 @@
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
+			'CMDBuild.model.common.field.display.Reference',
 			'CMDBuild.proxy.index.Json'
 		],
 
@@ -14,7 +15,7 @@
 		 *
 		 * @returns {Void}
 		 */
-		read: function (parameters) {
+		readCard: function (parameters) {
 			parameters = Ext.isEmpty(parameters) ? {} : parameters;
 
 			Ext.apply(parameters, { url: CMDBuild.proxy.index.Json.card.read });

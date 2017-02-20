@@ -20,6 +20,7 @@
 			{ name: CMDBuild.core.constants.Proxy.IS_SUPER_CLASS, type: 'boolean' },
 			{ name: CMDBuild.core.constants.Proxy.NAME, type: 'string' },
 			{ name: CMDBuild.core.constants.Proxy.PARENT, type: 'int', useNull: true },
+			{ name: CMDBuild.core.constants.Proxy.STOPPABLE, type: 'boolean' },
 			{ name: CMDBuild.core.constants.Proxy.TYPE, type: 'string' }
 		],
 

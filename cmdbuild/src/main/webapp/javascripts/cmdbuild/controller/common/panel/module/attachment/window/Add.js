@@ -98,6 +98,7 @@
 				var params = {};
 				params[CMDBuild.core.constants.Proxy.CARD_ID] = this.cmfg('panelGridAndFormSelectedItemGet', CMDBuild.core.constants.Proxy.ID);
 				params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.NAME);
+				params[CMDBuild.core.constants.Proxy.MAJOR] = true;
 				params[CMDBuild.core.constants.Proxy.META] = Ext.encode(this.controllerContainerMetadata.cmfg('panelModuleAttachmentWindowContainerMetadataValuesGet'));
 
 				CMDBuild.proxy.common.panel.module.attachment.Add.create({
@@ -132,12 +133,17 @@
 					return _error('panelModuleAttachmentWindowAddConfigureAndShow(): unmanaged selectedItem property', this, this.cmfg('panelGridAndFormSelectedItemGet'));
 			// END: Error handling
 
-			// Form setup
-			this.form.reset();
+			this.containerFieldsCommon.fieldComboCategory.getStore().load({ // Load combo store before setup window
+				scope: this,
+				callback: function (records, operation, success) {
+					// Form setup
+					this.form.reset();
 
-			this.controllerContainerMetadata.cmfg('panelModuleAttachmentWindowContainerMetadataValuesSet', parameters.presets);
+					this.controllerContainerMetadata.cmfg('panelModuleAttachmentWindowContainerMetadataValuesSet', parameters.presets);
 
-			this.view.show();
+					this.view.show();
+				}
+			});
 		}
 	});
 

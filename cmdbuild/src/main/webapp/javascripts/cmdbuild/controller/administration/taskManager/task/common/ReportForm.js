@@ -5,7 +5,7 @@
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.administration.taskManager.task.common.ReportForm',
+			'CMDBuild.proxy.administration.taskManager.task.common.ReportForm'
 		],
 
 		/**

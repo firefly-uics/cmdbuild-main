@@ -15,8 +15,8 @@
 		 * @returns {Ext.data.Store or CMDBuild.core.cache.Store}
 		 */
 		getStoreAccount: function () {
-			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.EMAIL, {
-				autoLoad: true,
+			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.EMAIL_ACCOUNT, {
+				autoLoad: false,
 				model: 'CMDBuild.model.administration.configuration.notifications.Account',
 				proxy: {
 					type: 'ajax',
@@ -41,8 +41,8 @@
 		 * @returns {Ext.data.Store or CMDBuild.core.cache.Store}
 		 */
 		getStoreTemplate: function (autoLoad) {
-			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.EMAIL, {
-				autoLoad: true,
+			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.EMAIL_TEMPLATE, {
+				autoLoad: false,
 				model: 'CMDBuild.model.administration.configuration.notifications.Template',
 				proxy: {
 					type: 'ajax',
@@ -73,7 +73,7 @@
 
 			Ext.apply(parameters, { url: CMDBuild.proxy.index.Json.email.template.read });
 
-			CMDBuild.global.Cache.request(CMDBuild.core.constants.Proxy.EMAIL, parameters);
+			CMDBuild.global.Cache.request(CMDBuild.core.constants.Proxy.EMAIL_TEMPLATE, parameters);
 		}
 	});
 

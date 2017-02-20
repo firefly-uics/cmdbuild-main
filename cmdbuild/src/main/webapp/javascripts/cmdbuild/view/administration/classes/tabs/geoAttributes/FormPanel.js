@@ -144,7 +144,7 @@
 						maxWidth: CMDBuild.core.constants.FieldWidths.ADMINISTRATION_SMALL,
 						allowDecimals: false,
 						minValue: 0,
-						maxValue: 100,
+						maxValue: 100
 					}),
 					fieldOpacityFill: Ext.create('Ext.slider.Single', {
 						name: CMDBuild.core.constants.Proxy.FILL_OPACITY,

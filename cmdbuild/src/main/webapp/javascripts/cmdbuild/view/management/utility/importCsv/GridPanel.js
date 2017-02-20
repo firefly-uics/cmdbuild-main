@@ -151,6 +151,10 @@
 				grid: me,
 				onTrigger1Click: function() {
 					me.filterStore();
+				},
+				onTrigger2Click: function () {
+					me.filterClear();
+					me.searchField.setValue("");
 				}
 			});
 
@@ -220,6 +224,10 @@
 			Ext.suspendLayouts();
 			this.store.loadRecords(records);
 			Ext.resumeLayouts(true);
+		},
+
+		filterClear: function() {
+			this.store.clearFilter();
 		},
 
 		filterStore: function() {

@@ -73,19 +73,23 @@
 					type: this.type,
 					groupId: this.groupId,
 					serviceEndpoint: this.proxy.url,
-					params: Ext.clone(options.params)
+					params: Ext.clone(Ext.Object.merge(this.getProxy().extraParams, options.params)) // Merge params and extraParams
 				};
 
 				// Avoid different stores to join results adding store model to parameters
 				parameters.params.modelName = this.model.getName();
 
-				if (!CMDBuild.global.Cache.isExpired(parameters)) { // Emulation of success and callback execution
+				if (!CMDBuild.global.Cache.isExpired(parameters)) { // Emulation of callback execution
 					var cachedValues = CMDBuild.global.Cache.get(parameters);
 
 					this.loadData(cachedValues.records);
 
 					// Interceptor to manage error/warning messages
 					options.callback = Ext.Function.createInterceptor(options.callback, this.callbackInterceptor, this);
+
+					// onProxyLoad() callback emulation
+					if (this.hasListeners.load)
+						this.fireEvent('load', this, cachedValues.records, cachedValues.success);
 
 					return Ext.callback(options.callback, options.scope, [cachedValues.records, cachedValues.operation, cachedValues.success]);
 				} else { // Execute real Ajax call

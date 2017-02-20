@@ -13,7 +13,7 @@
 
 		/**
 		 * @returns {Void}
-		 * 
+		 *
 		 * @override
 		 */
 		initComponent : function() {
@@ -62,7 +62,7 @@
 					border : true,
 					items : getSourceItems()
 				}, this.comboLayers ],
-				buttons : getButtons(this.parentWindow, this.itemId),
+				buttons : getButtons(this.parentWindow, this.itemId)
 			});
 			this.callParent(arguments);
 		},
@@ -127,7 +127,7 @@
 			name : "analysis",
 			inputValue : CMDBuild.gis.constants.layers.PUNTUAL_ANALYSIS,
 			checked : true
-		}, { 
+		}, {
 			boxLabel : parentWindow.getAnalysisDescription(CMDBuild.gis.constants.layers.GRADUATE_ANALYSIS),
 			name : "analysis",
 			inputValue : CMDBuild.gis.constants.layers.GRADUATE_ANALYSIS
@@ -142,7 +142,7 @@
 		}, {
 			boxLabel : CMDBuild.Translation.thematicFunction,
 			name : "source",
-			inputValue : CMDBuild.gis.constants.layers.FUNCTION_SOURCE,
+			inputValue : CMDBuild.gis.constants.layers.FUNCTION_SOURCE
 		} ];
 	}
 
@@ -152,7 +152,7 @@
 	 * parentWindow
 	 * @param {String}
 	 *            itemId
-	 * 
+	 *
 	 * @returns {Array} extjs items
 	 */
 	function getButtons(parentWindow, itemId) {

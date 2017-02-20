@@ -110,6 +110,9 @@
 						node.remove();
 					}
 				}
+				var targetFolder = nodeByLayerName(me.getRootNode(), CMDBUILD_LAYERS_FOLDER_NAME);
+				targetFolder.expand();
+
 			});
 		},
 		inZoom : function(layer) {
@@ -154,9 +157,8 @@
 					text : layer.name + strClass,
 					layerName : layer.name,
 					className : layer.masterTableName,
-					leaf : true,
-					checked : true,
-					iconCls : "cmdbuild-nodisplay"
+						leaf : true,
+					checked : true
 				});
 
 				// passing the layerId with the configuration
@@ -167,7 +169,6 @@
 			} catch (e) {
 				console.log("Fail to add layer", layer);
 			}
-			this.expandNode(targetFolder);
 		},
 		retrieveTargetFolder:function(layer, root) {
 			var targetFolder = null;

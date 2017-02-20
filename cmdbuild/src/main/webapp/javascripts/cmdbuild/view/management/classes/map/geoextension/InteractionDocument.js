@@ -270,7 +270,7 @@
 		isGeoServerLayer : function(layer) {
 			return layer.masterTableName === CMDBuild.gis.constants.layers.GEOSERVER_LAYER;
 		},
-		isGeoServerEnabled : function(layer) {
+		isGeoServerEnabled : function() {
 			var configurationGeoserver = CMDBuild.configuration.gis.get("geoServer");
 			return (configurationGeoserver && configurationGeoserver.get("enabled"));
 		},
@@ -413,19 +413,17 @@
 			return this.thematicDocument.getLayerByName(name);
 		},
 		isVisible : function(layer, currentClassName, currentCardId) {
-			var me = this;
-			function checkClass(visibility) {
-				return me.sameClass(currentClassName, visibility);
+			for (var i = 0; i < layer.visibility.length; i++) {
+				var visibility = layer.visibility[i];
+				if(this.sameClass(currentClassName, visibility)) {
+					return true;
+				}
 			}
-			function checkCard(binding) {
-				// because an id can be a string or an integer have to be ==
-				return (binding.idCard == currentCardId && this.sameClass(binding.className, currentClassName));
-			}
-			if (layer.visibility.find(checkClass) !== undefined) {
-				return true;
-			}
-			if (layer.cardBinding.find(checkCard) !== undefined) {
-				return true;
+			for (var i = 0; i < layer.cardBinding.length; i++) {
+				var binding = layer.cardBinding[i];
+				if(binding.idCard == currentCardId && this.sameClass(binding.className, currentClassName)) {
+					return true;
+				}
 			}
 			return false;
 		},
@@ -497,20 +495,24 @@
 	}
 
 	function layerByName(name, callback, callbackScope) {
-		function checkName(layer) {
-			return (layer.name === name);
-		}
 		_CMCache.getAllLayers(function(layers) {
-			var layer = layers.find(checkName);
+			var layer = null;
+			for (var i = 0; i < layers.length; i++) {
+				if (layers[i].name === name) {
+					layer = layers[i]
+				}
+			}
 			callback.apply(callbackScope, [ layer ]);
 		});
 	}
 	function layerByClassAndName(className, name, callback, callbackScope) {
-		function checkName(layer) {
-			return (layer.name === name && layer.masterTableName === className);
-		}
 		_CMCache.getAllLayers(function(layers) {
-			var layer = layers.find(checkName);
+			var layer = null;
+			for (var i = 0; i < layers.length; i++) {
+				if (layers[i].name === name && layers[i].masterTableName === className) {
+					layer = layers[i]
+				}
+			}
 			callback.apply(callbackScope, [ layer ]);
 		});
 	}

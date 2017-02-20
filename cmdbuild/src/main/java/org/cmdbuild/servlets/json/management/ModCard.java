@@ -602,7 +602,8 @@ public class ModCard extends JSONBaseWithSpringContext {
 					public Card apply(final Entry<Long, String> input) {
 						return Card.newInstance() //
 								.withId(input.getKey()) //
-								.withClassName(input.getValue()).withAllAttributes(attributes) //
+								.withClassName(input.getValue()) //
+								.withAllAttributes(attributes) //
 								.withUser(operationUser().getAuthenticatedUser().getUsername()) //
 								.build();
 					}

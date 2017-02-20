@@ -85,7 +85,7 @@
 		 * @management
 		 */
 		getStoreFromSql: function (parameters) {
-			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.CARD, {
+			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.UNCACHED, {
 				autoLoad: true,
 				fields: parameters.fields || [],
 				pageSize: CMDBuild.configuration.instance.get(CMDBuild.core.constants.Proxy.ROW_LIMIT),

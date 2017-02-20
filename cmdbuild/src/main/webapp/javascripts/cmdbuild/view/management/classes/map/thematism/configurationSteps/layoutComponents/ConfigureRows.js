@@ -22,7 +22,7 @@
 
 						/**
 						 * @returns {Void}
-						 * 
+						 *
 						 * @override
 						 */
 						initComponent : function() {
@@ -39,7 +39,7 @@
 								items : [ this.grid ]
 							});
 							Ext.apply(this, {
-								items : [ this.comboFields, item ],
+								items : [ this.comboFields, item ]
 							});
 							this.callParent(arguments);
 						},

@@ -78,7 +78,7 @@
 						 * parentWindow
 						 * @param {String}
 						 *            itemId
-						 * 
+						 *
 						 * @returns {Array} extjs items
 						 */
 						getButtons : function() {
@@ -116,7 +116,7 @@
 
 						/**
 						 * @returns {Void}
-						 * 
+						 *
 						 * @override
 						 */
 						initComponent : function() {
@@ -130,7 +130,7 @@
 							Ext.apply(this, {
 								items : [ this.configurationPanel, /* this.controlShape, */this.controlSegments,
 										this.controlRows ],
-								buttons : this.getButtons(),
+								buttons : this.getButtons()
 							});
 							this.callParent(arguments);
 						},

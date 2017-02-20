@@ -6,7 +6,7 @@
 		requires: [
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.core.Message',
-			'CMDBuild.proxy.utility.ImportCsv'
+			'CMDBuild.proxy.utility.importCsv.ImportCsv'
 		],
 
 		/**
@@ -64,7 +64,7 @@
 		 * @private
 		 */
 		gridRefresh: function () {
-			CMDBuild.proxy.utility.ImportCsv.getStoreRecords({
+			CMDBuild.proxy.utility.importCsv.ImportCsv.getStoreRecords({
 				scope: this,
 				success: function (response, options, decodedResponse) {
 					this.grid.configureHeadersAndStore(decodedResponse[CMDBuild.core.constants.Proxy.HEADERS]);
@@ -99,7 +99,7 @@
 		 * @returns {Void}
 		 */
 		onUtilityImportCsvConfirmButtonClick: function () {
-			CMDBuild.proxy.utility.ImportCsv.update({
+			CMDBuild.proxy.utility.importCsv.ImportCsv.update({
 				scope: this,
 				failure: function (response, options, decodedResponse) {
 					CMDBuild.core.Message.error(CMDBuild.Translation.error, CMDBuild.Translation.importFailed, true);
@@ -122,7 +122,7 @@
 				var params = {};
 				params[CMDBuild.core.constants.Proxy.DATA] = Ext.encode(records);
 
-				CMDBuild.proxy.utility.ImportCsv.updateRecords({
+				CMDBuild.proxy.utility.importCsv.ImportCsv.updateRecords({
 					params: params,
 					scope: this,
 					success: this.gridRefresh
@@ -137,7 +137,7 @@
 		 */
 		onUtilityImportCsvUploadButtonClick: function () {
 			if (this.validate(this.form))
-				CMDBuild.proxy.utility.ImportCsv.upload({
+				CMDBuild.proxy.utility.importCsv.ImportCsv.upload({
 					form: this.view.form.getForm(),
 					scope: this,
 					success: this.gridRefresh

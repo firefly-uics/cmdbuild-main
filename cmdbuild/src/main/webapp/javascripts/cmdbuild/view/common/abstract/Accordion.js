@@ -25,7 +25,6 @@
 		autoRender: true,
 		border: true,
 		floatable: false,
-		layout: 'border',
 		rootVisible: false,
 		collapsed: false,
 
@@ -68,10 +67,10 @@
 					return this.delegate.cmfg('onAccordionBeforeSelect', record);
 			}, this);
 
-			// Add listener for selectionchange
-			this.getSelectionModel().on('selectionchange', function (selectionModel, selected, eOpts) {
+			// Add listener for beforeitemclick
+			this.on('beforeitemclick', function (view, record, item, index, e, eOpts) {
 				if (!Ext.isEmpty(this.delegate))
-					this.delegate.cmfg('onAccordionSelectionChange');
+					this.delegate.cmfg('onAccordionBeforeItemClick', record);
 			}, this);
 		}
 	});

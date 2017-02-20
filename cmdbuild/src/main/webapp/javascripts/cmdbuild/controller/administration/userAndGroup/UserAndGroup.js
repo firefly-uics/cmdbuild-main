@@ -67,7 +67,7 @@
 			this.controllerGroups = Ext.create('CMDBuild.controller.administration.userAndGroup.group.Group', { parentDelegate: this });
 			this.controllerUsers = Ext.create('CMDBuild.controller.administration.userAndGroup.user.User', { parentDelegate: this });
 
-			// Inject tabs
+			// Build view
 			this.view.add([
 				this.controllerGroups.getView(),
 				this.controllerUsers.getView()

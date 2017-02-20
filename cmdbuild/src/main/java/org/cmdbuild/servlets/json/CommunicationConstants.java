@@ -300,6 +300,7 @@ public class CommunicationConstants {
 			STATUS_RECEIVED = "received", //
 			STATUS_SENT = "sent", //
 			STATUS = "status", //
+			STOPPABLE = "stoppable", //
 			SUBJECT = "subject", //
 			SUCCESS = "success", //
 			SUPERCLASS = "superclass", //

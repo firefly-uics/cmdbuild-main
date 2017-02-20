@@ -242,11 +242,7 @@
 		 * @returns {Void}
 		 */
 		onWorkflowTabDomainsWorkflowSelected: function () {
-			var params = {};
-			params[CMDBuild.core.constants.Proxy.ACTIVE] = true;
-
 			CMDBuild.proxy.administration.workflow.tabs.Domains.readAllEntryTypes({
-				params: params,
 				scope: this,
 				success: function (response, options, decodedResponse) {
 					decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.CLASSES];

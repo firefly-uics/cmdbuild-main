@@ -1,7 +1,7 @@
 (function () {
 
 	// External implementation to avoid overrides
-	Ext.require(['CMDBuild.core.constants.Proxy']);
+	Ext.require('CMDBuild.core.constants.Proxy');
 
 	/**
 	 * Common methods
@@ -15,6 +15,25 @@
 		 * @cfg {CMDBuild.controller.common.MainViewport}
 		 */
 		parentDelegate: undefined,
+
+		/**
+		 * @cfg {Array}
+		 */
+		cmfgCatchedFunctions: [
+			'accordionBuildId',
+			'accordionDeselect',
+			'accordionExpand',
+			'accordionFirstSelectableNodeSelect',
+			'accordionFirtsSelectableNodeGet',
+			'accordionIdentifierGet',
+			'accordionNodeByIdExists',
+			'accordionNodeByIdGet',
+			'accordionNodeByIdSelect',
+			'accordionUpdateStore',
+			'onAccordionBeforeItemClick',
+			'onAccordionBeforeSelect',
+			'onAccordionExpand'
+		],
 
 		/**
 		 * Store update callback functions
@@ -63,36 +82,6 @@
 		 * @property {Object}
 		 */
 		view: undefined,
-
-		/**
-		 * @param {Object} configurationObject
-		 * @param {Object} configurationObject.parentDelegate
-		 *
-		 * @returns {Void}
-		 *
-		 * @override
-		 */
-		constructor: function (configurationObject) {
-			Ext.apply(this, { // Apply default managed methods
-				cmfgCatchedFunctions: Ext.Array.merge(this.cmfgCatchedFunctions, [
-					'accordionBuildId',
-					'accordionDeselect',
-					'accordionExpand',
-					'accordionFirstSelectableNodeSelect',
-					'accordionFirtsSelectableNodeGet',
-					'accordionIdentifierGet',
-					'accordionNodeByIdExists',
-					'accordionNodeByIdGet',
-					'accordionNodeByIdSelect',
-					'accordionUpdateStore',
-					'onAccordionBeforeSelect',
-					'onAccordionExpand',
-					'onAccordionSelectionChange'
-				])
-			});
-
-			this.callParent(arguments);
-		},
 
 		/**
 		 * Generates an unique id for the menu accordion, prepend to components array "accordion" string and identifier.
@@ -220,6 +209,7 @@
 			 */
 			accordionNodeByIdSelect: function (parameters) {
 				parameters = Ext.isObject(parameters) ? parameters : {};
+				parameters.mode = Ext.isString(parameters.mode) ? parameters.mode : 'normal';
 
 				if (!Ext.Object.isEmpty(parameters) && !Ext.isEmpty(parameters.id)) {
 					var node = this.cmfg('accordionNodeByIdGet', parameters.id);
@@ -233,11 +223,10 @@
 						this.expand();
 					});
 
-					this.view.getSelectionModel().select(
-						node,
-						false,
-						Ext.isString(parameters.mode) && parameters.mode == 'silently' // Silently mode
-					);
+					this.view.getSelectionModel().select(node);
+
+					if (parameters.mode != 'silently')
+						this.eventForwardSelection();
 				}
 			},
 
@@ -251,6 +240,39 @@
 		 * @abstract
 		 */
 		accordionUpdateStore: Ext.emptyFn,
+
+		/**
+		 * @returns {Void}
+		 *
+		 * @private
+		 */
+		eventForwardSelection: function () {
+			if (this.view.getSelectionModel().hasSelection()) {
+				var selection = this.view.getSelectionModel().getSelection()[0];
+
+				if (
+					!this.cmfg('mainViewportModuleShow', {
+						identifier: selection.get('cmName'),
+						parameters: selection
+					})
+				) {
+					// If the panel was not brought to front (report from the navigation menu), select the previous node or deselect the tree
+					if (!Ext.isEmpty(this.lastSelection)) {
+						this.view.getSelectionModel().select(this.lastSelection);
+					} else {
+						this.view.getSelectionModel().deselectAll(true);
+					}
+				} else {
+					this.lastSelection = selection;
+				}
+
+				// Notify accordion selection event to mainViewport's controller (accordion selection synchronizations)
+				this.cmfg('onMainViewportAccordionSelect', {
+					id: this.cmfg('accordionIdentifierGet'),
+					node: selection
+				});
+			}
+		},
 
 		/**
 		 * @returns {Boolean}
@@ -274,6 +296,22 @@
 				&& node.get(CMDBuild.core.constants.Proxy.SELECTABLE)
 				&& !Ext.isEmpty(node.get(CMDBuild.core.constants.Proxy.ID)) // Node without id property are not selectable
 			);
+		},
+
+		/**
+		 * If node is already selected launch selection change event to be able to reselect same node without switch selection
+		 *
+		 * @param {CMDBuild.model.common.Accordion} node
+		 *
+		 * @returns {Void}
+		 */
+		onAccordionBeforeItemClick: function (node) {
+			// Error handling
+				if (!Ext.isObject(node) || Ext.Object.isEmpty(node))
+					return _error('onAccordionBeforeItemClick(): unmanaged node', this, node);
+			// END: Error handling
+
+			this.eventForwardSelection();
 		},
 
 		/**
@@ -301,37 +339,6 @@
 				} else {
 					this.cmfg('accordionUpdateStore');
 				}
-		},
-
-		/**
-		 * @returns {Void}
-		 */
-		onAccordionSelectionChange: function () {
-			if (this.view.getSelectionModel().hasSelection()) {
-				var selection = this.view.getSelectionModel().getSelection()[0];
-
-				if (
-					!this.cmfg('mainViewportModuleShow', {
-						identifier: selection.get('cmName'),
-						parameters: selection
-					})
-				) {
-					// If the panel was not brought to front (report from the navigation menu), select the previous node or deselect the tree
-					if (!Ext.isEmpty(this.lastSelection)) {
-						this.view.getSelectionModel().select(this.lastSelection);
-					} else {
-						this.view.getSelectionModel().deselectAll(true);
-					}
-				} else {
-					this.lastSelection = selection;
-				}
-
-				// Notify accordion selection event to mainViewport's controller (accordion selection synchronizations)
-				this.cmfg('onMainViewportAccordionSelect', {
-					id: this.cmfg('accordionIdentifierGet'),
-					node: selection
-				});
-			}
 		},
 
 		/**

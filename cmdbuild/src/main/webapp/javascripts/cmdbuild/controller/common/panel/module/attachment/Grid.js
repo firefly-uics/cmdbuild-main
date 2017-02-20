@@ -101,7 +101,7 @@
 			return Ext.apply({
 				'Id': this.cmfg('panelGridAndFormSelectedItemGet', CMDBuild.core.constants.Proxy.ID),
 				'IdClass': this.cmfg('panelGridAndFormSelectedItemGet', CMDBuild.core.constants.Proxy.CLASS_ID),
-				'IdClass_value': this.cmfg('panelGridAndFormSelectedItemGet', CMDBuild.core.constants.Proxy.CLASS_DESCRIPTION),
+				'IdClass_value': this.cmfg('panelGridAndFormSelectedItemGet', CMDBuild.core.constants.Proxy.CLASS_DESCRIPTION)
 			}, this.cmfg('panelGridAndFormSelectedItemGet', CMDBuild.core.constants.Proxy.VALUES));
 		},
 
@@ -129,7 +129,7 @@
 			new CMDBuild.Management.TemplateResolver({
 				clientForm: this.cmfg('panelGridAndFormPanelFormTemplateResolverFormGet'),
 				xaVars: mergedRoules,
-				serverVars: this.getTemplateResolverServerVars(),
+				serverVars: this.getTemplateResolverServerVars()
 			}).resolveTemplates({
 				attributes: Ext.Object.getKeys(mergedRoules),
 				scope: this,

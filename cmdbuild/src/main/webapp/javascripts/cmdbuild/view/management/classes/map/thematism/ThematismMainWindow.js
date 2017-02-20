@@ -34,7 +34,7 @@
 
 		/**
 		 * @returns {Void}
-		 * 
+		 *
 		 * @override
 		 */
 		initComponent : function() {
@@ -222,7 +222,7 @@
 					},
 					thematismConfiguration : clone(this.thematismConfiguration),
 					functionConfiguration : clone(this.functionConfiguration),
-					layoutConfiguration : clone(this.layoutConfiguration),
+					layoutConfiguration : clone(this.layoutConfiguration)
 
 				}
 			});

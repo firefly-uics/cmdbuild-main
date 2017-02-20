@@ -6,7 +6,7 @@
 		requires: [
 			'CMDBuild.core.constants.FieldWidths',
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.utility.ImportCsv'
+			'CMDBuild.proxy.utility.importCsv.ImportCsv'
 		],
 
 		mixins: ['CMDBuild.view.common.PanelFunctions'],
@@ -66,12 +66,12 @@
 						fieldLabel: CMDBuild.Translation.selectAClass,
 						labelWidth: CMDBuild.core.constants.FieldWidths.LABEL,
 						maxWidth: CMDBuild.core.constants.FieldWidths.STANDARD_BIG,
-						displayField: CMDBuild.core.constants.Proxy.TEXT,
+						displayField: CMDBuild.core.constants.Proxy.DESCRIPTION,
 						valueField: CMDBuild.core.constants.Proxy.ID,
 						editable: false,
 						allowBlank: false,
 
-						store: CMDBuild.proxy.utility.ImportCsv.getStoreClasses(),
+						store: CMDBuild.proxy.utility.importCsv.ImportCsv.getStoreClasses(),
 						queryMode: 'local',
 
 						listeners: {
@@ -99,7 +99,7 @@
 						editable: false,
 						allowBlank: false,
 
-						store: CMDBuild.proxy.utility.ImportCsv.getStoreSeparator(),
+						store: CMDBuild.proxy.utility.importCsv.ImportCsv.getStoreSeparator(),
 						queryMode: 'local'
 					})
 				]

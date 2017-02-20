@@ -9,7 +9,6 @@ import static org.cmdbuild.servlets.json.CommunicationConstants.ACTIVE;
 import static org.cmdbuild.servlets.json.CommunicationConstants.ACTIVE_ONLY;
 import static org.cmdbuild.servlets.json.CommunicationConstants.ATTRIBUTE;
 import static org.cmdbuild.servlets.json.CommunicationConstants.ATTRIBUTES;
-import static org.cmdbuild.servlets.json.CommunicationConstants.CLASS_ID;
 import static org.cmdbuild.servlets.json.CommunicationConstants.CLASS_NAME;
 import static org.cmdbuild.servlets.json.CommunicationConstants.DEFAULT_VALUE;
 import static org.cmdbuild.servlets.json.CommunicationConstants.DESCRIPTION;
@@ -144,7 +143,7 @@ public class ModClass extends JSONBaseWithSpringContext {
 	@JSONExported
 	public JSONObject getAllClasses( //
 			@Parameter(value = ACTIVE, required = false) final boolean activeOnly //
-	) throws JSONException, AuthException, CMWorkflowException {
+	) throws JSONException, AuthException {
 
 		final Iterable<? extends CMClass> classesToBeReturned = userDataAccessLogic().findClasses(activeOnly);
 		final Iterable<? extends UserProcessClass> processClasses = workflowLogic().findProcessClasses(activeOnly);
@@ -157,7 +156,7 @@ public class ModClass extends JSONBaseWithSpringContext {
 		}
 
 		for (final UserProcessClass userProcessClass : processClasses) {
-			final JSONObject classObject = classSerializer().toClient(userProcessClass, activeOnly);
+			final JSONObject classObject = classSerializer().toClient(userProcessClass);
 			new Serializer().addAttachmentsData(classObject, userProcessClass, dmsLogic(), notifier());
 			serializedClasses.put(classObject);
 
@@ -183,7 +182,7 @@ public class ModClass extends JSONBaseWithSpringContext {
 	@JSONExported
 	public JSONObject readAll( //
 			@Parameter(value = ACTIVE, required = false) final boolean activeOnly //
-	) throws JSONException, AuthException, CMWorkflowException {
+	) throws JSONException, AuthException {
 		final Iterable<? extends CMClass> classesToBeReturned = userDataAccessLogic().findClasses(activeOnly);
 		final JSONArray serializedClasses = new JSONArray();
 		for (final CMClass cmClass : classesToBeReturned) {
@@ -277,7 +276,7 @@ public class ModClass extends JSONBaseWithSpringContext {
 	}
 
 	@JSONExported
-	public void deleteTable(@Parameter(value = CLASS_NAME) final String className) throws JSONException, CMDBException {
+	public void deleteTable(@Parameter(value = CLASS_NAME) final String className) throws CMDBException {
 		dataDefinitionLogic().deleteOrDeactivate(className);
 	}
 
@@ -512,8 +511,7 @@ public class ModClass extends JSONBaseWithSpringContext {
 	}
 
 	@JSONExported
-	public void deleteDomain(@Parameter(value = DOMAIN_NAME, required = false) final String domainName //
-	) throws JSONException {
+	public void deleteDomain(@Parameter(value = DOMAIN_NAME, required = false) final String domainName)  {
 
 		dataDefinitionLogic().deleteDomainIfExists(domainName);
 	}
@@ -586,7 +584,7 @@ public class ModClass extends JSONBaseWithSpringContext {
 					}
 
 					final CMClass referencedClass = logic.findClass(referencedClassName);
-					if (referencedClass.isAncestorOf(targetClass)) {
+					if (referencedClass != null && referencedClass.isAncestorOf(targetClass)) {
 						final boolean serializeAlsoClassId = true;
 						final AttributeSerializer attributeSerializer = AttributeSerializer.newInstance() //
 								.withDataView(systemDataView()) //

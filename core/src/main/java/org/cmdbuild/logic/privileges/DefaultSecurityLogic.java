@@ -1,5 +1,6 @@
 package org.cmdbuild.logic.privileges;
 
+import static com.google.common.base.Predicates.and;
 import static com.google.common.base.Predicates.equalTo;
 import static com.google.common.base.Predicates.not;
 import static com.google.common.base.Predicates.or;
@@ -27,6 +28,8 @@ import static org.cmdbuild.auth.privileges.constants.PrivilegedObjectType.CUSTOM
 import static org.cmdbuild.auth.privileges.constants.PrivilegedObjectType.FILTER;
 import static org.cmdbuild.auth.privileges.constants.PrivilegedObjectType.VIEW;
 import static org.cmdbuild.common.Constants.ROLE_CLASS_NAME;
+import static org.cmdbuild.dao.entrytype.Functions.systemButUsable;
+import static org.cmdbuild.dao.entrytype.Predicates.entryType;
 import static org.cmdbuild.dao.entrytype.Predicates.hasAnchestor;
 import static org.cmdbuild.dao.entrytype.Predicates.isBaseClass;
 import static org.cmdbuild.dao.entrytype.Predicates.isSystem;
@@ -106,8 +109,8 @@ public class DefaultSecurityLogic implements Logic, SecurityLogic {
 	private Iterable<CMClass> allButNonProcessClasses() {
 		return from(view.findClasses()) //
 				.filter(CMClass.class) //
-				.filter(not(or(isSystem(equalTo(true)), isBaseClass(equalTo(true)),
-						hasAnchestor(view.getActivityClass()))));
+				.filter(not(or(and(isSystem(equalTo(true)), entryType(systemButUsable(), equalTo(false))),
+						isBaseClass(equalTo(true)), hasAnchestor(view.getActivityClass()))));
 	}
 
 	@Override
@@ -277,13 +280,13 @@ public class DefaultSecurityLogic implements Logic, SecurityLogic {
 
 	/**
 	 * FIXME
-	 * 
+	 *
 	 * this methods is called for two different purposes
-	 * 
+	 *
 	 * 1) change class-mode
-	 * 
+	 *
 	 * 2) change row and column privileges configuration
-	 * 
+	 *
 	 * Remove the mode only flag and implement two different methods or uniform
 	 * the values set in the privilegeInfo object in order to have all the
 	 * attributes and update them all
@@ -337,7 +340,7 @@ public class DefaultSecurityLogic implements Logic, SecurityLogic {
 						privilegeInfo.setAttributesPrivileges( //
 								attributesPrivilegesToSave.toArray( //
 										new String[attributesPrivilegesToSave.size()] //
-						));
+								));
 					}
 				}
 				privilegeInfo.setCardEditMode(
@@ -599,8 +602,8 @@ public class DefaultSecurityLogic implements Logic, SecurityLogic {
 			final PrivilegeMode classMode = of(privilegeCard.get(MODE_ATTRIBUTE));
 			final Object attributesPrivileges = privilegeCard.get(ATTRIBUTES_PRIVILEGES_ATTRIBUTE);
 			final Object privilegeFilter = privilegeCard.get(PRIVILEGE_FILTER_ATTRIBUTE);
-			final SerializablePrivilege privilegeObject = privilegeObjectFromId(
-					privilegeInfoToSave.getPrivilegedObjectId());
+			final SerializablePrivilege privilegeObject =
+					privilegeObjectFromId(privilegeInfoToSave.getPrivilegedObjectId());
 
 			Builder privilegeBuilder = PrivilegeInfo.newInstance() //
 					.withGroupId(privilegeInfoToSave.getGroupId()) //
@@ -628,7 +631,7 @@ public class DefaultSecurityLogic implements Logic, SecurityLogic {
 								condition(attribute(grantClass, TYPE_ATTRIBUTE), eq(CLASS.getValue())), //
 								condition(attribute(grantClass, PRIVILEGED_CLASS_ID_ATTRIBUTE),
 										eq(privilegeInfoToSave.getPrivilegedObjectId()))) //
-		) //
+				) //
 				.limit(1) //
 				.skipDefaultOrdering() //
 				.run();

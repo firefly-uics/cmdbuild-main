@@ -76,3 +76,8 @@
 /* Service styles */
 	.x-grid-tree-node-expanded .cmdb-tree-no-icon,
 	.cmdb-tree-no-icon { background-image: url("../images/icons/tree/transparentPixel.png") !important; }
+	.cmdb-tree-node-disabled {
+		-moz-opacity: 0.5;
+		opacity: .5;
+		filter: alpha(opacity = 50);
+	}

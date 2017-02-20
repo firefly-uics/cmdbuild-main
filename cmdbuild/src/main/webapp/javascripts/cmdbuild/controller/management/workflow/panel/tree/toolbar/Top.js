@@ -74,9 +74,9 @@
 			if (this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.IS_SUPER_CLASS)) {
 				var menuItems = [],
 					selectedWorkflowDescendants = this.workflowToolbarTopWorkflowRelationshipTreeGet(
-					this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.ID),
-					CMDBuild.core.constants.Proxy.CHILDREN
-				);
+						this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.ID),
+						CMDBuild.core.constants.Proxy.CHILDREN
+					);
 
 				this.buildMenuChildren(selectedWorkflowDescendants, menuItems);
 
@@ -128,7 +128,7 @@
 		 */
 		buildMenuChildren: function (childrenArray, parent) {
 			if (Ext.isArray(childrenArray) && !Ext.isEmpty(childrenArray))
-				Ext.Array.each(childrenArray, function (childrenObject, i, allChildrenObjects) {
+				Ext.Array.forEach(childrenArray, function (childrenObject, i, allChildrenObjects) {
 					if (Ext.isObject(childrenObject) && !Ext.Object.isEmpty(childrenObject))
 						this.buildMenuItem(childrenObject, parent);
 				}, this);
@@ -143,20 +143,24 @@
 		 * @private
 		 */
 		buildMenuItem: function (workflowObject, parent) {
-			if (
-				Ext.isObject(workflowObject) && !Ext.Object.isEmpty(workflowObject)
-				&& workflowObject.get(CMDBuild.core.constants.Proxy.IS_STARTABLE)
-				&& !workflowObject.get(CMDBuild.core.constants.Proxy.CAPABILITIES).create
-			) {
+			if (Ext.isObject(workflowObject) && !Ext.Object.isEmpty(workflowObject)) {
 				var menuObject = {
+					disabled: !workflowObject.get(CMDBuild.core.constants.Proxy.IS_STARTABLE),
 					text: workflowObject.get(CMDBuild.core.constants.Proxy.DESCRIPTION),
 					workflowId: workflowObject.get(CMDBuild.core.constants.Proxy.ID),
-					scope: this,
-
-					handler: function (button, e) {
-						this.cmfg('onWorkflowAddButtonClick', button.workflowId);
-					}
+					scope: this
 				};
+
+				// Add handler function based on isSuperClass, isStartable, capabilities parameters
+				if (
+					!workflowObject.get(CMDBuild.core.constants.Proxy.IS_SUPER_CLASS)
+					&& workflowObject.get(CMDBuild.core.constants.Proxy.IS_STARTABLE)
+					&& !workflowObject.get(CMDBuild.core.constants.Proxy.CAPABILITIES).create
+				) {
+					menuObject.handler = function (button, e) {
+						this.cmfg('onWorkflowAddButtonClick', button.workflowId);
+					};
+				}
 
 				if (Ext.isArray(parent)) {
 					parent.push(menuObject);

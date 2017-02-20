@@ -93,7 +93,7 @@
 			 */
 			classesTabDomainsBufferEntryTypesGet: function (parameters) {
 				parameters = Ext.isObject(parameters) ? parameters : {};
-
+_debug('classesTabDomainsBufferEntryTypesGet', parameters);
 				var selectedEntryType = null;
 
 				if (Ext.isString(parameters.name) && !Ext.isEmpty(parameters.name)) {
@@ -147,11 +147,7 @@
 		 * @returns {Void}
 		 */
 		onClassesTabDomainsClassSelected: function () {
-			var params = {};
-			params[CMDBuild.core.constants.Proxy.ACTIVE] = true;
-
 			CMDBuild.proxy.administration.classes.tabs.Domains.readAllEntryTypes({
-				params: params,
 				scope: this,
 				success: function (response, options, decodedResponse) {
 					decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.CLASSES];

@@ -174,11 +174,16 @@
 
 						if (Ext.isObject(decodedResponse) && !Ext.Object.isEmpty(decodedResponse))
 							return this.manageIdentifierClass(decodedResponse, function () {
-								Ext.Function.createDelayed(function () {
-									CMDBuild.global.controller.MainViewport.cmfg('mainViewportModuleControllerGet', 'class').gridController.onPrintGridMenuClick(
-										this.paramsModel.get(CMDBuild.core.constants.Proxy.FORMAT)
-									);
-								}, 500, this)();
+								var classGridController = CMDBuild.global.controller.MainViewport.cmfg('mainViewportModuleControllerGet', 'class').gridController;
+
+								classGridController.view.updateStoreForClassId(decodedResponse['id'], {
+									cb: function () {
+										classGridController.onPrintGridMenuClick(
+											this.paramsModel.get(CMDBuild.core.constants.Proxy.FORMAT)
+										);
+									},
+									scope: this
+								});
 							});
 
 						return CMDBuild.core.Message.error(

@@ -17,25 +17,25 @@
 		thematism : undefined,
 
 		/**
-		 * 
+		 *
 		 * @property {CMDBuild.view.management.classes.map.thematism.ThematicColors}
-		 * 
+		 *
 		 */
 		thematicColors : undefined,
 
 		/**
 		 * @property {boolean} beDirty (a thematic layer is dirty when a feature
 		 *           is modified)
-		 * 
-		 * 
+		 *
+		 *
 		 */
 		beDirty : undefined,
 
 		/**
 		 * @property {CMDBuild.view.management.classes.map.geoextension.InteractionDocument}
 		 *           interactionDocument
-		 * 
-		 * 
+		 *
+		 *
 		 */
 		interactionDocument : undefined,
 
@@ -46,11 +46,11 @@
 		 *            thematism.name
 		 * @param {ol.layer.Vector}
 		 *            thematism.layer
-		 * 
+		 *
 		 * @param
 		 * {CMDBuild.view.management.classes.map.geoextension.InteractionDocument}
 		 * interactionDocument
-		 * 
+		 *
 		 * @returns {Object}
 		 *          CMDBuild.view.management.classes.map.thematism.ThematicLayer
 		 */
@@ -65,7 +65,7 @@
 		},
 
 		/**
-		 * 
+		 *
 		 * @returns {ol.Layer}
 		 */
 		getLayer : function() {
@@ -73,7 +73,7 @@
 		},
 
 		/**
-		 * 
+		 *
 		 * @returns {ol.Source}
 		 */
 		getSource : function() {
@@ -81,14 +81,14 @@
 		},
 
 		/**
-		 * 
+		 *
 		 * @returns {ol.Source}
 		 */
 		getThematism : function() {
 			return this.thematism;
 		},
 		/**
-		 * 
+		 *
 		 * @returns {Void}
 		 */
 		refreshFeatures : function() {
@@ -96,7 +96,7 @@
 		},
 
 		/**
-		 * 
+		 *
 		 * @returns {Void}
 		 */
 		refresh : function() {
@@ -108,7 +108,7 @@
 		},
 
 		/**
-		 * 
+		 *
 		 * @returns {Void}
 		 */
 		setDirty : function() {
@@ -120,7 +120,7 @@
 		 *            attributeName
 		 * @param {ol.Map}
 		 *            map
-		 * 
+		 *
 		 * @returns {Void}
 		 */
 		buildThematicLayer : function(attributeName) {
@@ -148,7 +148,7 @@
 		 *            originalLayer
 		 * @param {Thematic
 		 *            Strategy} strategy
-		 * 
+		 *
 		 * @returns {Void}
 		 */
 		charge : function(originalLayer, strategy) {
@@ -202,14 +202,14 @@
 		/**
 		 * @param {ol.Feature}
 		 *            originalFeature
-		 * 
+		 *
 		 * @returns {Void}
 		 */
 		newFeature : function(originalFeature) {
 			var feature = new ol.Feature({
 				master_card : originalFeature.master_card,
 				master_className : originalFeature.master_className,
-				master_class : originalFeature.master_class,
+				master_class : originalFeature.master_class
 			});
 			feature.setGeometry(originalFeature.geometry);
 
@@ -232,7 +232,7 @@
 		/**
 		 * @param {Integer}
 		 *            cardId
-		 * 
+		 *
 		 * @returns {Array[ol.feature]} features
 		 */
 		getFeaturesByCardId : function(cardId) {
@@ -244,9 +244,9 @@
 		 *            id : card id
 		 * @param {String}
 		 *            className
-		 * 
+		 *
 		 * @returns {Object} card
-		 * 
+		 *
 		 */
 		loadCard : function(id, className, callback, callbackScope) {
 			var colorsTable = this.thematicColors
@@ -264,9 +264,9 @@
 		},
 
 		/**
-		 * 
+		 *
 		 * @returns {Thematic Table}
-		 * 
+		 *
 		 */
 		getColorsTable : function() {
 			var colorsTable = this.thematism.configuration.layoutConfiguration.colorsTable
@@ -274,12 +274,12 @@
 		},
 
 		/**
-		 * 
+		 *
 		 * @returns {Object} configuration
 		 * @property {Object} configuration.thematismConfiguration
 		 * @property {Object} configuration.functionConfiguration
 		 * @property {Object} configuration.layoutConfiguration
-		 * 
+		 *
 		 */
 		getConfiguration : function() {
 			return this.thematism.configuration;
@@ -290,9 +290,9 @@
 		 *            shape
 		 * @param {String}
 		 *            color
-		 * 
+		 *
 		 * @returns {ol.style.Style}
-		 * 
+		 *
 		 */
 		getStyle : function(shape, color) {
 			var configuration = this.getConfiguration().layoutConfiguration;

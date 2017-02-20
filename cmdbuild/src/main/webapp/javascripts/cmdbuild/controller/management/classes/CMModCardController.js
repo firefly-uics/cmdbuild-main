@@ -256,7 +256,7 @@
 
 				this.subControllers.push(this.controllerTabAttachment);
 
-				this.view.cardTabPanel.attachmentPanel = this.controllerTabEmail.getView(); // Creates tabPanel object
+				this.view.cardTabPanel.attachmentPanel = this.controllerTabAttachment.getView(); // Creates tabPanel object
 
 				this.view.cardTabPanel.add(this.controllerTabAttachment.getView()); // Add panel to view
 			}

@@ -88,7 +88,7 @@
 					[CMDBuild.Translation.dashdot, 'dashdot'],
 					[CMDBuild.Translation.longdash, 'longdash'],
 					[CMDBuild.Translation.longdashdot, 'longdashdot'],
-					[CMDBuild.Translation.solid, 'solid'],
+					[CMDBuild.Translation.solid, 'solid']
 				],
 				sorters: [
 					{ property: CMDBuild.core.constants.Proxy.DESCRIPTION, direction: 'ASC' }

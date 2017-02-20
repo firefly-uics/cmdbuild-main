@@ -14,7 +14,7 @@
 
 		/**
 		 * @returns {Void}
-		 * 
+		 *
 		 * @override
 		 */
 		initComponent : function() {
@@ -52,7 +52,7 @@
 
 			});
 			Ext.apply(this, {
-				items : [ this.comboAttributes, this.comboStrategies ],
+				items : [ this.comboAttributes, this.comboStrategies ]
 			});
 			this.callParent(arguments);
 		},
@@ -106,7 +106,7 @@
 					});
 					me.attributes[attribute.name] = attribute.type;
 				}
-				
+
 				me.comboAttributes.store.loadData(attributesStore.getRange(), false);
 				callback.apply(callbackScope, this);
 			}, this);

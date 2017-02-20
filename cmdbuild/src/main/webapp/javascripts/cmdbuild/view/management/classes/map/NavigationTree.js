@@ -22,26 +22,11 @@
 						},
 
 						initComponent : function() {
-							this.useArrows = true;
-							this.rootVisible = true;
-							this.multiSelect = false;
-							this.folderSort = false;
-							this.frame = false;
-							this.border = false;
-							this.bodyBorder = false;
-							this.hideHeaders = true;
 
 							this.activationCount = 0;
 							var me = this;
 							var SHOW_ICON = 'images/icons/bullet_go.png';
 							var HIDE_ICON = 'images/icons/cancel.png';
-
-							this.tbar = [ '->', {
-								iconCls : "arrow_refresh",
-								handler : function() {
-									me.dataSource.refresh();
-								}
-							} ];
 
 							this.columns = [ {
 								xtype : 'treecolumn',
@@ -58,7 +43,10 @@
 								sortable : false,
 								icon : 'images/icons/bullet_go.png',
 								handler : function(grid, rowIndex, colIndex, actionItem, event, record, row) {
-									me.navigateOnCard(record);
+									var className = record.get("className");
+									if (className !== "") {
+										me.navigateOnCard(record);
+									}
 								},
 								isDisabled : function(view, rowIdx, colIdx, item, record) {
 									return false;
@@ -67,8 +55,8 @@
 							this.store = Ext.create('Ext.data.TreeStore', {
 								model : "CMDBuild.view.management.classes.map.NavigationTreeModel",
 								root : {
-									expanded : true,
 									text : me.rootText,
+									iconCls : "cmdbuild-nodisplay",
 									children : []
 								}
 							});
@@ -138,12 +126,12 @@
 							var allNodes = getAllNodes(this.getRootNode());
 							for (var i = 0; i < allNodes.length; i++) {
 								var layerType = allNodes[i].get("className");
-								if (layerType === "GeoServer") {//NB:TODO
+								if (layerType === "GeoServer") {// NB:TODO
 									allNodes[i].remove();
 								}
 							}
 							this.interactionDocument.setStarted(true);
-							
+
 							this.interactionDocument.setNavigables(allNodes);
 						},
 						navigateOnCard : function(record) {
@@ -164,7 +152,7 @@
 								cardId : record.get("cardId"),
 								className : record.get("className")
 							} ]);
-						},
+						}
 					});
 
 	Ext.define('CMDBuild.view.management.classes.map.NavigationTreeModel', {
@@ -241,7 +229,7 @@
 			} else if (navigable.position === "under") {
 				openBrothers(navigable.node);
 			}
-			//over NOP
+			// over NOP
 		}
 		openAllNode(parents[0].node);
 	}
@@ -281,9 +269,8 @@
 			var child = children[i];
 			if (!baseInserted) {
 				openAllNode(child);
-				baseInserted = (child.get("baseNode") === true) ;
-			}
-			else {
+				baseInserted = (child.get("baseNode") === true);
+			} else {
 				closeAllNode(child);
 			}
 		}

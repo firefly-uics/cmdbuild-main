@@ -126,6 +126,54 @@ FIXES
 
  * The total count of lookup values ignores filter
 
+ * Sub-processes doesn't appear in start workflow button
+
+ * Reselect accordion item by clicking on selected item
+
+ * Error while retrieving foreignKey class attributes
+
+ * Reference grid editors wider than column on first edit action
+
+ * Error creating attributes after class or workflow creation
+
+ * Multilevel lookups validation errors
+
+ * ReadOnly reference attribute not displayed in openReport widget's parameters window
+
+ * Configuration email notification display errors
+
+ * Class privileges are ignored on bulk update
+
+ * Print card errors
+
+ * Workflow with no start permission can be started from super activity button
+
+ * "User stoppable" for processes is wrongly serialized within administration module
+
+ * Class privileges are ignored on CSV import
+
+ * Utility bulk update bypass classes permissions
+
+ * Relation advanced filter not correctly managed if no selection action on domain grid
+
+ * Previous selected card not correctly managed after abort
+
+ * System classes not displayed in domain comboboxes
+
+ * System classes not displayed in permissions tab
+
+ * System classes not displayed in classes administration accordion
+
+ * IE8 freezed on startup
+
+ * NavigationTree: not managed active state on administration
+
+ * Class with no write permissions selectable in import CSV
+
+ * System classes not displayed in administration
+
+ * Class print routing error
+
 
 
 
