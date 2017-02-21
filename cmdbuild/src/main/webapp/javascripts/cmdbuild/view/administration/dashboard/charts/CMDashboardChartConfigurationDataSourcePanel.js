@@ -339,7 +339,7 @@
 						valueField: "Id",
 						displayField: 'Description',
 						editable: false,
-						store: _CMCache.getReferenceStore({ referencedIdClass: _CMCache.getEntryTypeByName(value).get('name') }),
+						store: _CMCache.getReferenceStore({ referencedIdClass: value }),
 						queryMode: 'local',
 						disabled: me.typeComboIsdisabled()
 					});
