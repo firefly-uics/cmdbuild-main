@@ -40,7 +40,7 @@
 							me.onGISNavigationBaseClassMenuItemSelect(rootEntryType);
 
 							for (var i=0, l=root.childNodes.length; i<l; ++i) {
-								synchViewForNodeConf(me, root.childNodes[i]);
+								synchViewForNodeConf(me, root.childNodes[i], me.view.tree.getRootNode());
 							}
 						}
 					},
@@ -130,24 +130,19 @@
 		});
 	}
 
-	function synchViewForNodeConf(me, nodeConf) {
-		var node = me.view.getTreeNodeForConf(nodeConf);
-		if (!node) {
-			return;
-		}
+	function synchViewForNodeConf(me, nodeConf, parent) {
+		var node = me.view.getTreeNodeForConf(nodeConf, parent);
 
-		node.set("checked", true);
-		node.set("baseNode", nodeConf.baseNode); // I don't know why it does not check it automatically...
-		node.commit();
-
-		var l = nodeConf.childNodes.length;
-		if (l> 0) {
+		if (Ext.isObject(node) && !Ext.Object.isEmpty(node)) {
 			expandNode(me, node);
-			for (var i=0; i<l; ++i) {
-				synchViewForNodeConf(me, nodeConf.childNodes[i]);
-			}
-		}
 
+			node.set("checked", true);
+			node.set("baseNode", nodeConf.baseNode); // I don't know why it does not check it automatically...
+			node.commit();
+
+			for (var i = 0; i < nodeConf.childNodes.length; ++i)
+				synchViewForNodeConf(me, nodeConf.childNodes[i], node);
+		}
 	}
 
 	function expandNode(me, node) {
@@ -165,7 +160,6 @@
 			node = node.parentNode;
 			node.set("checked", checked);
 			node.commit();
-			synchUpperBranchCheck(node, checked);
 		}
 	}
 })();

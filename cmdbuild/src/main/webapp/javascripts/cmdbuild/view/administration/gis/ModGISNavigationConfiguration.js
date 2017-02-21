@@ -131,13 +131,12 @@
 			return this.tree.serializeStructure();
 		},
 
-		getTreeNodeForConf: function(conf) {
-			var root = this.tree.getRootNode();
-			var scope = null;
-			var deep = true;
-			return root.findChildBy(function(node) {
+		getTreeNodeForConf: function (conf, parent) {
+			parent = Ext.isObject(parent) ? parent : this.tree.getRootNode();
+
+			return parent.findChildBy(function (node) {
 				return node.isMyConf(conf);
-			}, scope, deep);
+			}, this, true);
 		},
 
 		// as classesMenuDelegate
