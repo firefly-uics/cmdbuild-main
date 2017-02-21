@@ -184,6 +184,11 @@
 			if (this.currentClassId != newEntryTypeId) {
 				this.currentClassId = newEntryTypeId;
 				lastCard = undefined;
+				this.onCardSelected({
+					cardId : -1,
+					className : entryType.get("name")
+
+				});
 			}
 
 		},

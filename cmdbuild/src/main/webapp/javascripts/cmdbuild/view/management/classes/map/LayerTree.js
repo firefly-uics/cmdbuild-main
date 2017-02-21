@@ -62,7 +62,7 @@
 		},
 		listeners : {
 			checkchange : function(node, checked, eOpts) {
-					this.checkNode(node, checked);
+				this.checkNode(node, checked);
 			}
 		},
 
@@ -101,17 +101,28 @@
 					} else if (visible && node && inZoom && bHiding === true) {
 						var visibleLayer = me.interactionDocument.getLayerVisibility(layers[i]);
 						node.set('checked', visibleLayer);
-					} else if (visible && node && ! inZoom) {
-							node.remove();
+					} else if (visible && node && !inZoom) {
+						node.remove();
 					} else if (visible && inZoom && !node) {
 						me.addLayerItem(layers[i]);
-					}
-					else if (!visible && node) {
+					} else if (!visible && node) {
 						node.remove();
 					}
 				}
 				var targetFolder = nodeByLayerName(me.getRootNode(), CMDBUILD_LAYERS_FOLDER_NAME);
-				targetFolder.expand();
+				if (targetFolder.childNodes.length > 0) {
+					targetFolder.expand();
+					targetFolder.set("expandable", true);
+				} else {
+					targetFolder.set("expandable", false);
+				}
+				var targetFolder = nodeByLayerName(me.getRootNode(), EXTERNAL_LAYERS_FOLDER_NAME);
+				if (targetFolder.childNodes.length > 0) {
+					targetFolder.expand();
+					targetFolder.set("expandable", true);
+				} else {
+					targetFolder.set("expandable", false);
+				}
 
 			});
 		},
@@ -157,7 +168,7 @@
 					text : layer.name + strClass,
 					layerName : layer.name,
 					className : layer.masterTableName,
-						leaf : true,
+					leaf : true,
 					checked : true
 				});
 
@@ -170,7 +181,7 @@
 				console.log("Fail to add layer", layer);
 			}
 		},
-		retrieveTargetFolder:function(layer, root) {
+		retrieveTargetFolder : function(layer, root) {
 			var targetFolder = null;
 
 			if (layer.isBaseLayer) {
@@ -178,14 +189,12 @@
 			} else if (layer.masterTableName === CMDBuild.gis.constants.layers.GEOSERVER_LAYER) {
 				targetFolder = retrieveGeoserverFolder(root);
 			} else if (layer.masterTableName === CMDBuild.gis.constants.layers.THEMATISM_LAYER) {
-				//NOP
+				// NOP
 			} else {
 				targetFolder = nodeByLayerName(root, CMDBUILD_LAYERS_FOLDER_NAME);
 			}
-
 			return targetFolder;
 		}
-
 
 	});
 	function toShow(currentClassName, onLayerClassName) {
@@ -208,6 +217,8 @@
 	function clearTree(root) {
 		var externalLayersFolder = nodeByLayerName(root, EXTERNAL_LAYERS_FOLDER_NAME);
 		var gisServerFolder = nodeByLayerName(root, CMDBUILD_LAYERS_FOLDER_NAME);
+		externalLayersFolder.set("expandable", false);
+		gisServerFolder.set("expandable", false);
 		clearNode(externalLayersFolder);
 		clearNode(gisServerFolder);
 	}
