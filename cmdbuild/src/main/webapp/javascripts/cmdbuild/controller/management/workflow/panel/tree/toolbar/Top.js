@@ -145,7 +145,10 @@
 		buildMenuItem: function (workflowObject, parent) {
 			if (Ext.isObject(workflowObject) && !Ext.Object.isEmpty(workflowObject)) {
 				var menuObject = {
-					disabled: !workflowObject.get(CMDBuild.core.constants.Proxy.IS_STARTABLE),
+					disabled: (
+						!workflowObject.get(CMDBuild.core.constants.Proxy.IS_STARTABLE)
+						&& !workflowObject.get(CMDBuild.core.constants.Proxy.IS_SUPER_CLASS)
+					),
 					text: workflowObject.get(CMDBuild.core.constants.Proxy.DESCRIPTION),
 					workflowId: workflowObject.get(CMDBuild.core.constants.Proxy.ID),
 					scope: this
