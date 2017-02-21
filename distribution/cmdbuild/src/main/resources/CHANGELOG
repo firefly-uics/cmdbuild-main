@@ -176,6 +176,8 @@ FIXES
 
  * GIS navigation tree doesn't correctly select nodes on subsequent read action
 
+ * Stack on empty grid after removing last page report while on page next to the first
+
 
 
 

@@ -272,11 +272,26 @@
 							scope: this,
 							callback: function (records, operation, success) {
 								if (success) {
-									this.grid.getSelectionModel().select(0, true);
+									if (Ext.isArray(records) && !Ext.isEmpty(records)) { // We have records in this page
+										this.grid.getSelectionModel().select(0, true);
 
-									// If no selections disable all UI
-									if (!this.grid.getSelectionModel().hasSelection())
-										this.form.setDisabledModify(true, true, true, true);
+										// If no selections disable all UI
+										if (!this.grid.getSelectionModel().hasSelection())
+											this.form.setDisabledModify(true, true, true, true);
+									} else { // No records in this page so load first one
+										this.grid.getStore().loadPage(1, {
+											params: params,
+											scope: this,
+											callback: function (records, operation, success) {
+
+												this.grid.getSelectionModel().select(0, true);
+
+												// If no selections disable all UI
+												if (!this.grid.getSelectionModel().hasSelection())
+													this.form.setDisabledModify(true, true, true, true);
+											}
+										});
+									}
 								}
 							}
 						});
