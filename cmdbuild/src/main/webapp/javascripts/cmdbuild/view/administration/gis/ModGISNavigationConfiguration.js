@@ -85,11 +85,11 @@
 
 			this.callParent(arguments);
 
-			this.mon(this.tree, "checkchange", function(node, checked) {
+			this.mon(this.tree, "checkchange", function (node, checked, e0pts) {
 				this.callDelegates("onGISNavigationTreeItemChecked", [node, checked]);
 			}, this);
 
-			this.mon(this.tree, "afteritemexpand", function(node) {
+			this.mon(this.tree, "afteritemexpand", function (node) {
 				this.callDelegates("onGISNavigationTreeItemChecked", [node, node.get("checked")]);
 			}, this);
 		},

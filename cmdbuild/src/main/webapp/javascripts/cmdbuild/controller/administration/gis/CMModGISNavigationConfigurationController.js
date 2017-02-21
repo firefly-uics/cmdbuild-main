@@ -1,6 +1,9 @@
 (function() {
 
-	Ext.require(['CMDBuild.proxy.gis.TreeNavigation']);
+	Ext.require([
+		'CMDBuild.core.constants.Proxy',
+		'CMDBuild.proxy.gis.TreeNavigation'
+	]);
 
 	Ext.define("CMDBuild.controller.administration.gis.CMModGISNavigationConfigurationController", {
 		extend: "CMDBuild.controller.CMBasePanelController",
@@ -95,14 +98,72 @@
 			this.view.addDomainsAsFirstLevelChildren(domains);
 		},
 
-		onGISNavigationTreeItemChecked: function(node, checked) {
-			if (checked) {
-				synchUpperBranchCheck(node, checked);
+		/**
+		 * @param {CMDBuild.model.GISNavigationConfigurationTreeNodeModel} node
+		 *
+		 * @returns {Void}
+		 */
+		onGISNavigationTreeItemChecked: function (node) {
+			this.synchBranchCheck(node);
+
+			if (!node._alreadyExpanded)
+				return expandNode(this, node);
+
+			return;
+		},
+
+		/**
+		 * @param {CMDBuild.model.GISNavigationConfigurationTreeNodeModel} node
+		 *
+		 * @returns {Void}
+		 *
+		 * @private
+		 */
+		synchBranchCheck: function (node) {
+			// Error handling
+				if (!Ext.isObject(node) || Ext.Object.isEmpty(node))
+					return _error('synchBranchCheck(): unmanaged node parameter', this, node);
+			// END: Error handling
+
+			if (node.get(CMDBuild.core.constants.Proxy.CHECKED))
+				return this.recursiveParentCheck(node);
+
+			return this.recursiveChildDecheck(node);
+		},
+
+		/**
+		 * @param {CMDBuild.model.GISNavigationConfigurationTreeNodeModel} node
+		 *
+		 * @returns {Void}
+		 *
+		 * @private
+		 */
+		recursiveChildDecheck: function (node) {
+			if (Ext.isObject(node) && !Ext.Object.isEmpty(node)) {
+				node.set(CMDBuild.core.constants.Proxy.CHECKED, false);
+				node.commit();
+
+				if (node.hasChildNodes())
+					node.eachChild(function (childNode) {
+						this.recursiveChildDecheck(childNode);
+					}, this);
 			}
-			if (node._alreadyExpanded) {
-				return;
-			} else {
-				expandNode(this, node);
+		},
+
+		/**
+		 * @param {CMDBuild.model.GISNavigationConfigurationTreeNodeModel} node
+		 *
+		 * @returns {Void}
+		 *
+		 * @private
+		 */
+		recursiveParentCheck: function (node) {
+			if (Ext.isObject(node) && !Ext.Object.isEmpty(node)) {
+				node.set(CMDBuild.core.constants.Proxy.CHECKED, true);
+				node.commit();
+
+				if (Ext.isObject(node.parentNode) && !Ext.Object.isEmpty(node.parentNode))
+					this.recursiveParentCheck(node.parentNode);
 			}
 		}
 	});
@@ -155,11 +216,4 @@
 		me.view.addDomainsAsNodeChildren(domains, node);
 	}
 
-	function synchUpperBranchCheck(node, checked) {
-		while (node.parentNode) {
-			node = node.parentNode;
-			node.set("checked", checked);
-			node.commit();
-		}
-	}
 })();
