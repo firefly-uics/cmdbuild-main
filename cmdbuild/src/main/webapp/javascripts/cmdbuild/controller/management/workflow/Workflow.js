@@ -1071,15 +1071,12 @@
 		 * @param {Boolean} parameters.disableFirstRowSelection
 		 * @param {Boolean} parameters.defaultFilterApplyIfExists
 		 * @param {CMDBuild.model.common.Filter} parameters.filter
-//		 * @param {Boolean} parameters.filterForceEnabled
-//		 * @param {String} parameters.flowStatus
 		 * @param {Boolean} parameters.flowStatusForceEnabled
 		 * @param {Number} parameters.instanceId
 		 * @param {Object} parameters.metadata
 		 * @param {Object} parameters.scope
 		 * @param {Boolean} parameters.sortersReset
-		 * @param {String} parameters.storeLoad - [force, disabled] // TODO: disabled???
-//		 * @param {Boolean} parameters.storeLoadDisabled
+		 * @param {String} parameters.storeLoad - [force, disabled]
 		 * @param {Object or String or Number} parameters.tabToSelect
 		 * @param {String} parameters.viewMode
 		 * @param {Number} parameters.workflowId or parameters.entityId
@@ -1106,7 +1103,7 @@
 			this.cmfg('workflowFullScreenUiSetup', { maximize: 'top' });
 			this.cmfg('workflowReset');
 			this.cmfg('workflowUiViewModeSet', parameters.viewMode);
-_debug('workflowUiUpdate', parameters);
+
 			// Local variables reset
 			this.workflowPreviousSelectionReset();
 			this.workflowSelectedActivityReset();
@@ -1132,12 +1129,9 @@ _debug('workflowUiUpdate', parameters);
 									defaultFilterApplyIfExists: parameters.defaultFilterApplyIfExists,
 									disableFirstRowSelection: parameters.disableFirstRowSelection,
 									filter: parameters.filter,
-									filterForceEnabled: parameters.filterForceEnabled,
-//									flowStatus: parameters.flowStatus,
-//									flowStatusForceEnabled: parameters.flowStatusForceEnabled,
+									flowStatusForceEnabled: parameters.flowStatusForceEnabled,
 									sortersReset: parameters.sortersReset,
 									storeLoad: parameters.storeLoad,
-//									storeLoadDisabled: parameters.storeLoadDisabled,
 									scope: parameters.scope,
 									callback: parameters.callback
 								});
