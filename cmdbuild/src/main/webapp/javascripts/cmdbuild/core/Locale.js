@@ -29,7 +29,7 @@
 			Ext.ns('CMDBuild.configuration');
 
 			// Error handling
-				if (!Ext.isObject(CMDBuild.configuration.runtime) || Ext.isEmpty(CMDBuild.configuration.runtime))
+				if (!Ext.isObject(CMDBuild.configuration.runtime) || Ext.Object.isEmpty(CMDBuild.configuration.runtime))
 					return _error('constructor(): undefined CMDBuild configuration object', this);
 			// END: Error handling
 

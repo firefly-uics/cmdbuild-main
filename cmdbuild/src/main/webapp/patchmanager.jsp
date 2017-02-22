@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
+<%@ page import="org.apache.commons.lang3.StringEscapeUtils" %>
 <%@ page import="org.cmdbuild.services.SessionVars" %>
 <%@ page import="org.cmdbuild.spring.SpringIntegrationUtils" %>
 
@@ -32,7 +33,14 @@
 		<!-- 2. Localizations -->
 		<%@ include file="localizationsJsFiles.jsp" %>
 
-		<!-- 3. Modules -->
+		<!-- 3. Runtime configuration -->
+		<script type="text/javascript">
+			Ext.ns('CMDBuild.configuration.runtime');
+			CMDBuild.configuration.runtime = Ext.create('CMDBuild.model.core.configuration.runtime.Configure');
+			CMDBuild.configuration.runtime.set(CMDBuild.core.constants.Proxy.LANGUAGE, '<%= StringEscapeUtils.escapeEcmaScript(lang) %>');
+		</script>
+
+		<!-- 4. Modules -->
 		<script type="text/javascript" src="javascripts/cmdbuild/PatchManager.js"></script>
 
 		<title>CMDBuild - Patch manager</title>
