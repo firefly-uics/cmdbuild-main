@@ -230,11 +230,10 @@
 			) {
 				this.cmfg('onPanelGridAndFormCommonFilterAdvancedClearButtonClick', { disableStoreLoad: true });
 			} else {
-				var filter = this.cmfg('panelGridAndFormListPanelAppliedFilterGet');
-
-				filter.resetRuntimeParametersValue();
-
-				this.cmfg('panelGridAndFormCommonFilterAdvancedManageToggleButtonLabelSet', filter.get(CMDBuild.core.constants.Proxy.DESCRIPTION));
+				this.cmfg(
+					'panelGridAndFormCommonFilterAdvancedManageToggleButtonLabelSet',
+					this.cmfg('panelGridAndFormListPanelAppliedFilterGet', CMDBuild.core.constants.Proxy.DESCRIPTION)
+				);
 			}
 		},
 
