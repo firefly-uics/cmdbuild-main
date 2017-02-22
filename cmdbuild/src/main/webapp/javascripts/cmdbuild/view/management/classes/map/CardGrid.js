@@ -312,9 +312,10 @@
 			var headers = [];
 			var fields = [];
 
-			if (_CMUtils.isSuperclass(this.currentClassId)) {
+			var c = _CMCache.getEntryTypeById(this.currentClassId);
+
+			if (c && c.get('superclass'))
 				headers.push(this.buildClassColumn());
-			}
 
 			for (var i = 0; i < classAttributes.length; i++) {
 				var attribute = classAttributes[i];

@@ -26,7 +26,8 @@
 			'onPanelModuleAttachmentTabShow',
 			'onWorkflowFormTabAttachmentShowCallback = onPanelModuleAttachmentTabShowCallback', // Public only for overriding reason
 			'onWorkflowFormTabAttachmentInstanceSelect',
-			'panelModuleAttachmentTabReset'
+			'panelModuleAttachmentTabReset',
+			'workflowFormTabAttachmentsUiUpdate'
 		],
 
 		/**
@@ -68,7 +69,7 @@
 		onWorkflowFormTabAttachmentShowCallback: function () {
 			// Add button setup
 				this.grid.buttonAdd.setDisabled(
-					this.cmfg('workflowIsStartActivityGet') // On instance's first step
+					this.parentDelegate.cmfg('workflowStartActivityGet', CMDBuild.core.constants.Proxy.STATUS) // On instance's first step
 					|| !this.cmfg('workflowFormWidgetExists', CMDBuild.core.constants.WidgetType.getOpenAttachment())
 					|| !this.cmfg('workflowSelectedActivityGet', CMDBuild.core.constants.Proxy.WRITABLE)
 				);
@@ -99,6 +100,24 @@
 				!CMDBuild.configuration.dms.get(CMDBuild.core.constants.Proxy.ENABLED)
 				|| this.cmfg('workflowSelectedInstanceIsEmpty')
 			);
+		},
+
+		/**
+		 * Enable disable tab based on selection validity
+		 *
+		 * @returns {Void}
+		 *
+		 * @legacy
+		 */
+		workflowFormTabAttachmentsUiUpdate: function () {
+			// UI view mode manage
+			switch (this.cmfg('workflowUiViewModeGet')) {
+				case 'add':
+					return this.view.setDisabled(!this.cmfg('workflowFormWidgetExists', CMDBuild.core.constants.WidgetType.getOpenAttachment()));
+
+				default:
+					return this.view.setDisabled(this.cmfg('workflowSelectedInstanceIsEmpty'));
+			}
 		}
 	});
 

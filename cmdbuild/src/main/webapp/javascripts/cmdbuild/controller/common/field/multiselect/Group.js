@@ -15,8 +15,8 @@
 		 */
 		cmfgCatchedFunctions: [
 			'fieldMultiselectGroupReset',
-			'fieldMultiselectGroupStoreGet',
 			'fieldMultiselectGroupSelectAll',
+			'fieldMultiselectGroupStoreGet',
 			'fieldMultiselectGroupValueGet'
 		],
 
@@ -33,15 +33,6 @@
 		},
 
 		/**
-		 * Forwarder method
-		 *
-		 * @returns {Ext.data.Store}
-		 */
-		fieldMultiselectGroupStoreGet: function () {
-			return this.view.boundList.getStore();
-		},
-
-		/**
 		 * @returns {Void}
 		 */
 		fieldMultiselectGroupSelectAll: function () {
@@ -53,6 +44,15 @@
 			}, this);
 
 			this.view.setValue(arrayGroups);
+		},
+
+		/**
+		 * Forwarder method
+		 *
+		 * @returns {Ext.data.Store}
+		 */
+		fieldMultiselectGroupStoreGet: function () {
+			return this.view.boundList.getStore();
 		},
 
 		/**

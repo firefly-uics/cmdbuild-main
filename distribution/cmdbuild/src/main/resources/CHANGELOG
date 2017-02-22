@@ -160,24 +160,6 @@ FIXES
 
  * System classes not displayed in domain comboboxes
 
- * System classes not displayed in permissions tab
-
- * System classes not displayed in classes administration accordion
-
- * IE8 freezed on startup
-
- * NavigationTree: not managed active state on administration
-
- * Class with no write permissions selectable in import CSV
-
- * System classes not displayed in administration
-
- * Class print routing error
-
- * GIS navigation tree doesn't correctly select nodes on subsequent read action
-
- * Stack on empty grid after removing last page report while on page next to the first
-
 
 
 

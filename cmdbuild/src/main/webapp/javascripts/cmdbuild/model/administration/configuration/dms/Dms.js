@@ -9,21 +9,21 @@
 		extend: 'Ext.data.Model',
 
 		fields: [
-			{ name: CMDBuild.core.constants.Proxy.ALFRESCO_DELAY, type: 'int', defaultValue: 1000, useNull: true },
-			{ name: CMDBuild.core.constants.Proxy.ALFRESCO_FILE_SERVER_PORT, type: 'int', defaultValue: 1121, useNull: true },
-			{ name: CMDBuild.core.constants.Proxy.ALFRESCO_FILE_SERVER_URL, type: 'string', defaultValue: 'localhost' },
+			{ name: CMDBuild.core.constants.Proxy.ALFRESCO_DELAY, type: 'int', useNull: true },
+			{ name: CMDBuild.core.constants.Proxy.ALFRESCO_FILE_SERVER_PORT, type: 'int', useNull: true },
+			{ name: CMDBuild.core.constants.Proxy.ALFRESCO_FILE_SERVER_URL, type: 'string' },
 			{ name: CMDBuild.core.constants.Proxy.ALFRESCO_HOST, type: 'string' },
-			{ name: CMDBuild.core.constants.Proxy.ALFRESCO_LOOKUP_CATEGORY, type: 'string', defaultValue: 'AlfrescoCategory' },
-			{ name: CMDBuild.core.constants.Proxy.ALFRESCO_PASSWORD, type: 'string', defaultValue: 'admin' },
-			{ name: CMDBuild.core.constants.Proxy.ALFRESCO_REPOSITORY_APPLICATION, type: 'string', defaultValue: 'cm:cmdbuild' },
-			{ name: CMDBuild.core.constants.Proxy.ALFRESCO_REPOSITORY_FILE_SERVER_PATH, type: 'string', defaultValue: '/Alfresco/User Homes/cmdbuild' },
-			{ name: CMDBuild.core.constants.Proxy.ALFRESCO_REPOSITORY_WEB_SERVICE_PATH, type: 'string', defaultValue: '/app:company_home/app:user_homes/' },
-			{ name: CMDBuild.core.constants.Proxy.ALFRESCO_USER, type: 'string', defaultValue: 'admin' },
+			{ name: CMDBuild.core.constants.Proxy.ALFRESCO_LOOKUP_CATEGORY, type: 'string' },
+			{ name: CMDBuild.core.constants.Proxy.ALFRESCO_PASSWORD, type: 'string' },
+			{ name: CMDBuild.core.constants.Proxy.ALFRESCO_REPOSITORY_APPLICATION, type: 'string' },
+			{ name: CMDBuild.core.constants.Proxy.ALFRESCO_REPOSITORY_FILE_SERVER_PATH, type: 'string' },
+			{ name: CMDBuild.core.constants.Proxy.ALFRESCO_REPOSITORY_WEB_SERVICE_PATH, type: 'string' },
+			{ name: CMDBuild.core.constants.Proxy.ALFRESCO_USER, type: 'string' },
 			{ name: CMDBuild.core.constants.Proxy.CMIS_HOST, type: 'string' },
 			{ name: CMDBuild.core.constants.Proxy.CMIS_MODEL, type: 'string' },
-			{ name: CMDBuild.core.constants.Proxy.CMIS_PASSWORD, type: 'string', defaultValue: 'admin' },
-			{ name: CMDBuild.core.constants.Proxy.CMIS_PATH, type: 'string', defaultValue: '/User Homes/cmdbuild' },
-			{ name: CMDBuild.core.constants.Proxy.CMIS_USER, type: 'string', defaultValue: 'admin' },
+			{ name: CMDBuild.core.constants.Proxy.CMIS_PASSWORD, type: 'string' },
+			{ name: CMDBuild.core.constants.Proxy.CMIS_PATH, type: 'string' },
+			{ name: CMDBuild.core.constants.Proxy.CMIS_USER, type: 'string' },
 			{ name: CMDBuild.core.constants.Proxy.ENABLED, type: 'boolean' },
 			{ name: CMDBuild.core.constants.Proxy.TYPE, type: 'string' }
 		],
@@ -38,6 +38,12 @@
 		constructor: function (data) {
 			data = Ext.isObject(data) ? data : {};
 			data[CMDBuild.core.constants.Proxy.TYPE] = data[CMDBuild.core.constants.Proxy.TYPE] || data['dms.service.type'];
+
+			// Removes unwanted values if type is an array
+			if (Ext.isArray(data[CMDBuild.core.constants.Proxy.TYPE]) && !Ext.isEmpty(data[CMDBuild.core.constants.Proxy.TYPE]))
+				data[CMDBuild.core.constants.Proxy.TYPE] = Ext.Array.filter(data[CMDBuild.core.constants.Proxy.TYPE], function (item, i, allItems) {
+					return item != 'off' && item != 'on';
+				}, this);
 
 			// Alfresco configuration translations
 			data[CMDBuild.core.constants.Proxy.ALFRESCO_DELAY] = data[CMDBuild.core.constants.Proxy.ALFRESCO_DELAY] || data['delay'];
@@ -64,7 +70,7 @@
 		/**
 		 * @returns {Object}
 		 */
-		getParamsObject: function () {
+		getSubmitData: function () {
 			var data = this.getData();
 
 			return {

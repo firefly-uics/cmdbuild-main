@@ -5,7 +5,7 @@
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.core.interfaces.service.LoadMask',
+			'CMDBuild.core.LoadMask',
 			'CMDBuild.core.Message',
 			'CMDBuild.proxy.management.widget.NavigationTree'
 		],
@@ -425,7 +425,7 @@
 						loadMask: false,
 						scope: this,
 						callback: function (options, success, response) {
-							CMDBuild.core.interfaces.service.LoadMask.manage(this.view, false); // Manually manage LoadMask (hide)
+							CMDBuild.core.LoadMask.hide();
 						},
 						success: function (response, options, decodedResponse) {
 							decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.ROWS];
@@ -557,7 +557,7 @@
 
 			root.removeAll();
 
-			CMDBuild.core.interfaces.service.LoadMask.manage(this.view, true); // Manually manage LoadMask (show)
+			CMDBuild.core.LoadMask.show();
 
 			this.buildLocalCache(function (navigationTreeRootNode) {
 				root.set(CMDBuild.core.constants.Proxy.NAVIGATION_TREE_NODE_ID, navigationTreeRootNode.get(CMDBuild.core.constants.Proxy.ID));

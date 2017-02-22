@@ -323,7 +323,7 @@
 		},
 
 		isEditable: function (card) {
-			var privileges = _CMUtils.getEntryTypePrivilegesByCard(card);
+			var privileges = CMDBuild.core.Utils.getEntryTypePrivileges(_CMCache.getEntryTypeById(card.get('IdClass')));
 
 			return privileges.create && !this.cmfg('widgetCreateModifyCardConfigurationGet', CMDBuild.core.constants.Proxy.READ_ONLY);
 		},

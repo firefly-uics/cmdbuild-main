@@ -1,8 +1,14 @@
 (function () {
 
+
 	/**
 	 * Required managed functions:
-	 * 	- panelGridAndFromFullScreenUiSetup
+	 * 	- panelGridAndFormFullScreenUiSetup
+	 *  - panelGridAndFormToolsArrayBuild
+	 *
+	 * Available functionalities:
+	 * 	- viewMode manage
+	 * 		Methods: panelGridAndFormViewModeEquals, panelGridAndFormViewModeGet, panelGridAndFormViewModeSet
 	 *
 	 * NOTE: "form" and "grid" (or "tree") pointers are required to work with UI state module
 	 *
@@ -30,6 +36,20 @@
 		 * @property {CMDBuild.view.common.panel.gridAndForm.GridAndFormView}
 		 */
 		view: undefined,
+
+		/**
+		 * @property {String}
+		 *
+		 * @private
+		 */
+		viewMode: 'read',
+
+		/**
+		 * @property {Array}
+		 *
+		 * @private
+		 */
+		viewModeManaged: ['add', 'edit', 'read'],
 
 		// FullScreen UI manage methods
 			/**
@@ -182,13 +202,13 @@
 			 *
 			 * @returns {Void}
 			 */
-			panelGridAndFromFullScreenUiSetup: function (parameters) {
+			panelGridAndFormFullScreenUiSetup: function (parameters) {
 				parameters = Ext.isObject(parameters) ? parameters : {};
 				parameters.force = Ext.isBoolean(parameters.force) ? parameters.force : false;
 
 				// Error handling
 					if (!Ext.isString(parameters.maximize) || Ext.isEmpty(parameters.maximize))
-						return _error('panelGridAndFromFullScreenUiSetup(): unmanaged maximize parameter', this, parameters.maximize);
+						return _error('panelGridAndFormFullScreenUiSetup(): unmanaged maximize parameter', this, parameters.maximize);
 				// END: Error handling
 
 				if (CMDBuild.configuration.userInterface.get(CMDBuild.core.constants.Proxy.FULL_SCREEN_MODE) || parameters.force)
@@ -203,7 +223,54 @@
 						default:
 							return this.panelGridAndFromFullScreenDisplayBoth();
 					}
-			}
+			},
+
+		// ViewMode manage methods
+			/**
+			 * Mode parameter could be also an array to check if current viewMode is present in array
+			 *
+			 * @param {String or Array} mode
+			 *
+			 * @returns {Boolean}
+			 */
+			panelGridAndFormViewModeEquals: function (mode) {
+				mode = Ext.isArray(mode) ? Ext.Array.clean(mode) : Ext.Array.clean([mode]);
+
+				if (Ext.isArray(mode) && !Ext.isEmpty(mode))
+					return Ext.Array.contains(mode, this.viewMode);
+
+				return false;
+			},
+
+			/**
+			 * @returns {String}
+			 */
+			panelGridAndFormViewModeGet: function () {
+				return this.viewMode;
+			},
+
+			/**
+			 * @param {String} mode
+			 *
+			 * @returns {Void}
+			 */
+			panelGridAndFormViewModeSet: function (mode) {
+				mode = Ext.isString(mode) && Ext.Array.contains(this.viewModeManaged, mode) ? mode : 'read';
+
+				this.viewMode = mode;
+			},
+
+		/**
+		 * @returns {Array}
+		 */
+		panelGridAndFormToolsArrayBuild: function () {
+			return [
+				Ext.create('CMDBuild.controller.common.panel.gridAndForm.tools.properties.Properties', { parentDelegate: this }).getView(),
+				Ext.create('CMDBuild.view.common.panel.gridAndForm.tools.Minimize', { delegate: this }),
+				Ext.create('CMDBuild.view.common.panel.gridAndForm.tools.Maximize', { delegate: this }),
+				Ext.create('CMDBuild.view.common.panel.gridAndForm.tools.Restore', { delegate: this })
+			];
+		}
 	});
 
 })();

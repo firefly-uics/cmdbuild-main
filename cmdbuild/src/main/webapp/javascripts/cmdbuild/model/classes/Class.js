@@ -5,6 +5,9 @@
 		'CMDBuild.core.constants.Proxy'
 	]);
 
+	/**
+	 * @deprecated CMDBuild.model.management.dataView.filter.entryType.EntryType
+	 */
 	Ext.define('CMDBuild.model.classes.Class', { // TODO: waiting for refactor (rename and structure)
 		extend: 'Ext.data.Model',
 

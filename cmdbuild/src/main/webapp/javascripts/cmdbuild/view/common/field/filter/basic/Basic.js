@@ -39,15 +39,6 @@
 		 */
 		onTrigger2Click: function () {
 			this.delegate.cmfg('onFieldFilterBasicTrigger2Click');
-		},
-
-		/**
-		 * @param {Boolean} silently
-		 *
-		 * @returns {Void}
-		 */
-		reset: function (silently) {
-			this.delegate.cmfg('onFieldFilterBasicReset', silently);
 		}
 	});
 

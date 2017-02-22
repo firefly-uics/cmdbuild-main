@@ -47,7 +47,7 @@
 			},
 
 			/**
-			 * @returns {CMDBuild.view.management.workflow.panel.form.tabs.email.Email}
+			 * @returns {CMDBuild.view.management.workflow.panel.form.tabs.email.EmailView}
 			 */
 			getEmailPanel: function() {
 				if (!Ext.isEmpty(this.delegate) && !Ext.isEmpty(this.delegate.controllerTabEmail))

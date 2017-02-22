@@ -9,10 +9,6 @@
 <!-- MODELS -->
 <script type="text/javascript" src="javascripts/cmdbuild/model/widget/CMWidgetReaders.js"></script>
 
-<!-- DATASOURCES -->
-<script type="text/javascript" src="javascripts/cmdbuild/data/CMMiniCardGridBaseDataSource.js"></script>
-<script type="text/javascript" src="javascripts/cmdbuild/data/CMDetailedCardDataSource.js"></script>
-
 <!-- VIEWS -->
 	<!-- COMMON -->
 	<script type="text/javascript" src="javascripts/cmdbuild/view/management/common/CMEditablePanel.js"></script>
@@ -56,7 +52,6 @@
 <!-- CONTROLLER -->
 	<!-- COMMON -->
 	<script type="text/javascript" src="javascripts/cmdbuild/controller/management/classes/CMModCardSubController.js"></script>
-	<script type="text/javascript" src="javascripts/cmdbuild/controller/management/common/CMModClassAndWFCommons.js"></script>
 	<script type="text/javascript" src="javascripts/cmdbuild/controller/management/common/CMCardBrowserTreeDataSource.js"></script>
 
 		<!-- they are not common but the widget need them -->

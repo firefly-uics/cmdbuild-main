@@ -9,7 +9,9 @@
 <script type="text/javascript" src="javascripts/cmdbuild/override/data/TreeStore.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/override/form/field/Checkbox.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/override/form/field/ComboBox.js"></script>
+<script type="text/javascript" src="javascripts/cmdbuild/override/form/field/Date.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/override/form/field/Display.js"></script>
+<script type="text/javascript" src="javascripts/cmdbuild/override/form/field/Hidden.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/override/form/field/File.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/override/form/field/VTypes.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/override/form/FieldContainer.js"></script>
@@ -18,6 +20,7 @@
 <script type="text/javascript" src="javascripts/cmdbuild/override/grid/plugin/RowExpander.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/override/JSON.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/override/layout/container/Editor.js"></script>
+<script type="text/javascript" src="javascripts/cmdbuild/override/picker/Date.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/override/selection/CheckboxModel.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/override/toolbar/Paging.js"></script>
 
@@ -49,15 +52,6 @@
 <script type="text/javascript" src="javascripts/cmdbuild/core/CMDelegable.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/core/xml/XMLUtility.js"></script>
 
-<!-- FORM STUFF -->
-<script type="text/javascript" src="javascripts/cmdbuild/form/CallbackPlugin.js"></script>
-<script type="text/javascript" src="javascripts/cmdbuild/form/CustomVTypes.js"></script>
-<script type="text/javascript" src="javascripts/cmdbuild/form/FormOverride.js"></script>
-<script type="text/javascript" src="javascripts/cmdbuild/form/FormPlugin.js"></script>
-<script type="text/javascript" src="javascripts/cmdbuild/form/HexColorField.js"></script>
-<script type="text/javascript" src="javascripts/cmdbuild/form/RangeSliders.js"></script>
-<script type="text/javascript" src="javascripts/cmdbuild/form/SetValueOnLoadPlugin.js"></script>
-
 <!-- WIDGETS BUILDERS -->
 <script type="text/javascript" src="javascripts/cmdbuild/view/management/common/widgetBuilders/BaseAttribute.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/view/management/common/widgetBuilders/SimpleQueryAttribute.js"></script>
@@ -83,26 +77,16 @@
 <!-- CUSTOM FIELDS -->
 <script type="text/javascript" src="javascripts/cmdbuild/view/common/field/CMBaseCombo.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/view/common/field/CMErasableCombo.js"></script>
-<script type="text/javascript" src="javascripts/cmdbuild/view/common/field/CMGroupSelectionList.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/view/common/field/FieldManager.js"></script>
-<script type="text/javascript" src="javascripts/cmdbuild/view/common/field/BooleanDisplayField.js"></script>
-<script type="text/javascript" src="javascripts/cmdbuild/view/common/field/CMDisplayField.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/view/common/field/HtmlEditor.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/view/common/field/LookupField.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/view/common/field/GridSearchField.js"></script>
-<script type="text/javascript" src="javascripts/cmdbuild/view/common/field/LocaleSearchField.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/view/common/field/SearchableCombo.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/view/common/field/CMToggleButtonToShowReferenceAttributes.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/view/common/field/ReferenceField.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/view/common/field/ForeignKeyField.js"></script>
 
-<!-- DELEGATES -->
-	<!-- COMMON -->
-		<!-- FILTER -->
-		<script type="text/javascript" src="javascripts/cmdbuild/delegate/common/filter/CMFilterMenuButtonDelegate.js"></script>
-
 <!--  VIEWS -->
-<script type="text/javascript" src="javascripts/cmdbuild/view/common/CMUnconfiguredModPanel.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/view/common/CMFormFuncions.js"></script>
 
 <!-- TODO: remove from management -->
@@ -112,14 +96,7 @@
 
 <!-- FILTER -->
 <script type="text/javascript" src="javascripts/cmdbuild/view/management/common/filter/CMFilterMenuButton.js"></script>
-<script type="text/javascript" src="javascripts/cmdbuild/view/management/common/filter/CMFilterWindow.js"></script>
-<script type="text/javascript" src="javascripts/cmdbuild/view/common/filter/CMFilterConfigurationWindow.js"></script>
-<script type="text/javascript" src="javascripts/cmdbuild/view/management/common/filter/CMFilterAttribute.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/controller/management/common/CMCardGridController.js"></script>
-<script type="text/javascript" src="javascripts/cmdbuild/view/management/common/filter/relations/CMDomainGrid.js"></script>
-<script type="text/javascript" src="javascripts/cmdbuild/view/management/common/filter/CMFilterRelation.js"></script>
-<script type="text/javascript" src="javascripts/cmdbuild/view/management/common/filter/CMFilterFunction.js"></script>
-<script type="text/javascript" src="javascripts/cmdbuild/view/common/filter/CMFilterChooser.js"></script>
 
 	<!-- DASHBOARD -->
 	<script type="text/javascript" src="javascripts/cmdbuild/view/common/chart/CMChartPortletForm.js"></script>
@@ -127,7 +104,6 @@
 
 <!--  CONTROLLERS -->
 <script type="text/javascript" src="javascripts/cmdbuild/controller/common/CMBasePanelController.js"></script>
-<script type="text/javascript" src="javascripts/cmdbuild/controller/common/CMUnconfiguredModPanelController.js"></script>
 <script type="text/javascript" src="javascripts/cmdbuild/controller/management/classes/StaticsController.js"></script>
 
 	<!-- DASHBOARD -->

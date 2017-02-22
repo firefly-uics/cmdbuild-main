@@ -6,6 +6,7 @@
 
 		config: {
 			createModifyCard: '.CreateModifyCard',
+			manageEmail: '.ManageEmail',
 			openAttachment: '.OpenAttachment',
 			openNote: '.OpenNote'
 		},

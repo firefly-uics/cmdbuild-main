@@ -10,7 +10,7 @@
 			'CMDBuild.core.constants.ModuleIdentifiers',
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.core.CookiesManager',
-			'CMDBuild.core.Splash',
+			'CMDBuild.core.interfaces.service.Splash',
 			'CMDBuild.proxy.core.Management',
 			'CMDBuild.proxy.dashboard.Dashboard',
 			'CMDBuild.proxy.lookup.Type',
@@ -28,7 +28,7 @@
 		 * @public
 		 */
 		init: function () {
-			CMDBuild.core.Splash.show();
+			CMDBuild.core.interfaces.service.Splash.show();
 
 			CMDBuild.core.Management.buildConfiguration();
 		},
@@ -182,7 +182,7 @@
 		buildUserInterface: function () {
 			if (!CMDBuild.core.CookiesManager.authorizationIsEmpty()) {
 				// Building accordion definitions object array (display order)
-				var accordionDefinitionObjectsArray = [{ className: 'CMDBuild.controller.management.accordion.Menu', identifier: CMDBuild.core.constants.ModuleIdentifiers.getNavigation() }];
+				var accordionDefinitionObjectsArray = [{ className: 'CMDBuild.controller.management.accordion.Navigation', identifier: CMDBuild.core.constants.ModuleIdentifiers.getNavigation() }];
 
 				if (!CMDBuild.configuration.userInterface.isDisabledModule(CMDBuild.core.constants.Proxy.CLASS))
 					accordionDefinitionObjectsArray.push({ className: 'CMDBuild.controller.management.accordion.Classes', identifier: 'class' });
@@ -225,7 +225,7 @@
 					],
 					scope: this,
 					callback: function () {
-						CMDBuild.core.Splash.hide(function () {
+						CMDBuild.core.interfaces.service.Splash.hide(function () {
 							CMDBuild.global.controller.MainViewport.cmfg('mainViewportInstanceNameSet', CMDBuild.configuration.instance.get(CMDBuild.core.constants.Proxy.INSTANCE_NAME));
 
 							if (!CMDBuild.global.Routes.isRoutePathEmpty()) { // Execute routes

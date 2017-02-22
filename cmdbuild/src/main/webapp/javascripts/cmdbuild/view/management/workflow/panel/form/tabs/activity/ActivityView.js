@@ -8,16 +8,23 @@
 	Ext.define("CMDBuild.view.management.workflow.panel.form.tabs.activity.ActivityView", {
 		extend: "Ext.panel.Panel",
 
+		requires: ['CMDBuild.core.Utils'],
+
 		mixins: {
 			widgetManagerDelegate: "CMDBuild.view.management.common.widgets.CMWidgetManagerDelegate"
 		},
+
+		/**
+		 * @cfg {CMDBuild.controller.management.workflow.panel.form.tabs.activity.Activity}
+		 */
+		delegate: undefined,
 
 		border: false,
 		title: CMDBuild.Translation.activity,
 		withButtons: true,
 		withToolBar: true,
 
-		constructor: function() {
+		initComponent: function () {
 			this.form = this.buildForm();
 
 			this.widgets = new CMDBuild.view.management.common.widget.CMWidgetButtonsPanel({
@@ -30,7 +37,7 @@
 				items: []
 			});
 
-			_CMUtils.forwardMethods(this, this.form, [
+			CMDBuild.core.Utils.forwardMethods(this, this.form, [
 				"loadCard",
 				"getValues",
 				"reset",
@@ -45,7 +52,7 @@
 				"updateInfo"
 			]);
 
-			_CMUtils.forwardMethods(this, this.widgets, [
+			CMDBuild.core.Utils.forwardMethods(this, this.widgets, [
 				"removeAllButtons",
 				"addWidget"
 			]);
@@ -83,31 +90,14 @@
 		},
 
 		listeners: {
-			show: function(panel, eOpts) {
-				// History record save
-				if (!Ext.isEmpty(_CMWFState.getProcessClassRef()) && !Ext.isEmpty( _CMWFState.getProcessInstance()))
-					CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
-						moduleId: 'workflow',
-						entryType: {
-							description: _CMWFState.getProcessClassRef().get(CMDBuild.core.constants.Proxy.TEXT),
-							id: _CMWFState.getProcessClassRef().get(CMDBuild.core.constants.Proxy.ID),
-							object: _CMWFState.getProcessClassRef()
-						},
-						item: {
-							description: _CMWFState.getProcessInstance().get(CMDBuild.core.constants.Proxy.TEXT),
-							id: _CMWFState.getProcessInstance().get(CMDBuild.core.constants.Proxy.ID),
-							object: _CMWFState.getProcessInstance()
-						},
-						section: {
-							description: this.title,
-							object: this
-						}
-					});
+			show: function (panel, eOpts) {
+				this.delegate.panelListenerManagerShow();
 			}
 		},
 
 		buildForm: function() {
 			return Ext.create('CMDBuild.view.management.workflow.panel.form.tabs.activity.FormPanel', {
+				delegate: this.delegate,
 				region: "center",
 				cmOwner: this
 			});

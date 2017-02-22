@@ -242,7 +242,7 @@
 				text: CMDBuild.Translation.defaultLevel,
 				width: 100,
 				sortable: false,
-				cmExclusive: true
+				cmExclusive: true // FIXME: should be re-implemented with regular CheckColumn
 			}, {
 				xtype: 'treecolumn',
 				dataIndex: 'text',

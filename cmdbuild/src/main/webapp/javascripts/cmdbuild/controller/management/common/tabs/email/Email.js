@@ -14,9 +14,9 @@
 		requires: [
 			'CMDBuild.controller.management.common.widgets.CMWidgetController',
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.Utils',
+			'CMDBuild.core.Message',
 			'CMDBuild.proxy.email.Template',
-			'CMDBuild.core.Message'
+			'CMDBuild.proxy.Utils'
 		],
 
 		/**

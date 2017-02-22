@@ -7,11 +7,6 @@
 
 		singleton: true,
 
-		/**
-		 * @cfg {Object}
-		 *
-		 * @private
-		 */
 		config: {
 			classes: 'class',
 			configuration: 'configuration',
@@ -27,19 +22,10 @@
 			navigationTree: 'navigationtree',
 			report: 'report',
 			reportSingle: 'reportsingle',
-			taskManager: 'taskManager',
+			taskManager: 'taskmanager',
 			userAndGroup: 'userandgroup',
 			utility: 'utility',
 			workflow: 'workflow'
-		},
-
-		/**
-		 * @param {Object} config
-		 *
-		 * @returns {Void}
-		 */
-		constructor: function (config) {
-			this.initConfig(config);
 		}
 	});
 

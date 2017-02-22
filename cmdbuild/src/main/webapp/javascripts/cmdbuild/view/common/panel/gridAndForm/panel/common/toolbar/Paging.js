@@ -1,8 +1,5 @@
 (function () {
 
-	/**
-	 * @legacy
-	 */
 	Ext.define('CMDBuild.view.common.panel.gridAndForm.panel.common.toolbar.Paging', {
 		extend: 'Ext.toolbar.Paging',
 

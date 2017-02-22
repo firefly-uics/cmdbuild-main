@@ -1,7 +1,7 @@
 (function () {
 
 	/**
-	 * @link CMDBuild.view.management.classes.tabs.history.HistoryView
+	 * @link CMDBuild.view.management.dataView.filter.panel.form.tabs.history.HistoryView
 	 *
 	 * @legacy
 	 */
@@ -19,8 +19,9 @@
 		grid: undefined,
 
 		border: false,
-		cls: 'x-panel-body-default-framed',
+		cls: 'cmdb-blue-panel-no-padding',
 		frame: false,
+		itemId: 'workflowFormTabHistory',
 		layout: 'fit',
 		title: CMDBuild.Translation.history,
 
@@ -41,17 +42,8 @@
 
 		listeners: {
 			show: function (panel, eOpts) {
-				this.delegate.cmfg('onWorkflowTabHistoryPanelShow');
+				this.delegate.cmfg('onWorkflowFormTabHistoryShow');
 			}
-		},
-
-		/**
-		 * Service function executed from module controller
-		 *
-		 * @returns {Void}
-		 */
-		reset: function () {
-			this.setDisabled(this.delegate.cmfg('workflowHistorySelectedEntityIsEmpty'));
 		}
 	});
 

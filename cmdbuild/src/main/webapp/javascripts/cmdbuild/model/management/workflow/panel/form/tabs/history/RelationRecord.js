@@ -5,9 +5,6 @@
 		'CMDBuild.core.constants.Proxy'
 	]);
 
-	/**
-	 * @link CMDBuild.model.classes.tabs.history.RelationRecord
-	 */
 	Ext.define('CMDBuild.model.management.workflow.panel.form.tabs.history.RelationRecord', {
 		extend: 'Ext.data.Model',
 
@@ -15,7 +12,6 @@
 
 		fields: [
 			{ name: CMDBuild.core.constants.Proxy.BEGIN_DATE, type: 'date', dateFormat: CMDBuild.core.configurations.DataFormat.getDateTime() },
-			{ name: CMDBuild.core.constants.Proxy.CLASS_NAME, type: 'string' },
 			{ name: CMDBuild.core.constants.Proxy.DESTINATION_DESCRIPTION, type: 'string' },
 			{ name: CMDBuild.core.constants.Proxy.DOMAIN, type: 'string' },
 			{ name: CMDBuild.core.constants.Proxy.END_DATE, type: 'date', dateFormat: CMDBuild.core.configurations.DataFormat.getDateTime() },

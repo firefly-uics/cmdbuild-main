@@ -1,8 +1,5 @@
 (function () {
 
-	/**
-	 * @link CMDBuild.controller.management.workflow.panel.tree.filter.advanced.SaveDialog
-	 */
 	Ext.define('CMDBuild.controller.common.panel.gridAndForm.panel.common.filter.advanced.SaveDialog', {
 		extend: 'CMDBuild.controller.common.abstract.Base',
 
@@ -17,9 +14,9 @@
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
-			'panelGridAndFormFilterAdvancedSaveDialogShow',
-			'onPanelGridAndFormFilterAdvancedSaveDialogAbortButtonClick',
-			'onPanelGridAndFormFilterAdvancedSaveDialogSaveButtonClick'
+			'onPanelGridAndFormCommonFilterAdvancedSaveDialogAbortButtonClick',
+			'onPanelGridAndFormCommonFilterAdvancedSaveDialogSaveButtonClick',
+			'panelGridAndFormCommonFilterAdvancedSaveDialogConfigureAndShow'
 		],
 
 		/**
@@ -57,52 +54,61 @@
 		},
 
 		/**
-		 * @param {Boolean} enableApply
-		 *
 		 * @returns {Void}
 		 */
-		panelGridAndFormFilterAdvancedSaveDialogShow: function (enableApply) {
-			if (!this.cmfg('panelGridAndFormFilterAdvancedManagerSelectedFilterIsEmpty')) {
-				this.enableApply = Ext.isBoolean(enableApply) ? enableApply : false;
-
-				this.form.loadRecord(this.cmfg('panelGridAndFormFilterAdvancedManagerSelectedFilterGet'));
-
-				this.view.show();
-			} else {
-				_error('panelGridAndFormFilterAdvancedSaveDialogShow(): cannot manage empty filter', this, this.cmfg('panelGridAndFormFilterAdvancedManagerSelectedFilterGet'));
-			}
-		},
-
-		/**
-		 * @returns {Void}
-		 */
-		onPanelGridAndFormFilterAdvancedSaveDialogAbortButtonClick: function () {
+		onPanelGridAndFormCommonFilterAdvancedSaveDialogAbortButtonClick: function () {
 			this.view.close();
 		},
 
 		/**
 		 * @returns {Void}
 		 */
-		onPanelGridAndFormFilterAdvancedSaveDialogSaveButtonClick: function () {
+		onPanelGridAndFormCommonFilterAdvancedSaveDialogSaveButtonClick: function () {
 			if (this.validate(this.form)) {
-				var formData = this.form.getData();
+				var formData = this.form.panelFunctionDataGet();
 
-				this.cmfg('panelGridAndFormFilterAdvancedManagerSelectedFilterSet', {
+				this.cmfg('panelGridAndFormCommonFilterAdvancedManagerSelectedFilterSet', {
 					propertyName: CMDBuild.core.constants.Proxy.DESCRIPTION,
 					value: formData[CMDBuild.core.constants.Proxy.DESCRIPTION]
 				});
-				this.cmfg('panelGridAndFormFilterAdvancedManagerSelectedFilterSet', {
+				this.cmfg('panelGridAndFormCommonFilterAdvancedManagerSelectedFilterSet', {
 					propertyName: CMDBuild.core.constants.Proxy.NAME,
 					value: formData[CMDBuild.core.constants.Proxy.NAME]
 				});
 
-				this.cmfg('panelGridAndFormFilterAdvancedManagerSave', {
+				this.cmfg('panelGridAndFormCommonFilterAdvancedManagerSave', {
 					enableApply: this.enableApply,
 					enableSaveDialog: false
 				});
 
-				this.cmfg('onPanelGridAndFormFilterAdvancedSaveDialogAbortButtonClick');
+				this.cmfg('onPanelGridAndFormCommonFilterAdvancedSaveDialogAbortButtonClick');
 			}
+		},
+
+		/**
+		 * @param {Object} parameters
+		 * @param {Boolean} parameters.enableApply
+		 *
+		 * @returns {Void}
+		 */
+		panelGridAndFormCommonFilterAdvancedSaveDialogConfigureAndShow: function (parameters) {
+			parameters = Ext.isObject(parameters) ? parameters : {};
+			parameters.enableApply = Ext.isBoolean(parameters.enableApply) ? parameters.enableApply : false;
+
+			// Error handling
+				if (this.cmfg('panelGridAndFormCommonFilterAdvancedManagerSelectedFilterIsEmpty'))
+					return _error(
+						'panelGridAndFormCommonFilterAdvancedSaveDialogConfigureAndShow(): unmanaged filter property',
+						this,
+						this.cmfg('panelGridAndFormCommonFilterAdvancedManagerSelectedFilterGet')
+					);
+			// END: Error handling
+
+			Ext.apply(this, parameters);
+
+			this.form.loadRecord(this.cmfg('panelGridAndFormCommonFilterAdvancedManagerSelectedFilterGet'));
+
+			this.view.show();
 		}
 	});
 

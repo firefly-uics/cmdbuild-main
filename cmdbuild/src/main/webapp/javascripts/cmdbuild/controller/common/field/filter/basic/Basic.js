@@ -1,12 +1,16 @@
 (function () {
 
+	/**
+	 * Required managed functions from upper structure:
+	 * 	- panelGridAndFormListPanelAppliedFilterGet
+	 * 	- panelGridAndFormListPanelAppliedFilterIsEmpty
+	 * 	- panelGridAndFormSelectedEntityGet
+	 * 	- panelGridAndFormUiUpdate
+	 */
 	Ext.define('CMDBuild.controller.common.field.filter.basic.Basic', {
 		extend: 'CMDBuild.controller.common.abstract.Base',
 
-		requires: [
-			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.core.Utils'
-		],
+		requires: ['CMDBuild.core.constants.Proxy'],
 
 		/**
 		 * @cfg {Object}
@@ -22,7 +26,9 @@
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
-			'onFieldFilterBasicReset',
+			'fieldFilterBasicReset',
+			'fieldFilterBasicSetDisabled',
+			'fieldFilterBasicUiUpdate',
 			'onFieldFilterBasicTrigger1Click = onFieldFilterBasicEnterKeyPress',
 			'onFieldFilterBasicTrigger2Click'
 		],
@@ -47,12 +53,12 @@
 		},
 
 		/**
-		 * @param {Boolean} silently
+		 * @param {Boolean} disableStoreLoad
 		 *
 		 * @returns {Void}
 		 */
-		onFieldFilterBasicReset: function (silently) {
-			silently = Ext.isBoolean(silently) ? silently : false;
+		fieldFilterBasicReset: function (disableStoreLoad) {
+			disableStoreLoad = Ext.isBoolean(disableStoreLoad) ? disableStoreLoad : false;
 
 			// Error handling
 				if (!Ext.isObject(this.view) || Ext.Object.isEmpty(this.view))
@@ -61,10 +67,54 @@
 
 			this.view.setValue();
 
-			this.cmfg('panelGridAndFormGridFilterClear', {
-				disableStoreLoad: silently,
-				type: 'basic'
-			});
+			if (!disableStoreLoad) {
+				var appliedFilterConfigurationObject = undefined;
+
+				if (
+					!this.cmfg('panelGridAndFormListPanelAppliedFilterIsEmpty')
+					&& !this.cmfg('panelGridAndFormListPanelAppliedFilterGet').isEmptyAdvanced()
+				) {
+					appliedFilterConfigurationObject = this.cmfg('panelGridAndFormListPanelAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION);
+
+					delete appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.QUERY];
+				}
+
+				var params = {};
+				params[CMDBuild.core.constants.Proxy.ENTITY_ID] = this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.ID);
+
+				if (Ext.isObject(appliedFilterConfigurationObject) && !Ext.Object.isEmpty(appliedFilterConfigurationObject))
+					params[CMDBuild.core.constants.Proxy.FILTER] = Ext.create('CMDBuild.model.common.Filter', { configuration: appliedFilterConfigurationObject });
+
+				this.cmfg('panelGridAndFormUiUpdate', params);
+			}
+		},
+
+		/**
+		 * @param {Boolean} state
+		 *
+		 * @returns {Void}
+		 */
+		fieldFilterBasicSetDisabled: function (state) {
+			state = Ext.isBoolean(state) ? state : true;
+
+			return this.view.setDisabled(state);
+		},
+
+		/**
+		 * @returns {Void}
+		 */
+		fieldFilterBasicUiUpdate: function () {
+			if (
+				!this.cmfg('panelGridAndFormListPanelAppliedFilterIsEmpty')
+				&& this.cmfg('panelGridAndFormListPanelAppliedFilterGet').isFilterAdvancedCompatible
+				&& !this.cmfg('panelGridAndFormListPanelAppliedFilterGet').isEmptyBasic()
+			) {
+				var appliedFilterConfiguration = this.cmfg('panelGridAndFormListPanelAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION),
+					queryString = appliedFilterConfiguration[CMDBuild.core.constants.Proxy.QUERY];
+
+				if (Ext.isString(queryString) && !Ext.isEmpty(queryString))
+					this.view.setValue(queryString);
+			}
 		},
 
 		/**
@@ -74,16 +124,23 @@
 			var value = Ext.String.trim(this.view.getValue());
 
 			if (Ext.isString(value) && !Ext.isEmpty(value)) { // Apply action on NON empty filter string
-				var filterConfigurationObject = {};
-				filterConfigurationObject[CMDBuild.core.constants.Proxy.CONFIGURATION] = {};
-				filterConfigurationObject[CMDBuild.core.constants.Proxy.CONFIGURATION][CMDBuild.core.constants.Proxy.QUERY] = value;
+				var newConfigurationObject = {};
 
-				this.cmfg('panelGridAndFormGridFilterApply', {
-					filter: Ext.create('CMDBuild.model.common.field.filter.basic.Filter', filterConfigurationObject),
-					type: 'basic'
+				// Build and apply new filter
+				if (this.cmfg('panelGridAndFormListPanelAppliedFilterIsEmpty')) {
+					newConfigurationObject = {};
+					newConfigurationObject[CMDBuild.core.constants.Proxy.QUERY] = value;
+				} else { // Merge filters objects
+					newConfigurationObject = this.cmfg('panelGridAndFormListPanelAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION);
+					newConfigurationObject[CMDBuild.core.constants.Proxy.QUERY] = value;
+				}
+
+				this.cmfg('panelGridAndFormUiUpdate', {
+					entityId: this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.ID),
+					filter: Ext.create('CMDBuild.model.common.Filter', { configuration: newConfigurationObject })
 				});
 			} else { // Reset action on empty filter string
-				this.cmfg('onFieldFilterBasicReset');
+				this.cmfg('fieldFilterBasicReset');
 			}
 		},
 
@@ -92,7 +149,7 @@
 		 */
 		onFieldFilterBasicTrigger2Click: function () {
 			if (!this.view.isDisabled())
-				this.cmfg('onFieldFilterBasicReset');
+				this.cmfg('fieldFilterBasicReset');
 		}
 	});
 

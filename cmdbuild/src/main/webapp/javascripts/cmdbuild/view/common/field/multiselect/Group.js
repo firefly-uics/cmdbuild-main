@@ -14,7 +14,7 @@
 		delegate: undefined,
 
 		allowBlank: true,
-		considerAsFieldToDisable: true,
+		considerAsFieldToDisable: true, /** @deprecated */
 		displayField: CMDBuild.core.constants.Proxy.DESCRIPTION,
 		fieldLabel: CMDBuild.Translation.enabledGroups,
 		name: CMDBuild.core.constants.Proxy.GROUPS,

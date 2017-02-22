@@ -1,5 +1,10 @@
 (function () {
 
+	/**
+	 * @link CMDBuild.view.management.dataView.filter.panel.form.tabs.history.GridPanel
+	 *
+	 * @legacy
+	 */
 	Ext.define('CMDBuild.view.management.classes.tabs.history.GridPanel', {
 		extend: 'Ext.grid.Panel',
 
@@ -25,11 +30,11 @@
 			]
 		},
 
-		autoScroll: true,
 		border: false,
 		cls: 'cmdb-history-grid', // Apply right style to grid rows
 		disableSelection: true,
 		frame: false,
+		overflowY: 'auto',
 
 		/**
 		 * @returns {Void}

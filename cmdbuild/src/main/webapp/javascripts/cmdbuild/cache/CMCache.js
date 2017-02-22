@@ -6,6 +6,8 @@
 
 		requires: [
 			'CMDBuild.core.Message',
+			'CMDBuild.core.Utils',
+			'CMDBuild.model.gis.GISLayerModel',
 			'CMDBuild.proxy.Cache',
 			'CMDBuild.proxy.common.tabs.attribute.Attribute',
 			'CMDBuild.proxy.gis.Layer',
@@ -13,11 +15,11 @@
 		],
 
 		mixins: {
-			lookup: "CMDBUild.cache.CMCacheLookupFunctions",
-			entryType: "CMDBUild.cache.CMCacheClassFunctions",
-			domains: "CMDBUild.cache.CMCacheDomainFunctions",
+			lookup: "CMDBuild.cache.CMCacheLookupFunctions",
+			entryType: "CMDBuild.cache.CMCacheClassFunctions",
+			domains: "CMDBuild.cache.CMCacheDomainFunctions",
 			dashboards: "CMDBuild.cache.CMCacheDashboardFunctions",
-			gis: "CMDBUild.cache.CMCacheGisFunctions",
+			gis: "CMDBuild.cache.CMCacheGisFunctions",
 			filters: "CMDBuild.cache.CMCacheFilterFunctions"
 		},
 
@@ -279,7 +281,7 @@
 	}
 
 	function reloadRelferenceStore(stores, idClass) {
-		var anchestors = _CMUtils.getAncestorsId(idClass);
+		var anchestors = CMDBuild.core.Utils.getAncestorsId(idClass);
 		Ext.Array.each(anchestors, function(id) {
 			var store = stores[id];
 			if (store) {

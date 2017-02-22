@@ -1,7 +1,7 @@
 (function () {
 
 	/**
-	 * @link CMDBuild.view.management.classes.tabs.history.GridPanel
+	 * @link CMDBuild.view.management.dataView.filter.panel.form.tabs.history.GridPanel
 	 *
 	 * @legacy
 	 */
@@ -29,17 +29,23 @@
 		 */
 		includeSystemActivitiesCheckbox: undefined,
 
-		config: {
-			plugins: [
-				Ext.create('CMDBuild.view.management.workflow.panel.form.tabs.history.RowExpander', { id: 'processesHistoryTabRowExpander' })
-			]
-		},
-
-		autoScroll: true,
 		border: false,
 		cls: 'cmdb-history-grid', // Apply right style to grid rows
 		disableSelection: true,
 		frame: false,
+		overflowY: 'auto',
+		scroll: 'vertical', // Business rule: voluntarily hide the horizontal scroll-bar because probably no one want it
+
+		config: {
+			plugins: [
+				Ext.create('CMDBuild.view.management.workflow.panel.form.tabs.history.RowExpander', { id: 'workflowFormTabHistoryRowExpander' })
+			]
+		},
+
+		viewConfig: {
+			loadMask: true,
+			stripeRows: true
+		},
 
 		/**
 		 * @returns {Void}
@@ -62,7 +68,7 @@
 								scope: this,
 
 								handler: function (checkbox, checked) {
-									this.delegate.cmfg('onWorkflowTabHistoryIncludeSystemActivitiesCheck');
+									this.delegate.cmfg('onWorkflowFormTabHistoryIncludeSystemActivitiesCheck');
 								}
 							}),
 							this.includeRelationsCheckbox = Ext.create('Ext.form.field.Checkbox', {
@@ -72,7 +78,7 @@
 								scope: this,
 
 								handler: function (checkbox, checked) {
-									this.delegate.cmfg('onWorkflowTabHistoryIncludeRelationCheck');
+									this.delegate.cmfg('onWorkflowFormTabHistoryIncludeRelationCheck');
 								}
 							})
 						]
@@ -86,7 +92,7 @@
 
 			// Apply activitiesStore filter
 			this.getStore().on('load', function (store, records, successful, eOpts) {
-				this.delegate.cmfg('onWorkflowTabHistoryIncludeSystemActivitiesCheck');
+				this.delegate.cmfg('onWorkflowFormTabHistoryIncludeSystemActivitiesCheck');
 			}, this);
 		},
 
@@ -95,7 +101,7 @@
 				this.getView().on('expandbody', function (rowNode, record, expandRow, eOpts) {
 					this.doLayout(); // To refresh the scrollbar status and seems to fix also a glitch effect on row collapse
 
-					this.delegate.cmfg('onWorkflowTabHistoryRowExpand', record);
+					this.delegate.cmfg('onWorkflowFormTabHistoryRowExpand', record);
 				}, this);
 			}
 		},

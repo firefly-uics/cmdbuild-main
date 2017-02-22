@@ -8,7 +8,7 @@
 		},
 
 		/**
-		 * @proeprty {CMDBuild.core.buttons.iconized.split.add.Card}
+		 * @proeprty {CMDBuild.core.buttons.icon.split.add.Card}
 		 */
 		addCardButton: undefined,
 
@@ -43,7 +43,7 @@
 						itemId: CMDBuild.core.constants.Proxy.TOOLBAR_TOP,
 
 						items: [
-							this.addCardButton = Ext.create('CMDBuild.core.buttons.iconized.split.add.Card', { classId: undefined })
+							this.addCardButton = Ext.create('CMDBuild.core.buttons.icon.split.add.Card', { classId: undefined })
 						]
 					})
 				],
@@ -66,7 +66,7 @@
 				]
 			});
 
-			_CMUtils.forwardMethods(this, this.form, [
+			CMDBuild.core.Utils.forwardMethods(this, this.form, [
 				'loadCard',
 				'getValues',
 				'reset',
@@ -78,7 +78,7 @@
 				'isInEditing'
 			]);
 
-			_CMUtils.forwardMethods(this, this.widgets, ['removeAllButtons', 'addWidget']);
+			CMDBuild.core.Utils.forwardMethods(this, this.widgets, ['removeAllButtons', 'addWidget']);
 			this.widgets.hide();
 
 			this.callParent(arguments);

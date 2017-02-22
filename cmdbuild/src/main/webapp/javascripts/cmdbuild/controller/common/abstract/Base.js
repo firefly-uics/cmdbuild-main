@@ -3,6 +3,7 @@
 	// External implementation to avoid overrides
 	Ext.require([
 		'CMDBuild.core.constants.Global',
+		'CMDBuild.core.constants.Proxy',
 		'CMDBuild.core.Message'
 	]);
 
@@ -214,8 +215,6 @@
 		/**
 		 * Method to manage module initialization (to localize)
 		 *
-		 * @returns {Void}
-		 *
 		 * @abstract
 		 */
 		onModuleInit: Ext.emptyFn,
@@ -282,22 +281,26 @@
 			propertyManageIsEmpty: function (parameters) {
 				var requiredValue = this.propertyManageGet(parameters);
 
-				if (Ext.isObject(requiredValue) && Ext.isFunction(requiredValue.getData)) { // Model manage
-					var result = true;
+				if (Ext.isObject(requiredValue) && !Ext.Object.isEmpty(requiredValue)) {
+					if (Ext.isFunction(requiredValue.isEmpty)) // Model manage with isEmpty() method
+						return requiredValue.isEmpty();
 
-					Ext.Object.each(requiredValue.getData(), function (key, value, myself) {
-						result = Ext.isEmpty(value);
+					if (Ext.isFunction(requiredValue.getData)) { // Model manage
+						var result = true;
+
+						Ext.Object.each(requiredValue.getData(), function (key, value, myself) {
+							result = Ext.isEmpty(value);
+
+							return result;
+						}, this);
 
 						return result;
-					}, this);
+					}
 
-					return result;
-				} else if (Ext.isObject(requiredValue)) { // Simple object manage
-					return Ext.Object.isEmpty(requiredValue);
+					return Ext.Object.isEmpty(requiredValue); // Simple object manage
 				}
 
-				// Other variable types manage
-				return Ext.isEmpty(requiredValue);
+				return Ext.isEmpty(requiredValue); // Other variable types manage
 			},
 
 			/**
@@ -359,8 +362,7 @@
 		 * @private
 		 */
 		setViewTitle: function (titlePart) {
-			titlePart = Ext.isEmpty(titlePart) ? [] : titlePart;
-			titlePart = Ext.isArray(titlePart) ? titlePart : [titlePart];
+			titlePart = Ext.isArray(titlePart) ? Ext.Array.clean(titlePart) : Ext.Array.clean([titlePart]);
 
 			if (!Ext.isEmpty(this.view))
 				if (Ext.isEmpty(titlePart)) {
@@ -383,19 +385,38 @@
 		validate: function (form, showPopup) {
 			showPopup = Ext.isBoolean(showPopup) ? showPopup : true;
 
-			var invalidFieldsArray = form.getNonValidFields();
+			// Error handling
+				if (!Ext.isObject(form) || Ext.Object.isEmpty(form))
+					return _error('validate(): unmanaged form parameter', this, form);
+			// END: Error handling
+
+			var invalidFieldsArray = [];
+
+			if (Ext.isFunction(form.panelFunctionFieldInvalidGet))
+				invalidFieldsArray = form.panelFunctionFieldInvalidGet();
+
+			/**
+			 * Compatibility with CMDBuild.view.common.PanelFunctions version 1
+			 *
+			 * @legacy
+			 */
+			if (Ext.isFunction(form.getNonValidFields))
+				invalidFieldsArray = form.getNonValidFields();
 
 			// Check for invalid fields and builds errorMessage
 			if (
-				!Ext.isEmpty(form)
-				&& !Ext.isEmpty(invalidFieldsArray) && Ext.isArray(invalidFieldsArray)
+				Ext.isArray(invalidFieldsArray) && !Ext.isEmpty(invalidFieldsArray)
 				&& showPopup
 			) {
 				var errorMessage = '';
 
-				Ext.Array.each(invalidFieldsArray, function (invalidField, i, allInvalidFields) {
-					if (!Ext.isEmpty(invalidField) && Ext.isFunction(invalidField.getFieldLabel))
+				Ext.Array.forEach(invalidFieldsArray, function (invalidField, i, allInvalidFields) {
+					if (
+						!Ext.isEmpty(invalidField) && Ext.isFunction(invalidField.getFieldLabel)
+						&& !Ext.isEmpty(invalidField.getFieldLabel())
+					) {
 						errorMessage += '<li>' + invalidField.getFieldLabel() + '</li>';
+					}
 				}, this);
 
 				CMDBuild.core.Message.error(

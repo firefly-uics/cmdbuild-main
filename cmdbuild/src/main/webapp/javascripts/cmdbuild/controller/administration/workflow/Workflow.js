@@ -127,18 +127,21 @@
 		/**
 		 * Setup view items and controllers on accordion click
 		 *
-		 * @param {CMDBuild.model.common.Accordion} node
+		 * @param {Object} parameters
+		 * @param {CMDBuild.model.common.Accordion} parameters.node
 		 *
 		 * @returns {Void}
 		 *
 		 * @override
 		 */
-		onWorkflowModuleInit: function (node) {
+		onWorkflowModuleInit: function (parameters) {
+			parameters = Ext.isObject(parameters) ? parameters : {};
+
 			this.cmfg('workflowSelectedWorkflowReset');
 
-			if (Ext.isObject(node) && !Ext.Object.isEmpty(node)) {
+			if (Ext.isObject(parameters.node) && !Ext.Object.isEmpty(parameters.node)) {
 				var params = {};
-				params[CMDBuild.core.constants.Proxy.ID] = node.get(CMDBuild.core.constants.Proxy.ENTITY_ID);
+				params[CMDBuild.core.constants.Proxy.ID] = parameters.node.get(CMDBuild.core.constants.Proxy.ENTITY_ID);
 
 				CMDBuild.proxy.administration.workflow.Workflow.readById({
 					params: params,
@@ -159,7 +162,7 @@
 
 							this.tabPanel.getActiveTab().fireEvent('show'); // Manual show event fire because was already selected
 
-							this.onModuleInit(node); // Custom callParent() implementation
+							this.onModuleInit(parameters); // Custom callParent() implementation
 						} else {
 							_error('onWorkflowModuleInit(): unmanaged response', this, decodedResponse);
 						}
@@ -174,7 +177,7 @@
 
 				this.tabPanel.getActiveTab().fireEvent('show'); // Manual show event fire because was already selected
 
-				this.onModuleInit(node); // Custom callParent() implementation
+				this.onModuleInit(parameters); // Custom callParent() implementation
 			}
 		},
 
@@ -192,7 +195,7 @@
 			var params = {};
 			params[CMDBuild.core.constants.Proxy.FORMAT] = format;
 
-			this.controllerPrintWindow.cmfg('panelGridAndFormPrintWindowShow', {
+			this.controllerPrintWindow.cmfg('panelGridAndFormCommonPrintWindowShow', {
 				format: format,
 				mode: 'schema',
 				params: params
