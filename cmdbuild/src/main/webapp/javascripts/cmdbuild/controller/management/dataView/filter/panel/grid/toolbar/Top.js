@@ -72,9 +72,7 @@
 					disabled: this.isAddButtonDisabled(menuItems),
 					scope: this,
 
-					menu: Ext.create('Ext.menu.Menu', {
-						items: menuItems
-					}),
+					menu: Ext.create('Ext.menu.Menu', { items: menuItems }),
 
 					/**
 					 * @returns {Boolean}
@@ -199,7 +197,6 @@
 					Ext.isNumber(id) && !Ext.isEmpty(id)
 					&& !Ext.isEmpty(this.entryTypeRelationshipTree[id])
 					&& Ext.isObject(child) && !Ext.Object.isEmpty(child)
-					&& Ext.getClassName(child) == 'CMDBuild.model.management.dataView.filter.panel.grid.toolbar.top.Parent'
 				) {
 					var children = this.entryTypeRelationshipTree[id].get(CMDBuild.core.constants.Proxy.CHILDREN);
 					children = Ext.Array.merge(children, [child]); // Merge with unique items

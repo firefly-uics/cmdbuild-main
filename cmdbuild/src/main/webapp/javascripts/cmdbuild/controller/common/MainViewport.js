@@ -412,7 +412,6 @@
 					moduleController.cmfg('workflowUiUpdate', {
 						defaultFilterApplyIfExists: true,
 						disableFirstRowSelection: true,
-						filterReset: true,
 						instanceId: parameters.instanceId,
 						sortersReset: true,
 						storeLoadForce: true,

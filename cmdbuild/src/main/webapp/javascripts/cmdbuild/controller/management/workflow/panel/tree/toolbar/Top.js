@@ -117,7 +117,7 @@
 		 */
 		buildMenuChildren: function (childrenArray, parent) {
 			if (Ext.isArray(childrenArray) && !Ext.isEmpty(childrenArray))
-				Ext.Array.each(childrenArray, function (childrenObject, i, allChildrenObjects) {
+				Ext.Array.forEach(childrenArray, function (childrenObject, i, allChildrenObjects) {
 					if (Ext.isObject(childrenObject) && !Ext.Object.isEmpty(childrenObject))
 						this.buildMenuItem(childrenObject, parent);
 				}, this);
@@ -134,7 +134,7 @@
 		buildMenuItem: function (workflowObject, parent) {
 			if (
 				Ext.isObject(workflowObject) && !Ext.Object.isEmpty(workflowObject)
-				&& workflowObject.get(CMDBuild.core.constants.Proxy.IS_STARTABLE)
+				&& workflowObject.get([CMDBuild.core.constants.Proxy.PERMISSIONS, CMDBuild.core.constants.Proxy.STARTABLE])
 				&& !workflowObject.get([CMDBuild.core.constants.Proxy.CAPABILITIES, CMDBuild.core.constants.Proxy.ADD_DISABLED])
 			) {
 				var menuObject = {
@@ -170,22 +170,19 @@
 		 * @private
 		 */
 		isAddButtonDisabled: function (menuItems) {
-			if (this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.IS_SUPER_CLASS))
-				return (
-					Ext.isEmpty(menuItems)
- 					|| this.cmfg('workflowSelectedWorkflowGet', [
-						CMDBuild.core.constants.Proxy.CAPABILITIES,
-						CMDBuild.core.constants.Proxy.ADD_DISABLED
-					])
-				);
-
-			return (
-				!this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.IS_STARTABLE)
-				|| this.cmfg('workflowSelectedWorkflowGet', [
+			var permissionsStart = this.cmfg('workflowSelectedWorkflowGet', [
+					CMDBuild.core.constants.Proxy.PERMISSIONS,
+					CMDBuild.core.constants.Proxy.STARTABLE
+				]),
+				permissionsDisabledFeaturesCreate = this.cmfg('workflowSelectedWorkflowGet', [
 					CMDBuild.core.constants.Proxy.CAPABILITIES,
 					CMDBuild.core.constants.Proxy.ADD_DISABLED
-				])
-			);
+				]);
+
+			if (this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.IS_SUPER_CLASS))
+				return Ext.isEmpty(menuItems) || permissionsDisabledFeaturesCreate;
+
+			return !permissionsStart || permissionsDisabledFeaturesCreate;
 		},
 
 		/**
@@ -232,13 +229,15 @@
 					Ext.isNumber(id) && !Ext.isEmpty(id)
 					&& !Ext.isEmpty(this.workflowRelationshipTree[id])
 					&& Ext.isObject(child) && !Ext.Object.isEmpty(child)
-					&& Ext.getClassName(child) == 'CMDBuild.model.management.workflow.workflow.Workflow'
 				) {
 					var children = this.workflowRelationshipTree[id].get(CMDBuild.core.constants.Proxy.CHILDREN);
 					children = Ext.Array.merge(children, [child]); // Merge with unique items
 					children = CMDBuild.core.Utils.objectArraySort(children); // Sort children by description ASC
 
-					this.workflowRelationshipTree[id].set(CMDBuild.core.constants.Proxy.CHILDREN, children);
+					this.workflowRelationshipTree[id].set(
+						CMDBuild.core.constants.Proxy.CHILDREN,
+						Ext.Array.clean(children)
+					);
 				}
 			},
 
@@ -285,10 +284,10 @@
 				parameters = Ext.isObject(parameters) ? parameters : {};
 
 				if (
-					!Ext.isEmpty(parameters.value[CMDBuild.core.constants.Proxy.ID])
-					&& Ext.isObject(parameters.value) && !Ext.Object.isEmpty(parameters.value)
+					Ext.isObject(parameters.value) && !Ext.Object.isEmpty(parameters.value)
+					&& !Ext.isEmpty(parameters.value.get(CMDBuild.core.constants.Proxy.ID))
 				) {
-					this.workflowRelationshipTree[parameters.value[CMDBuild.core.constants.Proxy.ID]] = parameters.value;
+					this.workflowRelationshipTree[parameters.value.get(CMDBuild.core.constants.Proxy.ID)] = parameters.value;
 				}
 			},
 

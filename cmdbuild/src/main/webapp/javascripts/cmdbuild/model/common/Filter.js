@@ -26,89 +26,40 @@
 		],
 
 		/**
-		 * @param {Array} destinationContainer
-		 * @param {Array or Object} item
+		 * Override to permits multilevel get with a single function and custom routine:
+		 * 	- on get description if description is empty return name property
 		 *
-		 * @returns {Void}
+		 * @param {Array or String} property
 		 *
-		 * @private
-		 */
-		extractSimpleObjects: function (destinationContainer, item) {
-			// Error handling
-				if (!Ext.isArray(destinationContainer))
-					return _error('extractSimpleObjects(): unmanaged destinationContainer parameter', this, destinationContainer);
-			// END: Error handling
-
-			if (Ext.isObject(item) && !Ext.Object.isEmpty(item)) {
-				if (!Ext.isEmpty(item.and))
-					return this.extractSimpleObjects(destinationContainer, item.and);
-
-				if (!Ext.isEmpty(item.or))
-					return this.extractSimpleObjects(destinationContainer, item.or);
-
-				if (!Ext.isEmpty(item.simple))
-					return CMDBuild.core.Utils.arrayPushIfUnique(destinationContainer, item.simple);
-			} else if (Ext.isArray(item) && !Ext.isEmpty(item)) {
-				Ext.Array.forEach(item, function (filterObject, i, allFilterObjects) {
-					this.extractSimpleObjects(destinationContainer, filterObject);
-				}, this);
-			}
-		},
-
-		/**
-		 * Recursive method to find all filter parameters with parameterType
-		 *
-		 * @param {Object} configuration
-		 * @param {String} parameterType
-		 * @param {Array} parameters
-		 * @param {Boolean} onlyWithEmptyValue
-		 *
-		 * @returns {Void}
-		 *
-		 * @private
-		 */
-		findParameters: function (configuration, parameterType, parameters, onlyWithEmptyValue) {
-			onlyWithEmptyValue = Ext.isBoolean(onlyWithEmptyValue) ? onlyWithEmptyValue : false;
-
-			if (
-				Ext.isObject(configuration) && !Ext.Object.isEmpty(configuration)
-				&& Ext.isString(parameterType) && !Ext.isEmpty(parameterType)
-				&& Ext.isArray(parameters)
-			) {
-				if (Ext.isObject(configuration.simple)) {
-					var configurationParameter = configuration.simple;
-
-					if (configurationParameter.parameterType == parameterType) {
-						if (onlyWithEmptyValue)
-							return Ext.Object.isEmpty(configurationParameter.value) ? parameters.push(configurationParameter) : null;
-
-						return parameters.push(configurationParameter);
-					}
-				} else if (Ext.isArray(configuration.and) || Ext.isArray(configuration.or)) {
-					var attributes = configuration.and || configuration.or;
-
-					if (Ext.isArray(attributes) && !Ext.isEmpty(attributes))
-						Ext.Array.each(attributes, function (attributeObject, i, allAttributeObjects) {
-							this.findParameters(attributeObject, parameterType, parameters, onlyWithEmptyValue);
-						}, this);
-				}
-			}
-		},
-
-		/**
-		 * Implementation of model get custom routines:
-		 * - on get description if description is empty return name property
-		 *
-		 * @param {String} propertyName
-		 *
-		 * @returns {Mixed}
+		 * @returns {Mixed or null}
 		 *
 		 * @override
 		 */
-		get: function (propertyName) {
-			switch (propertyName) {
+		get: function (property) {
+			if (Ext.isArray(property) && !Ext.isEmpty(property)) {
+				var returnValue = this;
+
+				Ext.Array.forEach(property, function (propertyName, i, allPropertyNames) {
+					if (Ext.isObject(returnValue) && !Ext.Object.isEmpty(returnValue))
+						if (Ext.isFunction(returnValue.get)) { // Ext.data.Model manage
+							returnValue = returnValue.get(propertyName);
+						} else if (!Ext.isEmpty(returnValue[propertyName])) { // Simple object manage
+							returnValue = returnValue[propertyName];
+						} else { // Not found
+							returnValue = null;
+						}
+				}, this);
+
+				return returnValue;
+			}
+
+			switch (property) {
 				case CMDBuild.core.constants.Proxy.DESCRIPTION:
-					return this.callParent(arguments) || this.get(CMDBuild.core.constants.Proxy.NAME) || '';
+					return (
+						this.callParent(arguments)
+						|| this.get(CMDBuild.core.constants.Proxy.NAME)
+						|| ''
+					);
 
 				default:
 					return this.callParent(arguments);
@@ -121,8 +72,8 @@
 		getEmptyRuntimeParameters: function () {
 			var parameters = [];
 
-			this.findParameters(
-				this.get(CMDBuild.core.constants.Proxy.CONFIGURATION)[CMDBuild.core.constants.Proxy.ATTRIBUTE],
+			this.simpleObjectsFindByType(
+				this.get([CMDBuild.core.constants.Proxy.CONFIGURATION, CMDBuild.core.constants.Proxy.ATTRIBUTE]),
 				CMDBuild.core.constants.Proxy.RUNTIME,
 				parameters,
 				true
@@ -155,9 +106,9 @@
 		 * @returns {Boolean}
 		 */
 		isEmptyBasic: function () {
-			var configuration = this.get(CMDBuild.core.constants.Proxy.CONFIGURATION);
-
-			return Ext.isEmpty(configuration[CMDBuild.core.constants.Proxy.QUERY]);
+			return Ext.isEmpty(
+				this.get([CMDBuild.core.constants.Proxy.CONFIGURATION, CMDBuild.core.constants.Proxy.QUERY])
+			);
 		},
 
 		// Merge manage methods
@@ -232,49 +183,20 @@
 				other = Ext.isObject(other) ? other : {};
 
 				if (!Ext.Object.isEmpty(local) && !Ext.Object.isEmpty(other)) { // Merge objects
-					var mergedFilterItems = [],
-						simpleObjects = [],
-						simpleObjectsGroupedByName = {};
+					var simpleObjects = [];
 
-					this.extractSimpleObjects(simpleObjects, local);
-					this.extractSimpleObjects(simpleObjects, other);
+					this.simpleObjectsRecoursiveExtract(simpleObjects, local);
+					this.simpleObjectsRecoursiveExtract(simpleObjects, other);
 
-					if (!Ext.isEmpty(simpleObjects)) {
-						// Build filter attribute's groups
-						Ext.Array.forEach(simpleObjects, function (simpleObject, i, allSimpleObjects) {
-							var attributeName = simpleObject[CMDBuild.core.constants.Proxy.ATTRIBUTE];
+					if (Ext.isArray(simpleObjects) && !Ext.isEmpty(simpleObjects)) {
+						var mergedAttributeObject = this.simpleObjectsGroupLogicRelationsFinalize(
+							this.simpleObjectsGroupLogicRelationsBuild(
+								this.simpleObjectsGroupByName(simpleObjects)
+							)
+						);
 
-							if (Ext.isString(attributeName) && !Ext.isEmpty(attributeName)) {
-								var filterItemObject = {};
-								filterItemObject[CMDBuild.core.constants.Proxy.SIMPLE] = simpleObject;
-
-								if (Ext.isEmpty(simpleObjectsGroupedByName[attributeName]))
-									simpleObjectsGroupedByName[attributeName] = [];
-
-								simpleObjectsGroupedByName[attributeName].push(filterItemObject);
-							}
-						}, this);
-
-						Ext.Object.each(simpleObjectsGroupedByName, function (name, objectsArray, myself) {
-							if (objectsArray.length == 1) {
-								mergedFilterItems.push(objectsArray[0]);
-							} else {
-								var itemObject = {};
-								itemObject[CMDBuild.core.constants.Proxy.OR] = objectsArray;
-
-								mergedFilterItems.push(itemObject);
-							}
-						}, this);
-					}
-
-					if (mergedFilterItems.length == 1)
-						return mergedFilterItems[0];
-
-					if (mergedFilterItems.length > 1) {
-						var returnObject = {};
-						returnObject[CMDBuild.core.constants.Proxy.AND] = mergedFilterItems;
-
-						return returnObject;
+						if (Ext.isObject(mergedAttributeObject) && !Ext.isEmpty(mergedAttributeObject))
+							return mergedAttributeObject;
 					}
 				}
 
@@ -342,65 +264,86 @@
 		 */
 		resetRuntimeParametersValue: function () {
 			var configuration = this.get(CMDBuild.core.constants.Proxy.CONFIGURATION),
-				parameters = [];
+				simpleObjects = [];
 
-			this.findParameters(
+			this.simpleObjectsFindByType(
 				configuration[CMDBuild.core.constants.Proxy.ATTRIBUTE],
 				CMDBuild.core.constants.Proxy.RUNTIME,
-				parameters
+				simpleObjects
 			);
 
-			Ext.Array.each(parameters, function (parameterObject, i, allParameterObjects) {
-				if (Ext.isObject(parameterObject) && !Ext.Object.isEmpty(parameterObject))
-					parameterObject[CMDBuild.core.constants.Proxy.VALUE] = [];
-			}, this);
-
-			this.set(CMDBuild.core.constants.Proxy.CONFIGURATION, configuration);
-		},
-
-		/**
-		 * @returns {Void}
-		 */
-		resolveCalculatedParameters: function () {
-			var configuration = this.get(CMDBuild.core.constants.Proxy.CONFIGURATION);
-			var parameters = [];
-
-			this.findParameters(
-				configuration[CMDBuild.core.constants.Proxy.ATTRIBUTE] || {},
-				CMDBuild.core.constants.Proxy.CALCULATED,
-				parameters
-			);
-
-			if (Ext.isArray(parameters) && !Ext.isEmpty(parameters)) {
-				Ext.Array.each(parameters, function (claculatedParameter, i, allCalculatedParameters) {
-					if (Ext.isObject(claculatedParameter) && !Ext.Object.isEmpty(claculatedParameter))
-						claculatedParameter = this.resolveCalculatedParameterValue(claculatedParameter);
+			if (Ext.isArray(simpleObjects) && !Ext.isEmpty(simpleObjects)) {
+				Ext.Array.forEach(simpleObjects, function (simpleObject, i, allSimpleObjects) {
+					if (Ext.isObject(simpleObject) && !Ext.Object.isEmpty(simpleObject))
+						simpleObjects[i][CMDBuild.core.constants.Proxy.VALUE] = [];
 				}, this);
+
+				var clearedAttributeObject = this.simpleObjectsGroupLogicRelationsFinalize(
+					this.simpleObjectsGroupLogicRelationsBuild(
+						this.simpleObjectsGroupByName(simpleObjects)
+					)
+				);
+
+				if (Ext.isObject(clearedAttributeObject) && !Ext.Object.isEmpty(clearedAttributeObject))
+					configuration[CMDBuild.core.constants.Proxy.ATTRIBUTE] = clearedAttributeObject;
 
 				this.set(CMDBuild.core.constants.Proxy.CONFIGURATION, configuration);
 			}
 		},
 
 		/**
-		 * @param {Object} parameter
+		 * @returns {Void}
+		 */
+		resolveCalculatedParameters: function () {
+			var configuration = this.get(CMDBuild.core.constants.Proxy.CONFIGURATION),
+				simpleObjects = [];
+
+			this.simpleObjectsFindByType(
+				configuration[CMDBuild.core.constants.Proxy.ATTRIBUTE],
+				CMDBuild.core.constants.Proxy.CALCULATED,
+				simpleObjects
+			);
+
+			if (Ext.isArray(simpleObjects) && !Ext.isEmpty(simpleObjects)) {
+				Ext.Array.forEach(simpleObjects, function (simpleObject, i, allSimpleObjects) {
+					if (Ext.isObject(simpleObject) && !Ext.Object.isEmpty(simpleObject))
+						simpleObjects[i][CMDBuild.core.constants.Proxy.VALUE] = this.resolveCalculatedParameterValue(simpleObject[CMDBuild.core.constants.Proxy.VALUE])
+				}, this);
+
+				var resolvedAttributeObject = this.simpleObjectsGroupLogicRelationsFinalize(
+					this.simpleObjectsGroupLogicRelationsBuild(
+						this.simpleObjectsGroupByName(simpleObjects)
+					)
+				);
+
+				if (Ext.isObject(resolvedAttributeObject) && !Ext.Object.isEmpty(resolvedAttributeObject))
+					configuration[CMDBuild.core.constants.Proxy.ATTRIBUTE] = resolvedAttributeObject;
+
+				this.set(CMDBuild.core.constants.Proxy.CONFIGURATION, configuration);
+			}
+		},
+
+		/**
+		 * @param {Array} values
 		 *
-		 * @returns {String}
+		 * @returns {Array} values
 		 *
 		 * @private
 		 */
-		resolveCalculatedParameterValue: function (parameter) {
-			if (Ext.isObject(parameter) && !Ext.Object.isEmpty(parameter))
-				switch (parameter.value[0]) {
-					case '@MY_USER': {
-						parameter.value[0] = String(CMDBuild.configuration.runtime.get(CMDBuild.core.constants.Proxy.USER_ID));
-					} break;
+		resolveCalculatedParameterValue: function (values) {
+			values = Ext.isArray(values) ? values : [];
 
-					case '@MY_GROUP': {
-						parameter.value[0] = String(CMDBuild.configuration.runtime.get(CMDBuild.core.constants.Proxy.DEFAULT_GROUP_ID));
-					} break;
+			Ext.Array.forEach(values, function (value, i, allValues) {
+				switch (value) {
+					case '@MY_USER':
+						return value[i] = String(CMDBuild.configuration.runtime.get(CMDBuild.core.constants.Proxy.USER_ID));
+
+					case '@MY_GROUP':
+						return value[i] = String(CMDBuild.configuration.runtime.get(CMDBuild.core.constants.Proxy.DEFAULT_GROUP_ID));
 				}
+			}, this);
 
-			return parameter;
+			return values;
 		},
 
 		/**
@@ -430,26 +373,184 @@
 			// END: Error handling
 
 			var configuration = this.get(CMDBuild.core.constants.Proxy.CONFIGURATION),
-				parameters = [];
+				simpleObjects = [];
 
-			this.findParameters(
+			this.simpleObjectsFindByType(
 				configuration[CMDBuild.core.constants.Proxy.ATTRIBUTE],
 				CMDBuild.core.constants.Proxy.RUNTIME,
-				parameters,
+				simpleObjects,
 				true
 			);
 
-			Ext.Array.each(parameters, function (parameterObject, i, allParameterObjects) {
-				if (Ext.isObject(parameterObject) && !Ext.Object.isEmpty(parameterObject)) {
-					var value = valuesObject[parameterObject[CMDBuild.core.constants.Proxy.ATTRIBUTE]];
+			if (Ext.isArray(simpleObjects) && !Ext.isEmpty(simpleObjects)) {
+				Ext.Array.forEach(simpleObjects, function (simpleObject, i, allSimpleObjects) {
+					if (Ext.isObject(simpleObject) && !Ext.Object.isEmpty(simpleObject)) {
+						var value = valuesObject[simpleObject[CMDBuild.core.constants.Proxy.ATTRIBUTE]];
 
-					if (!Ext.isEmpty(value))
-						parameterObject[CMDBuild.core.constants.Proxy.VALUE] = [value];
+						if (!Ext.isEmpty(value))
+							simpleObjects[i][CMDBuild.core.constants.Proxy.VALUE] = Ext.Array.clean([value]);
+					}
+				}, this);
+
+				var managedAttributeObject = this.simpleObjectsGroupLogicRelationsFinalize(
+					this.simpleObjectsGroupLogicRelationsBuild(
+						this.simpleObjectsGroupByName(simpleObjects)
+					)
+				);
+
+				if (Ext.isObject(managedAttributeObject) && !Ext.Object.isEmpty(managedAttributeObject))
+					configuration[CMDBuild.core.constants.Proxy.ATTRIBUTE] = managedAttributeObject;
+
+				this.set(CMDBuild.core.constants.Proxy.CONFIGURATION, configuration);
+			}
+		},
+
+		// SimpleObjects manage functions
+			/**
+			 * Recursive method to find all filter parameters with parameterType
+			 *
+			 * @param {Object} configuration
+			 * @param {String} parameterType
+			 * @param {Array} parameters
+			 * @param {Boolean} onlyWithEmptyValue
+			 *
+			 * @returns {Void}
+			 *
+			 * @private
+			 */
+			simpleObjectsFindByType: function (configuration, parameterType, parameters, onlyWithEmptyValue) {
+				onlyWithEmptyValue = Ext.isBoolean(onlyWithEmptyValue) ? onlyWithEmptyValue : false;
+
+				// Error handling
+					if (!Ext.isString(parameterType) || Ext.isEmpty(parameterType))
+						return _error('simpleObjectsFindByType(): unmanaged parameterType parameter', this, parameterType);
+
+					if (!Ext.isArray(parameters))
+						return _error('simpleObjectsFindByType(): unmanaged parameters parameter', this, parameters);
+				// END: Error handling
+
+				var simpleObjects = [];
+
+				this.simpleObjectsRecoursiveExtract(simpleObjects, configuration);
+
+				Ext.Array.forEach(simpleObjects, function (simple, i, allSimple) {
+					if (
+						Ext.isObject(simple) && !Ext.Object.isEmpty(simple)
+						&& simple.parameterType == parameterType
+					) {
+						if (onlyWithEmptyValue)
+							return Ext.Object.isEmpty(simple.value) ? parameters.push(simple) : null;
+
+						return parameters.push(simple);
+					}
+				}, this)
+			},
+
+			/**
+			 * @param {Array} simpleObjects
+			 *
+			 * @returns {Object} groups
+			 *
+			 * @private
+			 */
+			simpleObjectsGroupByName: function (simpleObjects) {
+				var groups = {};
+
+				if (Ext.isArray(simpleObjects) && !Ext.isEmpty(simpleObjects))
+					Ext.Array.forEach(simpleObjects, function (simpleObject, i, allSimpleObjects) {
+						var attributeName = simpleObject[CMDBuild.core.constants.Proxy.ATTRIBUTE];
+
+						if (Ext.isString(attributeName) && !Ext.isEmpty(attributeName)) {
+							var filterItemObject = {};
+							filterItemObject[CMDBuild.core.constants.Proxy.SIMPLE] = simpleObject;
+
+							if (Ext.isEmpty(groups[attributeName]))
+								groups[attributeName] = [];
+
+							groups[attributeName].push(filterItemObject);
+						}
+					}, this);
+
+				return groups;
+			},
+
+			/**
+			 * Concatenate a simpleObjects grouped object with condition arrays
+			 *
+			 * @param {Object} groups
+			 *
+			 * @returns {Array} logicRelations
+			 *
+			 * @private
+			 */
+			simpleObjectsGroupLogicRelationsBuild: function (groups) {
+				var logicRelations = [];
+
+				if (Ext.isObject(groups) && !Ext.Object.isEmpty(groups))
+					Ext.Object.each(groups, function (name, objectsArray, myself) {
+						if (objectsArray.length == 1) {
+							logicRelations.push(objectsArray[0]);
+						} else {
+							var itemObject = {};
+							itemObject[CMDBuild.core.constants.Proxy.OR] = objectsArray;
+
+							logicRelations.push(itemObject);
+						}
+					}, this);
+
+				return logicRelations;
+			},
+
+			/**
+			 * @param {Array} logicRelations
+			 *
+			 * @returns {Object}
+			 *
+			 * @private
+			 */
+			simpleObjectsGroupLogicRelationsFinalize: function (logicRelations) {
+				if (logicRelations.length == 1)
+					return logicRelations[0];
+
+				if (logicRelations.length > 1) {
+					var returnObject = {};
+					returnObject[CMDBuild.core.constants.Proxy.AND] = logicRelations;
+
+					return returnObject;
 				}
-			}, this);
 
-			this.set(CMDBuild.core.constants.Proxy.CONFIGURATION, configuration);
-		}
+				return {};
+			},
+
+			/**
+			 * @param {Array} destinationContainer
+			 * @param {Array or Object} item
+			 *
+			 * @returns {Void}
+			 *
+			 * @private
+			 */
+			simpleObjectsRecoursiveExtract: function (destinationContainer, item) {
+				// Error handling
+					if (!Ext.isArray(destinationContainer))
+						return _error('simpleObjectsRecoursiveExtract(): unmanaged destinationContainer parameter', this, destinationContainer);
+				// END: Error handling
+
+				if (Ext.isObject(item) && !Ext.Object.isEmpty(item)) {
+					if (!Ext.isEmpty(item.and))
+						return this.simpleObjectsRecoursiveExtract(destinationContainer, item.and);
+
+					if (!Ext.isEmpty(item.or))
+						return this.simpleObjectsRecoursiveExtract(destinationContainer, item.or);
+
+					if (!Ext.isEmpty(item.simple))
+						return CMDBuild.core.Utils.arrayPushIfUnique(destinationContainer, Ext.clone(item.simple));
+				} else if (Ext.isArray(item) && !Ext.isEmpty(item)) {
+					Ext.Array.forEach(item, function (filterObject, i, allFilterObjects) {
+						this.simpleObjectsRecoursiveExtract(destinationContainer, filterObject);
+					}, this);
+				}
+			}
 	});
 
 })();

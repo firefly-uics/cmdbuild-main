@@ -34,7 +34,10 @@
 			if (!parameters.disableStoreLoad) {
 				var appliedFilterConfigurationObject = undefined;
 
-				if (!this.cmfg('panelGridAndFormListPanelAppliedFilterIsEmpty') && !this.cmfg('panelGridAndFormListPanelAppliedFilterGet').isEmptyBasic()) {
+				if (
+					!this.cmfg('panelGridAndFormListPanelAppliedFilterIsEmpty')
+					&& !this.cmfg('panelGridAndFormListPanelAppliedFilterGet').isEmptyBasic()
+				) {
 					appliedFilterConfigurationObject = this.cmfg('panelGridAndFormListPanelAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION);
 
 					delete appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.ATTRIBUTE];
@@ -45,10 +48,8 @@
 				var params = {};
 				params[CMDBuild.core.constants.Proxy.ENTITY_ID] = this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.ID);
 
-				if (!Ext.isEmpty(appliedFilterConfigurationObject))
-					params[CMDBuild.core.constants.Proxy.FILTER] = Ext.create('CMDBuild.model.common.Filter', {
-						configuration: appliedFilterConfigurationObject
-					});
+				if (Ext.isObject(appliedFilterConfigurationObject) && !Ext.Object.isEmpty(appliedFilterConfigurationObject))
+					params[CMDBuild.core.constants.Proxy.FILTER] = Ext.create('CMDBuild.model.common.Filter', { configuration: appliedFilterConfigurationObject });
 
 				this.cmfg('panelGridAndFormUiUpdate', params);
 			}

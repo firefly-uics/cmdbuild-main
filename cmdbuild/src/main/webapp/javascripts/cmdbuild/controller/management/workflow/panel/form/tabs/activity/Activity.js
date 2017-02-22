@@ -108,7 +108,6 @@
 		 * @legacy
 		 */
 		workflowFormTabActivityUiUpdate: function (parameters) {
-
 			// FIXME: legacy mode to remove on complete Workflow UI and wofkflowState modules refactor
 				if (!this.parentDelegate.cmfg('workflowSelectedWorkflowIsEmpty'))
 					_CMWFState.setProcessClassRef(Ext.create('CMDBuild.cache.CMEntryTypeModel', this.parentDelegate.cmfg('workflowSelectedWorkflowGet', 'rawData')));
@@ -147,8 +146,8 @@
 		 * @legacy
 		 */
 		panelListenerManagerShow: function () {
-			if (!this.parentDelegate.cmfg('workflowSelectedWorkflowIsEmpty') && !this.parentDelegate.cmfg('workflowSelectedInstanceIsEmpty')) {
-				// History record save
+			// History record save
+			if (!this.parentDelegate.cmfg('workflowSelectedWorkflowIsEmpty') && !this.parentDelegate.cmfg('workflowSelectedInstanceIsEmpty'))
 				CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
 					moduleId: this.parentDelegate.cmfg('workflowIdentifierGet'),
 					entryType: {
@@ -167,26 +166,29 @@
 					}
 				});
 
-				// UI view mode manage
-				switch (this.parentDelegate.cmfg('workflowUiViewModeGet')) {
-					case 'add': {
-						var me = this;
+			// UI view mode manage
+			switch (this.parentDelegate.cmfg('workflowUiViewModeGet')) {
+				case 'add': {
+					var me = this;
 
-						this.view.enable();
+					this.view.enable();
 
-						_CMWFState.setProcessInstance(
-							Ext.create('CMDBuild.model.CMProcessInstance', { classId: this.parentDelegate.cmfg('workflowStartActivityGet', CMDBuild.core.constants.Proxy.WORKFLOW_ID) }),
-							function () {
-								_CMWFState.setActivityInstance(
-									Ext.create('CMDBuild.model.CMActivityInstance', me.parentDelegate.cmfg('workflowSelectedActivityGet', 'rawData'))
-								);
-							}
-						);
-					} break;
+					_CMWFState.setProcessInstance(
+						Ext.create('CMDBuild.model.CMProcessInstance', {
+							classId: this.parentDelegate.cmfg('workflowStartActivityGet', CMDBuild.core.constants.Proxy.WORKFLOW_ID)
+						}),
+						function () {
+							var activityModel = Ext.create('CMDBuild.model.CMActivityInstance', me.parentDelegate.cmfg('workflowSelectedActivityGet', 'rawData'));
 
-					case 'edit':
-						return this.onModifyCardClick();
-				}
+							_CMWFState.setActivityInstance(activityModel);
+
+							me.onActivityInstanceChange(activityModel);
+						}
+					);
+				} break;
+
+				case 'edit':
+					return this.onModifyCardClick();
 			}
 		},
 

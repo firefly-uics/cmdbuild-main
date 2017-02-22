@@ -37,6 +37,7 @@
 			'panelGridAndFormViewModeEquals = workflowUiViewModeEquals',
 			'panelGridAndFormViewModeGet = workflowUiViewModeGet',
 			'panelGridAndFormViewModeSet = workflowUiViewModeSet',
+			'workflowLocalCacheWorkflowGet',
 			'workflowLocalCacheWorkflowGetAll',
 			'workflowReset',
 			'workflowSelectedActivityGet',
@@ -311,13 +312,21 @@
 					if (Ext.isObject(decodedResponse) && !Ext.Object.isEmpty(decodedResponse)) {
 						decodedResponse['rawData'] = decodedResponse; // FIXME: legacy mode to remove on complete Workflow UI and wofkflowState modules refactor
 
-						this.workflowStartActivitySet({
-							value: {
-								status: true,
-								workflowId: parameters.id
-							}
-						});
-						this.workflowSelectedActivitySet({ value: decodedResponse });
+						// Setup instance
+							var instanceObject = {};
+							instanceObject[CMDBuild.core.constants.Proxy.WORKFLOW_ID] = parameters.id;
+
+							this.workflowSelectedInstanceSet({ value: instanceObject });
+
+						// Setup activity
+							this.workflowSelectedActivitySet({ value: decodedResponse });
+
+						// Setup start activity
+							var startActivityObject = {};
+							startActivityObject[CMDBuild.core.constants.Proxy.STATUS] = true;
+							startActivityObject[CMDBuild.core.constants.Proxy.WORKFLOW_ID] = parameters.id;
+
+							this.workflowStartActivitySet({ value: startActivityObject });
 
 						this.setViewTitle();
 
@@ -372,7 +381,6 @@
 
 							this.cmfg('workflowUiUpdate', {
 								defaultFilterApplyIfExists: true,
-								filterReset: true,
 								sortersReset: true,
 								storeLoadForce: true,
 								workflowId: parameters.node.get(CMDBuild.core.constants.Proxy.ENTITY_ID)
@@ -599,25 +607,11 @@
 
 		// LocalCacheWorkflow property functions
 			/**
-			 * @returns {Boolean}
-			 *
-			 * @private
-			 */
-			workflowLocalCacheWorkflowReset: function () {
-				this.localCacheWorkflow = {
-					byId: {},
-					byName: {}
-				};
-			},
-
-			/**
 			 * @param {Object} parameters
 			 * @param {Number} parameters.id
 			 * @param {String} parameters.name
 			 *
 			 * @returns {CMDBuild.model.management.workflow.workflow.Workflow or null}
-			 *
-			 * @private
 			 */
 			workflowLocalCacheWorkflowGet: function (parameters) {
 				parameters = Ext.isObject(parameters) ? parameters : {};
@@ -636,6 +630,18 @@
 			 */
 			workflowLocalCacheWorkflowGetAll: function () {
 				return Ext.Object.getValues(this.localCacheWorkflow.byName);
+			},
+
+			/**
+			 * @returns {Boolean}
+			 *
+			 * @private
+			 */
+			workflowLocalCacheWorkflowReset: function () {
+				this.localCacheWorkflow = {
+					byId: {},
+					byName: {}
+				};
 			},
 
 			/**
@@ -1065,18 +1071,18 @@
 		 * @param {Boolean} parameters.disableFirstRowSelection
 		 * @param {Boolean} parameters.defaultFilterApplyIfExists
 		 * @param {CMDBuild.model.common.Filter} parameters.filter
-		 * @param {Boolean} parameters.filterReset
-		 * @param {Boolean} parameters.filterForceEnabled
-		 * @param {String} parameters.flowStatus
+//		 * @param {Boolean} parameters.filterForceEnabled
+//		 * @param {String} parameters.flowStatus
+		 * @param {Boolean} parameters.flowStatusForceEnabled
 		 * @param {Number} parameters.instanceId
 		 * @param {Object} parameters.metadata
 		 * @param {Object} parameters.scope
 		 * @param {Boolean} parameters.sortersReset
 		 * @param {Boolean} parameters.storeLoadForce
-		 * @param {Boolean} parameters.storeLoadDisabled
+//		 * @param {Boolean} parameters.storeLoadDisabled
 		 * @param {Object or String or Number} parameters.tabToSelect
 		 * @param {String} parameters.viewMode
-		 * @param {Number} parameters.workflowId
+		 * @param {Number} parameters.workflowId or parameters.entityId
 		 *
 		 * @returns {Void}
 		 */
@@ -1127,11 +1133,11 @@
 									disableFirstRowSelection: parameters.disableFirstRowSelection,
 									filter: parameters.filter,
 									filterForceEnabled: parameters.filterForceEnabled,
-									filterReset: parameters.filterReset,
-									flowStatus: parameters.flowStatus,
+//									flowStatus: parameters.flowStatus,
+//									flowStatusForceEnabled: parameters.flowStatusForceEnabled,
 									sortersReset: parameters.sortersReset,
 									storeLoadForce: parameters.storeLoadForce,
-									storeLoadDisabled: parameters.storeLoadDisabled,
+//									storeLoadDisabled: parameters.storeLoadDisabled,
 									scope: parameters.scope,
 									callback: parameters.callback
 								});

@@ -72,7 +72,7 @@
 
 			var fieldManager = Ext.create('CMDBuild.core.fieldManager.FieldManager', { parentDelegate: this });
 
-			Ext.Array.each(runtimeParameters, function (runtimeParameter, i, allRuntimeParameters) {
+			Ext.Array.forEach(runtimeParameters, function (runtimeParameter, i, allRuntimeParameters) {
 				if (fieldManager.isAttributeManaged(runtimeParameter[CMDBuild.core.constants.Proxy.TYPE])) {
 					var attributeCustom = Ext.create('CMDBuild.model.common.attributes.Attribute', runtimeParameter);
 					attributeCustom.setAdaptedData(runtimeParameter);
@@ -95,7 +95,7 @@
 		},
 
 		/**
-		 * @param {Ext.data.Model} filter
+		 * @param {CMDBuild.model.common.Filter} filter
 		 *
 		 * @returns {Void}
 		 */
@@ -103,17 +103,14 @@
 			this.filter = undefined;
 
 			// Error handling
-				if (!Ext.isObject(filter) || Ext.Object.isEmpty(filter))
+				if (!Ext.isObject(filter) || Ext.Object.isEmpty(filter) || !filter.isFilterAdvancedCompatible)
 					return _error('fieldFilterRuntimeParametersShow(): unmanaged filter parameter', this, filter);
-
-				if (!Ext.isBoolean(filter.isFilterAdvancedCompatible) || !filter.isFilterAdvancedCompatible)
-					return _error('fieldFilterRuntimeParametersShow(): filter parameter not compatible', this, filter);
 			// END: Error handling
 
 			var runtimeParameters = filter.getEmptyRuntimeParameters(),
 				runtimeParametersNames = [];
 
-			Ext.Array.each(runtimeParameters, function (runtimeParameter, i, allRuntimeParameters) {
+			Ext.Array.forEach(runtimeParameters, function (runtimeParameter, i, allRuntimeParameters) {
 				if (
 					Ext.isObject(runtimeParameter) && !Ext.Object.isEmpty(runtimeParameter)
 					&& !Ext.isEmpty(runtimeParameter[CMDBuild.core.constants.Proxy.ATTRIBUTE])
@@ -163,10 +160,7 @@
 		 * @returns {Void}
 		 */
 		onFieldFilterRuntimeParametersAbortButtonClick: function () {
-			this.cmfg('panelGridAndFormUiUpdate', {
-				entityId: this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.ID),
-				filterReset: true
-			});
+			this.cmfg('panelGridAndFormUiUpdate', { entityId: this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.ID) });
 
 			this.view.close();
 		},
@@ -175,7 +169,7 @@
 		 * @returns {Void}
 		 */
 		onFieldFilterRuntimeParametersApplyButtonClick: function () {
-			if (this.form.getForm().isValid()) {
+			if (this.validate(this.form)) {
 				this.filter.setRuntimeParameterValue(this.form.getValues());
 
 				this.cmfg('panelGridAndFormUiUpdate', {

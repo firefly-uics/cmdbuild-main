@@ -10,7 +10,6 @@
 			{ name: CMDBuild.core.constants.Proxy.CAPABILITIES, type: 'auto', defaultValue: {} }, // CMDBuild.model.management.workflow.workflow.Capabilities
 			{ name: CMDBuild.core.constants.Proxy.DESCRIPTION, type: 'string' },
 			{ name: CMDBuild.core.constants.Proxy.ID, type: 'int', useNull: true },
-//			{ name: CMDBuild.core.constants.Proxy.IS_STARTABLE, type: 'boolean' }, // TODO: change moved
 			{ name: CMDBuild.core.constants.Proxy.IS_SUPER_CLASS, type: 'boolean' },
 			{ name: CMDBuild.core.constants.Proxy.NAME, type: 'string' },
 			{ name: CMDBuild.core.constants.Proxy.PARENT, type: 'int', useNull: true },
@@ -26,11 +25,9 @@
 		 */
 		constructor: function (data) {
 			data = Ext.isObject(data) ? data : {};
-//			data[CMDBuild.core.constants.Proxy.CAPABILITIES] = Ext.decode(data['ui_card_edit_mode']);
 			data[CMDBuild.core.constants.Proxy.DESCRIPTION] = Ext.isString(data[CMDBuild.core.constants.Proxy.TEXT]) ? data[CMDBuild.core.constants.Proxy.TEXT] : data[CMDBuild.core.constants.Proxy.DESCRIPTION];
-//			data[CMDBuild.core.constants.Proxy.IS_STARTABLE] = Ext.isBoolean(data['startable']) ? data['startable'] : data[CMDBuild.core.constants.Proxy.IS_STARTABLE];
 			data[CMDBuild.core.constants.Proxy.IS_SUPER_CLASS] = Ext.isBoolean(data['superclass']) ? data['superclass'] : data[CMDBuild.core.constants.Proxy.IS_SUPER_CLASS];
-_debug('constructor', data);
+
 			// Capabilities setup
 			var decodedProperty = Ext.decode(data['ui_card_edit_mode']);
 
@@ -42,10 +39,10 @@ _debug('constructor', data);
 			});
 
 			// Permissions setup
-			data[CMDBuild.core.constants.Proxy.PERMISSIONS] = Ext.create('CMDBuild.model.management.dataView.filter.entryType.Permissions', {
+			data[CMDBuild.core.constants.Proxy.PERMISSIONS] = Ext.create('CMDBuild.model.management.workflow.workflow.Permissions', {
 				create: data['priv_create'],
-				isStartable: data['startable'],
-				isStoppable: data['stoppable'],
+				startable: data[CMDBuild.core.constants.Proxy.STARTABLE],
+				stoppable: data[CMDBuild.core.constants.Proxy.STOPPABLE],
 				write: data['priv_write']
 			});
 

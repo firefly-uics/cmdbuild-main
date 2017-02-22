@@ -90,27 +90,26 @@
 			this.view.clearButton.disable();
 
 			if (!parameters.disableStoreLoad) {
+				var appliedFilterConfigurationObject = undefined;
+
 				if (
-					this.cmfg('panelGridAndFormListPanelAppliedFilterIsEmpty')
-					|| this.cmfg('panelGridAndFormListPanelAppliedFilterGet').isEmptyBasic()
+					!this.cmfg('panelGridAndFormListPanelAppliedFilterIsEmpty')
+					&& !this.cmfg('panelGridAndFormListPanelAppliedFilterGet').isEmptyBasic()
 				) {
-					this.cmfg('panelGridAndFormUiUpdate', {
-						entityId: this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.ID),
-						filterReset: true
-					});
-				} else {
-					var appliedFilterModel = this.cmfg('panelGridAndFormListPanelAppliedFilterGet'),
-						appliedFilterConfigurationObject = appliedFilterModel.get(CMDBuild.core.constants.Proxy.CONFIGURATION);
+					appliedFilterConfigurationObject = this.cmfg('panelGridAndFormListPanelAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION);
 
 					delete appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.ATTRIBUTE];
 					delete appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.RELATION];
 					delete appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.FUNCTIONS];
-
-					this.cmfg('panelGridAndFormUiUpdate', {
-						entityId: this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.ID),
-						filter: Ext.create('CMDBuild.model.common.Filter', { configuration: appliedFilterConfigurationObject })
-					});
 				}
+
+				var params = {};
+				params[CMDBuild.core.constants.Proxy.ENTITY_ID] = this.cmfg('panelGridAndFormSelectedEntityGet', CMDBuild.core.constants.Proxy.ID);
+
+				if (Ext.isObject(appliedFilterConfigurationObject) && !Ext.Object.isEmpty(appliedFilterConfigurationObject))
+					params[CMDBuild.core.constants.Proxy.FILTER] = Ext.create('CMDBuild.model.common.Filter', { configuration: appliedFilterConfigurationObject });
+
+				this.cmfg('panelGridAndFormUiUpdate', params);
 			}
 		},
 

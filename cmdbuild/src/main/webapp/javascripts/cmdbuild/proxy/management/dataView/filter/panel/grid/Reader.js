@@ -23,12 +23,7 @@
 		 */
 		buildRecord: function (rowObject) {
 			if (Ext.isObject(rowObject) && !Ext.Object.isEmpty(rowObject)) {
-				var customPropertiesObject = {},
-					rowNewObject = {};
-
-				Ext.Object.each(rowObject, function (key, value, myself) {
-					customPropertiesObject
-				}, this);
+				var rowNewObject = {};
 
 				// Base attributes
 				rowNewObject[CMDBuild.core.constants.Proxy.BEGIN_DATE] = rowObject[CMDBuild.core.constants.Proxy.BEGIN_DATE];
@@ -45,6 +40,8 @@
 
 				return rowNewObject;
 			}
+
+			return null;
 		},
 
 		/**
@@ -63,7 +60,7 @@
 				}, this);
 
 			var decodedItems = {};
-			decodedItems[this.root] = structure;
+			decodedItems[this.root] = Ext.Array.clean(structure);
 
 			Ext.apply(data, decodedItems); // Override row property with custom ones
 

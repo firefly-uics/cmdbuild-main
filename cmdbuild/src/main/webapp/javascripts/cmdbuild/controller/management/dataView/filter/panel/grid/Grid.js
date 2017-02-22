@@ -164,7 +164,6 @@
 		 * @param {Object} parameters
 		 * @param {Function} parameters.callback
 		 * @param {Boolean} parameters.disableFirstRowSelection
-		 * @param {Number} parameters.id
 		 * @param {Object} parameters.scope
 		 * @param {Boolean} parameters.storeLoadForce
 		 *
@@ -177,14 +176,17 @@
 			parameters.position = Ext.isNumber(parameters.position) ? parameters.position : null;
 
 			// Error handling
-				if (!Ext.isNumber(parameters.id) || Ext.isEmpty(parameters.id))
-					return _error('applySelection(): unmanaged id parameter', this, parameters.id);
+				if (this.cmfg('dataViewSelectedDataViewIsEmpty'))
+					return _error('applySelection(): no selected dataView found', this);
+
+				if (this.cmfg('dataViewFilterSelectedCardIsEmpty'))
+					return _error('applySelection(): no selected card found', this);
 			// END: Error handling
 
 			var params = {};
-			params[CMDBuild.core.constants.Proxy.ID] = parameters.id;
+			params[CMDBuild.core.constants.Proxy.ID] = this.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.ID);
 
-			if (!this.dataViewFilterGridAppliedFilterIsEmpty())
+			if (!this.cmfg('dataViewFilterGridAppliedFilterIsEmpty', CMDBuild.core.constants.Proxy.CONFIGURATION))
 				params[CMDBuild.core.constants.Proxy.FILTER] = Ext.encode(this.cmfg('dataViewFilterGridAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION));
 
 			this.positionCardGet({
@@ -280,7 +282,7 @@
 			callback = Ext.isFunction(callback) ? callback : Ext.emptyFn;
 
 			return Ext.Function.createInterceptor(callback, function (records, options, success) {
-				if (this.dataViewFilterGridAppliedFilterIsEmpty())
+				if (this.cmfg('dataViewFilterGridAppliedFilterIsEmpty'))
 					this.controllerToolbarPaging.cmfg('panelGridAndFormCommonToolbarPagingFilterAdvancedReset');
 			}, this);
 		},
@@ -416,7 +418,7 @@
 			params[CMDBuild.core.constants.Proxy.ATTRIBUTES] = Ext.encode(this.displayedParametersNamesGet());
 			params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.NAME);
 
-			if (!this.dataViewFilterGridAppliedFilterIsEmpty())
+			if (!this.cmfg('dataViewFilterGridAppliedFilterIsEmpty'))
 				params[CMDBuild.core.constants.Proxy.FILTER] = Ext.encode(this.cmfg('dataViewFilterGridAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION));
 
 			this.storeExtraParamsSet(params); // Setup extraParams to work also with sorters and print report
@@ -443,7 +445,6 @@
 		 */
 		dataViewFilterGridUiUpdate: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
-			parameters.filterReset = Ext.isBoolean(parameters.filterReset) ? parameters.filterReset : false;
 			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
 			parameters.sortersReset = Ext.isBoolean(parameters.sortersReset) ? parameters.sortersReset : false;
 
@@ -487,7 +488,6 @@
 					if (!this.cmfg('dataViewFilterSelectedCardIsEmpty'))
 						return this.applySelection({
 							disableFirstRowSelection: parameters.disableFirstRowSelection,
-							id: this.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.ID),
 							storeLoadForce: parameters.storeLoadForce,
 							scope: parameters.scope,
 							callback: parameters.callback
@@ -704,7 +704,7 @@
 								[response, options, decodedResponse]
 							);
 						} else { // Retry with default filter
-							this.cmfg('dataViewFilterGridFilterClear', { disableStoreLoad: true });
+							this.dataViewFilterGridAppliedFilterReset();
 
 							// Default filter manage: apply dataView's filter
 							parameters.params.filter = Ext.encode(this.cmfg('dataViewFilterGridAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION));
@@ -744,7 +744,7 @@
 
 			// Sync UI with parameter filter property value
 			if (!Ext.isString(filter) || Ext.isEmpty(filter))
-				this.cmfg('dataViewFilterGridFilterClear', { disableStoreLoad: true });
+				this.dataViewFilterGridAppliedFilterReset();
 
 			this.cmfg('dataViewFilterReset');
 			this.cmfg('dataViewFilterGridStoreLoad', { disableFirstRowSelection: true });
@@ -777,7 +777,7 @@
 
 			// Sync UI with parameter filter property value
 			if (!Ext.isString(filter) || Ext.isEmpty(filter))
-				this.cmfg('dataViewFilterGridFilterClear', { disableStoreLoad: true });
+				this.dataViewFilterGridAppliedFilterReset();
 
 			if (
 				this.cmfg('dataViewFilterGridStoreGet').currentPage != pageNumber

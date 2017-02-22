@@ -150,7 +150,6 @@
 					moduleController.cmfg('workflowUiUpdate', {
 						defaultFilterApplyIfExists: true,
 						disableFirstRowSelection: true,
-						filterReset: true,
 						flowStatus: CMDBuild.controller.management.workflow.Utils.translateStatusFromCapitalizedMode(flowStatus),
 						instanceId: instanceIdentifier,
 						sortersReset: true,

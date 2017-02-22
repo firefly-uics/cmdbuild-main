@@ -40,7 +40,6 @@
 						this.cmfg('workflowUiUpdate', {
 							defaultFilterApplyIfExists: true,
 							disableFirstRowSelection: true,
-							filterReset: true,
 							instanceId: record.get([CMDBuild.core.constants.Proxy.ITEM, CMDBuild.core.constants.Proxy.ID]),
 							sortersReset: true,
 							storeLoadForce: true,
@@ -92,7 +91,6 @@
 						this.cmfg('workflowUiUpdate', {
 							defaultFilterApplyIfExists: true,
 							disableFirstRowSelection: true,
-							filterReset: true,
 							instanceId: parameters.instanceId,
 							sortersReset: true,
 							storeLoadForce: true,
