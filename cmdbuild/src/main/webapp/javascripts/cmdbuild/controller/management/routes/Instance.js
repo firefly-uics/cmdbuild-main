@@ -153,7 +153,7 @@
 						flowStatus: CMDBuild.controller.management.workflow.Utils.translateStatusFromCapitalizedMode(flowStatus),
 						instanceId: instanceIdentifier,
 						sortersReset: true,
-						storeLoadForce: true,
+						storeLoad: 'force',
 						workflowId: workflowObject[CMDBuild.core.constants.Proxy.ID]
 					});
 				}

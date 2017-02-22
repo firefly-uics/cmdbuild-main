@@ -382,7 +382,7 @@
 							this.cmfg('workflowUiUpdate', {
 								defaultFilterApplyIfExists: true,
 								sortersReset: true,
-								storeLoadForce: true,
+								storeLoad: 'force',
 								workflowId: parameters.node.get(CMDBuild.core.constants.Proxy.ENTITY_ID)
 							});
 						} else {
@@ -1078,7 +1078,7 @@
 		 * @param {Object} parameters.metadata
 		 * @param {Object} parameters.scope
 		 * @param {Boolean} parameters.sortersReset
-		 * @param {Boolean} parameters.storeLoadForce
+		 * @param {String} parameters.storeLoad - [force, disabled] // TODO: disabled???
 //		 * @param {Boolean} parameters.storeLoadDisabled
 		 * @param {Object or String or Number} parameters.tabToSelect
 		 * @param {String} parameters.viewMode
@@ -1106,7 +1106,7 @@
 			this.cmfg('workflowFullScreenUiSetup', { maximize: 'top' });
 			this.cmfg('workflowReset');
 			this.cmfg('workflowUiViewModeSet', parameters.viewMode);
-
+_debug('workflowUiUpdate', parameters);
 			// Local variables reset
 			this.workflowPreviousSelectionReset();
 			this.workflowSelectedActivityReset();
@@ -1136,7 +1136,7 @@
 //									flowStatus: parameters.flowStatus,
 //									flowStatusForceEnabled: parameters.flowStatusForceEnabled,
 									sortersReset: parameters.sortersReset,
-									storeLoadForce: parameters.storeLoadForce,
+									storeLoad: parameters.storeLoad,
 //									storeLoadDisabled: parameters.storeLoadDisabled,
 									scope: parameters.scope,
 									callback: parameters.callback

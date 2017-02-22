@@ -414,7 +414,7 @@
 						disableFirstRowSelection: true,
 						instanceId: parameters.instanceId,
 						sortersReset: true,
-						storeLoadForce: true,
+						storeLoad: 'force',
 						tabToSelect: parameters.tabToSelect,
 						workflowId: parameters.workflowId
 					});

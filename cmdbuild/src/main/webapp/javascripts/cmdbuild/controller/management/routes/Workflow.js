@@ -69,7 +69,7 @@
 									moduleController.cmfg('workflowUiUpdate', {
 										filter: Ext.create('CMDBuild.model.common.Filter', { configuration: clientFilter }),
 										sortersReset: true,
-										storeLoadForce: true,
+										storeLoad: 'force',
 										workflowId: decodedResponse[CMDBuild.core.constants.Proxy.ID]
 									});
 							}

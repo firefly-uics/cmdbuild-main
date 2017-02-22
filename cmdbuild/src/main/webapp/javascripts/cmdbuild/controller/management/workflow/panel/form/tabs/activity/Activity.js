@@ -545,7 +545,7 @@
 			success: function (response, options, decodedResponse) {
 				this.parentDelegate.cmfg('workflowUiUpdate', {
 					disableFirstRowSelection: true,
-					storeLoadForce: true
+					storeLoad: 'force'
 				});
 			}
 		});
@@ -628,7 +628,7 @@
 					failure: function (response, options, decodedResponse) {
 						this.parentDelegate.cmfg('workflowUiUpdate', {
 							disableFirstRowSelection: true,
-							storeLoadForce: true,
+							storeLoad: 'force',
 							workflowId: this.parentDelegate.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.ID)
 						});
 					},
@@ -657,7 +657,7 @@
 						) {
 							this.parentDelegate.cmfg('workflowUiUpdate', {
 								disableFirstRowSelection: true,
-								storeLoadForce: true,
+								storeLoad: 'force',
 								workflowId: decodedResponse['IdClass']
 							});
 						} else {
@@ -665,7 +665,7 @@
 								disableFirstRowSelection: true,
 								instanceId: decodedResponse['Id'],
 								metadata: decodedResponse[CMDBuild.core.constants.Proxy.METADATA],
-								storeLoadForce: true,
+								storeLoad: 'force',
 								viewMode: this.isAdvance ? 'edit' : 'read',
 								workflowId: decodedResponse['IdClass'],
 								scope: this,

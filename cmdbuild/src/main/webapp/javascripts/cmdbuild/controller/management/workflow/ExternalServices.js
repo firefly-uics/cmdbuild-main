@@ -42,7 +42,7 @@
 							disableFirstRowSelection: true,
 							instanceId: record.get([CMDBuild.core.constants.Proxy.ITEM, CMDBuild.core.constants.Proxy.ID]),
 							sortersReset: true,
-							storeLoadForce: true,
+							storeLoad: 'force',
 							tabToSelect: record.get([CMDBuild.core.constants.Proxy.SECTION, CMDBuild.core.constants.Proxy.OBJECT, 'itemId']),
 							workflowId: record.get([CMDBuild.core.constants.Proxy.ENTRY_TYPE, CMDBuild.core.constants.Proxy.ID])
 						});
@@ -93,7 +93,7 @@
 							disableFirstRowSelection: true,
 							instanceId: parameters.instanceId,
 							sortersReset: true,
-							storeLoadForce: true,
+							storeLoad: 'force',
 							workflowId: parameters.workflowId,
 							scope: this,
 							callback: function () {

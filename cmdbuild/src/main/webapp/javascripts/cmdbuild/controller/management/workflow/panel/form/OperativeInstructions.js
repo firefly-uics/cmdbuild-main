@@ -51,11 +51,11 @@
 			// UI view mode manage
 			switch (this.cmfg('workflowUiViewModeGet')) {
 				case 'add':
-					return this.view.update('');
+					return this.view.update(this.cmfg('workflowSelectedActivityGet', CMDBuild.core.constants.Proxy.INSTRUCTIONS));
 
 				default: {
-					if (!this.cmfg('workflowSelectedInstanceIsEmpty'))
-						this.view.update(this.cmfg('workflowSelectedInstanceGet', CMDBuild.core.constants.Proxy.INSTRUCTIONS));
+					if (!this.cmfg('workflowSelectedActivityIsEmpty'))
+						this.view.update(this.cmfg('workflowSelectedActivityGet', CMDBuild.core.constants.Proxy.INSTRUCTIONS));
 				}
 			}
 		}
