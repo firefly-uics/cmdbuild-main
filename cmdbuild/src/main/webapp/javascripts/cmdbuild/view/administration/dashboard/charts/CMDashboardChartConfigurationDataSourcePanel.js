@@ -321,6 +321,8 @@
 			var me = this;
 			this.classToUseForReferenceWidget.setValue = Ext.Function.createSequence(this.classToUseForReferenceWidget.setValue,
 				function(value) {
+					var store = undefined;
+
 					if (Ext.isArray(value)) {
 						value = value[0];
 					}
@@ -333,13 +335,19 @@
 						me.remove(me.defaultField);
 					}
 
+					if (isNaN(parseInt(value))) {
+						store = _CMCache.getReferenceStore({ referencedIdClass: _CMCache.getEntryTypeByName(value).get('id') });
+					} else {
+						store = _CMCache.getReferenceStore({ referencedIdClass: value });
+					}
+
 					me.defaultField = new CMDBuild.view.common.field.CMErasableCombo({
 						fieldLabel: tr.fields.defaultValue,
 						labelWidth: SUBFIELD_LABEL_WIDTH,
 						valueField: "Id",
 						displayField: 'Description',
 						editable: false,
-						store: _CMCache.getReferenceStore({ referencedIdClass: value }),
+						store: store,
 						queryMode: 'local',
 						disabled: me.typeComboIsdisabled()
 					});

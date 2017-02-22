@@ -179,7 +179,7 @@
 							isnotnull: required,
 							meta: meta,
 							name: parameterConfiguration[CMDBuild.core.constants.Proxy.NAME],
-							referencedIdClass: _CMCache.getEntryTypeByName(parameterConfiguration.classToUseForReferenceWidget).get('name')
+							referencedIdClass: _CMCache.getEntryTypeByName(parameterConfiguration.classToUseForReferenceWidget).get('id')
 						});
 
 						// Force execution of template resolver
