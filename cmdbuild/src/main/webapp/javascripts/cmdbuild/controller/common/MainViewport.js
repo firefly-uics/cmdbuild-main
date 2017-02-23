@@ -427,7 +427,6 @@
 		/**
 		 * @param {Object} parameters
 		 * @param {Boolean or Object} parameters.activateFirstTab - if object selects object as tab otherwise selects first one
-		 * @param {String} parameters.flowStatus
 		 * @param {Number} parameters.Id - card id
 		 * @param {Number} parameters.IdClass
 		 *

@@ -310,8 +310,6 @@
 			workflowTreeToolbarTopStatusValueSet: function (value) {
 				if (Ext.isString(value) && !Ext.isEmpty(value))
 					return this.view.statusCombo.setValue(value);
-
-				return this.view.statusCombo.setValue(CMDBuild.core.constants.WorkflowStates.getOpen());
 			},
 
 		/**

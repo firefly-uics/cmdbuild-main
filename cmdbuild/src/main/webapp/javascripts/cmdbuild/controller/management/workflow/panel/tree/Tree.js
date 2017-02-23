@@ -157,7 +157,6 @@
 		 * @param {Object} parameters
 		 * @param {Function} parameters.callback
 		 * @param {Boolean} parameters.disableFirstRowSelection
-		 * @param {Boolean} parameters.flowStatusForceEnabled
 		 * @param {Object} parameters.scope
 		 * @param {Boolean} parameters.storeLoad
 		 *
@@ -178,7 +177,6 @@
 			// END: Error handling
 
 			this.positionInstanceGet({
-				flowStatusForceEnabled: parameters.flowStatusForceEnabled,
 				scope: this,
 				failure: this.positionInstanceGetFailure,
 				success: function (response, options, decodedResponse) {
@@ -448,7 +446,6 @@
 		 *
 		 * @param {Object} parameters
 		 * @param {Function} parameters.failure
-		 * @param {Boolean} parameters.flowStatusForceEnabled
 		 * @param {Object} parameters.scope
 		 * @param {Function} parameters.success
 		 *
@@ -458,7 +455,6 @@
 		 */
 		positionInstanceGet: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
-			parameters.flowStatusForceEnabled = Ext.isBoolean(parameters.flowStatusForceEnabled) ? parameters.flowStatusForceEnabled : false;
 			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
 
 			var flowStatus = this.controllerToolbarTop.cmfg('workflowTreeToolbarTopStatusValueGet'),
@@ -485,8 +481,8 @@
 			if (!this.cmfg('workflowTreeAppliedFilterIsEmpty', CMDBuild.core.constants.Proxy.CONFIGURATION))
 				params[CMDBuild.core.constants.Proxy.FILTER] = Ext.encode(this.cmfg('workflowTreeAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION));
 
-			if (!parameters.flowStatusForceEnabled)
-				params[CMDBuild.core.constants.Proxy.FLOW_STATUS] = CMDBuild.controller.management.workflow.Utils.translateStatusFromCapitalizedMode(flowStatus);
+			if (!Ext.isEmpty(parameters.flowStatus))
+				params[CMDBuild.core.constants.Proxy.FLOW_STATUS] = CMDBuild.controller.management.workflow.Utils.translateStatusFromCapitalizedMode(parameters.flowStatus);
 
 			if (Ext.isArray(sort) && !Ext.isEmpty(sort))
 				params[CMDBuild.core.constants.Proxy.SORT] = Ext.encode(sort);
@@ -986,7 +982,7 @@
 		 * @param {Boolean} parameters.defaultFilterApplyIfExists
 		 * @param {Boolean} parameters.disableFirstRowSelection
 		 * @param {CMDBuild.model.common.Filter} parameters.filter
-		 * @param {Boolean} parameters.flowStatusForceEnabled
+		 * @param {Boolean} parameters.flowStatus
 		 * @param {Object} parameters.scope
 		 * @param {Boolean} parameters.sortersReset
 		 * @param {Boolean} parameters.storeLoad
@@ -1034,13 +1030,12 @@
 
 					// Forward to sub-controllers
 					this.controllerToolbarPaging.cmfg('panelGridAndFormCommonToolbarPagingUiUpdate');
-					this.controllerToolbarTop.cmfg('workflowTreeToolbarTopUiUpdate');
+					this.controllerToolbarTop.cmfg('workflowTreeToolbarTopUiUpdate', { flowStatus: parameters.flowStatus });
 
 					// Setup correct selection and load store
 					if (!this.cmfg('workflowSelectedInstanceIsEmpty'))
 						return this.applySelection({
 							disableFirstRowSelection: parameters.disableFirstRowSelection,
-							flowStatusForceEnabled: parameters.flowStatusForceEnabled,
 							storeLoad: parameters.storeLoad,
 							scope: parameters.scope,
 							callback: parameters.callback

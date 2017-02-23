@@ -1071,12 +1071,12 @@
 		 * @param {Boolean} parameters.disableFirstRowSelection
 		 * @param {Boolean} parameters.defaultFilterApplyIfExists
 		 * @param {CMDBuild.model.common.Filter} parameters.filter
-		 * @param {Boolean} parameters.flowStatusForceEnabled
+		 * @param {Boolean} parameters.flowStatus
 		 * @param {Number} parameters.instanceId
 		 * @param {Object} parameters.metadata
 		 * @param {Object} parameters.scope
 		 * @param {Boolean} parameters.sortersReset
-		 * @param {String} parameters.storeLoad - [force, disabled]
+		 * @param {String} parameters.storeLoad - ManagedValues: [force, disabled]
 		 * @param {Object or String or Number} parameters.tabToSelect
 		 * @param {String} parameters.viewMode
 		 * @param {Number} parameters.workflowId or parameters.entityId
@@ -1129,7 +1129,7 @@
 									defaultFilterApplyIfExists: parameters.defaultFilterApplyIfExists,
 									disableFirstRowSelection: parameters.disableFirstRowSelection,
 									filter: parameters.filter,
-									flowStatusForceEnabled: parameters.flowStatusForceEnabled,
+									flowStatus: parameters.flowStatus,
 									sortersReset: parameters.sortersReset,
 									storeLoad: parameters.storeLoad,
 									scope: parameters.scope,
