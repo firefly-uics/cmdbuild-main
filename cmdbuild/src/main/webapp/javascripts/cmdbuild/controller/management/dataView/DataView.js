@@ -151,7 +151,7 @@
 					enableFilterReset: true,
 					entityId: parameters.node.get(CMDBuild.core.constants.Proxy.ENTITY_ID),
 					sortersReset: true,
-					storeLoadForce: true
+					storeLoad: 'force'
 				});
 
 			this.onModuleInit(parameters); // Custom callParent() implementation
@@ -165,7 +165,7 @@
 		 * @param {CMDBuild.model.common.Filter} parameters.filter
 		 * @param {Object} parameters.scope
 		 * @param {Boolean} parameters.sortersReset
-		 * @param {Boolean} parameters.storeLoadForce
+		 * @param {String} parameters.storeLoad
 		 * @param {Object} parameters.tabToSelect
 		 * @param {String} parameters.viewMode
 		 *
@@ -204,7 +204,7 @@
 								cardId: parameters.cardId,
 								filter: parameters.filter,
 								sortersReset: parameters.sortersReset,
-								storeLoadForce: parameters.storeLoadForce,
+								storeLoad: parameters.storeLoad,
 								tabToSelect: parameters.tabToSelect,
 								viewMode: parameters.viewMode,
 								scope: parameters.scope,
@@ -214,7 +214,7 @@
 								cardId: parameters.cardId,
 								filter: parameters.filter,
 								sortersReset: parameters.sortersReset,
-								storeLoadForce: parameters.storeLoadForce,
+								storeLoad: parameters.storeLoad,
 								tabToSelect: parameters.tabToSelect,
 								viewMode: parameters.viewMode,
 								scope: parameters.scope,

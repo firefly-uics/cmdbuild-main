@@ -230,7 +230,7 @@
 
 					this.parentDelegate.cmfg('dataViewFilterUiUpdate', {
 						cardId: fakeOperation.result[CMDBuild.core.constants.Proxy.ID] || this.card.get("Id"), // if is a new card, the id is given by the request
-						storeLoadForce: true
+						storeLoad: 'force'
 					});
 				}
 			});
@@ -305,7 +305,7 @@
 					success: function (response, options, decodedResponse) {
 						_CMCache.onClassContentChanged(this.entryType.get(CMDBuild.core.constants.Proxy.ID));
 
-						this.parentDelegate.cmfg('dataViewFilterUiUpdate', { storeLoadForce: true });
+						this.parentDelegate.cmfg('dataViewFilterUiUpdate', { storeLoad: 'force' });
 					}
 				});
 		},

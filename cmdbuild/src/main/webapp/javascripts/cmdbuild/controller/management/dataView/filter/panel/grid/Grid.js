@@ -165,7 +165,7 @@
 		 * @param {Function} parameters.callback
 		 * @param {Boolean} parameters.disableFirstRowSelection
 		 * @param {Object} parameters.scope
-		 * @param {Boolean} parameters.storeLoadForce
+		 * @param {String} parameters.storeLoad
 		 *
 		 * @returns {Void}
 		 *
@@ -183,14 +183,7 @@
 					return _error('applySelection(): no selected card found', this);
 			// END: Error handling
 
-			var params = {};
-			params[CMDBuild.core.constants.Proxy.ID] = this.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.ID);
-
-			if (!this.cmfg('dataViewFilterGridAppliedFilterIsEmpty', CMDBuild.core.constants.Proxy.CONFIGURATION))
-				params[CMDBuild.core.constants.Proxy.FILTER] = Ext.encode(this.cmfg('dataViewFilterGridAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION));
-
 			this.positionCardGet({
-				params: params,
 				scope: this,
 				failure: this.positionCardGetFailure,
 				success: function (response, options, decodedResponse) {
@@ -204,7 +197,7 @@
 						options.params[CMDBuild.core.constants.Proxy.FILTER],
 						{
 							disableFirstRowSelection: parameters.disableFirstRowSelection,
-							storeLoadForce: parameters.storeLoadForce,
+							storeLoad: parameters.storeLoad,
 							callback: parameters.callback,
 							scope: parameters.scope
 						}
@@ -439,7 +432,7 @@
 		 * @param {CMDBuild.model.common.Filter} parameters.filter
 		 * @param {Object} parameters.scope
 		 * @param {Boolean} parameters.sortersReset
-		 * @param {Boolean} parameters.storeLoadForce
+		 * @param {String} parameters.storeLoad
 		 *
 		 * @returns {Void}
 		 */
@@ -488,7 +481,7 @@
 					if (!this.cmfg('dataViewFilterSelectedCardIsEmpty'))
 						return this.applySelection({
 							disableFirstRowSelection: parameters.disableFirstRowSelection,
-							storeLoadForce: parameters.storeLoadForce,
+							storeLoad: parameters.storeLoad,
 							scope: parameters.scope,
 							callback: parameters.callback
 						});
@@ -605,22 +598,6 @@
 
 		// Grid selection methods
 			/**
-			 * @param {Number} position
-			 *
-			 * @returns {Void}
-			 *
-			 * @private
-			 */
-			selectByPosition: function (position) {
-				// Error handling
-					if (!Ext.isNumber(position) || Ext.isEmpty(position))
-						return _error('selectByPosition(): unmanaged position parameter', this, position);
-				// END: Error handling
-
-				this.view.getSelectionModel().select(position, false, true);
-			},
-
-			/**
 			 * Event fired because UI must be reconfigured with first store record
 			 *
 			 * @returns {Void}
@@ -633,11 +610,12 @@
 			},
 
 		/**
+		 * Load store on selection related page, follows 3 steps:
+		 * 	1. full call
+		 * 	2. without filter
+		 *
 		 * @param {Object} parameters
 		 * @param {Function} parameters.failure
-		 * @param {Object} parameters.params
-		 * @param {String} parameters.params.filter
-		 * @param {Number} parameters.params.id
 		 * @param {Object} parameters.scope
 		 * @param {Function} parameters.success
 		 *
@@ -647,33 +625,30 @@
 		 */
 		positionCardGet: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
-			parameters.params = Ext.isObject(parameters.params) ? parameters.params : {};
 			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
 
-			var cardId = parameters.params[CMDBuild.core.constants.Proxy.ID],
-				filter = parameters.params[CMDBuild.core.constants.Proxy.FILTER],
-				sort = this.cmfg('dataViewFilterGridStoreGet').getSorters();
+			var sort = this.cmfg('dataViewFilterGridStoreGet').getSorters();
 
 			// Error handling
 				if (this.cmfg('dataViewSelectedDataViewIsEmpty'))
-					return _error('positionCardGet(): empty selected dataView', this);
+					return _error('positionCardGet(): no selected dataView found', this, this.cmfg('dataViewSelectedDataViewGet'));
+
+				if (this.cmfg('dataViewFilterSelectedCardIsEmpty'))
+					return _error('positionCardGet(): no selected card found', this, this.cmfg('dataViewFilterSelectedCardGet'));
 
 				if (!Ext.isFunction(parameters.failure))
 					return _error('positionCardGet(): unmanaged failure parameter', this, parameters.failure);
 
 				if (!Ext.isFunction(parameters.success))
 					return _error('positionCardGet(): unmanaged success parameter', this, parameters.success);
-
-				if (!Ext.isNumber(cardId) || Ext.isEmpty(cardId))
-					return _error('positionCardGet(): unmanaged id parameter', this, cardId);
 			// END: Error handling
 
 			var params = {};
-			params[CMDBuild.core.constants.Proxy.CARD_ID] = cardId;
+			params[CMDBuild.core.constants.Proxy.CARD_ID] = this.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.ID);
 			params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.NAME);
 
-			if (Ext.isString(filter) && !Ext.isEmpty(filter))
-				params[CMDBuild.core.constants.Proxy.FILTER] = filter;
+			if (!this.cmfg('dataViewFilterGridAppliedFilterIsEmpty', CMDBuild.core.constants.Proxy.CONFIGURATION))
+				params[CMDBuild.core.constants.Proxy.FILTER] = Ext.encode(this.cmfg('dataViewFilterGridAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION));
 
 			if (Ext.isArray(sort) && !Ext.isEmpty(sort))
 				params[CMDBuild.core.constants.Proxy.SORT] = Ext.encode(sort);
@@ -731,8 +706,6 @@
 					return _error('positionCardGetFailure(): unmanaged decodedResponse parameter', this, decodedResponse);
 			// END: Error handling
 
-			var filter = options.params[CMDBuild.core.constants.Proxy.FILTER];
-
 			CMDBuild.core.Message.error(
 				CMDBuild.Translation.common.failure,
 				Ext.String.format(
@@ -741,10 +714,6 @@
 					+ ' [' + this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.NAME) + ']'
 				)
 			);
-
-			// Sync UI with parameter filter property value
-			if (!Ext.isString(filter) || Ext.isEmpty(filter))
-				this.dataViewFilterGridAppliedFilterReset();
 
 			this.cmfg('dataViewFilterReset');
 			this.cmfg('dataViewFilterGridStoreLoad', { disableFirstRowSelection: true });
@@ -757,7 +726,7 @@
 		 * @param {Function} parameters.callback
 		 * @param {Boolean} parameters.disableFirstRowSelection
 		 * @param {Object} parameters.scope
-		 * @param {Boolean} parameters.storeLoadForce
+		 * @param {String} parameters.storeLoad
 		 *
 		 * @returns {Void}
 		 *
@@ -765,7 +734,7 @@
 		 */
 		positionCardGetSuccess: function (position, filter, parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
-			parameters.storeLoadForce = Ext.isBoolean(parameters.storeLoadForce) ? parameters.storeLoadForce : false;
+			parameters.storeLoad = Ext.isString(parameters.storeLoad) ? parameters.storeLoad : null;
 
 			// Error handling
 				if (!Ext.isNumber(position) || Ext.isEmpty(position))
@@ -775,14 +744,7 @@
 			var pageNumber = CMDBuild.core.Utils.getPageNumber(position),
 				pageRelatedPosition = position % CMDBuild.configuration.instance.get(CMDBuild.core.constants.Proxy.ROW_LIMIT);
 
-			// Sync UI with parameter filter property value
-			if (!Ext.isString(filter) || Ext.isEmpty(filter))
-				this.dataViewFilterGridAppliedFilterReset();
-
-			if (
-				this.cmfg('dataViewFilterGridStoreGet').currentPage != pageNumber
-				|| parameters.storeLoadForce
-			) {
+			if (this.cmfg('dataViewFilterGridStoreGet').currentPage != pageNumber || parameters.storeLoad == 'force')
 				return this.cmfg('dataViewFilterGridStoreLoad', {
 					disableFirstRowSelection: parameters.disableFirstRowSelection,
 					page: pageNumber,
@@ -794,7 +756,6 @@
 						});
 					}
 				});
-			}
 
 			return this.positionCardGetSuccessCallback(pageRelatedPosition, {
 				callback: parameters.callback,
@@ -818,7 +779,8 @@
 
 			this.view.getSelectionModel().deselectAll();
 
-			this.selectByPosition(pageRelatedPosition);
+			if (Ext.isNumber(pageRelatedPosition))
+				this.view.getSelectionModel().select(pageRelatedPosition, false, true);
 
 			if (Ext.isFunction(parameters.callback))
 				Ext.callback(parameters.callback, parameters.scope);

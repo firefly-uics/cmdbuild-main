@@ -411,7 +411,7 @@
 		 * @param {CMDBuild.model.common.Filter} parameters.filter
 		 * @param {Boolean} parameters.sortersReset
 		 * @param {Object} parameters.scope
-		 * @param {Boolean} parameters.storeLoadForce
+		 * @param {String} parameters.storeLoad
 		 * @param {Object} parameters.tabToSelect
 		 * @param {String} parameters.viewMode
 		 *
@@ -451,7 +451,7 @@
 							this.controllerGrid.cmfg('dataViewFilterGridUiUpdate', {
 								filter: parameters.filter,
 								sortersReset: parameters.sortersReset,
-								storeLoadForce: parameters.storeLoadForce,
+								storeLoad: parameters.storeLoad,
 								scope: parameters.scope,
 								callback: parameters.callback
 							});

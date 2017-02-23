@@ -27,7 +27,6 @@
 			'dataViewFilterFormTemplateResolverFormGet = panelGridAndFormPanelFormTemplateResolverFormGet',
 			'dataViewFilterFormUiUpdate',
 			'dataViewFilterFormWidgetExists',
-			'onDataViewFilterFormPrintButtonClick',
 			'onDataViewFilterFormSaveButtonClick',
 			'panelGridAndFormPanelFormTabActiveFireShowEvent = dataViewFilterFormTabActiveFireShowEvent',
 			'panelGridAndFormPanelFormTabActiveSet = dataViewFilterFormTabActiveSet',
@@ -272,19 +271,6 @@
 				return this.widgetManager.getFormForTemplateResolver() || null;
 
 			return null;
-		},
-
-		/**
-		 * @param {String} format
-		 *
-		 * @returns {Void}
-		 *
-		 * FIXME: move to card panel controller on refactor
-		 */
-		onDataViewFilterFormPrintButtonClick: function (format) {
-			// Forward to sub-controllers
-			if (Ext.isObject(this.controllerTabCard) && !Ext.Object.isEmpty(this.controllerTabCard))
-				this.controllerTabCard.onPrintCardMenuClick(format);
 		},
 
 		/**

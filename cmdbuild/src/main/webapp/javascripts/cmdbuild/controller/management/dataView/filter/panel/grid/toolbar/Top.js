@@ -58,13 +58,15 @@
 			// END: Error handling
 
 			if (this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.IS_SUPER_CLASS)) {
-				var menuItems = [],
-					selectedEntryTypeDescendants = this.dataViewFilterGridToolbarTopEntryTypeRelationshipTreeGet(
+				var menuItems = [];
+
+				this.buildMenuChildren(
+					this.dataViewFilterGridToolbarTopEntryTypeRelationshipTreeGet(
 						this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.ID),
 						CMDBuild.core.constants.Proxy.CHILDREN
-					);
-
-				this.buildMenuChildren(selectedEntryTypeDescendants, menuItems);
+					),
+					menuItems
+				);
 
 				return Ext.create('CMDBuild.core.buttons.icon.split.add.Card', {
 					text: CMDBuild.Translation.addCard + ' ' + this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.DESCRIPTION),
@@ -81,30 +83,30 @@
 					 */
 					isEnableActionEnabled: this.isEnableActionEnabled
 				});
-			} else {
-				return Ext.create('CMDBuild.core.buttons.icon.add.Card', {
-					text: CMDBuild.Translation.addCard + ' ' + this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.DESCRIPTION),
-					itemId: 'addButton',
-					disabled: this.isAddButtonDisabled(),
-					scope: this,
-
-					handler: function (button, e) {
-						this.cmfg('onDataViewFilterAddButtonClick', { id: this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.ID) });
-					},
-
-					/**
-					 * @returns {Boolean}
-					 *
-					 * @override
-					 */
-					isEnableActionEnabled: this.isEnableActionEnabled
-				});
 			}
+
+			return Ext.create('CMDBuild.core.buttons.icon.add.Card', {
+				text: CMDBuild.Translation.addCard + ' ' + this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.DESCRIPTION),
+				itemId: 'addButton',
+				disabled: this.isAddButtonDisabled(),
+				scope: this,
+
+				handler: function (button, e) {
+					this.cmfg('onDataViewFilterAddButtonClick', { id: this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.ID) });
+				},
+
+				/**
+				 * @returns {Boolean}
+				 *
+				 * @override
+				 */
+				isEnableActionEnabled: this.isEnableActionEnabled
+			});
 		},
 
 		/**
 		 * @param {Array} childrenArray
-		 * @param {Object} parent
+		 * @param {Array or Object} parent
 		 *
 		 * @returns {void}
 		 *
@@ -119,19 +121,20 @@
 		},
 
 		/**
-		 * @param {CMDBuild.model.management.dataView.filter.panel.grid.toolbar.top.Parent} entryTypeObject
-		 * @param {Object} parent
+		 * @param {CMDBuild.model.management.dataView.filter.entryType.EntryType} entryTypeObject
+		 * @param {Array or Object} parent
 		 *
 		 * @returns {void}
 		 *
 		 * @private
 		 */
 		buildMenuItem: function (entryTypeObject, parent) {
-			if (
-				Ext.isObject(entryTypeObject) && !Ext.Object.isEmpty(entryTypeObject)
-				&& !entryTypeObject.get(CMDBuild.core.constants.Proxy.CAPABILITIES).create
-			) {
+			if (Ext.isObject(entryTypeObject) && !Ext.Object.isEmpty(entryTypeObject)) {
 				var menuObject = {
+					disabled: (
+						!entryTypeObject.get([CMDBuild.core.constants.Proxy.PERMISSIONS, CMDBuild.core.constants.Proxy.CREATE])
+						&& !entryTypeObject.get(CMDBuild.core.constants.Proxy.IS_SUPER_CLASS)
+					),
 					text: entryTypeObject.get(CMDBuild.core.constants.Proxy.DESCRIPTION),
 					entryTypeId: entryTypeObject.get(CMDBuild.core.constants.Proxy.ID),
 					scope: this
@@ -143,13 +146,18 @@
 						this.cmfg('onDataViewFilterAddButtonClick', { id: button.entryTypeId });
 					};
 
-				if (Ext.isArray(parent)) {
-					parent.push(menuObject);
-				} else if (Ext.isObject(parent)) {
-					parent.menu = Ext.isArray(parent.menu) ? parent.menu : [];
-					parent.menu.push(menuObject);
-				} else {
-					return _error('buildMenuItem(): unmanaged parent parameter type', this, parent);
+				switch (Ext.typeOf(parent)) {
+					case 'array': {
+						parent.push(menuObject);
+					} break;
+
+					case 'object': {
+						parent.menu = Ext.isArray(parent.menu) ? parent.menu : [];
+						parent.menu.push(menuObject);
+					} break;
+
+					default:
+						return _error('buildMenuItem(): unmanaged parent parameter type', this, parent);
 				}
 
 				this.buildMenuChildren(entryTypeObject.get(CMDBuild.core.constants.Proxy.CHILDREN), menuObject);
@@ -160,33 +168,34 @@
 		 * @returns {Void}
 		 */
 		dataViewFilterGridToolbarTopUiUpdate: function () {
-			this.dataViewFilterGridToolbarTopEntryTypeRelationshipTreeReset();
+			// Add button setup
+				this.dataViewFilterGridToolbarTopEntryTypeRelationshipTreeReset();
 
-			// Build entryType map
-			Ext.Array.forEach(this.cmfg('dataViewFilterCacheEntryTypeGetAll'), function (entryTypeObject, i, allEntryTypeObjects) {
-				if (Ext.isObject(entryTypeObject) && !Ext.Object.isEmpty(entryTypeObject))
-					this.dataViewFilterGridToolbarTopEntryTypeRelationshipTreeSet({ value: entryTypeObject.getData() });
-			}, this);
+				// Build entryType map
+				Ext.Array.forEach(this.cmfg('dataViewFilterCacheEntryTypeGetAll'), function (entryTypeObject, i, allEntryTypeObjects) {
+					if (Ext.isObject(entryTypeObject) && !Ext.Object.isEmpty(entryTypeObject))
+						this.dataViewFilterGridToolbarTopEntryTypeRelationshipTreeSet({ value: entryTypeObject });
+				}, this);
 
-			// Build relationship tree
-			Ext.Object.each(this.dataViewFilterGridToolbarTopEntryTypeRelationshipTreeGet(), function (id, entryTypeObject, myself) {
-				if (
-					Ext.isObject(entryTypeObject) && !Ext.Object.isEmpty(entryTypeObject)
-					&& !Ext.isEmpty(entryTypeObject.get(CMDBuild.core.constants.Proxy.PARENT))
-				){
-					this.dataViewFilterGridToolbarTopEntryTypeRelationshipTreeAppendChild(entryTypeObject.get(CMDBuild.core.constants.Proxy.PARENT), entryTypeObject);
-				}
-			}, this);
+				// Build relationship tree
+				Ext.Object.each(this.dataViewFilterGridToolbarTopEntryTypeRelationshipTreeGet(), function (id, entryTypeObject, myself) {
+					if (
+						Ext.isObject(entryTypeObject) && !Ext.Object.isEmpty(entryTypeObject)
+						&& !Ext.isEmpty(entryTypeObject.get(CMDBuild.core.constants.Proxy.PARENT))
+					){
+						this.dataViewFilterGridToolbarTopEntryTypeRelationshipTreeAppendChild(entryTypeObject.get(CMDBuild.core.constants.Proxy.PARENT), entryTypeObject);
+					}
+				}, this);
 
-			// Build toolbar add button
-			this.view.remove('addButton');
-			this.view.insert(0, this.buildButtonAdd());
+				// Build toolbar add button
+				this.view.remove('addButton');
+				this.view.insert(0, this.buildButtonAdd());
 		},
 
 		// EntryTypeRelationshipTree property functions
 			/**
 			 * @param {Number} id
-			 * @param {CMDBuild.model.management.dataView.filter.panel.grid.toolbar.top.Parent} child
+			 * @param {CMDBuild.model.management.dataView.filter.entryType.EntryType} child
 			 *
 			 * @returns {Void}
 			 *
@@ -202,7 +211,7 @@
 					children = Ext.Array.merge(children, [child]); // Merge with unique items
 					children = CMDBuild.core.Utils.objectArraySort(children); // Sort children by description ASC
 
-					this.entryTypeRelationshipTree[id].set(CMDBuild.core.constants.Proxy.CHILDREN, children);
+					this.entryTypeRelationshipTree[id].set(CMDBuild.core.constants.Proxy.CHILDREN, Ext.Array.clean(children));
 				}
 			},
 
@@ -239,22 +248,20 @@
 
 			/**
 			 * @param {Object} parameters
-			 * @param {Object} parameters.value
+			 * @param {CMDBuild.model.management.dataView.filter.entryType.EntryType} parameters.value
 			 *
 			 * @returns {Void}
 			 *
 			 * @private
 			 */
 			dataViewFilterGridToolbarTopEntryTypeRelationshipTreeSet: function (parameters) {
+				parameters = Ext.isObject(parameters) ? parameters : {};
+
 				if (
-					Ext.isObject(parameters) && !Ext.Object.isEmpty(parameters)
-					&& !Ext.isEmpty(parameters.value[CMDBuild.core.constants.Proxy.ID])
-					&& Ext.isObject(parameters.value) && !Ext.Object.isEmpty(parameters.value)
+					Ext.isObject(parameters.value) && !Ext.Object.isEmpty(parameters.value)
+					&& !Ext.isEmpty(parameters.value.get(CMDBuild.core.constants.Proxy.ID))
 				) {
-					this.entryTypeRelationshipTree[parameters.value[CMDBuild.core.constants.Proxy.ID]] = Ext.create(
-						'CMDBuild.model.management.dataView.filter.panel.grid.toolbar.top.Parent',
-						parameters.value
-					);
+					this.entryTypeRelationshipTree[parameters.value.get(CMDBuild.core.constants.Proxy.ID)] = parameters.value;
 				}
 			},
 
@@ -266,19 +273,21 @@
 		 * @private
 		 */
 		isAddButtonDisabled: function (menuItems) {
-			var permissionsWrite = this.cmfg('dataViewFilterSourceEntryTypeGet', [
-					CMDBuild.core.constants.Proxy.PERMISSIONS,
-					CMDBuild.core.constants.Proxy.WRITE
-				]),
-				permissionsDisabledFeaturesCreate = this.cmfg('dataViewFilterSourceEntryTypeGet', [
+			menuItems = Ext.isArray(menuItems) ? menuItems : [];
+
+			var capabilityAddDisabled = this.cmfg('dataViewFilterSourceEntryTypeGet', [
 					CMDBuild.core.constants.Proxy.CAPABILITIES,
 					CMDBuild.core.constants.Proxy.ADD_DISABLED
+				]),
+				permissionsWrite = this.cmfg('dataViewFilterSourceEntryTypeGet', [
+					CMDBuild.core.constants.Proxy.PERMISSIONS,
+					CMDBuild.core.constants.Proxy.WRITE
 				]);
 
 			if (this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.IS_SUPER_CLASS))
-				return Ext.isEmpty(menuItems) || !permissionsWrite || permissionsDisabledFeaturesCreate;
+				return Ext.isEmpty(menuItems) || capabilityAddDisabled;
 
-			return !permissionsWrite || permissionsDisabledFeaturesCreate;
+			return !permissionsWrite || capabilityAddDisabled;
 		},
 
 		/**
