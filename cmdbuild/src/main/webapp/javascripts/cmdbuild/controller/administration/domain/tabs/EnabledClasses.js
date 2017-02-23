@@ -136,7 +136,7 @@
 
 				var nodesMap = {};
 
-				Ext.Array.each(decodedResponse, function (classObject, index, allClasses) {
+				Ext.Array.forEach(decodedResponse, function (classObject, index, allClasses) {
 					if (
 						classObject[CMDBuild.core.constants.Proxy.TYPE] == CMDBuild.core.constants.Global.getTableTypeClass() // Discard processes from visualization
 						&& classObject[CMDBuild.core.constants.Proxy.NAME] != CMDBuild.core.constants.Global.getRootNameClasses() // Discard root class of all classes

@@ -136,7 +136,7 @@
 		 * @private
 		 */
 		decodeCatchedFunctionsArray: function () {
-			Ext.Array.each(this.cmfgCatchedFunctions, function (managedFnString, i, allManagedFnString) {
+			Ext.Array.forEach(this.cmfgCatchedFunctions, function (managedFnString, i, allManagedFnString) {
 				if (Ext.isString(managedFnString)) {
 					// Forward inline tag
 					if (managedFnString.indexOf('->') >= 0) {
@@ -166,7 +166,7 @@
 						if (splittedString.length == 2 && Ext.String.trim(splittedString[0]).indexOf(' ') < 0) {
 							var aliasesArray = Ext.String.trim(splittedString[1]).split(',');
 
-							Ext.Array.each(aliasesArray, function (alias, i, allAliases) {
+							Ext.Array.forEach(aliasesArray, function (alias, i, allAliases) {
 								this.stringToFunctionNameMap[Ext.String.trim(alias)] = Ext.String.trim(splittedString[0]);
 							}, this);
 						}
@@ -253,7 +253,7 @@
 				}
 
 				if (!Ext.isEmpty(attributePath) && Ext.isArray(attributePath))
-					Ext.Array.each(attributePath, function (attributeName, i, allAttributeNames) {
+					Ext.Array.forEach(attributePath, function (attributeName, i, allAttributeNames) {
 						if (
 							Ext.isString(attributeName) && !Ext.isEmpty(attributeName)
 							&& Ext.isObject(requiredAttribute) && !Ext.Object.isEmpty(requiredAttribute)

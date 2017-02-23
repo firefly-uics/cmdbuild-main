@@ -278,7 +278,7 @@
 			var componentToolbar = this.getDockedComponent(CMDBuild.core.constants.Proxy.TOOLBAR_BOTTOM);
 
 			if (Ext.isObject(componentToolbar) && !Ext.Object.isEmpty(componentToolbar))
-				Ext.Array.each(componentToolbar.items.items, function (item, i, allItems) {
+				Ext.Array.forEach(componentToolbar.items.items, function (item, i, allItems) {
 					if (
 						Ext.isObject(item) && !Ext.Object.isEmpty(item)
 						&& !item.disablePanelFunctions
@@ -309,7 +309,7 @@
 			var componentToolbar = this.getDockedComponent(CMDBuild.core.constants.Proxy.TOOLBAR_TOP);
 
 			if (Ext.isObject(componentToolbar) && !Ext.Object.isEmpty(componentToolbar))
-				Ext.Array.each(componentToolbar.items.items, function (item, i, allItems) {
+				Ext.Array.forEach(componentToolbar.items.items, function (item, i, allItems) {
 					if (
 						Ext.isObject(item) && !Ext.Object.isEmpty(item)
 						&& !item.disablePanelFunctions

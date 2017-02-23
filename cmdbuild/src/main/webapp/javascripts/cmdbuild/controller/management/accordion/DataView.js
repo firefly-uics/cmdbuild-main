@@ -66,7 +66,7 @@
 					var nodes = [];
 
 					if (Ext.isArray(decodedResponse) && !Ext.isEmpty(decodedResponse))
-						Ext.Array.each(decodedResponse, function (viewObject, i, allViewObjects) {
+						Ext.Array.forEach(decodedResponse, function (viewObject, i, allViewObjects) {
 							var nodeObject = {};
 							nodeObject['cmName'] = this.cmfg('accordionIdentifierGet');
 							nodeObject[CMDBuild.core.constants.Proxy.DESCRIPTION] = viewObject[CMDBuild.core.constants.Proxy.DESCRIPTION];

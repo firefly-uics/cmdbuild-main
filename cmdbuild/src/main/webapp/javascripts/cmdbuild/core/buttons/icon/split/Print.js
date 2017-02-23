@@ -71,7 +71,7 @@
 		 * @private
 		 */
 		buildLegacyMenu: function () {
-			Ext.Array.each(this.formatList, function (format, i, allFormats) {
+			Ext.Array.forEach(this.formatList, function (format, i, allFormats) {
 				this.menu.add({
 					text: CMDBuild.Translation.as + ' ' + format.toUpperCase(),
 					iconCls: format,
@@ -91,7 +91,7 @@
 		 * @private
 		 */
 		buildMenu: function () {
-			Ext.Array.each(this.formatList, function (format, i, allFormats) {
+			Ext.Array.forEach(this.formatList, function (format, i, allFormats) {
 				this.menu.add({
 					text: CMDBuild.Translation.as + ' ' + format.toUpperCase(),
 					iconCls: format,

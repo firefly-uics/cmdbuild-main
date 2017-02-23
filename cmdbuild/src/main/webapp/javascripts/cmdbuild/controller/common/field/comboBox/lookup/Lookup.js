@@ -58,7 +58,7 @@
 				fields = [];
 
 			if (Ext.isArray(lookupTypeHierarky) && !Ext.isEmpty(lookupTypeHierarky))
-				Ext.Array.each(lookupTypeHierarky, function (type, i, allTypes) { // Loop on array in reverse mode
+				Ext.Array.forEach(lookupTypeHierarky, function (type, i, allTypes) { // Loop on array in reverse mode
 					if (Ext.isString(type) && !Ext.isEmpty(type)) {
 						var controller = Ext.create('CMDBuild.controller.common.field.comboBox.lookup.Field', {
 							parentDelegate: this,

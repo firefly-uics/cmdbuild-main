@@ -112,7 +112,7 @@
 			var nodeStructure = [];
 
 			if (!Ext.isEmpty(menuObject[CMDBuild.core.constants.Proxy.CHILDREN]) && Ext.isArray(menuObject[CMDBuild.core.constants.Proxy.CHILDREN]))
-				Ext.Array.each(menuObject[CMDBuild.core.constants.Proxy.CHILDREN], function (childObject, i, allChildNodes) {
+				Ext.Array.forEach(menuObject[CMDBuild.core.constants.Proxy.CHILDREN], function (childObject, i, allChildNodes) {
 					nodeStructure.push(this.menuStructureNodeBuilder(childObject));
 				}, this);
 

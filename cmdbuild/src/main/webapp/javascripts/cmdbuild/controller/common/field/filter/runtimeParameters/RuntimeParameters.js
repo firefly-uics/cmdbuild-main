@@ -136,7 +136,7 @@
 					var runtimeParametersAttributes = [];
 
 					if (Ext.isArray(decodedResponse) && !Ext.isEmpty(decodedResponse)) {
-						Ext.Array.each(decodedResponse, function (attributeObject, i, allAttributeObjects) {
+						Ext.Array.forEach(decodedResponse, function (attributeObject, i, allAttributeObjects) {
 							if (
 								Ext.isObject(attributeObject) && !Ext.Object.isEmpty(attributeObject)
 								&& Ext.Array.contains(runtimeParametersNames, attributeObject[CMDBuild.core.constants.Proxy.NAME])

@@ -70,7 +70,7 @@
 				}),
 				fields = [];
 
-			Ext.Array.each(attributes, function (attribute, i, allAttributes) {
+			Ext.Array.forEach(attributes, function (attribute, i, allAttributes) {
 				if (fieldManager.isAttributeManaged(attribute[CMDBuild.core.constants.Proxy.TYPE])) {
 					var attributeCustom = Ext.create('CMDBuild.model.common.attributes.Attribute', attribute);
 					attributeCustom.setAdaptedData(attribute);

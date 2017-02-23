@@ -116,7 +116,7 @@
 						} else if (Ext.isArray(importFailures)) {
 							var data = [];
 
-							Ext.Array.each(importFailures, function (failureObject, i, allFailureObjects) {
+							Ext.Array.forEach(importFailures, function (failureObject, i, allFailureObjects) {
 								if (Ext.isObject(failureObject) && !Ext.Object.isEmpty(failureObject))
 									data.push([failureObject[CMDBuild.core.constants.Proxy.MESSAGE], failureObject[CMDBuild.core.constants.Proxy.RECORD]]);
 							}, this);

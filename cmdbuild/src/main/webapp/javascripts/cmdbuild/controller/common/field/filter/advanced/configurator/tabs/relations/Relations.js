@@ -224,7 +224,7 @@
 						) {
 							var checkedCards = [];
 
-							Ext.Array.each(this.controllerGridCard.getView().getSelectionModel().getSelection(), function (record, i, allRecords) {
+							Ext.Array.forEach(this.controllerGridCard.getView().getSelectionModel().getSelection(), function (record, i, allRecords) {
 								if (!Ext.isEmpty(record)) {
 									var checkedCardObject = {};
 									checkedCardObject[CMDBuild.core.constants.Proxy.CLASS_NAME] = record.get('IdClass_value');

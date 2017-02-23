@@ -65,11 +65,11 @@
 						var attributesDataTypes = {};
 
 						// Build attributes dataTypes
-						Ext.Array.each(this.get(CMDBuild.core.constants.Proxy.MODEL), function (fieldModel, i, allfieldModels) {
+						Ext.Array.forEach(this.get(CMDBuild.core.constants.Proxy.MODEL), function (fieldModel, i, allfieldModels) {
 							attributesDataTypes[fieldModel.get(CMDBuild.core.constants.Proxy.NAME)] = fieldModel.get(CMDBuild.core.constants.Proxy.TYPE);
 						}, this);
 
-						Ext.Array.each(newValue, function (attributeObject, i, allAttributeObjects) {
+						Ext.Array.forEach(newValue, function (attributeObject, i, allAttributeObjects) {
 							attributesArray.push(Ext.create('CMDBuild.model.common.attributes.Generic', {
 								data: attributeObject,
 								dataTypes: attributesDataTypes
@@ -87,7 +87,7 @@
 
 						var attributesArray = [];
 
-						Ext.Array.each(newValue, function (attributeObject, i, allAttributeObjects) {
+						Ext.Array.forEach(newValue, function (attributeObject, i, allAttributeObjects) {
 							attributesArray.push(Ext.create('CMDBuild.model.management.widget.customForm.Attribute', attributeObject));
 						}, this);
 

@@ -54,7 +54,7 @@
 			if (Ext.isObject(metadataGroupModel) && !Ext.Object.isEmpty(metadataGroupModel)) {
 				var fieldManager = Ext.create('CMDBuild.core.fieldManager.FieldManager', { parentDelegate: this });
 
-				Ext.Array.each(metadataGroupModel.get(CMDBuild.core.constants.Proxy.META), function (fieldObject, i, allFieldObjects) {
+				Ext.Array.forEach(metadataGroupModel.get(CMDBuild.core.constants.Proxy.META), function (fieldObject, i, allFieldObjects) {
 					var field = undefined;
 
 					if (fieldManager.isAttributeManaged(fieldObject[CMDBuild.core.constants.Proxy.TYPE])) {

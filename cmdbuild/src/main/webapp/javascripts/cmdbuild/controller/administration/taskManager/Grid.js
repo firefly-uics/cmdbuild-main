@@ -269,7 +269,7 @@
 			if (Ext.isArray(value) && !Ext.isEmpty(value)) {
 				var translationKey = '';
 
-				Ext.Array.each(value, function (typeSection, i, allTypeSections) {
+				Ext.Array.forEach(value, function (typeSection, i, allTypeSections) {
 					if (Ext.isString(typeSection) && !Ext.isEmpty(typeSection))
 						translationKey += i > 0 ? CMDBuild.core.Utils.toTitleCase(typeSection) : typeSection;
 				}, this);

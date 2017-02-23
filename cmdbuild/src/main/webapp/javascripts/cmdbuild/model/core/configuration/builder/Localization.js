@@ -40,7 +40,7 @@
 		getEnabledLanguages: function () {
 			var enabledLanguages = {};
 
-			Ext.Array.each(this.get(CMDBuild.core.constants.Proxy.ENABLED_LANGUAGES), function (languageTag, i, allLanguageTag) {
+			Ext.Array.forEach(this.get(CMDBuild.core.constants.Proxy.ENABLED_LANGUAGES), function (languageTag, i, allLanguageTag) {
 				enabledLanguages[languageTag] = this.getLanguageObject(languageTag);
 			},this);
 
@@ -104,7 +104,7 @@
 					}
 
 					// Build languages with localizations
-					Ext.Array.each(decodedArray, function (languageTag, i, allLanguageTag) {
+					Ext.Array.forEach(decodedArray, function (languageTag, i, allLanguageTag) {
 						if (this.isManagedLanguage(languageTag))
 							enabledLanguages.push(languageTag);
 					}, this);
@@ -123,7 +123,7 @@
 					var languagesObjectsArray = {};
 
 					if (Ext.isArray(newValue)) {
-						Ext.Array.each(newValue, function (language, i, allLanguages) {
+						Ext.Array.forEach(newValue, function (language, i, allLanguages) {
 							languagesObjectsArray[language[CMDBuild.core.constants.Proxy.TAG]] = Ext.create('CMDBuild.model.localization.Localization', language);
 						}, this);
 

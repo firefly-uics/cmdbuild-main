@@ -88,7 +88,7 @@
 					this.view.getStore().getRootNode().removeAll();
 
 					if (!Ext.isEmpty(decodedResponse) && Ext.isArray(decodedResponse)) {
-						Ext.Array.each(decodedResponse, function (classObject, i, allClassObjects) {
+						Ext.Array.forEach(decodedResponse, function (classObject, i, allClassObjects) {
 							var nodeObject = {};
 							nodeObject['cmName'] = this.cmfg('accordionIdentifierGet');
 							nodeObject[CMDBuild.core.constants.Proxy.TEXT] = classObject[CMDBuild.core.constants.Proxy.TEXT];

@@ -90,7 +90,7 @@
 				if (!Ext.isEmpty(ancestorsDomains) && Ext.isArray(ancestorsDomains)) {
 					var entryTypeName = entryType.get(CMDBuild.core.constants.Proxy.NAME);
 
-					Ext.Array.each(ancestorsDomains, function (anchestorDomainModel, i, allAnchestorDomainModels) {
+					Ext.Array.forEach(ancestorsDomains, function (anchestorDomainModel, i, allAnchestorDomainModels) {
 						if (!Ext.isEmpty(anchestorDomainModel)) {
 							var oppositeEntryTypeModel = anchestorDomainModel.get(CMDBuild.core.constants.Proxy.ORIGIN_CLASS_NAME);
 							var domainDescription = anchestorDomainModel.get(CMDBuild.core.constants.Proxy.INVERSE_DESCRIPTION);
@@ -220,7 +220,7 @@
 			) {
 				node.expand();
 
-				Ext.Array.each(stateObjectArray, function (stateObject, i, allStateObjects) {
+				Ext.Array.forEach(stateObjectArray, function (stateObject, i, allStateObjects) {
 					if (Ext.isObject(stateObject) && !Ext.Object.isEmpty(stateObject)) {
 						var soughtNode = node.findChildBy(function (childNode) {
 							var domainModel = childNode.get(CMDBuild.core.constants.Proxy.DOMAIN);
@@ -268,7 +268,7 @@
 			 */
 			localCacheDomainSet: function (domainsArray) {
 				if (!Ext.isEmpty(domainsArray) && Ext.isArray(domainsArray))
-					Ext.Array.each(domainsArray, function (domainObject, i, allDomainObjects) {
+					Ext.Array.forEach(domainsArray, function (domainObject, i, allDomainObjects) {
 						if (Ext.isObject(domainObject) && !Ext.Object.isEmpty(domainObject))
 							this.localCache.domains[domainObject[CMDBuild.core.constants.Proxy.ID_DOMAIN]] = Ext.create('CMDBuild.model.navigationTree.Domain', domainObject);
 					}, this);
@@ -302,7 +302,7 @@
 			 */
 			localCacheEntryTypeSet: function (classesArray) {
 				if (!Ext.isEmpty(classesArray) && Ext.isArray(classesArray))
-					Ext.Array.each(classesArray, function (entryTypeObject, i, allEntryTyopeObjects) {
+					Ext.Array.forEach(classesArray, function (entryTypeObject, i, allEntryTyopeObjects) {
 						if (Ext.isObject(entryTypeObject) && !Ext.Object.isEmpty(entryTypeObject))
 							this.localCache.entryTypes[entryTypeObject[CMDBuild.core.constants.Proxy.NAME]] = Ext.create('CMDBuild.model.navigationTree.Class', entryTypeObject);
 					}, this);

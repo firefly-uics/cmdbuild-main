@@ -91,7 +91,7 @@
 			 */
 			attributesSet: function (attributes) {
 				if (Ext.isArray(attributes) && !Ext.isEmpty(attributes))
-					Ext.Array.each(attributes, function (attributeObject, i, allAttributeObject) {
+					Ext.Array.forEach(attributes, function (attributeObject, i, allAttributeObject) {
 						if (Ext.isObject(attributeObject) && !Ext.Object.isEmpty(attributeObject))
 							this.attributes[attributeObject[CMDBuild.core.constants.Proxy.NAME]] = attributeObject;
 					}, this);

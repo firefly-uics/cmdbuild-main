@@ -112,7 +112,7 @@
 			 */
 			workflowTabDomainsBufferEntryTypesSet: function (entryTypes) {
 				if (Ext.isArray(entryTypes) && !Ext.isEmpty(entryTypes))
-					Ext.Array.each(entryTypes, function (entryTypeObject, i, allEntryTypeObjects) {
+					Ext.Array.forEach(entryTypes, function (entryTypeObject, i, allEntryTypeObjects) {
 						if (Ext.isObject(entryTypeObject) && !Ext.Object.isEmpty(entryTypeObject)) {
 							var model = Ext.create('CMDBuild.model.administration.workflow.tabs.domains.EntryType', entryTypeObject);
 

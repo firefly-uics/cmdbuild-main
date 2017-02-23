@@ -65,7 +65,7 @@
 					if (!Ext.isEmpty(decodedResponse)) {
 						var nodes = [];
 
-						Ext.Array.each(decodedResponse, function (domainObject, i, allDomainObjects) {
+						Ext.Array.forEach(decodedResponse, function (domainObject, i, allDomainObjects) {
 							var nodeObject = {};
 							nodeObject['cmName'] = this.cmfg('accordionIdentifierGet');
 							nodeObject['iconCls'] = 'cmdb-tree-domain-icon';

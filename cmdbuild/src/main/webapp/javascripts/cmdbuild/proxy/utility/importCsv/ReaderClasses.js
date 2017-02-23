@@ -55,7 +55,7 @@
 			var structure = [];
 
 			if (Ext.isArray(data[this.root]) && !Ext.isEmpty(data[this.root]))
-				Ext.Array.each(data[this.root], function (rowObject, i, allRowObjects) {
+				Ext.Array.forEach(data[this.root], function (rowObject, i, allRowObjects) {
 					structure.push(this.buildRecord(rowObject));
 				}, this);
 

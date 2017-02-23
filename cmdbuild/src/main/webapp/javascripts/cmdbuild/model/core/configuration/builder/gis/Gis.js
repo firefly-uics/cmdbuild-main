@@ -54,7 +54,7 @@
 			if (!Ext.isEmpty(property) && Ext.isArray(property)) {
 				var returnValue = this;
 
-				Ext.Array.each(property, function (propertyName, i, allPropertyNames) {
+				Ext.Array.forEach(property, function (propertyName, i, allPropertyNames) {
 					if (!Ext.isEmpty(returnValue) && Ext.isFunction(returnValue.get))
 						returnValue = returnValue.get(propertyName);
 				}, this);

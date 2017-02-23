@@ -73,7 +73,7 @@
 				var requiredAttribute = this.attributeModel;
 
 				if (Ext.isArray(attributePath) && !Ext.isEmpty(attributePath))
-					Ext.Array.each(attributePath, function (attributeName, i, allAttributeNames) {
+					Ext.Array.forEach(attributePath, function (attributeName, i, allAttributeNames) {
 						if (!Ext.isEmpty(attributeName) && Ext.isString(attributeName)) {
 							if (
 								!Ext.isEmpty(requiredAttribute)
@@ -252,7 +252,7 @@
 			templateResolverAttributesDataGet: function () {
 				var attributesData = {};
 
-				Ext.Array.each(this.templateResolverAttributesGet(), function (attribute, i, allAttributes) {
+				Ext.Array.forEach(this.templateResolverAttributesGet(), function (attribute, i, allAttributes) {
 					attributesData[attribute] = this.cmfg('fieldManagerAttributeModelGet', attribute);
 				}, this);
 

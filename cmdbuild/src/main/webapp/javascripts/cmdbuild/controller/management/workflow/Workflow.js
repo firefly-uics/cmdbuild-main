@@ -655,7 +655,7 @@
 				this.workflowLocalCacheWorkflowReset();
 
 				if (Ext.isArray(workflows) && !Ext.isEmpty(workflows))
-					Ext.Array.each(workflows, function (workflowObject, i, allWorkflowObjects) {
+					Ext.Array.forEach(workflows, function (workflowObject, i, allWorkflowObjects) {
 						if (Ext.isObject(workflowObject) && !Ext.Object.isEmpty(workflowObject)) {
 							workflowObject['rawData'] = workflowObject; // FIXME: legacy mode to remove on complete Workflow UI and wofkflowState modules refactor
 
@@ -960,7 +960,7 @@
 				this.selectedWorkflowAttributes = {};
 
 				if (Ext.isArray(attributes) && !Ext.isEmpty(attributes))
-					Ext.Array.each(attributes, function (attributeObject, i, allAttributeObjects) {
+					Ext.Array.forEach(attributes, function (attributeObject, i, allAttributeObjects) {
 						if (Ext.isObject(attributeObject) && !Ext.Object.isEmpty(attributeObject)) {
 							var attributeModel = Ext.create('CMDBuild.model.management.workflow.Attribute', attributeObject);
 

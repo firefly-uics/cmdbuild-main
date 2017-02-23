@@ -63,9 +63,9 @@
 		 * @param {Object} data - CMDBuild.proxy.gis.Gis.configurationRead response
 		 */
 		collapseFieldsets: function(data) {
-			Ext.Array.each(this.view.services, function(itemService, indexService, allItemsService) {
+			Ext.Array.forEach(this.view.services, function(itemService, indexService, allItemsService) {
 				if (data[itemService] == 'on') {
-					Ext.Array.each(this.view.wrapper.items.items, function(itemWrapper, indexWrapper, allItemsWrapper) {
+					Ext.Array.forEach(this.view.wrapper.items.items, function(itemWrapper, indexWrapper, allItemsWrapper) {
 						if (itemWrapper.serviceName == itemService)
 							itemWrapper.expand();
 					}, this);
@@ -104,7 +104,7 @@
 		getValues: function() {
 			var values = {};
 
-			Ext.Array.each(this.view.wrapper.items.items, function(item, index, allItems) {
+			Ext.Array.forEach(this.view.wrapper.items.items, function(item, index, allItems) {
 				if (typeof item.serviceName == 'string') {
 					if (item.collapsed) {
 						values[item.serviceName] = 'off';
@@ -126,7 +126,7 @@
 		 * @param {String} expandedName
 		 */
 		onFieldsetExpand: function(expandedName) {
-			Ext.Array.each(this.view.wrapper.items.items, function(item, index, allItems) {
+			Ext.Array.forEach(this.view.wrapper.items.items, function(item, index, allItems) {
 				if (item.serviceName != expandedName && item.serviceName != 'geoserver')
 					item.collapse();
 			}, this);

@@ -227,7 +227,7 @@
 								decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.DOMAINS];
 
 								if (Ext.isArray(decodedResponse) && !Ext.isEmpty(decodedResponse))
-									Ext.Array.each(decodedResponse, function (domainObject, i, allDomainObjects) {
+									Ext.Array.forEach(decodedResponse, function (domainObject, i, allDomainObjects) {
 										if (Ext.isObject(domainObject) && !Ext.Object.isEmpty(domainObject))
 											domainsDestination.push(Ext.create('CMDBuild.model.common.field.filter.advanced.configurator.tabs.relations.Domain', domainObject));
 									}, this);
@@ -235,7 +235,7 @@
 								if (!Ext.isEmpty(domainsSource) || !Ext.isEmpty(domainsDestination)) {
 									// Domains where entryType is source manage
 									if (Ext.isArray(domainsSource) && !Ext.isEmpty(domainsSource))
-										Ext.Array.each(domainsSource, function (domainModel, i, allDomainModels) {
+										Ext.Array.forEach(domainsSource, function (domainModel, i, allDomainModels) {
 											if (Ext.isObject(domainModel) && !Ext.Object.isEmpty(domainModel))
 												records.push(
 													Ext.create('CMDBuild.model.common.field.filter.advanced.configurator.tabs.relations.DomainGrid', {
@@ -251,7 +251,7 @@
 
 									// Domains where entryType is destination manage
 									if (Ext.isArray(domainsDestination) && !Ext.isEmpty(domainsDestination))
-										Ext.Array.each(domainsDestination, function (domainModel, i, allDomainModels) {
+										Ext.Array.forEach(domainsDestination, function (domainModel, i, allDomainModels) {
 											if (Ext.isObject(domainModel) && !Ext.Object.isEmpty(domainModel))
 												records.push(
 													Ext.create('CMDBuild.model.common.field.filter.advanced.configurator.tabs.relations.DomainGrid', {

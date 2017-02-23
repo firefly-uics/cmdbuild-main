@@ -278,7 +278,7 @@
 			this.cmfg('dataViewFilterFullScreenUiSetup', { maximize: 'bottom' });
 			this.cmfg('dataViewFilterUiViewModeSet', 'clone');
 
-			this.dataViewFilterSelectedCardSet({ // FIXME: reset ID of cloned card, pay attention that in values ID still old one
+			this.dataViewFilterSelectedCardSet({
 				propertyName: CMDBuild.core.constants.Proxy.ID,
 				value: null
 			});
@@ -697,7 +697,7 @@
 				this.sourceEntryTypeAttributes = {};
 
 				if (Ext.isArray(attributes) && !Ext.isEmpty(attributes))
-					Ext.Array.each(attributes, function (attributeObject, i, allAttributeObjects) {
+					Ext.Array.forEach(attributes, function (attributeObject, i, allAttributeObjects) {
 						if (Ext.isObject(attributeObject) && !Ext.Object.isEmpty(attributeObject))
 							this.sourceEntryTypeAttributes[attributeObject[CMDBuild.core.constants.Proxy.NAME]] = Ext.create('CMDBuild.model.management.dataView.filter.Attribute', attributeObject);
 					}, this);

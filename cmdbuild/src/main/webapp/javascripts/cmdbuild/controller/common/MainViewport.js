@@ -150,7 +150,7 @@
 			 */
 			accordionControllerBuild: function (requestBarrier) {
 				if (Ext.isArray(this.accordion) && !Ext.isEmpty(this.accordion))
-					Ext.Array.each(this.accordion, function (controllerDefinition, i, allControllerDefinitions) {
+					Ext.Array.forEach(this.accordion, function (controllerDefinition, i, allControllerDefinitions) {
 						if (
 							Ext.isObject(controllerDefinition) && !Ext.Object.isEmpty(controllerDefinition)
 							&& Ext.isString(controllerDefinition.className) && !Ext.isEmpty(controllerDefinition.className)

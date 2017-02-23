@@ -48,7 +48,7 @@
 						}, this);
 
 						if (Ext.isArray(decodedResponse) && !Ext.isEmpty(decodedResponse))
-							Ext.Array.each(decodedResponse, function (classObject, i, allClassObjects) {
+							Ext.Array.forEach(decodedResponse, function (classObject, i, allClassObjects) {
 								if (Ext.isObject(classObject) && !Ext.Object.isEmpty(classObject))
 									this.localCacheSimpleTables[classObject[CMDBuild.core.constants.Proxy.NAME]] = classObject;
 							}, this);

@@ -210,7 +210,7 @@
 
 			// Build columns dataIndex array
 			if (Ext.isArray(visibleColumns) && !Ext.isEmpty(visibleColumns))
-				Ext.Array.each(visibleColumns, function (columnObject, i, allColumnObjects) {
+				Ext.Array.forEach(visibleColumns, function (columnObject, i, allColumnObjects) {
 					if (
 						Ext.isObject(columnObject) && !Ext.Object.isEmpty(columnObject)
 						&& !Ext.isEmpty(columnObject.dataIndex)

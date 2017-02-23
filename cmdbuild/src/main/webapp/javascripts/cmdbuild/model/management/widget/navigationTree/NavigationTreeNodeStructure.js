@@ -26,7 +26,7 @@
 
 			// Build childNodesId array
 			if (Ext.isArray(data[CMDBuild.core.constants.Proxy.CHILD_NODES]) && !Ext.isEmpty(data[CMDBuild.core.constants.Proxy.CHILD_NODES]))
-				Ext.Array.each(data[CMDBuild.core.constants.Proxy.CHILD_NODES], function (childNodeObject, i, allChildNodeObjects) {
+				Ext.Array.forEach(data[CMDBuild.core.constants.Proxy.CHILD_NODES], function (childNodeObject, i, allChildNodeObjects) {
 					if (Ext.isObject(childNodeObject) && !Ext.Object.isEmpty(childNodeObject))
 						data[CMDBuild.core.constants.Proxy.CHILD_NODES_ID].push(childNodeObject[CMDBuild.core.constants.Proxy.ID]);
 				}, this)
