@@ -63,13 +63,15 @@
 			// END: Error handling
 
 			if (this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.IS_SUPER_CLASS)) {
-				var menuItems = [],
-					selectedWorkflowDescendants = this.workflowToolbarTopWorkflowRelationshipTreeGet(
+				var menuItems = [];
+
+				this.buildMenuChildren(
+					this.workflowToolbarTopWorkflowRelationshipTreeGet(
 						this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.ID),
 						CMDBuild.core.constants.Proxy.CHILDREN
-					);
-
-				this.buildMenuChildren(selectedWorkflowDescendants, menuItems);
+					),
+					menuItems
+				);
 
 				return Ext.create('CMDBuild.core.buttons.icon.split.add.Workflow', {
 					text: CMDBuild.Translation.start + ' ' + this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.DESCRIPTION),
@@ -109,7 +111,7 @@
 
 		/**
 		 * @param {Array} childrenArray
-		 * @param {Object} parent
+		 * @param {Array or Object} parent
 		 *
 		 * @returns {void}
 		 *
@@ -125,7 +127,7 @@
 
 		/**
 		 * @param {CMDBuild.model.management.workflow.workflow.Workflow} workflowObject
-		 * @param {Object} parent
+		 * @param {Array or Object} parent
 		 *
 		 * @returns {void}
 		 *
@@ -149,13 +151,18 @@
 						this.cmfg('onWorkflowAddButtonClick', { id: button.workflowId });
 					};
 
-				if (Ext.isArray(parent)) {
-					parent.push(menuObject);
-				} else if (Ext.isObject(parent)) {
-					parent.menu = Ext.isArray(parent.menu) ? parent.menu : [];
-					parent.menu.push(menuObject);
-				} else {
-					_error('buildMenuItem(): unmanaged parent parameter type', this, parent);
+				switch (Ext.typeOf(parent)) {
+					case 'array': {
+						parent.push(menuObject);
+					} break;
+
+					case 'object': {
+						parent.menu = Ext.isArray(parent.menu) ? parent.menu : [];
+						parent.menu.push(menuObject);
+					} break;
+
+					default:
+						return _error('buildMenuItem(): unmanaged parent parameter type', this, parent);
 				}
 
 				this.buildMenuChildren(workflowObject.get(CMDBuild.core.constants.Proxy.CHILDREN), menuObject);
@@ -170,19 +177,21 @@
 		 * @private
 		 */
 		isAddButtonDisabled: function (menuItems) {
-			var permissionsStart = this.cmfg('workflowSelectedWorkflowGet', [
-					CMDBuild.core.constants.Proxy.PERMISSIONS,
-					CMDBuild.core.constants.Proxy.STARTABLE
-				]),
-				permissionsDisabledFeaturesCreate = this.cmfg('workflowSelectedWorkflowGet', [
+			menuItems = Ext.isArray(menuItems) ? menuItems : [];
+
+			var capabilityAddDisabled = this.cmfg('workflowSelectedWorkflowGet', [
 					CMDBuild.core.constants.Proxy.CAPABILITIES,
 					CMDBuild.core.constants.Proxy.ADD_DISABLED
+				]),
+				permissionsStart = this.cmfg('workflowSelectedWorkflowGet', [
+					CMDBuild.core.constants.Proxy.PERMISSIONS,
+					CMDBuild.core.constants.Proxy.STARTABLE
 				]);
 
 			if (this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.IS_SUPER_CLASS))
-				return Ext.isEmpty(menuItems) || permissionsDisabledFeaturesCreate;
+				return Ext.isEmpty(menuItems) || capabilityAddDisabled;
 
-			return !permissionsStart || permissionsDisabledFeaturesCreate;
+			return !permissionsStart || capabilityAddDisabled;
 		},
 
 		/**
@@ -234,10 +243,7 @@
 					children = Ext.Array.merge(children, [child]); // Merge with unique items
 					children = CMDBuild.core.Utils.objectArraySort(children); // Sort children by description ASC
 
-					this.workflowRelationshipTree[id].set(
-						CMDBuild.core.constants.Proxy.CHILDREN,
-						Ext.Array.clean(children)
-					);
+					this.workflowRelationshipTree[id].set(CMDBuild.core.constants.Proxy.CHILDREN, Ext.Array.clean(children));
 				}
 			},
 
@@ -274,7 +280,7 @@
 
 			/**
 			 * @param {Object} parameters
-			 * @param {Object} parameters.value
+			 * @param {CMDBuild.model.management.workflow.workflow.Workflow} parameters.value
 			 *
 			 * @returns {Void}
 			 *

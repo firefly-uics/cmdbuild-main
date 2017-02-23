@@ -158,7 +158,7 @@
 		 * @param {Function} parameters.callback
 		 * @param {Boolean} parameters.disableFirstRowSelection
 		 * @param {Object} parameters.scope
-		 * @param {Boolean} parameters.storeLoad
+		 * @param {String} parameters.storeLoad
 		 *
 		 * @returns {Void}
 		 *
@@ -462,7 +462,7 @@
 
 			// Error handling
 				if (this.cmfg('workflowSelectedWorkflowIsEmpty'))
-					return _error('positionInstanceGet(): empty selected workflow', this);
+					return _error('positionInstanceGet(): no selected workflow found empty', this);
 
 				if (this.cmfg('workflowSelectedInstanceIsEmpty'))
 					return _error('positionInstanceGet(): no selected instance found', this);
@@ -559,7 +559,7 @@
 		 * @param {Function} parameters.callback
 		 * @param {Boolean} parameters.disableFirstRowSelection
 		 * @param {Object} parameters.scope
-		 * @param {Boolean} parameters.storeLoad
+		 * @param {String} parameters.storeLoad
 		 *
 		 * @returns {Void}
 		 *
@@ -575,8 +575,7 @@
 			// END: Error handling
 
 			var flowStatus = CMDBuild.controller.management.workflow.Utils.translateStatusFromCapitalizedMode(flowStatus),
-				pageNumber = CMDBuild.core.Utils.getPageNumber(position),
-				pageRelatedPosition = position % CMDBuild.configuration.instance.get(CMDBuild.core.constants.Proxy.ROW_LIMIT);
+				pageNumber = CMDBuild.core.Utils.getPageNumber(position);
 
 			// Sync UI with flow status returned value
 			if (Ext.isString(flowStatus) && !Ext.isEmpty(flowStatus))
@@ -588,21 +587,22 @@
 					page: pageNumber,
 					scope: this,
 					callback: function (records, operation, success) {
-						this.positionInstanceGetSuccessCallback(pageRelatedPosition, {
+						this.positionInstanceGetSuccessCallback({
 							callback: parameters.callback,
 							scope: parameters.scope
 						});
 					}
 				});
 
-			return this.positionInstanceGetSuccessCallback(pageRelatedPosition, {
+			return this.positionInstanceGetSuccessCallback({
 				callback: parameters.callback,
 				scope: parameters.scope
 			});
 		},
 
 		/**
-		 * @param {Number} pageRelatedPosition
+		 * Search row to select because of multiple activity that invalidate server response
+		 *
 		 * @param {Object} parameters
 		 * @param {Function} parameters.callback
 		 * @param {Object} parameters.scope
@@ -611,7 +611,7 @@
 		 *
 		 * @private
 		 */
-		positionInstanceGetSuccessCallback: function (pageRelatedPosition, parameters) {
+		positionInstanceGetSuccessCallback: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
 			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
 
@@ -985,7 +985,7 @@
 		 * @param {Boolean} parameters.flowStatus
 		 * @param {Object} parameters.scope
 		 * @param {Boolean} parameters.sortersReset
-		 * @param {Boolean} parameters.storeLoad
+		 * @param {String} parameters.storeLoad
 		 *
 		 * @returns {Void}
 		 */
