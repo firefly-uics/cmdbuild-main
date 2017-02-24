@@ -6,7 +6,7 @@
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.model.management.dataView.filter.panel.grid.Record',
 			'CMDBuild.proxy.index.Json',
-			'CMDBuild.proxy.management.dataView.filter.panel.grid.Reader'
+			'CMDBuild.proxy.management.dataView.filter.panel.grid.ReaderCard'
 		],
 
 		singleton: true,
@@ -24,7 +24,7 @@
 					type: 'ajax',
 					url: CMDBuild.proxy.index.Json.card.readAll,
 					reader: {
-						type: 'classstore',
+						type: 'cardstore',
 						root: CMDBuild.core.constants.Proxy.ROWS,
 						totalProperty: CMDBuild.core.constants.Proxy.RESULTS
 					}

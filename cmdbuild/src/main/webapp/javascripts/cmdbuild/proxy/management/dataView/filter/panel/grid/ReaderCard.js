@@ -8,9 +8,9 @@
 	 * 		IdClass -> classId
 	 * 		IdClass_value -> classDescription
 	 */
-	Ext.define('CMDBuild.proxy.management.dataView.filter.panel.grid.Reader', {
+	Ext.define('CMDBuild.proxy.management.dataView.filter.panel.grid.ReaderCard', {
 		extend: 'Ext.data.reader.Json',
-		alias: 'reader.classstore',
+		alias: 'reader.cardstore',
 
 		requires: ['CMDBuild.core.constants.Proxy'],
 
