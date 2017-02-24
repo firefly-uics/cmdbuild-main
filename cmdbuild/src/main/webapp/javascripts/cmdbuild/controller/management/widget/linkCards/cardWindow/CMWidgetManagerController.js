@@ -1,6 +1,7 @@
 (function() {
 
 	Ext.require([ // Legacy
+		'CMDBuild.controller.management.widget.CMCalendarController',
 		'CMDBuild.controller.management.widget.workflow.CMWorkflowController',
 		'CMDBuild.controller.management.widget.linkCards.LinkCardsController',
 		'CMDBuild.controller.management.widget.manageRelation.CMManageRelationController',
@@ -26,7 +27,7 @@
 		constructor: function(view) {
 			Ext.apply(this, {
 				controllerClasses: {
-					'.Calendar': CMDBuild.controller.management.common.widgets.CMCalendarController,
+					'.Calendar': CMDBuild.controller.management.widget.CMCalendarController,
 					'.CreateModifyCard': 'CMDBuild.controller.management.widget.createModifyCard.CMCreateModifyCardController',
 					'.CustomForm': 'CMDBuild.controller.management.widget.customForm.CustomForm',
 					'.Grid': 'CMDBuild.controller.management.widget.grid.Grid',

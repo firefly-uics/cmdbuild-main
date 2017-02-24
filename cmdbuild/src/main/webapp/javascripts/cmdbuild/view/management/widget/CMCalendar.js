@@ -28,7 +28,7 @@
 		}
 	});
 
-	Ext.define("CMDBuild.view.management.common.widgets.CMCalendar", {
+	Ext.define("CMDBuild.view.management.widget.CMCalendar", {
 		extend : "Ext.panel.Panel",
 
 		withButtons : true,
@@ -106,4 +106,5 @@
 		}
 		return v;
 	}
+
 })();

@@ -71,8 +71,8 @@
 					 * @param {Object} widget
 					 * @param {Ext.data.Model or CMDBuild.model.CMActivityInstance} card or activity
 					 */
-					'.Calendar': function(widget, card) {
-						var w = new CMDBuild.view.management.common.widgets.CMCalendar();
+					'.Calendar': function (widget, card) {
+						var w = Ext.create('CMDBuild.view.management.widget.CMCalendar');
 
 						me.widgetsContainer.addWidgt(w);
 
@@ -83,7 +83,7 @@
 					 * @param {Object} widget
 					 * @param {Ext.data.Model or CMDBuild.model.CMActivityInstance} card or activity
 					 */
-					'.CreateModifyCard': function(widget, card) {
+					'.CreateModifyCard': function (widget, card) {
 						var w = Ext.create('CMDBuild.view.management.widget.createModifyCard.CMCreateModifyCard');
 
 						me.widgetsContainer.addWidgt(w);

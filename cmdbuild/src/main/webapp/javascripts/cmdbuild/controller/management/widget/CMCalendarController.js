@@ -5,7 +5,7 @@
 		'CMDBuild.proxy.management.widget.Calendar'
 	]);
 
-	Ext.define("CMDBuild.controller.management.common.widgets.CMCalendarController", {
+	Ext.define("CMDBuild.controller.management.widget.CMCalendarController", {
 
 		mixins: {
 			observable: "Ext.util.Observable",
@@ -17,10 +17,10 @@
 			this.mixins.observable.constructor.call(this);
 			this.mixins.widgetcontroller.constructor.apply(this, arguments);
 
-			this.reader = new CMDBuild.controller.management.common.widgets.CMCalendarControllerWidgetReader();
+//			this.reader = new CMDBuild.controller.management.widget.CMCalendarControllerWidgetReader();
 
-			if (!this.reader.getStartDate(this.widgetConf) ||
-					!this.reader.getTitle(this.widgetConf)) {
+			if (!this.widgetConf['startDate'] ||
+					!this.widgetConf['eventTitle']) {
 
 				CMDBuild.core.Message.error(CMDBuild.Translation.common.failure, CMDBuild.Translation.warnings.calendarIsNotWellConfigured);
 
@@ -29,9 +29,9 @@
 			} else {
 				this.eventMapping = {
 					id: "Id",
-					start: this.reader.getStartDate(this.widgetConf),
-					end: this.reader.getEndDate(this.widgetConf),
-					title: this.reader.getTitle(this.widgetConf)
+					start: this.widgetConf['startDate'],
+					end: this.widgetConf['endDate'],
+					title: this.widgetConf['eventTitle']
 				};
 			}
 
@@ -54,12 +54,12 @@
 			}
 
 			var me = this,
-				cqlQuery = this.templateResolver.getVariable("xa:" + me.reader.getFilterVarName());
+				cqlQuery = this.templateResolver.getVariable("xa:" + 'filter');
 
 			if (cqlQuery) {
 				this.filteredWithCQL = true;
 				this.templateResolver.resolveTemplates({
-					attributes: [me.reader.getFilterVarName()],
+					attributes: ['filter'],
 					scope: me.view,
 					callback: function(out, ctx) {
 						var filterParams = me.templateResolver.buildCQLQueryParameters(cqlQuery, ctx);
@@ -87,7 +87,7 @@
 
 			var me = this,
 				viewBounds = this.view.getWievBounds(),
-				className = me.reader.getEventClass(me.widgetConf);
+				className = me.widgetConf['eventClass'];
 
 			var e_start = me.eventMapping.start,
 				e_end = me.eventMapping.end,
@@ -124,7 +124,7 @@
 	});
 
 	function openDefaultDate(me) {
-		var defaultDateAttr = me.reader.getDefaultDate(me.widgetConf);
+		var defaultDateAttr = me.widgetConf['defaultDate'];
 		if (defaultDateAttr) {
 			var defaultDate = me.templateResolver.getVariable("client:" + defaultDateAttr);
 			var date = buildDate(defaultDate);
@@ -159,7 +159,7 @@
 		var params = filterParams || {};
 
 		if (!filterParams) {
-			params.className = me.reader.getEventClass(me.widgetConf);
+			params.className = me.widgetConf['eventClass'];
 			params.filter = Ext.encode({
 				CQL: me.paginationQuery
 			});
@@ -197,7 +197,7 @@
 
 	function onEventClick(panel, model, el) {
 		var me = this,
-			target = _CMCache.getEntryTypeByName(me.reader.getEventClass(me.widgetConf));
+			target = _CMCache.getEntryTypeByName(me.widgetConf['eventClass']);
 
 		if (target) {
 			var w = new CMDBuild.view.management.common.CMCardWindow({
