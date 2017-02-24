@@ -5,7 +5,7 @@
 		data : []
 	});
 
-	Ext.define("CMDBuild.view.management.common.widgets.workflow.CMWorkflowCombo", {
+	Ext.define("CMDBuild.view.management.widget.workflow.CMWorkflowCombo", {
 		extend: "Ext.panel.Panel",
 		panel: undefined,
 		bodyCls: "x-panel-body-default-framed",

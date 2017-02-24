@@ -2,7 +2,7 @@
 
 	Ext.require(['CMDBuild.core.constants.Global']);
 
-	Ext.define('CMDBuild.controller.management.common.widgets.workflow.StaticsController', {
+	Ext.define('CMDBuild.controller.management.widget.workflow.StaticsController', {
 
 		singleton: true,
 

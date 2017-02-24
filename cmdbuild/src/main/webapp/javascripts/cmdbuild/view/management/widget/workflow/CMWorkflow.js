@@ -1,6 +1,6 @@
 (function() {
 
-	Ext.define("CMDBuild.view.management.common.widgets.workflow.CMWorkflow", {
+	Ext.define("CMDBuild.view.management.widget.workflow.CMWorkflow", {
 		extend: "Ext.panel.Panel",
 
 		requires: ['CMDBuild.core.Utils'],
@@ -19,7 +19,7 @@
 					saveButtonClick: "cm-save-click",
 					advanceButtonClick: "cm-advance-click"
 			};
-			this.comboPanel = Ext.create("CMDBuild.view.management.common.widgets.workflow.CMWorkflowCombo", {
+			this.comboPanel = Ext.create("CMDBuild.view.management.widget.workflow.CMWorkflowCombo", {
 				region : 'north',
 				panel: this,
 				hidden: true

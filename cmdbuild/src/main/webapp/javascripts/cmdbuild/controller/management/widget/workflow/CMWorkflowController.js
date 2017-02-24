@@ -1,7 +1,7 @@
 (function() {
 
 	Ext.require([
-		'CMDBuild.controller.management.common.widgets.workflow.StaticsController',
+		'CMDBuild.controller.management.widget.workflow.StaticsController',
 		'CMDBuild.core.constants.Global',
 		'CMDBuild.core.Message',
 		'CMDBuild.proxy.management.widget.Workflow'
@@ -10,7 +10,7 @@
 	var ERROR_TEMPLATE = "<p class=\"{0}\">{1}</p>";
 	var FILTER_FIELD = "_SystemFieldFilter";
 
-	Ext.define("CMDBuild.controller.management.common.widgets.workflow.CMWorkflowController", {
+	Ext.define("CMDBuild.controller.management.widget.workflow.CMWorkflowController", {
 		mixins: {
 			observable: "Ext.util.Observable",
 			widgetcontroller: "CMDBuild.controller.management.common.widgets.CMWidgetController"
@@ -27,7 +27,7 @@
 			this.mixins.observable.constructor.call(this);
 			this.mixins.widgetcontroller.constructor.apply(this, arguments);
 
-			this.widgetReader = Ext.create('CMDBuild.controller.management.common.widgets.workflow.CMWorkflowControllerWidgetReader');
+			this.widgetReader = Ext.create('CMDBuild.controller.management.widget.workflow.CMWorkflowControllerWidgetReader');
 			var widgetManager = new CMDBuild.view.management.common.widgets.CMWidgetManagerPopup(this.view);
 			this.widgetControllerManager = new CMDBuild.controller.management.common.CMWidgetManagerControllerPopup(widgetManager);
 			view.setDelegate(this);
@@ -155,7 +155,7 @@
 			},
 			scope: me,
 			success: function (response, options, decodedResponse) {
-				this.attributes = CMDBuild.controller.management.common.widgets.workflow.StaticsController.filterAttributesInStep(this.cardAttributes, decodedResponse.response.variables);
+				this.attributes = CMDBuild.controller.management.widget.workflow.StaticsController.filterAttributesInStep(this.cardAttributes, decodedResponse.response.variables);
 				this.view.configureForm(this.attributes);
 				this.templateResolver = new CMDBuild.Management.TemplateResolver({
 					clientForm: this.clientForm,
