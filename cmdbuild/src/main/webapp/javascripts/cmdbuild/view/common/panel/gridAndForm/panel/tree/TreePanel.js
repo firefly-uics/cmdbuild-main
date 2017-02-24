@@ -15,6 +15,7 @@
 		cls: 'cmdb-border-bottom',
 		forceFit: true,
 		frame: false,
+		lines: false,
 		region: 'center',
 		rootVisible: false,
 		scroll: 'vertical', // Business rule: voluntarily hide the horizontal scroll-bar because probably no one want it

@@ -23,15 +23,13 @@
 		cmfgCatchedFunctions: [
 			'dataViewSqlGridAppliedFilterGet = panelGridAndFormListPanelAppliedFilterGet',
 			'dataViewSqlGridAppliedFilterIsEmpty = panelGridAndFormListPanelAppliedFilterIsEmpty',
-			'dataViewSqlGridFilterApply = panelGridAndFormListPanelFilterApply',
-			'dataViewSqlGridFilterClear = panelGridAndFormListPanelFilterClear',
 			'dataViewSqlGridReset',
 			'dataViewSqlGridStoreGet = panelGridAndFormListPanelStoreGet',
 			'dataViewSqlGridStoreLoad = panelGridAndFormListPanelStoreLoad',
 			'dataViewSqlGridUiUpdate',
-			'onDataViewFilterSqlAddButtonClick',
 			'onDataViewSqlGridColumnChanged',
-			'onDataViewSqlGridPrintButtonClick = onPanelGridAndFormCommonToolbarPrintButtonClick',
+			'onDataViewSqlGridPrintButtonClick',
+			'onDataViewSqlGridRecordSelect',
 			'onDataViewSqlGridSortChange'
 		],
 
@@ -41,12 +39,7 @@
 		controllerPrintWindow: undefined,
 
 		/**
-		 * @property {CMDBuild.controller.common.field.filter.runtimeParameters.RuntimeParameters}
-		 */
-		controllerRuntimeParameters: undefined,
-
-		/**
-		 * @property {CMDBuild.controller.common.panel.gridAndForm.panel.common.toolbar.Paging}
+		 * @property {CMDBuild.controller.management.dataView.sql.panel.override.common.panel.gridAndForm.panel.common.toolbar.Paging}
 		 */
 		controllerToolbarPaging: undefined,
 
@@ -75,8 +68,7 @@
 
 			// Build sub-controllers
 			this.controllerPrintWindow = Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.print.Window', { parentDelegate: this });
-			this.controllerRuntimeParameters = Ext.create('CMDBuild.controller.common.field.filter.runtimeParameters.RuntimeParameters', { parentDelegate: this });
-			this.controllerToolbarPaging = Ext.create('CMDBuild.controller.common.panel.gridAndForm.panel.common.toolbar.Paging', {
+			this.controllerToolbarPaging = Ext.create('CMDBuild.controller.management.dataView.sql.panel.override.common.panel.gridAndForm.panel.common.toolbar.Paging', {
 				parentDelegate: this,
 				disableFilterAdvanced: true
 			});
@@ -151,6 +143,52 @@
 			}
 		},
 
+		/**
+		 * Apply card selection
+		 *
+		 * @param {Object} parameters
+		 * @param {Function} parameters.callback
+		 * @param {Boolean} parameters.disableFirstRowSelection
+		 * @param {Number} parameters.page
+		 * @param {Number} parameters.position
+		 * @param {Object} parameters.scope
+		 * @param {String} parameters.storeLoad - ManagedValues: [force]
+		 *
+		 * @returns {Void}
+		 *
+		 * @private
+		 */
+		applySelection: function (parameters) {
+			parameters = Ext.isObject(parameters) ? parameters : {};
+			parameters.storeLoad = Ext.isString(parameters.storeLoad) ? parameters.storeLoad : null;
+
+			// Error handling
+				if (this.cmfg('dataViewSelectedDataViewIsEmpty'))
+					return _error('applySelection(): no selected dataView found', this);
+
+				if (this.cmfg('dataViewSqlSelectedCardIsEmpty'))
+					return _error('applySelection(): no selected card found', this);
+			// END: Error handling
+
+			if (this.cmfg('dataViewSqlGridStoreGet').currentPage != parameters.page || parameters.storeLoad == 'force')
+				return this.cmfg('dataViewSqlGridStoreLoad', {
+					disableFirstRowSelection: parameters.disableFirstRowSelection,
+					page: parameters.page,
+					scope: this,
+					callback: function (records, operation, success) {
+						this.positionItemGetSuccessCallback(parameters.position, {
+							callback: parameters.callback,
+							scope: parameters.scope
+						});
+					}
+				});
+
+			return this.positionItemGetSuccessCallback(parameters.position, {
+				callback: parameters.callback,
+				scope: parameters.scope
+			});
+		},
+
 		// AppliedFilter property functions
 			/**
 			 * @param {Array or String} attributePath
@@ -218,7 +256,7 @@
 			callback = Ext.isFunction(callback) ? callback : Ext.emptyFn;
 
 			return Ext.Function.createInterceptor(callback, function (records, options, success) {
-				if (this.dataViewSqlGridAppliedFilterIsEmpty())
+				if (this.cmfg('dataViewSqlGridAppliedFilterIsEmpty'))
 					this.controllerToolbarPaging.cmfg('panelGridAndFormCommonToolbarPagingFilterAdvancedReset');
 			}, this);
 		},
@@ -242,7 +280,10 @@
 				dataSourceOutputAttributes = this.cmfg('dataViewSqlSelectedDataSourceGet', CMDBuild.core.constants.Proxy.OUTPUT);
 
 			Ext.Array.forEach(dataSourceOutputAttributes, function (attributeModel, i, allAttributeModels) {
-				if (Ext.isObject(attributeModel) && !Ext.Object.isEmpty(attributeModel))
+				if (
+					Ext.isObject(attributeModel) && !Ext.Object.isEmpty(attributeModel)
+					&& attributeModel.get(CMDBuild.core.constants.Proxy.NAME) != CMDBuild.core.constants.Proxy.CLASS_DESCRIPTION
+				) {
 					if (fieldManager.isAttributeManaged(attributeModel.get(CMDBuild.core.constants.Proxy.TYPE))) {
 						fieldManager.attributeModelSet(attributeModel);
 						fieldManager.push(
@@ -265,216 +306,24 @@
 							fieldManager.push(columnsDefinition, column);
 						}
 					}
+				}
 			}, this);
 
-			// FIXME: waiting for server side implementation (attributes optimization)
 			Ext.Array.forEach(columnsDefinition, function (column, i, allColumns) {
-				if (Ext.isObject(column) && !Ext.Object.isEmpty(column))
-					column.hideable = false;
+				if (Ext.isObject(column) && !Ext.Object.isEmpty(column)) {
+					column.hideable = false; // FIXME: waiting for server side implementation (attributes optimization)
+					column.flex = 1; // FIX: grid reconfigure bug that breaks row width
+				}
 			}, this);
 
 			return columnsDefinition;
 		},
 
 		/**
-		 * Custom implementation because of absence of unique ID in SQL cards
-		 *
-		 * @param {Object} parameters
-		 * @param {Function} parameters.callback
-		 * @param {Number} parameters.position
-		 * @param {Object} parameters.scope
-		 *
-		 * @returns {Void}
-		 *
-		 * @private
-		 */
-		dataViewSqlGridCardSelect: function (parameters) {
-			parameters = Ext.isObject(parameters) ? parameters : {};
-			parameters.position = Ext.isNumber(parameters.position) ? parameters.position : null;
-			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
-
-			this.view.getSelectionModel().deselectAll();
-
-			// If position parameter isn't valorized select first
-			if (Ext.isEmpty(parameters.position)) {
-				this.selectFirst();
-			} else { // Directly select card in current loaded store
-				this.selectByPosition(parameters.position);
-
-				if (Ext.isFunction(parameters.callback))
-					Ext.callback(parameters.callback, parameters.scope);
-			}
-		},
-
-		// Filter management methods
-			/**
-			 * @param {Object} parameters
-			 * @param {Boolean} parameters.disableStoreLoad
-			 * @param {CMDBuild.model.common.Filter} parameters.filter
-			 * @param {Boolean} parameters.type
-			 *
-			 * @returns {Void}
-			 */
-			dataViewSqlGridFilterApply: function (parameters) {
-				parameters = Ext.isObject(parameters) ? parameters : {};
-				parameters.disableStoreLoad = Ext.isBoolean(parameters.disableStoreLoad) ? parameters.disableStoreLoad : false;
-
-				switch (parameters.type) {
-					case 'advanced': {
-						this.dataViewSqlGridFilterApplyAdvanced(parameters.filter);
-					} break;
-
-					case 'basic': {
-						this.dataViewSqlGridFilterApplyBasic(parameters.filter);
-					} break;
-
-					default:
-						return _error('dataViewSqlGridFilterApply(): unmanaged type parameter', this, parameters.type);
-				}
-
-				if (!parameters.disableStoreLoad)
-					this.cmfg('dataViewSqlGridStoreLoad');
-			},
-
-			/**
-			 * @param {CMDBuild.model.common.Filter} filter
-			 *
-			 * @returns {Void}
-			 *
-			 * @private
-			 */
-			dataViewSqlGridFilterApplyAdvanced: function (filter) {
-				// Error handling
-					if (!Ext.isObject(filter) || Ext.Object.isEmpty(filter) || !filter.isFilterAdvancedCompatible)
-						return _error('dataViewSqlGridFilterApplyAdvanced(): unmanaged filter parameter', this, filter);
-				// END: Error handling
-
-				var emptyRuntimeParameters = filter.getEmptyRuntimeParameters()
-					filterConfigurationObject = filter.get(CMDBuild.core.constants.Proxy.CONFIGURATION);
-
-				if (Ext.isArray(emptyRuntimeParameters) && !Ext.isEmpty(emptyRuntimeParameters))
-					return this.controllerRuntimeParameters.cmfg('fieldFilterRuntimeParametersShow', filter);
-
-				filter.resolveCalculatedParameters();
-
-				// Merge applied filter query parameter to filter object
-				if (!this.dataViewSqlGridAppliedFilterIsEmpty()) {
-					var appliedFilterConfigurationObject = this.cmfg('dataViewSqlGridAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION);
-
-					if (!Ext.isEmpty(appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.QUERY]))
-						filter.set(CMDBuild.core.constants.Proxy.CONFIGURATION, Ext.apply(filterConfigurationObject, {
-							query: appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.QUERY]
-						}));
-				}
-
-				this.dataViewSqlGridAppliedFilterSet({ value: filter.getData() });
-			},
-
-			/**
-			 * @param {CMDBuild.model.common.Filter} filter
-			 *
-			 * @returns {Void}
-			 *
-			 * @private
-			 */
-			dataViewSqlGridFilterApplyBasic: function (filter) {
-				// Error handling
-					if (!Ext.isObject(filter) || Ext.Object.isEmpty(filter) || !filter.isFilterAdvancedCompatible)
-						return _error('dataViewSqlGridFilterApplyBasic(): unmanaged filter parameter', this, filter);
-				// END: Error handling
-
-				var filterConfigurationObject = filter.get(CMDBuild.core.constants.Proxy.CONFIGURATION),
-					newConfigurationObject = {};
-
-				// Merge filters objects
-				if (this.dataViewSqlGridAppliedFilterIsEmpty()) {
-					newConfigurationObject[CMDBuild.core.constants.Proxy.CONFIGURATION] = {};
-					newConfigurationObject[CMDBuild.core.constants.Proxy.CONFIGURATION][CMDBuild.core.constants.Proxy.QUERY] = filterConfigurationObject[CMDBuild.core.constants.Proxy.QUERY];
-					newConfigurationObject[CMDBuild.core.constants.Proxy.DEFAULT] = false; // Remove default state
-
-					this.dataViewSqlGridAppliedFilterSet({ value: newConfigurationObject });
-				} else {
-					newConfigurationObject = this.cmfg('dataViewSqlGridAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION);
-					newConfigurationObject[CMDBuild.core.constants.Proxy.QUERY] = filterConfigurationObject[CMDBuild.core.constants.Proxy.QUERY];
-
-					this.dataViewSqlGridAppliedFilterSet({
-						propertyName: CMDBuild.core.constants.Proxy.CONFIGURATION,
-						value: newConfigurationObject
-					});
-				}
-			},
-
-			/**
-			 * @param {Object} parameters
-			 * @param {Boolean} parameters.disableStoreLoad
-			 * @param {Boolean} parameters.type
-			 *
-			 * @returns {Void}
-			 */
-			dataViewSqlGridFilterClear: function (parameters) {
-				parameters = Ext.isObject(parameters) ? parameters : {};
-				parameters.disableStoreLoad = Ext.isBoolean(parameters.disableStoreLoad) ? parameters.disableStoreLoad : false;
-
-				if (!this.dataViewSqlGridAppliedFilterIsEmpty()) {
-					var appliedFilterConfigurationObject = Ext.clone(this.cmfg('dataViewSqlGridAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION));
-
-					switch (parameters.type) {
-						case 'advanced': {
-							if (
-								(
-									!Ext.isEmpty(appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.ATTRIBUTE])
-									|| !Ext.isEmpty(appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.RELATION])
-									|| !Ext.isEmpty(appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.FUNCTIONS])
-								)
-								&& !this.cmfg('dataViewSqlGridAppliedFilterGet', CMDBuild.core.constants.Proxy.DEFAULT)
-							) {
-								this.dataViewSqlGridAppliedFilterReset();
-
-								// Merge with previous filter query parameter if present
-								if (!Ext.isEmpty(appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.QUERY]))
-									this.dataViewSqlGridAppliedFilterSet({
-										value: this.cmfg('dataViewSqlGridAppliedFilterGet').mergeConfigurations(
-											Ext.create('CMDBuild.model.common.Filter', {
-												configuration: appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.QUERY]
-											})
-										)
-									});
-							}
-						} break;
-
-						case 'basic': {
-							if (!Ext.isEmpty(appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.QUERY])) {
-								delete appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.QUERY];
-
-								if (Ext.Object.isEmpty(appliedFilterConfigurationObject)) {
-									this.dataViewSqlGridAppliedFilterReset();
-								} else {
-									this.dataViewSqlGridAppliedFilterSet({
-										propertyName: CMDBuild.core.constants.Proxy.CONFIGURATION,
-										value: appliedFilterConfigurationObject
-									});
-								}
-							}
-						} break;
-
-						default: {
-							if (!this.cmfg('dataViewSqlGridAppliedFilterGet', CMDBuild.core.constants.Proxy.DEFAULT))
-								this.dataViewSqlGridAppliedFilterReset();
-						}
-					}
-				}
-
-				if (!parameters.disableStoreLoad)
-					this.cmfg('dataViewSqlGridStoreLoad');
-			},
-
-		/**
 		 * @returns {Void}
 		 */
 		dataViewSqlGridReset: function () {
 			this.view.getSelectionModel().deselectAll();
-
-			this.cmfg('dataViewSqlSelectedCardReset');
 		},
 
 		/**
@@ -516,7 +365,7 @@
 			params[CMDBuild.core.constants.Proxy.ATTRIBUTES] = Ext.encode(this.displayedParametersNamesGet());
 			params[CMDBuild.core.constants.Proxy.FUNCTION] = this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.SOURCE_FUNCTION);
 
-			if (!this.dataViewSqlGridAppliedFilterIsEmpty())
+			if (!this.cmfg('dataViewSqlGridAppliedFilterIsEmpty'))
 				params[CMDBuild.core.constants.Proxy.FILTER] = Ext.encode(this.cmfg('dataViewSqlGridAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION));
 
 			this.storeExtraParamsSet(params); // Setup extraParams to work also with sorters and print report
@@ -534,75 +383,64 @@
 		 *
 		 * @param {Object} parameters
 		 * @param {Function} parameters.callback
-		 * @param {Boolean} parameters.enableFilterReset
+		 * @param {Boolean} parameters.disableFirstRowSelection
+		 * @param {CMDBuild.model.common.Filter} parameters.filter
+		 * @param {Number} parameters.page
 		 * @param {Number} parameters.position
 		 * @param {Object} parameters.scope
 		 * @param {Boolean} parameters.sortersReset
+		 * @param {String} parameters.storeLoad - ManagedValues: [force]
 		 *
 		 * @returns {Void}
 		 */
 		dataViewSqlGridUiUpdate: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
-			parameters.enableFilterReset = Ext.isBoolean(parameters.enableFilterReset) ? parameters.enableFilterReset : false;
-			parameters.page = Ext.isNumber(parameters.page) ? parameters.page : null;
 			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
 			parameters.sortersReset = Ext.isBoolean(parameters.sortersReset) ? parameters.sortersReset : false;
-
-			var data = this.cmfg('dataViewSqlGridStoreGet').getRange(); // Clear store and reload data to fix row break on reconfigure
-
-			this.cmfg('dataViewSqlGridStoreGet').removeAll(true);
-
-			if (parameters.enableFilterReset)
-				this.dataViewSqlGridAppliedFilterReset();
 
 			// Error handling
 				if (this.cmfg('dataViewSelectedDataViewIsEmpty'))
 					return _error('dataViewSqlGridUiUpdate(): empty selected dataView property', this, this.cmfg('dataViewSelectedDataViewGet'));
 			// END: Error handling
 
-			var store = this.cmfg('dataViewSqlGridStoreGet');
+			this.dataViewSqlGridAppliedFilterReset();
 
-			if (parameters.sortersReset)
-				store = this.storeSortersSet(store);
+			if (Ext.isObject(parameters.filter) && !Ext.Object.isEmpty(parameters.filter) && parameters.filter.isFilterAdvancedCompatible)
+				this.dataViewSqlGridAppliedFilterSet({ value: parameters.filter });
 
-			this.view.reconfigure(store, this.dataViewSqlGridBuildColumns());
+			switch (this.cmfg('dataViewSqlUiViewModeGet')) {
+				default: {
+					// Suspend events to avoid sortchange fire that will reset form
+					this.view.suspendEvents(false);
+					this.view.reconfigure(
+						parameters.sortersReset ? this.storeSortersSet(this.cmfg('dataViewSqlGridStoreGet')) : null,
+						this.dataViewSqlGridBuildColumns()
+					);
+					this.view.resumeEvents();
 
-			// Forward to sub-controllers
-			this.controllerToolbarPaging.cmfg('panelGridAndFormCommonToolbarPagingUiUpdate');
-			this.controllerToolbarTop.cmfg('dataViewSqlGridToolbarTopUiUpdate');
+					// Forward to sub-controllers
+					this.controllerToolbarPaging.cmfg('panelGridAndFormCommonToolbarPagingUiUpdate');
 
-			// Select selectedCard inside loaded store
-			if (!this.cmfg('dataViewSqlSelectedCardIsEmpty')) {
-				this.cmfg('dataViewSqlGridStoreGet').loadData(data);
-
-				if (
-					Ext.isNumber(parameters.page) && !Ext.isEmpty(parameters.page)
-					&& this.cmfg('dataViewSqlGridStoreGet').currentPage != parameters.page
-				) { // Change page
-					return this.cmfg('dataViewSqlGridStoreLoad', {
-						page: parameters.page,
-						scope: parameters.scope,
-						callback: Ext.bind(this.dataViewSqlGridCardSelect, this, [{
+					// Select selectedCard inside loaded store
+					if (!this.cmfg('dataViewSqlSelectedCardIsEmpty'))
+						return this.applySelection({
+							disableFirstRowSelection: parameters.disableFirstRowSelection,
+							page: parameters.page,
 							position: parameters.position,
+							storeLoad: parameters.storeLoad,
 							scope: parameters.scope,
 							callback: parameters.callback
-						}])
-					});
-				} else { // Select card in currently loaded page
-					return this.dataViewSqlGridCardSelect({
-						position: parameters.position,
+						});
+
+					// Load store and select first card
+					return this.cmfg('dataViewSqlGridStoreLoad', {
+						disableFirstRowSelection: parameters.disableFirstRowSelection,
+						page: parameters.page,
 						scope: parameters.scope,
 						callback: parameters.callback
 					});
 				}
 			}
-
-			// Load store and select first card
-			return this.cmfg('dataViewSqlGridStoreLoad', {
-				page: parameters.page,
-				scope: parameters.scope,
-				callback: parameters.callback
-			});
 		},
 
 		/**
@@ -626,13 +464,6 @@
 				}, this);
 
 			return visibleColumnNames;
-		},
-
-		/**
-		 * @returns {Void}
-		 */
-		onDataViewFilterSqlAddButtonClick: function () {
-			this.view.getSelectionModel().deselectAll();
 		},
 
 		/**
@@ -675,6 +506,25 @@
 		},
 
 		/**
+		 * @param {CMDBuild.model.management.dataView.sql.panel.grid.Record} record
+		 *
+		 * @returns {Void}
+		 */
+		onDataViewSqlGridRecordSelect: function (record) {
+			// Error handling
+				if (!Ext.isObject(record) || Ext.Object.isEmpty(record))
+					return _error('onDataViewSqlGridRecordSelect(): unmanaged record parameter', this, record);
+			// END: Error handling
+
+			var params = {};
+			params[CMDBuild.core.constants.Proxy.RECORD] = record;
+			params[CMDBuild.core.constants.Proxy.PAGE] = record.store.currentPage;
+			params[CMDBuild.core.constants.Proxy.POSITION] = record.index;
+
+			this.cmfg('dataViewSqlUiUpdate', params);
+		},
+
+		/**
 		 * Reset grid and form on column sort change
 		 * Custom implementation because of absence of unique ID in SQL cards
 		 *
@@ -682,9 +532,7 @@
 		 */
 		onDataViewSqlGridSortChange: function () {
 			this.cmfg('dataViewSqlGridStoreGet').on('load', function (store, records, successful, eOpts) {
-				if (this.cmfg('dataViewSqlSelectedCardIsEmpty')) {
-					this.cmfg('dataViewSqlUiReset');
-				} else {
+				if (!this.cmfg('dataViewSqlSelectedCardIsEmpty')) {
 					var selectedCardValues = this.cmfg('dataViewSqlSelectedCardGet', CMDBuild.core.constants.Proxy.VALUES),
 						selectedRecordIndex = store.findBy(function (record, id) {
 							return Ext.Object.equals(record.get(CMDBuild.core.constants.Proxy.VALUES), selectedCardValues);
@@ -692,29 +540,40 @@
 
 					this.view.getSelectionModel().select(Math.abs(selectedRecordIndex), false, true);
 
-					if (selectedRecordIndex < 0)
-						this.cmfg('dataViewSqlUiReset');
+					if (selectedRecordIndex < 0) {
+						this.cmfg('dataViewSqlSelectedCardReset');
+						this.cmfg('dataViewSqlReset');
+					}
 				}
 			}, this, { single: true });
 		},
 
-		// Grid selection methods
-			/**
-			 * @param {Number} position
-			 *
-			 * @returns {Void}
-			 *
-			 * @private
-			 */
-			selectByPosition: function (position) {
-				// Error handling
-					if (!Ext.isNumber(position) || Ext.isEmpty(position))
-						return _error('selectByPosition(): unmanaged position parameter', this, position);
-				// END: Error handling
 
+		/**
+		 * @param {Number} position
+		 * @param {Object} parameters
+		 * @param {Function} parameters.callback
+		 * @param {Object} parameters.scope
+		 *
+		 * @returns {Void}
+		 *
+		 * @private
+		 */
+		positionItemGetSuccessCallback: function (position, parameters) {
+			parameters = Ext.isObject(parameters) ? parameters : {};
+			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
+			position = Ext.isNumber(position) ? position : 0;
+
+			this.view.getSelectionModel().deselectAll();
+
+			if (Ext.isNumber(position))
 				this.view.getSelectionModel().select(position, false, true);
-			},
 
+			if (Ext.isFunction(parameters.callback))
+				Ext.callback(parameters.callback, parameters.scope);
+		},
+
+		// Grid selection methods
 			/**
 			 * Event fired because UI must be reconfigured with first store record
 			 *
@@ -753,7 +612,7 @@
 			 */
 			storeExtraParamsRemove: function (name) {
 				if (Ext.isString(name) && !Ext.isEmpty(name))
-					delete this.storeExtraParamsGet()[name];
+					delete this.storeExtraParamsGet(name);
 			},
 
 			/**
@@ -817,7 +676,7 @@
 			 *
 			 * @private
 			 */
-			storeSortersSet: function (store) {
+			storeSortersSet: function (store) { // TODO: refactor on getAttribute() implementation
 				var attributes = CMDBuild.core.Utils.objectArraySort(
 					this.cmfg('dataViewSqlSelectedDataSourceGet', CMDBuild.core.constants.Proxy.OUTPUT),
 					CMDBuild.core.constants.Proxy.SORT_INDEX,

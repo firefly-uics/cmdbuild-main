@@ -22,9 +22,8 @@
 			'dataViewSqlSelectedCardReset',
 			'dataViewSqlSelectedDataSourceGet = panelGridAndFormSelectedEntityGet',
 			'dataViewSqlSelectedDataSourceIsEmpty',
-			'dataViewSqlUiReset',
-			'dataViewSqlUiUpdate',
-			'onDataViewSqlAddButtonClick',
+			'dataViewSqlReset',
+			'dataViewSqlUiUpdate = panelGridAndFormUiUpdate',
 			'panelGridAndFormFullScreenUiSetup = dataViewSqlFullScreenUiSetup',
 			'panelGridAndFormToolsArrayBuild',
 			'panelGridAndFormViewModeEquals = dataViewSqlUiViewModeEquals',
@@ -100,23 +99,25 @@
 		/**
 		 * @returns {Void}
 		 */
-		dataViewSqlUiReset: function () {
-			// Forward to sub-controllers
+		dataViewSqlReset: function () {
 			this.controllerForm.cmfg('dataViewSqlFormReset');
 			this.controllerGrid.cmfg('dataViewSqlGridReset');
 		},
 
 		/**
-		 * Custom implementation because of absence of unique ID in SQL cards
+		 * Custom implementation because of absence of unique ID in SQL cards (page, position)
 		 *
 		 * @param {Object} parameters
 		 * @param {Function} parameters.callback
-		 * @param {Boolean} parameters.enableFilterReset
+		 * @param {Boolean} parameters.disableFirstRowSelection
+		 * @param {CMDBuild.model.common.Filter} parameters.filter
 		 * @param {Number} parameters.page
 		 * @param {Number} parameters.position
 		 * @param {CMDBuild.model.management.dataView.sql.panel.grid.Record} parameters.record
 		 * @param {Object} parameters.scope
 		 * @param {Boolean} parameters.sortersReset
+		 * @param {String} parameters.storeLoad - ManagedValues: [force]
+		 * @param {Object} parameters.tabToSelect
 		 * @param {String} parameters.viewMode
 		 *
 		 * @returns {Void}
@@ -131,10 +132,14 @@
 					return _error('dataViewSqlUiUpdate(): empty selected dataView property', this, this.cmfg('dataViewSelectedDataViewGet'));
 			// END: Error handling
 
-			this.dataViewSqlSelectedDataSourceReset();
+			// UI reset
 			this.cmfg('dataViewSqlFullScreenUiSetup', { maximize: 'top' });
-			this.cmfg('dataViewSqlSelectedCardReset');
+			this.cmfg('dataViewSqlReset'),
 			this.cmfg('dataViewSqlUiViewModeSet', parameters.viewMode);
+
+			// Local variables reset
+			this.dataViewSqlSelectedDataSourceReset();
+			this.cmfg('dataViewSqlSelectedCardReset');
 
 			if (this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.TYPE) == 'sql')
 				CMDBuild.proxy.management.dataView.sql.Sql.readAllDataSources({
@@ -160,10 +165,12 @@
 								// Forward to sub-controllers
 								this.controllerForm.cmfg('dataViewSqlFormUiUpdate', { tabToSelect: parameters.tabToSelect });
 								this.controllerGrid.cmfg('dataViewSqlGridUiUpdate', {
-									enableFilterReset: parameters.enableFilterReset,
+									disableFirstRowSelection: parameters.disableFirstRowSelection,
+									filter: parameters.filter,
 									page: parameters.page,
 									position: parameters.position,
 									sortersReset: parameters.sortersReset,
+									storeLoad: parameters.storeLoad,
 									scope: parameters.scope,
 									callback: parameters.callback
 								});
@@ -228,20 +235,6 @@
 					this.propertyManageSet(parameters);
 				}
 			},
-
-		/**
-		 * @param {Number} id
-		 *
-		 * @returns {Void}
-		 */
-		onDataViewSqlAddButtonClick: function (id) {
-			this.cmfg('dataViewSqlSelectedCardReset');
-			this.cmfg('dataViewSqlFullScreenUiSetup', { maximize: 'bottom' });
-
-			// Forward to sub-controllers
-			this.controllerForm.cmfg('onDataViewFilterSqlAddButtonClick', id);
-			this.controllerGrid.cmfg('onDataViewFilterSqlAddButtonClick', id);
-		},
 
 		// SelectedCard property functions
 			/**

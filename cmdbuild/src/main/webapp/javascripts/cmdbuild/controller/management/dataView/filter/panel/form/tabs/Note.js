@@ -279,9 +279,8 @@
 					loadMask: false,
 					scope: this,
 					success: function (response, options, decodedResponse) {
-						this.cmfg('dataViewUiUpdate', {
+						this.cmfg('dataViewFilterUiUpdate', {
 							cardId: this.cmfg('dataViewFilterSelectedCardGet', CMDBuild.core.constants.Proxy.ID),
-							entityId: this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.ID),
 							tabToSelect: this.view,
 							callback: function () {
 								CMDBuild.core.LoadMask.hide();
@@ -304,10 +303,10 @@
 
 			// Error handling
 				if (this.cmfg('dataViewSelectedDataViewIsEmpty'))
-					return _error('panelListenerManagerShow(): empty selectedDataView property', this, this.cmfg('dataViewSelectedDataViewGet'));
+					return _error('onDataViewFilterFormTabNoteShow(): empty selectedDataView property', this, this.cmfg('dataViewSelectedDataViewGet'));
 
 				if (this.cmfg('dataViewFilterSelectedCardIsEmpty'))
-					return _error('panelListenerManagerShow(): empty selectedCard property', this, this.cmfg('dataViewFilterSelectedCardGet'));
+					return _error('onDataViewFilterFormTabNoteShow(): empty selectedCard property', this, this.cmfg('dataViewFilterSelectedCardGet'));
 			// END: Error handling
 
 			// History record save

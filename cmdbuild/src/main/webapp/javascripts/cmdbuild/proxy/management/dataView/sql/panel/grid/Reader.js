@@ -15,24 +15,19 @@
 		 */
 		buildRecord: function (rowObject) {
 			if (Ext.isObject(rowObject) && !Ext.Object.isEmpty(rowObject)) {
-				var customPropertiesObject = {},
-					rowNewObject = {};
-
-				Ext.Object.each(rowObject, function (key, value, myself) {
-					customPropertiesObject
-				}, this);
+				var rowNewObject = {};
 
 				// Base attributes
 				rowNewObject[CMDBuild.core.constants.Proxy.CLASS_NAME] = rowObject[CMDBuild.core.constants.Proxy.CLASS_NAME];
 				rowNewObject[CMDBuild.core.constants.Proxy.VALUES] = {};
-
-				delete rowObject[CMDBuild.core.constants.Proxy.CLASS_NAME];
 
 				// Custom attributes
 				rowNewObject[CMDBuild.core.constants.Proxy.VALUES] = rowObject;
 
 				return rowNewObject;
 			}
+
+			return null;
 		},
 
 		/**
@@ -51,7 +46,7 @@
 				}, this);
 
 			var decodedItems = {};
-			decodedItems[this.root] = structure;
+			decodedItems[this.root] = Ext.Array.clean(structure);
 
 			Ext.apply(data, decodedItems); // Override row property with custom ones
 

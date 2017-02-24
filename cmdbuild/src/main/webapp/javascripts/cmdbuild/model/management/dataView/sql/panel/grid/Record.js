@@ -20,16 +20,14 @@
 		 * @override
 		 */
 		get: function (name) {
-			var value = this.callParent(arguments);
-
-			if (Ext.isEmpty(value)) {
+			if (name != CMDBuild.core.constants.Proxy.VALUES) {
 				var values = this.get(CMDBuild.core.constants.Proxy.VALUES);
 
 				if (Ext.Array.contains(Ext.Object.getKeys(values), name))
 					return values[name];
 			}
 
-			return value;
+			return this.callParent(arguments);
 		}
 	});
 

@@ -165,7 +165,7 @@
 		 * @param {Function} parameters.callback
 		 * @param {Boolean} parameters.disableFirstRowSelection
 		 * @param {Object} parameters.scope
-		 * @param {String} parameters.storeLoad
+		 * @param {String} parameters.storeLoad - ManagedValues: [force]
 		 *
 		 * @returns {Void}
 		 *
@@ -286,80 +286,85 @@
 		 * @private
 		 */
 		dataViewFilterGridBuildColumns: function () {
-			var columnsDefinition = [];
+			// Error handling
+				if (this.cmfg('dataViewSelectedDataViewIsEmpty'))
+					return _error('dataViewFilterGridBuildColumns(): empty selected dataView property', this, this.cmfg('dataViewSelectedDataViewGet'));
 
-			if (!this.cmfg('dataViewSelectedDataViewIsEmpty') && !this.cmfg('dataViewFilterSourceEntryTypeAttributesIsEmpty')) {
-				var fieldManager = Ext.create('CMDBuild.core.fieldManager.FieldManager', { parentDelegate: this }),
-					attributes = CMDBuild.core.Utils.objectArraySort(this.cmfg('dataViewFilterSourceEntryTypeAttributesGet'), CMDBuild.core.constants.Proxy.INDEX);
+				if (this.cmfg('dataViewFilterSourceEntryTypeAttributesIsEmpty'))
+					return _error('dataViewFilterGridBuildColumns(): empty selected attributes property', this, this.cmfg('dataViewFilterSourceEntryTypeAttributesGet'));
+			// END: Error handling
 
-				if (this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.IS_SUPER_CLASS))
-					columnsDefinition.push({
-						dataIndex: CMDBuild.core.constants.Proxy.CLASS_DESCRIPTION,
-						text: CMDBuild.Translation.subClass,
-						sortable: false
-					});
+			var attributes = CMDBuild.core.Utils.objectArraySort(this.cmfg('dataViewFilterSourceEntryTypeAttributesGet'), CMDBuild.core.constants.Proxy.INDEX),
+				columnsDefinition = [],
+				fieldManager = Ext.create('CMDBuild.core.fieldManager.FieldManager', { parentDelegate: this });
 
-				Ext.Array.forEach(attributes, function (attributeModel, i, allAttributeModels) {
-					if (
-						Ext.isObject(attributeModel) && !Ext.Object.isEmpty(attributeModel)
-						&& attributeModel.get(CMDBuild.core.constants.Proxy.NAME) != CMDBuild.core.constants.Proxy.CLASS_DESCRIPTION
-					) {
-						if (fieldManager.isAttributeManaged(attributeModel.get(CMDBuild.core.constants.Proxy.TYPE))) {
-							fieldManager.attributeModelSet(attributeModel);
-							fieldManager.push(
-								columnsDefinition,
-								this.applyCustomRenderer(fieldManager.buildColumn(), attributeModel)
-							);
-						} else if (attributeModel.get(CMDBuild.core.constants.Proxy.TYPE) != 'ipaddress') { // FIXME: future implementation - @deprecated - Old field manager
-							var column = CMDBuild.Management.FieldManager.getHeaderForAttr(attributeModel.get(CMDBuild.core.constants.Proxy.SOURCE_OBJECT));
+			if (this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.IS_SUPER_CLASS))
+				columnsDefinition.push({
+					dataIndex: CMDBuild.core.constants.Proxy.CLASS_DESCRIPTION,
+					text: CMDBuild.Translation.subClass,
+					sortable: false
+				});
 
-							if (Ext.isObject(column) && !Ext.Object.isEmpty(column)) {
-								column.text = column.header; // Create alias of header property because it's deprecated
+			Ext.Array.forEach(attributes, function (attributeModel, i, allAttributeModels) {
+				if (
+					Ext.isObject(attributeModel) && !Ext.Object.isEmpty(attributeModel)
+					&& attributeModel.get(CMDBuild.core.constants.Proxy.NAME) != CMDBuild.core.constants.Proxy.CLASS_DESCRIPTION
+				) {
+					if (fieldManager.isAttributeManaged(attributeModel.get(CMDBuild.core.constants.Proxy.TYPE))) {
+						fieldManager.attributeModelSet(attributeModel);
+						fieldManager.push(
+							columnsDefinition,
+							this.applyCustomRenderer(fieldManager.buildColumn(), attributeModel)
+						);
+					} else if (attributeModel.get(CMDBuild.core.constants.Proxy.TYPE) != 'ipaddress') { // FIXME: future implementation - @deprecated - Old field manager
+						var column = CMDBuild.Management.FieldManager.getHeaderForAttr(attributeModel.get(CMDBuild.core.constants.Proxy.SOURCE_OBJECT));
 
-								// Remove width properties by default to be compatible with forceFit property
-								delete column.flex;
-								delete column.width;
-								delete column.minWidth;
+						if (Ext.isObject(column) && !Ext.Object.isEmpty(column)) {
+							column.text = column.header; // Create alias of header property because it's deprecated
 
-								this.addRendererToHeader(column);
+							// Remove width properties by default to be compatible with forceFit property
+							delete column.flex;
+							delete column.width;
+							delete column.minWidth;
 
-								fieldManager.push(columnsDefinition, column);
-							}
+							this.addRendererToHeader(column);
+
+							fieldManager.push(columnsDefinition, column);
 						}
 					}
-				}, this);
-
-				// Add Graph button
-				if (
-					this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.TABLE_TYPE) != CMDBuild.core.constants.Global.getTableTypeSimpleTable()
-					&& CMDBuild.configuration.graph.get(CMDBuild.core.constants.Proxy.ENABLED)
-				) {
-					columnsDefinition.push(
-						Ext.create('Ext.grid.column.Action', {
-							align: 'center',
-							maxWidth: 30,
-							sortable: false,
-							hideable: false,
-							menuDisabled: true,
-							fixed: true,
-
-							items: [
-								Ext.create('CMDBuild.core.buttons.icon.Graph', {
-									tooltip: CMDBuild.Translation.openRelationGraph,
-									withSpacer: true,
-									scope: this,
-
-									handler: function (grid, rowIndex, colIndex, node, e, record, rowNode) {
-										this.controllerWindowGraph.cmfg('onPanelGridAndFormGraphWindowConfigureAndShow', {
-											cardId: record.get(CMDBuild.core.constants.Proxy.ID),
-											classId: record.get(CMDBuild.core.constants.Proxy.CLASS_ID)
-										});
-									}
-								})
-							]
-						})
-					);
 				}
+			}, this);
+
+			// Add Graph button
+			if (
+				this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.TABLE_TYPE) != CMDBuild.core.constants.Global.getTableTypeSimpleTable()
+				&& CMDBuild.configuration.graph.get(CMDBuild.core.constants.Proxy.ENABLED)
+			) {
+				columnsDefinition.push(
+					Ext.create('Ext.grid.column.Action', {
+						align: 'center',
+						maxWidth: 30,
+						sortable: false,
+						hideable: false,
+						menuDisabled: true,
+						fixed: true,
+
+						items: [
+							Ext.create('CMDBuild.core.buttons.icon.Graph', {
+								tooltip: CMDBuild.Translation.openRelationGraph,
+								withSpacer: true,
+								scope: this,
+
+								handler: function (grid, rowIndex, colIndex, node, e, record, rowNode) {
+									this.controllerWindowGraph.cmfg('onPanelGridAndFormGraphWindowConfigureAndShow', {
+										cardId: record.get(CMDBuild.core.constants.Proxy.ID),
+										classId: record.get(CMDBuild.core.constants.Proxy.CLASS_ID)
+									});
+								}
+							})
+						]
+					})
+				);
 			}
 
 			return columnsDefinition;
@@ -432,7 +437,7 @@
 		 * @param {CMDBuild.model.common.Filter} parameters.filter
 		 * @param {Object} parameters.scope
 		 * @param {Boolean} parameters.sortersReset
-		 * @param {String} parameters.storeLoad
+		 * @param {String} parameters.storeLoad - ManagedValues: [force]
 		 *
 		 * @returns {Void}
 		 */
@@ -466,12 +471,12 @@
 					return this.view.getSelectionModel().deselectAll(); // Just reset selection on add and clone mode
 
 				default: {
-					var store = this.cmfg('dataViewFilterGridStoreGet');
-
-					if (parameters.sortersReset)
-						store = this.storeSortersSet(store);
-
-					this.view.reconfigure(store, this.dataViewFilterGridBuildColumns());
+					this.view.suspendEvents(false);
+					this.view.reconfigure(
+						parameters.sortersReset ? this.storeSortersSet(this.cmfg('dataViewFilterGridStoreGet')) : null,
+						this.dataViewFilterGridBuildColumns()
+					);
+					this.view.resumeEvents();
 
 					// Forward to sub-controllers
 					this.controllerToolbarPaging.cmfg('panelGridAndFormCommonToolbarPagingUiUpdate');
@@ -569,9 +574,6 @@
 
 			var params = {};
 			params[CMDBuild.core.constants.Proxy.CARD_ID] = record.get(CMDBuild.core.constants.Proxy.ID);
-
-			if (!this.cmfg('dataViewFilterGridAppliedFilterIsEmpty'))
-				params[CMDBuild.core.constants.Proxy.FILTER] = this.cmfg('dataViewFilterGridAppliedFilterGet');
 
 			this.cmfg('dataViewFilterUiUpdate', params);
 		},
@@ -726,7 +728,7 @@
 		 * @param {Function} parameters.callback
 		 * @param {Boolean} parameters.disableFirstRowSelection
 		 * @param {Object} parameters.scope
-		 * @param {String} parameters.storeLoad
+		 * @param {String} parameters.storeLoad - ManagedValues: [force]
 		 *
 		 * @returns {Void}
 		 *
@@ -812,7 +814,7 @@
 			 */
 			storeExtraParamsRemove: function (name) {
 				if (Ext.isString(name) && !Ext.isEmpty(name))
-					delete this.storeExtraParamsGet()[name];
+					delete this.storeExtraParamsGet(name);
 			},
 
 			/**

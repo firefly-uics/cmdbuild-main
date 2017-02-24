@@ -23,12 +23,7 @@
 				items: [
 					Ext.create('CMDBuild.core.buttons.icon.add.Add', {
 						text: CMDBuild.Translation.addCard,
-						disabled: true,
-						scope: this,
-
-						handler: function (button, e) {
-							this.delegate.cmfg('onDataViewSqlAddButtonClick');
-						}
+						disabled: true
 					})
 				]
 			});

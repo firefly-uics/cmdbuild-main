@@ -16,6 +16,7 @@
 		cmfgCatchedFunctions: [
 			'dataViewSqlFormReset',
 			'dataViewSqlFormUiUpdate',
+			'panelGridAndFormPanelFormTabActiveFireShowEvent = dataViewSqlFormTabActiveFireShowEvent',
 			'panelGridAndFormPanelFormTabActiveSet = dataViewSqlFormTabActiveSet',
 			'panelGridAndFormPanelFormTabSelectionManage = dataViewSqlFormTabSelectionManage'
 		],
@@ -105,8 +106,11 @@
 		dataViewSqlFormUiUpdate: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
 
-			this.cmfg('dataViewSqlFormReset');
+			// Forward to sub-controllers
+			if (Ext.isObject(this.controllerTabCard) && !Ext.Object.isEmpty(this.controllerTabCard))
+				this.controllerTabCard.cmfg('dataViewSqlFormTabCardUiUpdate');
 
+			// Tab selection manage
 			if (!Ext.isEmpty(parameters.tabToSelect))
 				return this.cmfg('dataViewSqlFormTabActiveSet', parameters.tabToSelect);
 

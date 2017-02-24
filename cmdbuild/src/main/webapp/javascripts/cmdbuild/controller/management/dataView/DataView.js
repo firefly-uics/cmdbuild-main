@@ -21,7 +21,7 @@
 		cmfgCatchedFunctions: [
 			'dataViewSelectedDataViewGet',
 			'dataViewSelectedDataViewIsEmpty',
-			'dataViewUiUpdate = panelGridAndFormUiUpdate',
+			'dataViewUiUpdate',
 			'identifierGet = dataViewIdentifierGet, panelGridAndFormIdentifierGet',
 			'onDataViewExternalServicesNavigationChronologyRecordSelect', // From mixins
 			'onDataViewModuleInit = onModuleInit'
@@ -148,7 +148,6 @@
 			if (Ext.isObject(parameters.node) && !Ext.Object.isEmpty(parameters.node))
 				this.cmfg('dataViewUiUpdate', {
 					// defaultFilterApplyIfExists: true, // Disabled because DataViews doesn't have default filter
-					enableFilterReset: true,
 					entityId: parameters.node.get(CMDBuild.core.constants.Proxy.ENTITY_ID),
 					sortersReset: true,
 					storeLoad: 'force'
@@ -165,7 +164,7 @@
 		 * @param {CMDBuild.model.common.Filter} parameters.filter
 		 * @param {Object} parameters.scope
 		 * @param {Boolean} parameters.sortersReset
-		 * @param {String} parameters.storeLoad
+		 * @param {String} parameters.storeLoad - ManagedValues: [force]
 		 * @param {Object} parameters.tabToSelect
 		 * @param {String} parameters.viewMode
 		 *

@@ -200,14 +200,12 @@
 		dataViewFilterFormUiUpdate: function (parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
 
-			this.cmfg('dataViewFilterFormReset');
-
 			// Forward to sub-controllers
 			if (Ext.isObject(this.controllerTabCard) && !Ext.Object.isEmpty(this.controllerTabCard))
 				this.controllerTabCard.dataViewFilterFormTabCardUiUpdate();
 
 			if (Ext.isObject(this.controllerTabAttachment) && !Ext.Object.isEmpty(this.controllerTabAttachment))
-				this.controllerTabAttachment.cmfg('dataViewFilterFormTabAttachmentsUiUpdate');
+				this.controllerTabAttachment.cmfg('dataViewFilterFormTabAttachmentUiUpdate');
 
 			if (Ext.isObject(this.controllerTabEmail) && !Ext.Object.isEmpty(this.controllerTabEmail))
 				this.controllerTabEmail.cmfg('dataViewFilterFormTabEmailUiUpdate');

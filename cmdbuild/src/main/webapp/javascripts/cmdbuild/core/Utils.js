@@ -209,6 +209,8 @@
 		},
 
 		/**
+		 * Same as store.getPageFromRecordIndex()
+		 *
 		 * @param {String} cardPosition
 		 *
 		 * @returns {Number} pageNumber

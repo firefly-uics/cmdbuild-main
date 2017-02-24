@@ -29,7 +29,7 @@
 			'dataViewFilterSourceEntryTypeGet = panelGridAndFormSelectedEntityGet',
 			'dataViewFilterSourceEntryTypeIsEmpty = panelGridAndFormSelectedEntityIsEmpty',
 			'dataViewFilterStartCardGet',
-			'dataViewFilterUiUpdate',
+			'dataViewFilterUiUpdate = panelGridAndFormUiUpdate',
 			'onDataViewFilterAbortButtonClick',
 			'onDataViewFilterAddButtonClick',
 			'onDataViewFilterCloneButtonClick',
@@ -152,7 +152,7 @@
 		},
 
 		/**
-		 * Similar to dataViewUiUpdate implementation except for entityId parameter and some other details
+		 * Similar to dataViewFilterUiUpdate implementation except for entityId parameter and some other details
 		 *
 		 * @param {Object} parameters
 		 * @param {Number} parameters.id
@@ -411,7 +411,7 @@
 		 * @param {CMDBuild.model.common.Filter} parameters.filter
 		 * @param {Boolean} parameters.sortersReset
 		 * @param {Object} parameters.scope
-		 * @param {String} parameters.storeLoad
+		 * @param {String} parameters.storeLoad - ManagedValues: [force]
 		 * @param {Object} parameters.tabToSelect
 		 * @param {String} parameters.viewMode
 		 *
@@ -429,6 +429,7 @@
 
 			// UI reset
 			this.cmfg('dataViewFilterFullScreenUiSetup', { maximize: 'top' });
+			this.cmfg('dataViewFilterReset');
 			this.cmfg('dataViewFilterUiViewModeSet', parameters.viewMode);
 
 			// Local variables reset

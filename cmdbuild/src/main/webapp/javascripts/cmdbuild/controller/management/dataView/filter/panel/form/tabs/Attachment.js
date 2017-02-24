@@ -30,7 +30,7 @@
 			'onPanelModuleAttachmentTabShow',
 			'onDataViewFilterFormTabAttachmentShowCallback = onPanelModuleAttachmentTabShowCallback', // Public only for overriding reason
 			'panelModuleAttachmentTabReset',
-			'dataViewFilterFormTabAttachmentsUiUpdate'
+			'dataViewFilterFormTabAttachmentUiUpdate'
 		],
 
 		/**
@@ -64,7 +64,7 @@
 		 *
 		 * @legacy
 		 */
-		dataViewFilterFormTabAttachmentsUiUpdate: function () {
+		dataViewFilterFormTabAttachmentUiUpdate: function () {
 			// UI view mode manage
 			switch (this.cmfg('dataViewFilterUiViewModeGet')) {
 				case 'add':

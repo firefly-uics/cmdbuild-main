@@ -11,7 +11,6 @@
 		delegate: undefined,
 
 		columns: [],
-		lines: false,
 
 		/**
 		 * @returns {Void}
@@ -34,11 +33,7 @@
 				this.delegate.cmfg('onDataViewSqlGridColumnChanged');
 			},
 			select: function (row, record, index, eOpts) {
-				this.delegate.cmfg('dataViewSqlUiUpdate', {
-					record: record,
-					page: record.store.currentPage,
-					position: index
-				});
+				this.delegate.cmfg('onDataViewSqlGridRecordSelect', record);
 			},
 			sortchange: function (ct, column, direction, eOpts) {
 				this.delegate.cmfg('onDataViewSqlGridSortChange');

@@ -1,7 +1,7 @@
 (function () {
 
 	/**
-	 * DataView from Filter customizations
+	 * DataView from Sql customizations
 	 *
 	 * Required managed functions from upper structure:
 	 * 	- panelGridAndFormListPanelAppliedFilterGet
@@ -9,13 +9,13 @@
 	 * 	- panelGridAndFormSelectedEntityGet
 	 * 	- panelGridAndFormUiUpdate
 	 */
-	Ext.define('CMDBuild.controller.management.dataView.filter.panel.override.common.field.filter.basic.Basic', {
+	Ext.define('CMDBuild.controller.management.dataView.sql.panel.override.common.field.filter.basic.Basic', {
 		extend: 'CMDBuild.controller.common.field.filter.basic.Basic',
 
 		requires: ['CMDBuild.core.constants.Proxy'],
 
 		/**
-		 * @cfg {CMDBuild.controller.management.dataView.filter.panel.override.common.panel.gridAndForm.panel.common.toolbar.Paging}
+		 * @cfg {CMDBuild.controller.management.dataView.sql.panel.override.common.panel.gridAndForm.panel.common.toolbar.Paging}
 		 */
 		parentDelegate: undefined,
 
@@ -38,10 +38,10 @@
 				var appliedFilterConfigurationObject = undefined;
 
 				if (
-					!this.cmfg('dataViewFilterGridAppliedFilterIsEmpty')
-					&& !this.cmfg('dataViewFilterGridAppliedFilterGet').isEmptyAdvanced()
+					!this.cmfg('dataViewSqlGridAppliedFilterIsEmpty')
+					&& !this.cmfg('dataViewSqlGridAppliedFilterGet').isEmptyAdvanced()
 				) {
-					appliedFilterConfigurationObject = this.cmfg('dataViewFilterGridAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION);
+					appliedFilterConfigurationObject = this.cmfg('dataViewSqlGridAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION);
 
 					delete appliedFilterConfigurationObject[CMDBuild.core.constants.Proxy.QUERY];
 				}
@@ -51,7 +51,7 @@
 				if (Ext.isObject(appliedFilterConfigurationObject) && !Ext.Object.isEmpty(appliedFilterConfigurationObject))
 					params[CMDBuild.core.constants.Proxy.FILTER] = Ext.create('CMDBuild.model.common.Filter', { configuration: appliedFilterConfigurationObject });
 
-				this.cmfg('dataViewFilterUiUpdate', params);
+				this.cmfg('dataViewSqlUiUpdate', params);
 			}
 		},
 
@@ -65,11 +65,11 @@
 				var newConfigurationObject = {};
 
 				// Build and apply new filter
-				if (this.cmfg('dataViewFilterGridAppliedFilterIsEmpty')) {
+				if (this.cmfg('dataViewSqlGridAppliedFilterIsEmpty')) {
 					newConfigurationObject = {};
 					newConfigurationObject[CMDBuild.core.constants.Proxy.QUERY] = value;
 				} else { // Merge filters objects
-					newConfigurationObject = this.cmfg('dataViewFilterGridAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION);
+					newConfigurationObject = this.cmfg('dataViewSqlGridAppliedFilterGet', CMDBuild.core.constants.Proxy.CONFIGURATION);
 					newConfigurationObject[CMDBuild.core.constants.Proxy.QUERY] = value;
 				}
 
@@ -78,7 +78,7 @@
 				if (Ext.isObject(newConfigurationObject) && !Ext.Object.isEmpty(newConfigurationObject))
 					params[CMDBuild.core.constants.Proxy.FILTER] = Ext.create('CMDBuild.model.common.Filter', { configuration: newConfigurationObject });
 
-				this.cmfg('dataViewFilterUiUpdate', params);
+				this.cmfg('dataViewSqlUiUpdate', params);
 			} else { // Reset action on empty filter string
 				this.cmfg('fieldFilterBasicReset');
 			}

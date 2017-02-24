@@ -15,7 +15,8 @@
 		 */
 		cmfgCatchedFunctions: [
 			'dataViewSqlFormTabCardReset',
-			'dataViewSqlFormTabCardShow'
+			'dataViewSqlFormTabCardShow',
+			'dataViewSqlFormTabCardUiUpdate'
 		],
 
 		/**
@@ -79,7 +80,6 @@
 				if (Ext.isObject(attributeModel) && !Ext.Object.isEmpty(attributeModel))
 					if (fieldManager.isAttributeManaged(attributeModel.get(CMDBuild.core.constants.Proxy.TYPE))) {
 						fieldManager.attributeModelSet(attributeModel);
-
 						fieldManager.push(fieldDefinition, fieldManager.buildField());
 					} else {
 						_error('buildFormModeEdit(): unmanaged attribute model', this, attributeModel);
@@ -112,7 +112,6 @@
 				if (Ext.isObject(attributeModel) && !Ext.Object.isEmpty(attributeModel))
 					if (fieldManager.isAttributeManaged(attributeModel.get(CMDBuild.core.constants.Proxy.TYPE))) {
 						fieldManager.attributeModelSet(attributeModel);
-
 						fieldManager.push(fieldDefinition, fieldManager.buildField({ readOnly: true }));
 					} else {
 						_error('buildFormModeRead(): unmanaged attribute model', this, attributeModel);
@@ -136,10 +135,45 @@
 		 * @returns {Void}
 		 */
 		dataViewSqlFormTabCardShow: function () {
-			if (!this.cmfg('dataViewSqlSelectedCardIsEmpty')) {
+			if (!this.cmfg('dataViewSelectedDataViewIsEmpty') && !this.cmfg('dataViewSqlSelectedCardIsEmpty')) {
+				// FIXME: future implementation
+				// History record save
+				//CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
+				//	moduleId: this.cmfg('dataViewIdentifierGet'),
+				//	entryType: {
+				//		description: this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.DESCRIPTION),
+				//		id: this.cmfg('dataViewSelectedDataViewGet', CMDBuild.core.constants.Proxy.ID),
+				//		object: this.cmfg('dataViewSelectedDataViewGet')
+				//	},
+				//	item: {
+				//		description: this.cmfg('dataViewSqlSelectedCardGet', CMDBuild.core.constants.Proxy.DESCRIPTION)
+				//			|| this.cmfg('dataViewSqlSelectedCardGet', CMDBuild.core.constants.Proxy.CODE),
+				//		id: this.cmfg('dataViewSqlSelectedCardGet', CMDBuild.core.constants.Proxy.ID),
+				//		object: this.cmfg('dataViewSqlSelectedCardGet')
+				//	},
+				//	section: {
+				//		description: this.view.title,
+				//		object: this.view
+				//	}
+				//});
+
 				this.buildForm();
 
 				this.form.getForm().setValues(this.cmfg('dataViewSqlSelectedCardGet', CMDBuild.core.constants.Proxy.VALUES));
+			}
+		},
+
+		/**
+		 * @returns {Void}
+		 */
+		dataViewSqlFormTabCardUiUpdate: function () {
+			// UI view mode manage
+			switch (this.cmfg('dataViewSqlUiViewModeGet')) {
+				case 'add':
+					return this.view.enable();
+
+				default:
+					return this.view.setDisabled(this.cmfg('dataViewSqlSelectedCardIsEmpty'));
 			}
 		}
 	});

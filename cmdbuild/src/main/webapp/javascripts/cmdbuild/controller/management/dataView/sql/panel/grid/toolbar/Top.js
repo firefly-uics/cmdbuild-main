@@ -11,13 +11,6 @@
 		parentDelegate: undefined,
 
 		/**
-		 * @cfg {Array}
-		 */
-		cmfgCatchedFunctions: [
-			'dataViewSqlGridToolbarTopUiUpdate'
-		],
-
-		/**
 		 * @property {CMDBuild.view.management.dataView.sql.panel.grid.toolbar.TopView}
 		 */
 		view: undefined,
@@ -34,14 +27,7 @@
 			this.callParent(arguments);
 
 			this.view = Ext.create('CMDBuild.view.management.dataView.sql.panel.grid.toolbar.TopView', { delegate: this });
-		},
-
-		/**
-		 * Add card to SQL view disabled
-		 *
-		 * @returns {Void}
-		 */
-		dataViewSqlGridToolbarTopUiUpdate: Ext.emptyFn
+		}
 	});
 
 })();
