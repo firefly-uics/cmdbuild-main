@@ -11,11 +11,7 @@
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.core.CookiesManager',
 			'CMDBuild.core.interfaces.service.Splash',
-			'CMDBuild.proxy.core.Management',
-			'CMDBuild.proxy.dashboard.Dashboard',
-			'CMDBuild.proxy.lookup.Type',
-			'CMDBuild.proxy.Menu',
-			'CMDBuild.proxy.widget.Widget'
+			'CMDBuild.proxy.core.Management'
 		],
 
 		singleton: true,
@@ -72,7 +68,7 @@
 					 *
 					 * Widgets must be added to cache only before classes, because widget object is added to class model
 					 */
-					CMDBuild.proxy.widget.Widget.readAll({
+					CMDBuild.proxy.core.Management.readAllWidgets({
 						loadMask: false,
 						scope: this,
 						success: function (response, options, decodedResponse) {
@@ -93,7 +89,7 @@
 			/**
 			 * Dashboard
 			 */
-			CMDBuild.proxy.dashboard.Dashboard.readAllVisible({
+			CMDBuild.proxy.core.Management.readAllDashboardsVisible({
 				loadMask: false,
 				scope: this,
 				success: function (response, options, decodedResponse) {
@@ -132,7 +128,7 @@
 			/**
 			 * Lookup
 			 */
-			CMDBuild.proxy.lookup.Type.readAll({
+			CMDBuild.proxy.core.Management.readAllLookupTypes({
 				loadMask: false,
 				scope: this,
 				success: function (response, options, decodedResponse) {

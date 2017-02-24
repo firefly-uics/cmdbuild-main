@@ -10,11 +10,8 @@
 			'CMDBuild.core.constants.ModuleIdentifiers',
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.core.CookiesManager',
-			'CMDBuild.proxy.core.Administration',
-			'CMDBuild.proxy.dashboard.Dashboard',
-			'CMDBuild.proxy.lookup.Type',
-			'CMDBuild.proxy.widget.Widget',
-			'CMDBuild.core.interfaces.service.Splash'
+			'CMDBuild.core.interfaces.service.Splash',
+			'CMDBuild.proxy.core.Administration'
 		],
 
 		singleton: true,
@@ -97,7 +94,7 @@
 			/**
 			 * Lookup
 			 */
-			CMDBuild.proxy.lookup.Type.readAll({
+			CMDBuild.proxy.core.Administration.readAllLookupTypes({
 				loadMask: false,
 				scope: this,
 				success: function (response, options, decodedResponse) {
@@ -112,7 +109,7 @@
 			/**
 			 * Dashboard
 			 */
-			CMDBuild.proxy.dashboard.Dashboard.readAll({
+			CMDBuild.proxy.core.Administration.readAllDashboards({
 				loadMask: false,
 				scope: this,
 				success: function (response, options, decodedResponse) {

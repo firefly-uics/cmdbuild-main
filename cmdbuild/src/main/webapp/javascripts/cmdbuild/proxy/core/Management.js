@@ -14,6 +14,19 @@
 		 *
 		 * @returns {Void}
 		 */
+		readAllDashboardsVisible: function (parameters) {
+			parameters = Ext.isEmpty(parameters) ? {} : parameters;
+
+			Ext.apply(parameters, { url: CMDBuild.proxy.index.Json.dashboard.readAllVisible });
+
+			CMDBuild.global.Cache.request(CMDBuild.core.constants.Proxy.DASHBOARD, parameters);
+		},
+
+		/**
+		 * @param {Object} parameters
+		 *
+		 * @returns {Void}
+		 */
 		readAllDomains: function (parameters) {
 			parameters = Ext.isEmpty(parameters) ? {} : parameters;
 
@@ -33,6 +46,32 @@
 			Ext.apply(parameters, { url: CMDBuild.proxy.index.Json.entryType.readAll });
 
 			CMDBuild.global.Cache.request(CMDBuild.core.constants.Proxy.ENTRY_TYPE, parameters);
+		},
+
+		/**
+		 * @param {Object} parameters
+		 *
+		 * @returns {Void}
+		 */
+		readAllLookupTypes: function (parameters) {
+			parameters = Ext.isEmpty(parameters) ? {} : parameters;
+
+			Ext.apply(parameters, { url: CMDBuild.proxy.index.Json.lookup.type.readAll });
+
+			CMDBuild.global.Cache.request(CMDBuild.core.constants.Proxy.LOOKUP_TYPE, parameters);
+		},
+
+		/**
+		 * @param {Object} parameters
+		 *
+		 * @returns {Void}
+		 */
+		readAllWidgets: function (parameters) {
+			parameters = Ext.isEmpty(parameters) ? {} : parameters;
+
+			Ext.apply(parameters, { url: CMDBuild.proxy.index.Json.widget.readAll });
+
+			CMDBuild.global.Cache.request(CMDBuild.core.constants.Proxy.WIDGET, parameters);
 		}
 	});
 
