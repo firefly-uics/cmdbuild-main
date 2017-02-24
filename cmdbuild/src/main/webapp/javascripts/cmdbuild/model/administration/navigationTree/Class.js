@@ -2,7 +2,7 @@
 
 	Ext.require('CMDBuild.core.constants.Proxy');
 
-	Ext.define('CMDBuild.model.navigationTree.Class', { // TODO: waiting for refactor (rename and structure)
+	Ext.define('CMDBuild.model.administration.navigationTree.Class', { // FIXME: waiting for refactor (rename and structure)
 		extend: 'Ext.data.Model',
 
 		fields: [
@@ -12,29 +12,16 @@
 			{ name: CMDBuild.core.constants.Proxy.PARENT, type: 'int', useNull: true }
 		],
 
-		statics: {
-			/**
-			 * Static function to convert from legacy object to model's one
-			 *
-			 * @param {Object} data
-			 *
-			 * @returns {Object} data
-			 */
-			convertFromLegacy: function (data) {
-				data = data || {};
-				data[CMDBuild.core.constants.Proxy.DESCRIPTION] = data['text'];
-
-				return data;
-			}
-		},
-
 		/**
 		 * @param {Object} data
+		 *
+		 * @returns {Void}
 		 *
 		 * @override
 		 */
 		constructor: function (data) {
-			data = this.statics().convertFromLegacy(data);
+			data = Ext.isObject(data) ? data : {};
+			data[CMDBuild.core.constants.Proxy.DESCRIPTION] = data['text'];
 
 			this.callParent(arguments);
 		}

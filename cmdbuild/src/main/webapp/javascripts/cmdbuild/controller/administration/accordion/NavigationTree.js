@@ -5,7 +5,7 @@
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.navigationTree.NavigationTree'
+			'CMDBuild.proxy.administration.navigationTree.NavigationTree'
 		],
 
 		/**
@@ -52,7 +52,7 @@
 			parameters = Ext.isObject(parameters) ? parameters : {};
 			parameters.selectionId = Ext.isNumber(parameters.selectionId) ? parameters.selectionId : null;
 
-			CMDBuild.proxy.navigationTree.NavigationTree.readAll({
+			CMDBuild.proxy.administration.navigationTree.NavigationTree.readAll({
 				loadMask: Ext.isBoolean(parameters.loadMask) ? parameters.loadMask : false,
 				scope: this,
 				success: function (response, options, decodedResponse) {

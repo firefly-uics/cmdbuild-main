@@ -1,8 +1,8 @@
-(function() {
+(function () {
 
 	Ext.require('CMDBuild.core.constants.Proxy');
 
-	Ext.define('CMDBuild.model.navigationTree.NavigationTree', {
+	Ext.define('CMDBuild.model.administration.navigationTree.NavigationTree', { // FIXME: waiting for refactor (rename)
 		extend: 'Ext.data.Model',
 
 		fields: [
@@ -14,33 +14,20 @@
 			{ name: CMDBuild.core.constants.Proxy.FILTER, type: 'string' },
 			{ name: CMDBuild.core.constants.Proxy.ID, type: 'int', useNull: true },
 			{ name: CMDBuild.core.constants.Proxy.NAME, type: 'string' },
-			{ name: CMDBuild.core.constants.Proxy.TARGET_CLASS_DESCRIPTION, type: 'string' }, // TODO: verify
+			{ name: CMDBuild.core.constants.Proxy.TARGET_CLASS_DESCRIPTION, type: 'string' },
 			{ name: CMDBuild.core.constants.Proxy.TARGET_CLASS_NAME, type: 'string' }
 		],
-
-		statics: {
-			/**
-			 * Static function to convert from legacy object to model's one
-			 *
-			 * @param {Object} data
-			 *
-			 * @returns {Object} data
-			 */
-			convertFromLegacy: function(data) {
-				data = data || {};
-				data[CMDBuild.core.constants.Proxy.NAME] = data['type']; // TODO: waiting for refactor
-
-				return data;
-			}
-		},
 
 		/**
 		 * @param {Object} data
 		 *
+		 * @returns {Void}
+		 *
 		 * @override
 		 */
-		constructor: function(data) {
-			data = this.statics().convertFromLegacy(data);
+		constructor: function (data) {
+			data = Ext.isObject(data) ? data : {};
+			data[CMDBuild.core.constants.Proxy.NAME] = data['type'];
 
 			this.callParent(arguments);
 		}

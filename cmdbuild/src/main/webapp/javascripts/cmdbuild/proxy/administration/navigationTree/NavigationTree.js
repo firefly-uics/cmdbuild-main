@@ -1,12 +1,13 @@
 (function () {
 
-	Ext.define('CMDBuild.proxy.navigationTree.NavigationTree', {
+	Ext.define('CMDBuild.proxy.administration.navigationTree.NavigationTree', {
 
 		requires: [
 			'CMDBuild.core.constants.Global',
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.index.Json',
-			'CMDBuild.model.navigationTree.TargetClassStore'
+			'CMDBuild.model.administration.navigationTree.TargetClassStore',
+			'CMDBuild.proxy.administration.navigationTree.ReaderClass',
+			'CMDBuild.proxy.index.Json'
 		],
 
 		singleton: true,
@@ -30,12 +31,12 @@
 		getStoreTargetClass: function () {
 			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.ENTRY_TYPE, {
 				autoLoad: true,
-				model: 'CMDBuild.model.navigationTree.TargetClassStore',
+				model: 'CMDBuild.model.administration.navigationTree.TargetClassStore',
 				proxy: {
 					type: 'ajax',
 					url: CMDBuild.proxy.index.Json.entryType.readAll,
 					reader: {
-						type: 'json',
+						type: 'classstore',
 						root: CMDBuild.core.constants.Proxy.CLASSES
 					},
 					extraParams: {
@@ -45,12 +46,15 @@
 					}
 				},
 				filters: [
-					function (record) { // Filters simple classes
-						return record.get(CMDBuild.core.constants.Proxy.TABLE_TYPE) != CMDBuild.core.constants.Global.getTableTypeSimpleTable();
+					function (record) {
+						return (
+							record.get(CMDBuild.core.constants.Proxy.TABLE_TYPE) != CMDBuild.core.constants.Global.getTableTypeSimpleTable() // Discard simple classes
+							&& record.get(CMDBuild.core.constants.Proxy.NAME) != CMDBuild.core.constants.Global.getRootNameClasses() // Discard root class of all classes
+						);
 					}
 				],
 				sorters: [
-					{ property: CMDBuild.core.constants.Proxy.TEXT, direction: 'ASC' }
+					{ property: CMDBuild.core.constants.Proxy.DESCRIPTION, direction: 'ASC' }
 				]
 			});
 		},

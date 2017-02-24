@@ -5,7 +5,7 @@
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.navigationTree.NavigationTree',
+			'CMDBuild.proxy.administration.navigationTree.NavigationTree',
 			'CMDBuild.core.Utils'
 		],
 
@@ -75,7 +75,7 @@
 		/**
 		 * Build tree nodes searching from ancestors domain and excluding one
 		 *
-		 * @param {CMDBuild.model.navigationTree.Class} entryType
+		 * @param {CMDBuild.model.administration.navigationTree.Class} entryType
 		 *
 		 * @returns {Array} nodes
 		 *
@@ -126,7 +126,7 @@
 		},
 
 		/**
-		 * @param {CMDBuild.model.navigationTree.TreeNode} node
+		 * @param {CMDBuild.model.administration.navigationTree.TreeNode} node
 		 *
 		 * @returns {Array} checkedChildren
 		 *
@@ -206,7 +206,7 @@
 		/**
 		 * Walk through tree and stateObject to fill tree nodes with check values and filters
 		 *
-		 * @param {CMDBuild.model.navigationTree.TreeNode} node
+		 * @param {CMDBuild.model.administration.navigationTree.TreeNode} node
 		 * @param {Array} stateObjectArray
 		 *
 		 * @returns {Void}
@@ -270,7 +270,7 @@
 				if (!Ext.isEmpty(domainsArray) && Ext.isArray(domainsArray))
 					Ext.Array.forEach(domainsArray, function (domainObject, i, allDomainObjects) {
 						if (Ext.isObject(domainObject) && !Ext.Object.isEmpty(domainObject))
-							this.localCache.domains[domainObject[CMDBuild.core.constants.Proxy.ID_DOMAIN]] = Ext.create('CMDBuild.model.navigationTree.Domain', domainObject);
+							this.localCache.domains[domainObject[CMDBuild.core.constants.Proxy.ID_DOMAIN]] = Ext.create('CMDBuild.model.administration.navigationTree.Domain', domainObject);
 					}, this);
 			},
 
@@ -304,7 +304,7 @@
 				if (!Ext.isEmpty(classesArray) && Ext.isArray(classesArray))
 					Ext.Array.forEach(classesArray, function (entryTypeObject, i, allEntryTyopeObjects) {
 						if (Ext.isObject(entryTypeObject) && !Ext.Object.isEmpty(entryTypeObject))
-							this.localCache.entryTypes[entryTypeObject[CMDBuild.core.constants.Proxy.NAME]] = Ext.create('CMDBuild.model.navigationTree.Class', entryTypeObject);
+							this.localCache.entryTypes[entryTypeObject[CMDBuild.core.constants.Proxy.NAME]] = Ext.create('CMDBuild.model.administration.navigationTree.Class', entryTypeObject);
 					}, this);
 			},
 
@@ -351,7 +351,7 @@
 
 		/**
 		 * @param {Object} parameters
-		 * @param {CMDBuild.model.navigationTree.TreeNode} parameters.node
+		 * @param {CMDBuild.model.administration.navigationTree.TreeNode} parameters.node
 		 * @param {Boolean} parameters.checked
 		 *
 		 * @returns {Void}
@@ -389,7 +389,7 @@
 		},
 
 		/**
-		 * @param {CMDBuild.model.navigationTree.TreeNode} node
+		 * @param {CMDBuild.model.administration.navigationTree.TreeNode} node
 		 *
 		 * @returns {Void}
 		 */
@@ -425,7 +425,7 @@
 				var params = {};
 				params[CMDBuild.core.constants.Proxy.ACTIVE] = false; // Also inactive to get all processes if shark isn't on
 
-				CMDBuild.proxy.navigationTree.NavigationTree.readAllEntryTypes({
+				CMDBuild.proxy.administration.navigationTree.NavigationTree.readAllEntryTypes({
 					params: params,
 					scope: this,
 					success: function (response, options, decodedResponse) {
@@ -449,7 +449,7 @@
 
 							this.tree.getStore().setRootNode(rootNodeObject);
 
-							CMDBuild.proxy.navigationTree.NavigationTree.readAllDomains({
+							CMDBuild.proxy.administration.navigationTree.NavigationTree.readAllDomains({
 								scope: this,
 								success: function (response, options, decodedResponse) {
 									decodedResponse = decodedResponse[CMDBuild.core.constants.Proxy.DOMAINS];
@@ -479,7 +479,7 @@
 		},
 
 		/**
-		 * @param {CMDBuild.model.navigationTree.TreeNode} node
+		 * @param {CMDBuild.model.administration.navigationTree.TreeNode} node
 		 *
 		 * @returns {Void}
 		 *

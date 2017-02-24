@@ -6,7 +6,7 @@
 		requires: [
 			'CMDBuild.core.constants.FieldWidths',
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.navigationTree.NavigationTree',
+			'CMDBuild.proxy.administration.navigationTree.NavigationTree',
 			'CMDBuild.core.Utils'
 		],
 
@@ -111,24 +111,16 @@
 						fieldLabel: CMDBuild.Translation.origin,
 						labelWidth: CMDBuild.core.constants.FieldWidths.LABEL,
 						maxWidth: CMDBuild.core.constants.FieldWidths.ADMINISTRATION_BIG,
-						displayField: CMDBuild.core.constants.Proxy.TEXT, // TODO: waiting for refactor (rename)
+						displayField: CMDBuild.core.constants.Proxy.DESCRIPTION,
 						valueField: CMDBuild.core.constants.Proxy.NAME,
 						disableEnableFunctions: true,
 						allowBlank: false,
 						forceSelection: true,
 						editable: false,
 
-						store: CMDBuild.proxy.navigationTree.NavigationTree.getStoreTargetClass(),
+						store: CMDBuild.proxy.administration.navigationTree.NavigationTree.getStoreTargetClass(),
 						queryMode: 'local'
-					}),
-					// FIXME: implementation of server management functions
-					//Ext.create('Ext.form.field.Checkbox',{
-					//	name: CMDBuild.core.constants.Proxy.ACTIVE,
-					//	fieldLabel: CMDBuild.Translation.active,
-					//	labelWidth: CMDBuild.core.constants.FieldWidths.LABEL,
-					//	inputValue: true,
-					//	uncheckedValue: false
-					//}),
+					})
 					Ext.create('Ext.form.field.Hidden', { name: CMDBuild.core.constants.Proxy.ID })
 				]
 			});

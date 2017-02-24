@@ -5,7 +5,7 @@
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.navigationTree.NavigationTree'
+			'CMDBuild.proxy.administration.navigationTree.NavigationTree'
 		],
 
 		/**
@@ -17,6 +17,7 @@
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
+			'identifierGet = navigationTreeIdentifierGet',
 			'navigationTreeSelectedTreeGet',
 			'navigationTreeSelectedTreeIsEmpty',
 			'onNavigationTreeAbortButtonClick',
@@ -44,7 +45,7 @@
 		identifier: undefined,
 
 		/**
-		 * @property {CMDBuild.model.navigationTree.NavigationTree}
+		 * @property {CMDBuild.model.administration.navigationTree.NavigationTree}
 		 *
 		 * @private
 		 */
@@ -132,7 +133,7 @@
 			 */
 			navigationTreeSelectedTreeSet: function (parameters) {
 				if (!Ext.Object.isEmpty(parameters)) {
-					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.navigationTree.NavigationTree';
+					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.administration.navigationTree.NavigationTree';
 					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedTree';
 
 					this.propertyManageSet(parameters);
@@ -155,7 +156,7 @@
 		onNavigationTreeAddButtonClick: function () {
 			this.navigationTreeSelectedTreeReset();
 
-			this.cmfg('mainViewportAccordionDeselect', this.cmfg('identifierGet'));
+			this.cmfg('mainViewportAccordionDeselect', this.cmfg('navigationTreeIdentifierGet'));
 
 			this.tabPanel.setActiveTab(0);
 
@@ -193,7 +194,7 @@
 				var params = {};
 				params[CMDBuild.core.constants.Proxy.NAME] = parameters.node.get(CMDBuild.core.constants.Proxy.ENTITY_ID);
 
-				CMDBuild.proxy.navigationTree.NavigationTree.read({
+				CMDBuild.proxy.administration.navigationTree.NavigationTree.read({
 					params: params,
 					scope: this,
 					success: function(response, options, decodedResponse) {
@@ -261,7 +262,7 @@
 
 					params[CMDBuild.core.constants.Proxy.STRUCTURE] = Ext.encode(structure);
 
-					CMDBuild.proxy.navigationTree.NavigationTree.create({
+					CMDBuild.proxy.administration.navigationTree.NavigationTree.create({
 						params: params,
 						scope: this,
 						success: this.success
@@ -275,7 +276,7 @@
 
 					params[CMDBuild.core.constants.Proxy.STRUCTURE] = Ext.encode(structure);
 
-					CMDBuild.proxy.navigationTree.NavigationTree.update({
+					CMDBuild.proxy.administration.navigationTree.NavigationTree.update({
 						params: params,
 						scope: this,
 						success: this.success
@@ -294,7 +295,7 @@
 				var params = {};
 				params[CMDBuild.core.constants.Proxy.NAME] = this.cmfg('navigationTreeSelectedTreeGet', CMDBuild.core.constants.Proxy.NAME);
 
-				CMDBuild.proxy.navigationTree.NavigationTree.remove({
+				CMDBuild.proxy.administration.navigationTree.NavigationTree.remove({
 					params: params,
 					scope: this,
 					success: function (response, options, decodedResponse) {
@@ -302,8 +303,8 @@
 
 						this.cmfg('onNavigationTreeSelected'); // Fake selection to correctly sets tabs display state
 
-						this.cmfg('mainViewportAccordionDeselect', this.cmfg('identifierGet'));
-						this.cmfg('mainViewportAccordionControllerUpdateStore', { identifier: this.cmfg('identifierGet') });
+						this.cmfg('mainViewportAccordionDeselect', this.cmfg('navigationTreeIdentifierGet'));
+						this.cmfg('mainViewportAccordionControllerUpdateStore', { identifier: this.cmfg('navigationTreeIdentifierGet') });
 					}
 				});
 			}
@@ -320,7 +321,7 @@
 		 */
 		success: function (response, options, decodedResponse) {
 			this.cmfg('mainViewportAccordionControllerUpdateStore', {
-				identifier: this.cmfg('identifierGet')
+				identifier: this.cmfg('navigationTreeIdentifierGet')
 				//params: { // TODO: waiting for refactor
 				//	selectionId: decodedResponse[CMDBuild.core.constants.Proxy.RESPONSE][CMDBuild.core.constants.Proxy.ID]
 				// }

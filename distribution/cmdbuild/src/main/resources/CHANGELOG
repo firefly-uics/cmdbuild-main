@@ -20,6 +20,8 @@ FIXES
 
  * DataView on processes allow to edit process as card
 
+ * Root of all classes visible in NavigationTree origin combobox
+
 
 
 

@@ -78,7 +78,7 @@
 
 			this.form.reset();
 			this.form.setDisabledModify(false, true);
-			this.form.loadRecord(Ext.create('CMDBuild.model.navigationTree.NavigationTree'));
+			this.form.loadRecord(Ext.create('CMDBuild.model.administration.navigationTree.NavigationTree'));
 		},
 
 		/**
