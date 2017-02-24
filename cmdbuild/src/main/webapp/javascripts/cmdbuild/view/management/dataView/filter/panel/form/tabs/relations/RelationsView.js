@@ -328,19 +328,20 @@
 		var table = _CMCache.getClassById(tableId);
 		var entryType = _CMCache.getEntryTypeById(tableId);
 		var privileges =  CMDBuild.core.Utils.getEntryTypePrivileges(entryType);
+		var disabledClass = this.delegate.parentDelegate.cmfg('panelGridAndFormViewModeEquals', 'readOnly') ? ' cmdb-tree-node-disabled' : ''; // HACK to disable icons
 
 		if (this.cmWithEditRelationIcons && domainObj.get('writePrivileges'))
-			actionsHtml += '<img style="cursor:pointer" title="' + CMDBuild.Translation.management.modcard.edit_relation + '" class="action-relation-edit" src="images/icons/link_edit.png"/>'
-				+ '<img style="cursor:pointer" title="' + CMDBuild.Translation.management.modcard.delete_relation + '" class="action-relation-delete" src="images/icons/link_delete.png"/>';
+			actionsHtml += '<img style="cursor:pointer" title="' + CMDBuild.Translation.management.modcard.edit_relation + '" class="action-relation-edit' + disabledClass + '" src="images/icons/link_edit.png"/>'
+				+ '<img style="cursor:pointer" title="' + CMDBuild.Translation.management.modcard.delete_relation + '" class="action-relation-delete' + disabledClass + '" src="images/icons/link_delete.png"/>';
 
 		if (table && table.get('priv_write') && ! privileges.crudDisabled.modify) {
-			actionsHtml += '<img style="cursor:pointer" title="' + CMDBuild.Translation.management.modcard.modify_card + '" class="action-relation-editcard" src="images/icons/modify.png"/>';
+			actionsHtml += '<img style="cursor:pointer" title="' + CMDBuild.Translation.management.modcard.modify_card + '" class="action-relation-editcard' + disabledClass + '" src="images/icons/modify.png"/>';
 		} else {
-			actionsHtml += '<img style="cursor:pointer" title="' + CMDBuild.Translation.management.modcard.view_relation + '" class="action-relation-viewcard" src="images/icons/zoom.png"/>';
+			actionsHtml += '<img style="cursor:pointer" title="' + CMDBuild.Translation.management.modcard.view_relation + '" class="action-relation-viewcard' + disabledClass + '" src="images/icons/zoom.png"/>';
 		}
 
 		if (CMDBuild.configuration.dms.get(CMDBuild.core.constants.Proxy.ENABLED))
-			actionsHtml += '<img style="cursor:pointer" title="' + CMDBuild.Translation.management.modcard.showattach + '" class="action-relation-attach" src="images/icons/attach.png"/>';
+			actionsHtml += '<img style="cursor:pointer" title="' + CMDBuild.Translation.management.modcard.showattach + '" class="action-relation-attach' + disabledClass + '" src="images/icons/attach.png"/>';
 
 		return actionsHtml;
 	}

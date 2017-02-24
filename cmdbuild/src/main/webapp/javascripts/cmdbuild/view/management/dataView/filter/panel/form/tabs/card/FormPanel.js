@@ -215,7 +215,7 @@
 				}) : null,
 				this.printCardMenu = Ext.create('CMDBuild.core.buttons.icon.split.Print', {
 					delegate: this.delegate.parentDelegate,
-					delegateEventPrefix: 'onDataViewFilterForm',
+					delegateEventPrefix: 'onDataViewFilterFormTabCard',
 					formatList: [
 						CMDBuild.core.constants.Proxy.PDF,
 						CMDBuild.core.constants.Proxy.ODT

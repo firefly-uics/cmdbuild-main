@@ -17,7 +17,8 @@
 			{ name: CMDBuild.core.constants.Proxy.NAME, type: 'string' },
 			{ name: CMDBuild.core.constants.Proxy.PARENT, type: 'int', useNull: true },
 			{ name: CMDBuild.core.constants.Proxy.PERMISSIONS, type: 'auto', defaultValue: {} }, // CMDBuild.model.management.dataView.filter.entryType.Permissions
-			{ name: CMDBuild.core.constants.Proxy.TABLE_TYPE, type: 'string' }
+			{ name: CMDBuild.core.constants.Proxy.TABLE_TYPE, type: 'string' },
+			{ name: CMDBuild.core.constants.Proxy.TYPE, type: 'string' }
 		],
 
 		/**

@@ -157,7 +157,8 @@
 
 			this.view.panelFunctionModifyStateSet({
 				forceToolbarTopState: !(
-					this.cmfg('dataViewFilterFormWidgetExists', CMDBuild.core.constants.WidgetType.getOpenNote())
+					!this.parentDelegate.cmfg('panelGridAndFormViewModeEquals', 'readOnly')
+					&& this.cmfg('dataViewFilterFormWidgetExists', CMDBuild.core.constants.WidgetType.getOpenNote())
 					&& this.cmfg('dataViewFilterSourceEntryTypeGet', [
 						CMDBuild.core.constants.Proxy.PERMISSIONS,
 						CMDBuild.core.constants.Proxy.WRITE

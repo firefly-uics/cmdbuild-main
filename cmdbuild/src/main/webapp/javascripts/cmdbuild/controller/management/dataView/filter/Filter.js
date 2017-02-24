@@ -30,6 +30,7 @@
 			'dataViewFilterSourceEntryTypeIsEmpty = panelGridAndFormSelectedEntityIsEmpty',
 			'dataViewFilterStartCardGet',
 			'dataViewFilterUiUpdate = panelGridAndFormUiUpdate',
+			'dataViewFilterUiViewModeSet',
 			'onDataViewFilterAbortButtonClick',
 			'onDataViewFilterAddButtonClick',
 			'onDataViewFilterCloneButtonClick',
@@ -37,8 +38,7 @@
 			'panelGridAndFormFullScreenUiSetup = dataViewFilterFullScreenUiSetup',
 			'panelGridAndFormToolsArrayBuild',
 			'panelGridAndFormViewModeEquals = dataViewFilterUiViewModeEquals',
-			'panelGridAndFormViewModeGet = dataViewFilterUiViewModeGet',
-			'panelGridAndFormViewModeSet = dataViewFilterUiViewModeSet'
+			'panelGridAndFormViewModeGet = dataViewFilterUiViewModeGet'
 		],
 
 		/**
@@ -460,6 +460,22 @@
 					});
 				});
 			}
+		},
+
+		/**
+		 * Customization of panelGridAndFormViewModeSet() to avoid processes edit mode
+		 *
+		 * @param {String} mode
+		 *
+		 * @returns {Void}
+		 */
+		dataViewFilterUiViewModeSet: function (mode) {
+			mode = Ext.isString(mode) ? mode : 'read';
+
+			if (this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.TYPE) == CMDBuild.core.constants.Global.getTableTypeWorkflow())
+				mode = 'readOnly';
+
+			return this.panelGridAndFormViewModeSet(mode);
 		},
 
 		/**

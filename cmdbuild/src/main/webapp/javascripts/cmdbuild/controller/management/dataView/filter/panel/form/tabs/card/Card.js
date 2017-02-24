@@ -87,11 +87,20 @@
 		 * @legacy
 		 */
 		dataViewFilterFormTabCardUiUpdate: function () {
+			var isWorkflowSelected = this.parentDelegate.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.TYPE) == CMDBuild.core.constants.Global.getTableTypeWorkflow();
+
 			if (!this.parentDelegate.cmfg('dataViewFilterSourceEntryTypeIsEmpty'))
 				this.onEntryTypeSelected();
 
 			if (!this.parentDelegate.cmfg('dataViewFilterSelectedCardIsEmpty'))
 				this.onCardSelected();
+
+			// Setup tab labels
+			this.view.setTitle(isWorkflowSelected ? CMDBuild.Translation.activity : CMDBuild.Translation.card);
+			this.view.form.modifyCardButton.setText(isWorkflowSelected ? CMDBuild.Translation.modifyActivity : CMDBuild.Translation.management.modcard.modify_card);
+			this.view.form.deleteCardButton.setText(isWorkflowSelected ? CMDBuild.Translation.abortProcess : CMDBuild.Translation.management.modcard.delete_card);
+			this.view.form.cloneCardButton.setVisible(!isWorkflowSelected);
+			this.view.form.printCardMenu.setVisible(!isWorkflowSelected);
 
 			var state = (
 				this.parentDelegate.cmfg('dataViewFilterSelectedCardIsEmpty')
@@ -167,6 +176,9 @@
 
 				case 'edit':
 					return this.onModifyCardClick();
+
+				case 'readOnly':
+					return this.changeClassUIConfigurationForGroup(true, true, true);
 			}
 		},
 

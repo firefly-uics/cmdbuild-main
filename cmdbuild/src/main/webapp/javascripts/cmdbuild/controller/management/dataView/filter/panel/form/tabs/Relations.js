@@ -148,6 +148,10 @@
 
 				case 'clone':
 					return this.onCloneCard();
+
+				case 'readOnly': {
+					this.view.addRelationButton.disable();
+				} break;
 			}
 		},
 

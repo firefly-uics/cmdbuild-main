@@ -2,10 +2,6 @@
 
 	/**
 	 * Override to customize grid buttons disable action
-	 *
-	 * TODO: remove on UiUpdate implementation
-	 *
-	 * @legacy
 	 */
 	Ext.define('CMDBuild.controller.management.dataView.filter.panel.form.tabs.Attachment', {
 		extend: 'CMDBuild.controller.common.panel.module.attachment.Tab',
@@ -48,7 +44,8 @@
 		 */
 		onDataViewFilterFormTabAttachmentShowCallback: function () {
 			this.grid.buttonAdd.setDisabled(
-				!this.cmfg('panelGridAndFormSelectedEntityGet', [
+				this.cmfg('panelGridAndFormViewModeEquals', 'readOnly')
+				|| !this.cmfg('panelGridAndFormSelectedEntityGet', [
 					CMDBuild.core.constants.Proxy.PERMISSIONS,
 					CMDBuild.core.constants.Proxy.WRITE
 				])

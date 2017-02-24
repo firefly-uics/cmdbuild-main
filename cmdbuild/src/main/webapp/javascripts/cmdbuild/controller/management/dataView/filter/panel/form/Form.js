@@ -28,6 +28,7 @@
 			'dataViewFilterFormUiUpdate',
 			'dataViewFilterFormWidgetExists',
 			'onDataViewFilterFormSaveButtonClick',
+			'onDataViewFilterFormTabCardPrintButtonClick',
 			'panelGridAndFormPanelFormTabActiveFireShowEvent = dataViewFilterFormTabActiveFireShowEvent',
 			'panelGridAndFormPanelFormTabActiveSet = dataViewFilterFormTabActiveSet',
 			'panelGridAndFormPanelFormTabSelectionManage = dataViewFilterFormTabSelectionManage'
@@ -281,6 +282,19 @@
 
 			if (Ext.isObject(this.controllerTabEmail) && !Ext.Object.isEmpty(this.controllerTabEmail))
 				this.controllerTabEmail.onSaveCardClick();
+		},
+
+		/**
+		 * @param {String} format
+		 *
+		 * @returns {Void}
+		 *
+		 * @legacy
+		 *
+		 * FIXME: waiting for refactor (move in tab card controller)
+		 */
+		onDataViewFilterFormTabCardPrintButtonClick: function (format) {
+			this.controllerTabCard.onPrintCardMenuClick(format);
 		}
 	});
 

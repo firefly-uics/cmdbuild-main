@@ -4,6 +4,7 @@
 		extend: 'CMDBuild.controller.common.abstract.Base',
 
 		requires: [
+			'CMDBuild.core.constants.Global',
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.core.Utils'
 		],
@@ -57,6 +58,9 @@
 					return _error('buildButtonAdd(): empty sourceEntryType', this, this.cmfg('dataViewFilterSourceEntryTypeGet'));
 			// END: Error handling
 
+			var baseTitle = this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.TYPE) == CMDBuild.core.constants.Global.getTableTypeWorkflow()
+				? CMDBuild.Translation.start : CMDBuild.Translation.addCard;
+
 			if (this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.IS_SUPER_CLASS)) {
 				var menuItems = [];
 
@@ -69,7 +73,7 @@
 				);
 
 				return Ext.create('CMDBuild.core.buttons.icon.split.add.Card', {
-					text: CMDBuild.Translation.addCard + ' ' + this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.DESCRIPTION),
+					text: baseTitle + ' ' + this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.DESCRIPTION),
 					itemId: 'addButton',
 					disabled: this.isAddButtonDisabled(menuItems),
 					scope: this,
@@ -86,7 +90,7 @@
 			}
 
 			return Ext.create('CMDBuild.core.buttons.icon.add.Card', {
-				text: CMDBuild.Translation.addCard + ' ' + this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.DESCRIPTION),
+				text: baseTitle + ' ' + this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.DESCRIPTION),
 				itemId: 'addButton',
 				disabled: this.isAddButtonDisabled(),
 				scope: this,
@@ -279,15 +283,16 @@
 					CMDBuild.core.constants.Proxy.CAPABILITIES,
 					CMDBuild.core.constants.Proxy.ADD_DISABLED
 				]),
+				isViewModeReadOnly = this.parentDelegate.cmfg('dataViewFilterUiViewModeGet') == 'readOnly',
 				permissionsWrite = this.cmfg('dataViewFilterSourceEntryTypeGet', [
 					CMDBuild.core.constants.Proxy.PERMISSIONS,
 					CMDBuild.core.constants.Proxy.WRITE
 				]);
 
 			if (this.cmfg('dataViewFilterSourceEntryTypeGet', CMDBuild.core.constants.Proxy.IS_SUPER_CLASS))
-				return Ext.isEmpty(menuItems) || capabilityAddDisabled;
+				return Ext.isEmpty(menuItems) || isViewModeReadOnly || capabilityAddDisabled;
 
-			return !permissionsWrite || capabilityAddDisabled;
+			return isViewModeReadOnly || !permissionsWrite || capabilityAddDisabled;
 		},
 
 		/**

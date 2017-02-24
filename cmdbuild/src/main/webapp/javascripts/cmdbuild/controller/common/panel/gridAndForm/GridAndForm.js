@@ -49,7 +49,7 @@
 		 *
 		 * @private
 		 */
-		viewModeManaged: ['add', 'edit', 'read'],
+		viewModeManaged: ['add', 'edit', 'read', 'readOnly'],
 
 		// FullScreen UI manage methods
 			/**

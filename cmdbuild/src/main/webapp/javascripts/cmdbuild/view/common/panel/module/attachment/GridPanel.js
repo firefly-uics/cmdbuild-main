@@ -150,10 +150,13 @@
 								},
 
 								isDisabled: function (view, rowIndex, colIndex, item, record) {
-									return !this.delegate.cmfg('panelGridAndFormSelectedEntityGet', [
-										CMDBuild.core.constants.Proxy.PERMISSIONS,
-										CMDBuild.core.constants.Proxy.WRITE
-									]);
+									return (
+										this.delegate.cmfg('panelGridAndFormViewModeEquals', 'readOnly')
+										|| !this.delegate.cmfg('panelGridAndFormSelectedEntityGet', [
+											CMDBuild.core.constants.Proxy.PERMISSIONS,
+											CMDBuild.core.constants.Proxy.WRITE
+										])
+									);
 								}
 							}),
 							this.buttonActionRemove = Ext.create('CMDBuild.core.buttons.icon.Remove', {
@@ -166,10 +169,13 @@
 								},
 
 								isDisabled: function (view, rowIndex, colIndex, item, record) {
-									return !this.delegate.cmfg('panelGridAndFormSelectedEntityGet', [
-										CMDBuild.core.constants.Proxy.PERMISSIONS,
-										CMDBuild.core.constants.Proxy.WRITE
-									]);
+									return (
+										this.delegate.cmfg('panelGridAndFormViewModeEquals', 'readOnly')
+										|| !this.delegate.cmfg('panelGridAndFormSelectedEntityGet', [
+											CMDBuild.core.constants.Proxy.PERMISSIONS,
+											CMDBuild.core.constants.Proxy.WRITE
+										])
+									);
 								}
 							})
 						]
