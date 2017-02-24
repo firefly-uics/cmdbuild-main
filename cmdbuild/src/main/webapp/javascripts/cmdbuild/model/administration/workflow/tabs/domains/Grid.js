@@ -3,7 +3,7 @@
 	Ext.require('CMDBuild.core.constants.Proxy');
 
 	/**
-	 * @link CMDBuild.model.classes.tabs.domains.Grid
+	 * @link CMDBuild.model.management.classes.panel.form.tabs.domains.Grid
 	 *
 	 * TODO: waiting for refactor (rename)
 	 */

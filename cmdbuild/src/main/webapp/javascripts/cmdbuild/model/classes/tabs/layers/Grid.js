@@ -2,7 +2,7 @@
 
 	Ext.require('CMDBuild.core.constants.Proxy');
 
-	Ext.define('CMDBuild.model.classes.tabs.layers.Grid', {
+	Ext.define('CMDBuild.model.management.classes.panel.form.tabs.layers.Grid', {
 		extend: 'Ext.data.Model',
 
 		fields: [

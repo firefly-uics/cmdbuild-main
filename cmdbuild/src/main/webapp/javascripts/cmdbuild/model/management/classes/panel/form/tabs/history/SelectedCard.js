@@ -2,7 +2,7 @@
 
 	Ext.require('CMDBuild.core.constants.Proxy');
 
-	Ext.define('CMDBuild.model.classes.tabs.history.SelectedCard', {
+	Ext.define('CMDBuild.model.management.classes.panel.form.tabs.history.SelectedCard', {
 		extend: 'Ext.data.Model',
 
 		fields: [

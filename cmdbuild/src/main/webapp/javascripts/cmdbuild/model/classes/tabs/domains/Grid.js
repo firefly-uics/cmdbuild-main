@@ -7,7 +7,7 @@
 	 *
 	 * TODO: waiting for refactor (rename)
 	 */
-	Ext.define('CMDBuild.model.classes.tabs.domains.Grid', {
+	Ext.define('CMDBuild.model.management.classes.panel.form.tabs.domains.Grid', {
 		extend: 'Ext.data.Model',
 
 		fields: [

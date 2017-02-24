@@ -2,7 +2,7 @@
 
 	Ext.require('CMDBuild.core.constants.Proxy');
 
-	Ext.define('CMDBuild.model.classes.tabs.properties.Parent', {
+	Ext.define('CMDBuild.model.management.classes.panel.form.tabs.properties.Parent', {
 		extend: 'Ext.data.Model',
 
 		fields: [

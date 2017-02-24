@@ -54,7 +54,7 @@
 		/**
 		 * Just the grid subset of domain properties, not a full domain object
 		 *
-		 * @property {CMDBuild.model.classes.tabs.domains.Grid}
+		 * @property {CMDBuild.model.management.classes.panel.form.tabs.domains.Grid}
 		 *
 		 * @private
 		 */
@@ -89,7 +89,7 @@
 			 * @param {String} parameters.attributeName
 			 * @param {String} parameters.name
 			 *
-			 * @returns {CMDBuild.model.classes.tabs.domains.EntryType or null} selectedEntryType
+			 * @returns {CMDBuild.model.management.classes.panel.form.tabs.domains.EntryType or null} selectedEntryType
 			 */
 			classesTabDomainsBufferEntryTypesGet: function (parameters) {
 				parameters = Ext.isObject(parameters) ? parameters : {};
@@ -117,7 +117,7 @@ _debug('classesTabDomainsBufferEntryTypesGet', parameters);
 				if (Ext.isArray(entryTypes) && !Ext.isEmpty(entryTypes))
 					Ext.Array.each(entryTypes, function (entryTypeObject, i, allEntryTypeObjects) {
 						if (Ext.isObject(entryTypeObject) && !Ext.Object.isEmpty(entryTypeObject)) {
-							var model = Ext.create('CMDBuild.model.classes.tabs.domains.EntryType', entryTypeObject);
+							var model = Ext.create('CMDBuild.model.management.classes.panel.form.tabs.domains.EntryType', entryTypeObject);
 
 							this.bufferEntryTypes[model.get(CMDBuild.core.constants.Proxy.NAME)] = model;
 						}
@@ -176,7 +176,7 @@ _debug('classesTabDomainsBufferEntryTypesGet', parameters);
 		},
 
 		/**
-		 * @param {CMDBuild.model.classes.tabs.domains.Grid} record
+		 * @param {CMDBuild.model.management.classes.panel.form.tabs.domains.Grid} record
 		 *
 		 * @returns {Void}
 		 */
@@ -329,7 +329,7 @@ _debug('classesTabDomainsBufferEntryTypesGet', parameters);
 			 */
 			selectedDomainSet: function (parameters) {
 				if (!Ext.Object.isEmpty(parameters)) {
-					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.classes.tabs.domains.Grid';
+					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.management.classes.panel.form.tabs.domains.Grid';
 					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedDomain';
 
 					this.propertyManageSet(parameters);

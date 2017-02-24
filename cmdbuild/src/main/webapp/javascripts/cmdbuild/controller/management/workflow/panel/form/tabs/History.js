@@ -153,7 +153,7 @@
 		},
 
 		/**
-		 * @param {CMDBuild.model.classes.tabs.history.CardRecord} record
+		 * @param {CMDBuild.model.management.classes.panel.form.tabs.history.CardRecord} record
 		 *
 		 * @returns {Void}
 		 *
@@ -256,7 +256,7 @@
 		},
 
 		/**
-		 * @param {CMDBuild.model.classes.tabs.history.CardRecord or CMDBuild.model.management.workflow.panel.form.tabs.history.RelationRecord} record
+		 * @param {CMDBuild.model.management.classes.panel.form.tabs.history.CardRecord or CMDBuild.model.management.workflow.panel.form.tabs.history.RelationRecord} record
 		 *
 		 * @returns {Void}
 		 */

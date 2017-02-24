@@ -5,7 +5,7 @@
 		'CMDBuild.core.constants.Proxy'
 	]);
 
-	Ext.define('CMDBuild.model.classes.tabs.history.CardRecord', {
+	Ext.define('CMDBuild.model.management.classes.panel.form.tabs.history.CardRecord', {
 		extend: 'Ext.data.Model',
 
 		fields: [

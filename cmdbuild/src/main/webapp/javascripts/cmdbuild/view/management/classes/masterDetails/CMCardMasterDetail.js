@@ -3,7 +3,7 @@
 	Ext.require([
 		'CMDBuild.core.constants.Global',
 		'CMDBuild.core.constants.Proxy',
-		'CMDBuild.proxy.management.classes.tabs.MasterDetail'
+		'CMDBuild.proxy.management.classes.panel.form.tabs.MasterDetail'
 	]);
 
 	var MD = "detail";
@@ -26,7 +26,7 @@
 			var params = {};
 			params[CMDBuild.core.constants.Proxy.ACTIVE] = true;
 
-			CMDBuild.proxy.management.classes.tabs.MasterDetail.readAllClasses({
+			CMDBuild.proxy.management.classes.panel.form.tabs.MasterDetail.readAllClasses({
 				params: params,
 				scope: this,
 				success: function (response, options, decodedResponse) {
@@ -108,7 +108,7 @@
 			var params = {};
 			params[CMDBuild.core.constants.Proxy.CLASS_NAME] = _CMCache.getEntryTypeNameById(classId);
 
-			CMDBuild.proxy.management.classes.tabs.MasterDetail.readForeignKeyTargetingClass({
+			CMDBuild.proxy.management.classes.panel.form.tabs.MasterDetail.readForeignKeyTargetingClass({
 				params: params,
 				loadMask: false,
 				scope: this,

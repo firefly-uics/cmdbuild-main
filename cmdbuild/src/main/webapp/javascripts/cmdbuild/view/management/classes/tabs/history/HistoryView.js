@@ -9,7 +9,7 @@
 		extend: 'Ext.panel.Panel',
 
 		/**
-		 * @cfg {CMDBuild.controller.management.classes.tabs.History}
+		 * @cfg {CMDBuild.controller.management.classes.panel.form.tabs.History}
 		 */
 		delegate: undefined,
 

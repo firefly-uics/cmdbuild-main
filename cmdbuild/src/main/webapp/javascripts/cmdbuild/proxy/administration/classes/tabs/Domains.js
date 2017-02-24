@@ -5,7 +5,7 @@
 		requires: [
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.proxy.index.Json',
-			'CMDBuild.model.classes.tabs.domains.Grid'
+			'CMDBuild.model.management.classes.panel.form.tabs.domains.Grid'
 		],
 
 		singleton: true,
@@ -16,7 +16,7 @@
 		getStore: function () {
 			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.DOMAIN, {
 				autoLoad: false,
-				model: 'CMDBuild.model.classes.tabs.domains.Grid',
+				model: 'CMDBuild.model.management.classes.panel.form.tabs.domains.Grid',
 				proxy: {
 					type: 'ajax',
 					url: CMDBuild.proxy.index.Json.domain.readAllByClass,

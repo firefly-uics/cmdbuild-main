@@ -5,7 +5,7 @@
 		'CMDBuild.core.constants.Proxy'
 	]);
 
-	Ext.define('CMDBuild.model.classes.tabs.history.SelectedClass', { // TODO: waiting for refactor (rename and structure)
+	Ext.define('CMDBuild.model.management.classes.panel.form.tabs.history.SelectedClass', { // TODO: waiting for refactor (rename and structure)
 		extend: 'Ext.data.Model',
 
 		fields: [

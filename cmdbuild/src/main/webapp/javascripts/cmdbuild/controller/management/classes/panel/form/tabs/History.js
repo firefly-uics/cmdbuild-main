@@ -5,13 +5,13 @@
 	 *
 	 * @legacy
 	 */
-	Ext.define('CMDBuild.controller.management.classes.tabs.History', {
+	Ext.define('CMDBuild.controller.management.classes.panel.form.tabs.History', {
 		extend: 'CMDBuild.controller.common.abstract.Base',
 
 		requires: [
 			'CMDBuild.core.constants.Global',
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.management.classes.tabs.History'
+			'CMDBuild.proxy.management.classes.panel.form.tabs.History'
 		],
 
 		mixins: {
@@ -62,14 +62,14 @@
 		grid: undefined,
 
 		/**
-		 * @property {CMDBuild.model.classes.tabs.history.SelectedCard}
+		 * @property {CMDBuild.model.management.classes.panel.form.tabs.history.SelectedCard}
 		 *
 		 * @private
 		 */
 		selectedCard: undefined,
 
 		/**
-		 * @param {CMDBuild.model.classes.tabs.history.SelectedClass}
+		 * @param {CMDBuild.model.management.classes.panel.form.tabs.history.SelectedClass}
 		 *
 		 * @private
 		 */
@@ -129,7 +129,7 @@
 			currentCardObject[CMDBuild.core.constants.Proxy.ID] = this.classesTabHistorySelectedCardGet(CMDBuild.core.constants.Proxy.ID);
 			currentCardObject[CMDBuild.core.constants.Proxy.VALUES] = selectedEntityAttributes;
 
-			this.clearStoreAdd(Ext.create('CMDBuild.model.classes.tabs.history.CardRecord', currentCardObject));
+			this.clearStoreAdd(Ext.create('CMDBuild.model.management.classes.panel.form.tabs.history.CardRecord', currentCardObject));
 
 			this.getRowExpanderPlugin().collapseAll();
 		},
@@ -178,7 +178,7 @@
 		},
 
 		/**
-		 * @param {CMDBuild.model.classes.tabs.history.RelationRecord} record
+		 * @param {CMDBuild.model.management.classes.panel.form.tabs.history.RelationRecord} record
 		 *
 		 * @returns {Void}
 		 *
@@ -200,7 +200,7 @@
 				predecessorParams[CMDBuild.core.constants.Proxy.CARD_ID] = predecessorRecord.get(CMDBuild.core.constants.Proxy.ID); // Historic card ID
 				predecessorParams[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.classesTabHistorySelectedClassGet(CMDBuild.core.constants.Proxy.NAME);
 
-				CMDBuild.proxy.management.classes.tabs.History.readHistoric({
+				CMDBuild.proxy.management.classes.panel.form.tabs.History.readHistoric({
 					params: predecessorParams,
 					scope: this,
 					success: function (response, options, decodedResponse) {
@@ -216,9 +216,9 @@
 		/**
 		 * Finds same type (card or relation) current record predecessor
 		 *
-		 * @param {CMDBuild.model.classes.tabs.history.CardRecord or CMDBuild.model.classes.tabs.history.RelationRecord} record
+		 * @param {CMDBuild.model.management.classes.panel.form.tabs.history.CardRecord or CMDBuild.model.management.classes.panel.form.tabs.history.RelationRecord} record
 		 *
-		 * @returns {CMDBuild.model.classes.tabs.history.CardRecord or CMDBuild.model.classes.tabs.history.RelationRecord} predecessor or null
+		 * @returns {CMDBuild.model.management.classes.panel.form.tabs.history.CardRecord or CMDBuild.model.management.classes.panel.form.tabs.history.RelationRecord} predecessor or null
 		 *
 		 * @private
 		 */
@@ -292,7 +292,7 @@
 				var params = {};
 				params[CMDBuild.core.constants.Proxy.ID] = requiredClassId;
 
-				CMDBuild.proxy.management.classes.tabs.History.readClassById({
+				CMDBuild.proxy.management.classes.panel.form.tabs.History.readClassById({
 					params: params,
 					scope: this,
 					success: function (response, options, decodedResponse) {
@@ -305,7 +305,7 @@
 							params[CMDBuild.core.constants.Proxy.CARD_ID] = card.get('Id');
 							params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.classesTabHistorySelectedClassGet(CMDBuild.core.constants.Proxy.NAME);
 
-							CMDBuild.proxy.management.classes.tabs.History.readCard({
+							CMDBuild.proxy.management.classes.panel.form.tabs.History.readCard({
 								params: params,
 								loadMask: false,
 								scope: this,
@@ -337,7 +337,7 @@
 		},
 
 		/**
-		 * @param {CMDBuild.model.classes.tabs.history.CardRecord or CMDBuild.model.classes.tabs.history.RelationRecord} record
+		 * @param {CMDBuild.model.management.classes.panel.form.tabs.history.CardRecord or CMDBuild.model.management.classes.panel.form.tabs.history.RelationRecord} record
 		 *
 		 * @returns {Void}
 		 */
@@ -352,7 +352,7 @@
 						params[CMDBuild.core.constants.Proxy.CARD_ID] = record.get(CMDBuild.core.constants.Proxy.ID); // Historic card ID
 						params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.classesTabHistorySelectedClassGet(CMDBuild.core.constants.Proxy.NAME);
 
-						CMDBuild.proxy.management.classes.tabs.History.readHistoric({ // Get expanded card data
+						CMDBuild.proxy.management.classes.panel.form.tabs.History.readHistoric({ // Get expanded card data
 							params: params,
 							scope: this,
 							success: function (response, options, decodedResponse) {
@@ -364,7 +364,7 @@
 									predecessorParams[CMDBuild.core.constants.Proxy.CARD_ID] = predecessorRecord.get(CMDBuild.core.constants.Proxy.ID); // Historic card ID
 									predecessorParams[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.classesTabHistorySelectedClassGet(CMDBuild.core.constants.Proxy.NAME);
 
-									CMDBuild.proxy.management.classes.tabs.History.readHistoric({ // Get expanded predecessor's card data
+									CMDBuild.proxy.management.classes.panel.form.tabs.History.readHistoric({ // Get expanded predecessor's card data
 										params: predecessorParams,
 										scope: this,
 										success: function (response, options, decodedResponse) {
@@ -389,7 +389,7 @@
 					params[CMDBuild.core.constants.Proxy.ID] = record.get(CMDBuild.core.constants.Proxy.ID); // Historic relation ID
 					params[CMDBuild.core.constants.Proxy.DOMAIN] = record.get(CMDBuild.core.constants.Proxy.DOMAIN);
 
-					CMDBuild.proxy.management.classes.tabs.History.readHistoricRelation({
+					CMDBuild.proxy.management.classes.panel.form.tabs.History.readHistoricRelation({
 						params: params,
 						scope: this,
 						success: function (response, options, decodedResponse) {
@@ -438,7 +438,7 @@
 					params[CMDBuild.core.constants.Proxy.CLASS_NAME] = this.classesTabHistorySelectedClassGet(CMDBuild.core.constants.Proxy.NAME);
 
 					// Request all class attributes
-					CMDBuild.proxy.management.classes.tabs.History.readAttributes({
+					CMDBuild.proxy.management.classes.panel.form.tabs.History.readAttributes({
 						params: params,
 						scope: this,
 						success: function (response, options, decodedResponse) {
@@ -460,7 +460,7 @@
 									this.getRowExpanderPlugin().collapseAll();
 
 									if (this.grid.includeRelationsCheckbox.getValue()) {
-										CMDBuild.proxy.management.classes.tabs.History.readRelations({
+										CMDBuild.proxy.management.classes.panel.form.tabs.History.readRelations({
 											params: params,
 											loadMask: false,
 											scope: this,
@@ -472,7 +472,7 @@
 
 												// Build reference models
 												Ext.Array.forEach(decodedResponse, function (element, i, allElements) {
-													referenceElementsModels.push(Ext.create('CMDBuild.model.classes.tabs.history.RelationRecord', element));
+													referenceElementsModels.push(Ext.create('CMDBuild.model.management.classes.panel.form.tabs.history.RelationRecord', element));
 												});
 
 												this.clearStoreAdd(referenceElementsModels);
@@ -557,7 +557,7 @@
 			 */
 			classesTabHistorySelectedCardSet: function (parameters) {
 				if (Ext.isObject(parameters) && !Ext.Object.isEmpty(parameters)) {
-					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.classes.tabs.history.SelectedCard';
+					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.management.classes.panel.form.tabs.history.SelectedCard';
 					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedCard';
 
 					this.propertyManageSet(parameters);
@@ -608,7 +608,7 @@
 			 */
 			classesTabHistorySelectedClassSet: function (parameters) {
 				if (!Ext.Object.isEmpty(parameters)) {
-					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.classes.tabs.history.SelectedClass';
+					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.management.classes.panel.form.tabs.history.SelectedClass';
 					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedClass';
 
 					this.propertyManageSet(parameters);

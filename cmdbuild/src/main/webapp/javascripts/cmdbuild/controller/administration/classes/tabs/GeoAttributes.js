@@ -43,7 +43,7 @@
 		grid: undefined,
 
 		/**
-		 * @property {CMDBuild.model.classes.tabs.geoAttributes.Attribute}
+		 * @property {CMDBuild.model.management.classes.panel.form.tabs.geoAttributes.Attribute}
 		 *
 		 * @private
 		 */
@@ -165,7 +165,7 @@
 
 			this.form.reset();
 			this.form.setDisabledModify(false, true);
-			this.form.loadRecord(Ext.create('CMDBuild.model.classes.tabs.geoAttributes.Attribute'));
+			this.form.loadRecord(Ext.create('CMDBuild.model.management.classes.panel.form.tabs.geoAttributes.Attribute'));
 		},
 
 		/**
@@ -269,7 +269,7 @@
 			if (this.validate(this.form)) {
 				var filteredtyleValuesObject = {};
 				var formData = this.form.getData(true);
-				var formDataModel = Ext.create('CMDBuild.model.classes.tabs.geoAttributes.Attribute', formData);
+				var formDataModel = Ext.create('CMDBuild.model.management.classes.panel.form.tabs.geoAttributes.Attribute', formData);
 
 				// Build filtered style value object
 				Ext.Object.each(formData, function (name, value) {
@@ -342,7 +342,7 @@
 			if (!Ext.isEmpty(this.form.typeField.getValue())) {
 				this.manageAttributeType();
 
-				this.form.loadRecord(Ext.create('CMDBuild.model.classes.tabs.geoAttributes.Style'));
+				this.form.loadRecord(Ext.create('CMDBuild.model.management.classes.panel.form.tabs.geoAttributes.Style'));
 				this.form.setDisabledModify(false);
 			}
 		},
@@ -422,7 +422,7 @@
 			 */
 			classesTabGeoAttributesSelectedAttributeSet: function (parameters) {
 				if (Ext.isObject(parameters) && !Ext.Object.isEmpty(parameters)) {
-					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.classes.tabs.geoAttributes.Attribute';
+					parameters[CMDBuild.core.constants.Proxy.MODEL_NAME] = 'CMDBuild.model.management.classes.panel.form.tabs.geoAttributes.Attribute';
 					parameters[CMDBuild.core.constants.Proxy.TARGET_VARIABLE_NAME] = 'selectedAttribute';
 
 					this.propertyManageSet(parameters);

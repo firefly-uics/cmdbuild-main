@@ -3,7 +3,7 @@
 	/**
 	 * Classes specific email tab controller
 	 */
-	Ext.define('CMDBuild.controller.management.classes.tabs.Email', {
+	Ext.define('CMDBuild.controller.management.classes.panel.form.tabs.Email', {
 		extend: 'CMDBuild.controller.management.common.tabs.email.Email',
 
 		requires: [

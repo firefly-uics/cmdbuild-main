@@ -5,7 +5,7 @@
 		requires: [
 			'CMDBuild.core.constants.Global',
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.model.classes.tabs.properties.Parent',
+			'CMDBuild.model.management.classes.panel.form.tabs.properties.Parent',
 			'CMDBuild.proxy.index.Json'
 		],
 
@@ -17,7 +17,7 @@
 		getStoreSuperClasses: function () {
 			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.CLASS, {
 				autoLoad: true,
-				model: 'CMDBuild.model.classes.tabs.properties.Parent',
+				model: 'CMDBuild.model.management.classes.panel.form.tabs.properties.Parent',
 				proxy: {
 					type: 'ajax',
 					url: CMDBuild.proxy.index.Json.classes.readAll,

@@ -5,7 +5,7 @@
 		'CMDBuild.core.constants.Proxy'
 	]);
 
-	Ext.define('CMDBuild.model.classes.tabs.history.RelationRecord', {
+	Ext.define('CMDBuild.model.management.classes.panel.form.tabs.history.RelationRecord', {
 		extend: 'Ext.data.Model',
 
 		idProperty: '', // HACK: avoids to use id field as record identifier, fixes a bug of duplicates rows id

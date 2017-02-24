@@ -11,11 +11,11 @@
 		requires: [
 			'CMDBuild.core.configurations.DataFormat',
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.management.classes.tabs.History'
+			'CMDBuild.proxy.management.classes.panel.form.tabs.History'
 		],
 
 		/**
-		 * @cfg {CMDBuild.controller.management.classes.tabs.History}
+		 * @cfg {CMDBuild.controller.management.classes.panel.form.tabs.History}
 		 */
 		delegate: undefined,
 
@@ -64,7 +64,7 @@
 					})
 				],
 				columns: this.buildColumns(),
-				store: CMDBuild.proxy.management.classes.tabs.History.getStore()
+				store: CMDBuild.proxy.management.classes.panel.form.tabs.History.getStore()
 			});
 
 			this.callParent(arguments);

@@ -5,7 +5,7 @@
 		requires: [
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.proxy.index.Json',
-			'CMDBuild.model.classes.tabs.layers.Grid'
+			'CMDBuild.model.management.classes.panel.form.tabs.layers.Grid'
 		],
 
 		singleton: true,
@@ -16,7 +16,7 @@
 		getStore: function () {
 			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.GIS, {
 				autoLoad: false,
-				model: 'CMDBuild.model.classes.tabs.layers.Grid',
+				model: 'CMDBuild.model.management.classes.panel.form.tabs.layers.Grid',
 				proxy: {
 					type: 'ajax',
 					url: CMDBuild.proxy.index.Json.gis.layer.readAll,

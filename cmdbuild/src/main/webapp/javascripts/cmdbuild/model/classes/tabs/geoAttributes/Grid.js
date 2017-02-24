@@ -2,7 +2,7 @@
 
 	Ext.require('CMDBuild.core.constants.Proxy');
 
-	Ext.define('CMDBuild.model.classes.tabs.geoAttributes.Grid', {
+	Ext.define('CMDBuild.model.management.classes.panel.form.tabs.geoAttributes.Grid', {
 		extend: 'Ext.data.Model',
 
 		fields: [

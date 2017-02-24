@@ -2,7 +2,7 @@
 
 	Ext.require('CMDBuild.core.constants.Proxy');
 
-	Ext.define('CMDBuild.model.classes.tabs.domains.EntryType', {
+	Ext.define('CMDBuild.model.management.classes.panel.form.tabs.domains.EntryType', {
 		extend: 'Ext.data.Model',
 
 		fields: [

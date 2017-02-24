@@ -4,7 +4,7 @@
 		'CMDBuild.core.constants.Global',
 		'CMDBuild.core.Utils',
 		'CMDBuild.proxy.Card',
-		'CMDBuild.proxy.management.classes.tabs.Note'
+		'CMDBuild.proxy.management.classes.panel.form.tabs.Note'
 	]);
 
 	/**
@@ -83,7 +83,7 @@
 			var params = this._getSaveParams();
 
 			if (this.view.getForm().isValid() && this.beforeSave(this.card)) {
-				CMDBuild.proxy.management.classes.tabs.Note.update({
+				CMDBuild.proxy.management.classes.panel.form.tabs.Note.update({
 					params: params,
 					scope: this,
 					success: function (response, options, decodedResponse) {

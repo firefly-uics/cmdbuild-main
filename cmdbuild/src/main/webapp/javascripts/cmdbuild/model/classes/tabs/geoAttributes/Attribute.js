@@ -2,7 +2,7 @@
 
 	Ext.require('CMDBuild.core.constants.Proxy');
 
-	Ext.define('CMDBuild.model.classes.tabs.geoAttributes.Attribute', {
+	Ext.define('CMDBuild.model.management.classes.panel.form.tabs.geoAttributes.Attribute', {
 		extend: 'Ext.data.Model',
 
 		fields: [
@@ -14,7 +14,7 @@
 			{ name: CMDBuild.core.constants.Proxy.MAX_ZOOM, type: 'int', defaultValue: 25 },
 			{ name: CMDBuild.core.constants.Proxy.MIN_ZOOM, type: 'int', defaultValue: 0 },
 			{ name: CMDBuild.core.constants.Proxy.NAME, type: 'string' },
-			{ name: CMDBuild.core.constants.Proxy.STYLE, type: 'auto', defaultValue: {} }, // CMDBuild.model.classes.tabs.geoAttributes.Style
+			{ name: CMDBuild.core.constants.Proxy.STYLE, type: 'auto', defaultValue: {} }, // CMDBuild.model.management.classes.panel.form.tabs.geoAttributes.Style
 			{ name: CMDBuild.core.constants.Proxy.TYPE, type: 'string' },
 			{ name: CMDBuild.core.constants.Proxy.VISIBILITY, type: 'auto', defaultValue: [] }
 		],
@@ -28,7 +28,7 @@
 		 */
 		constructor: function (data) {
 			data = Ext.isObject(data) ? data : {};
-			data[CMDBuild.core.constants.Proxy.STYLE] = Ext.create('CMDBuild.model.classes.tabs.geoAttributes.Style', Ext.decode(data[CMDBuild.core.constants.Proxy.STYLE]));
+			data[CMDBuild.core.constants.Proxy.STYLE] = Ext.create('CMDBuild.model.management.classes.panel.form.tabs.geoAttributes.Style', Ext.decode(data[CMDBuild.core.constants.Proxy.STYLE]));
 
 			this.callParent(arguments);
 		}

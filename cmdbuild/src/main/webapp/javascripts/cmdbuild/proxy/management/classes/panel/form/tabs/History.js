@@ -3,12 +3,12 @@
 	/**
 	 * @link CMDBuild.proxy.management.dataView.filter.panel.form.tabs.History
 	 */
-	Ext.define('CMDBuild.proxy.management.classes.tabs.History', {
+	Ext.define('CMDBuild.proxy.management.classes.panel.form.tabs.History', {
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.proxy.index.Json',
-			'CMDBuild.model.classes.tabs.history.CardRecord'
+			'CMDBuild.model.management.classes.panel.form.tabs.history.CardRecord'
 		],
 
 		singleton: true,
@@ -19,7 +19,7 @@
 		getStore: function () {
 			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.HISTORY, {
 				autoLoad: false,
-				model: 'CMDBuild.model.classes.tabs.history.CardRecord',
+				model: 'CMDBuild.model.management.classes.panel.form.tabs.history.CardRecord',
 				proxy: {
 					type: 'ajax',
 					url: CMDBuild.proxy.index.Json.history.classes.card.read,

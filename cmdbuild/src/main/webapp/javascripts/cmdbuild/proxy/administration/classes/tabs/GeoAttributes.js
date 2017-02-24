@@ -4,8 +4,8 @@
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.model.classes.tabs.geoAttributes.Grid',
-			'CMDBuild.model.classes.tabs.geoAttributes.Icon',
+			'CMDBuild.model.management.classes.panel.form.tabs.geoAttributes.Grid',
+			'CMDBuild.model.management.classes.panel.form.tabs.geoAttributes.Icon',
 			'CMDBuild.proxy.index.Json'
 		],
 
@@ -30,7 +30,7 @@
 		getStore: function () {
 			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.GIS, {
 				autoLoad: false,
-				model: 'CMDBuild.model.classes.tabs.geoAttributes.Grid',
+				model: 'CMDBuild.model.management.classes.panel.form.tabs.geoAttributes.Grid',
 				proxy: {
 					type: 'ajax',
 					url: CMDBuild.proxy.index.Json.gis.layer.readAll,
@@ -56,7 +56,7 @@
 		getStoreExternalGraphic: function () {
 			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.GIS, {
 				autoLoad: true,
-				model: 'CMDBuild.model.classes.tabs.geoAttributes.Icon',
+				model: 'CMDBuild.model.management.classes.panel.form.tabs.geoAttributes.Icon',
 				proxy: {
 					type: 'ajax',
 					url: CMDBuild.proxy.index.Json.gis.icons.readAll,

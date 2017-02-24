@@ -157,12 +157,12 @@
 		controllerTabAttachment: undefined,
 
 		/**
-		 * @property {CMDBuild.controller.management.classes.tabs.Email}
+		 * @property {CMDBuild.controller.management.classes.panel.form.tabs.Email}
 		 */
 		controllerTabEmail: undefined,
 
 		/**
-		 * @property {CMDBuild.controller.management.classes.tabs.History}
+		 * @property {CMDBuild.controller.management.classes.panel.form.tabs.History}
 		 */
 		controllerTabHistory: undefined,
 
@@ -322,7 +322,7 @@
 
 		buildTabControllerEmail: function () {
 			if (!CMDBuild.configuration.userInterface.isDisabledCardTab(CMDBuild.core.constants.Proxy.CLASS_EMAIL_TAB)) {
-				this.controllerTabEmail = Ext.create('CMDBuild.controller.management.classes.tabs.Email', { parentDelegate: this });
+				this.controllerTabEmail = Ext.create('CMDBuild.controller.management.classes.panel.form.tabs.Email', { parentDelegate: this });
 
 				this.subControllers.push(this.controllerTabEmail);
 
@@ -334,7 +334,7 @@
 
 		buildTabControllerHistory: function () {
 			if (!CMDBuild.configuration.userInterface.isDisabledCardTab(CMDBuild.core.constants.Proxy.CLASS_HISTORY_TAB)) {
-				this.controllerTabHistory = Ext.create('CMDBuild.controller.management.classes.tabs.History', { parentDelegate: this });
+				this.controllerTabHistory = Ext.create('CMDBuild.controller.management.classes.panel.form.tabs.History', { parentDelegate: this });
 
 				this.subControllers.push(this.controllerTabHistory);
 
