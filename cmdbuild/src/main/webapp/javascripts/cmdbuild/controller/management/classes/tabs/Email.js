@@ -47,6 +47,8 @@
 		constructor: function(configObject) {
 			this.mixins.observable.constructor.call(this, arguments);
 
+			this.cmfgCatchedFunctions.push('classesFormTemplateResolverFormGet = panelGridAndFormPanelFormTemplateResolverFormGet');
+
 			this.callParent(arguments);
 
 			this.view = Ext.create('CMDBuild.view.management.common.tabs.email.EmailView', { delegate: this });
@@ -81,6 +83,13 @@
 
 					delete this.cardStateDelegate;
 				}, this);
+		},
+
+		/**
+		 * @returns {Ext.form.Basic or null}
+		 */
+		classesFormTemplateResolverFormGet: function () {
+			return this.parentDelegate.getFormForTemplateResolver();
 		},
 
 		onAbortCardClick: function() {
