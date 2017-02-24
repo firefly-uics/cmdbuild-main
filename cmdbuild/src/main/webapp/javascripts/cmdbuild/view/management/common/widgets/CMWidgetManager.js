@@ -198,8 +198,8 @@
 					 * @param {Object} widget
 					 * @param {CMDBuild.model.CMActivityInstance} card or activity
 					 */
-					'.PresetFromCard': function(widget, card) {
-						var w = new CMDBuild.view.management.common.widgets.CMPresetFromCard();
+					'.PresetFromCard': function (widget, card) {
+						var w = Ext.create('CMDBuild.view.management.widget.presetFromCard.CMPresetFromCard');
 
 						me.widgetsContainer.addWidgt(w);
 

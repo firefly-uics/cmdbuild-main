@@ -1,12 +1,13 @@
 (function() {
+
 	var FILTER = "_filter";
 
-	Ext.define("CMDBuild.controller.management.common.widgets.CMPresetFromCardController", {
+	Ext.define("CMDBuild.controller.management.widget.CMPresetFromCardController", {
 
 		mixins: {
 			observable: "Ext.util.Observable",
 			widgetcontroller: "CMDBuild.controller.management.common.widgets.CMWidgetController",
-			cmPresetFromCardDelegate: "CMDBuild.view.management.common.widgets.CMPresetFromCardDelegate"
+			cmPresetFromCardDelegate: "CMDBuild.view.management.widget.presetFromCard.CMPresetFromCardDelegate"
 		},
 
 		constructor: function(view, supercontroller, widget, clientForm, card) {
@@ -112,4 +113,5 @@
 			}
 		});
 	}
+
 })();

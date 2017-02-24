@@ -1,46 +1,6 @@
 (function() {
 
-	Ext.define("CMDBuild.view.management.common.widgets.CMPresetFromCardGrid", {
-		extend: "CMDBuild.view.management.common.CMCardGrid",
-
-		cmAdvancedFilter: false,
-		cmAddPrintButton: false,
-		cmAddGraphColumn: false,
-
-		selType: "checkboxmodel",
-		selModel: {
-			mode: "SINGLE"
-		},
-
-		// override
-		buildExtraColumns: function() {
-			return [{
-				header: '&nbsp',
-				width: 30,
-				tdCls: "grid-button",
-				fixed: true,
-				sortable: false,
-				align: 'center',
-				dataIndex: 'Id',
-				menuDisabled: true,
-				hideable: false,
-				renderer: function() {
-					return '<img style="cursor:pointer" class="action-card-show" src="images/icons/zoom.png"/>';
-				}
-			}]
-		}
-	});
-
-	Ext.define("CMDBuild.view.management.common.widgets.CMPresetFromCardDelegate", {
-		/**
-		 *
-		 * Called after the click on save button
- 		 * @param {CMDBuild.view.management.common.widgets.CMPresetFromCard} presetFromCardWidget
-		 */
-		onPresetFromCardSaveButtonClick: function(presetFromCardWidget) {}
-	});
-
-	Ext.define("CMDBuild.view.management.common.widgets.CMPresetFromCard", {
+	Ext.define("CMDBuild.view.management.widget.presetFromCard.CMPresetFromCard", {
 		extend: "Ext.panel.Panel",
 
 		mixins: {
@@ -50,14 +10,14 @@
 		constructor: function() {
 			this.mixins.delegable.constructor.call( //
 				this, //
-				"CMDBuild.view.management.common.widgets.CMPresetFromCardDelegate" //
+				"CMDBuild.view.management.widget.presetFromCard.CMPresetFromCardDelegate" //
 				);
 
 			this.callParent(arguments);
 		},
 
 		initComponent: function() {
-			this.grid = new CMDBuild.view.management.common.widgets.CMPresetFromCardGrid({
+			this.grid = Ext.create('CMDBuild.view.management.widget.presetFromCard.CMPresetFromCardGrid', {
 				autoScroll : true,
 				hideMode: "offsets",
 				region: "center",
