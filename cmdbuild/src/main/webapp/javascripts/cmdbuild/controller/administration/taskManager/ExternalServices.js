@@ -61,9 +61,9 @@
 			if (
 				Ext.isObject(parameters) && !Ext.Object.isEmpty(parameters)
 				&& Ext.isArray(parameters.type) && !Ext.isEmpty(parameters.type)
-				&& this.cmfg('mainViewportAccordionControllerExists', this.identifierGet())
+				&& this.cmfg('mainViewportAccordionControllerExists', this.cmfg('taskManagerIdentifierGet'))
 			) {
-				var accordionController = this.cmfg('mainViewportAccordionControllerGet', this.identifierGet()),
+				var accordionController = this.cmfg('mainViewportAccordionControllerGet', this.cmfg('taskManagerIdentifierGet')),
 					targetAccordionNode = accordionController.cmfg('accordionNodeByIdGet', 'accordion-taskManager-workflow');
 
 				Ext.apply(accordionController, {
@@ -127,9 +127,9 @@
 				Ext.isObject(parameters) && !Ext.Object.isEmpty(parameters)
 				&& Ext.isNumber(parameters.id) && !Ext.isEmpty(parameters.id)
 				&& Ext.isArray(parameters.type) && !Ext.isEmpty(parameters.type)
-				&& this.cmfg('mainViewportAccordionControllerExists', this.identifierGet())
+				&& this.cmfg('mainViewportAccordionControllerExists', this.cmfg('taskManagerIdentifierGet'))
 			) {
-				var accordionController = this.cmfg('mainViewportAccordionControllerGet', this.identifierGet()),
+				var accordionController = this.cmfg('mainViewportAccordionControllerGet', this.cmfg('taskManagerIdentifierGet')),
 					targetAccordionNode = accordionController.cmfg('accordionNodeByIdGet', 'accordion-taskManager-workflow');
 
 				Ext.apply(accordionController, {
@@ -179,9 +179,9 @@
 				Ext.isObject(parameters) && !Ext.Object.isEmpty(parameters)
 				&& Ext.isNumber(parameters.id) && !Ext.isEmpty(parameters.id)
 				&& Ext.isArray(parameters.type) && !Ext.isEmpty(parameters.type)
-				&& this.cmfg('mainViewportAccordionControllerExists', this.identifierGet())
+				&& this.cmfg('mainViewportAccordionControllerExists', this.cmfg('taskManagerIdentifierGet'))
 			) {
-				var accordionController = this.cmfg('mainViewportAccordionControllerGet', this.identifierGet()),
+				var accordionController = this.cmfg('mainViewportAccordionControllerGet', this.cmfg('taskManagerIdentifierGet')),
 					targetAccordionNode = accordionController.cmfg('accordionNodeByIdGet', 'accordion-taskManager-workflow');
 
 				Ext.apply(accordionController, {

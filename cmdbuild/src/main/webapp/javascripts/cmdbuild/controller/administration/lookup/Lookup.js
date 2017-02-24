@@ -19,6 +19,7 @@
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
+			'identifierGet = lookupIdentifierGet',
 			'lookupSelectedLookupTypeGet',
 			'lookupSelectedLookupTypeIsEmpty',
 			'onLookupAddButtonClick',

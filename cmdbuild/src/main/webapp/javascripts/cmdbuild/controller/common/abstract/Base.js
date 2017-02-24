@@ -16,7 +16,7 @@
 	 * 	'->' - forwards method to sub-controller without a value return (sub-controller could be also multiple as list separated by commas)
 	 * 		Ex. 'functionName -> controllerOne, controllerTwo, controllerThree, ...'
 	 *
-	 * Default managed functions:
+	 * Required managed functions:
 	 * 	- identifierGet: only if identifier property is configured
 	 *
 	 * @abstract
@@ -66,10 +66,6 @@
 			this.stringToFunctionNameMap = {};
 
 			Ext.apply(this, configurationObject); // Apply configuration to class
-
-			// Apply default managed functions
-			if (!Ext.isEmpty(this.identifier))
-				this.cmfgCatchedFunctions.push('identifierGet');
 
 			this.decodeCatchedFunctionsArray();
 		},

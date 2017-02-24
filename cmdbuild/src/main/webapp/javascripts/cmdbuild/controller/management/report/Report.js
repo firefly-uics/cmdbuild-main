@@ -17,6 +17,7 @@
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
+			'identifierGet = reportIdentifierGet',
 			'onReportModuleInit = onModuleInit',
 			'reportSelectedAccordionGet',
 			'reportSelectedAccordionIsEmpty'
@@ -89,7 +90,7 @@
 
 				// History record save
 				CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
-					moduleId: this.cmfg('identifierGet'),
+					moduleId: this.cmfg('reportIdentifierGet'),
 					entryType: {
 						description: this.reportSelectedAccordionGet(CMDBuild.core.constants.Proxy.DESCRIPTION),
 						id: this.reportSelectedAccordionGet(CMDBuild.core.constants.Proxy.ID),

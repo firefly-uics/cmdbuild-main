@@ -55,10 +55,6 @@
 
 			Ext.apply(this, configurationObject); // Apply configuration to class
 
-			// Apply default managed functions
-			if (!Ext.isEmpty(this.identifier))
-				this.cmfgCatchedFunctions.push('identifierGet');
-
 			this.decodeCatchedFunctionsArray();
 
 			// Build sub-controllers

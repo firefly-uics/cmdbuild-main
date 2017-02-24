@@ -17,6 +17,7 @@
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
+			'identifierGet = customPageIdentifierGet',
 			'onCustomPageModuleInit = onModuleInit'
 		],
 
@@ -75,7 +76,7 @@
 				// History record save
 				if (!Ext.isEmpty(parameters.node))
 					CMDBuild.global.navigation.Chronology.cmfg('navigationChronologyRecordSave', {
-						moduleId: this.cmfg('identifierGet'),
+						moduleId: this.cmfg('customPageIdentifierGet'),
 						entryType: {
 							description: parameters.node.get(CMDBuild.core.constants.Proxy.DESCRIPTION),
 							id: parameters.node.get(CMDBuild.core.constants.Proxy.ID),

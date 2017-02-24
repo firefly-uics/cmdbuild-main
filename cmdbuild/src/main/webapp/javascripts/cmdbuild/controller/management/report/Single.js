@@ -19,12 +19,13 @@
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
-			'onSingleReportDownloadButtonClick',
-			'onSingleReportModuleInit = onModuleInit',
-			'onSingleReportTypeButtonClick',
+			'identifierGet = reportSingleIdentifierGet',
+			'onReportSingleDownloadButtonClick',
+			'onReportSingleModuleInit = onModuleInit',
+			'onReportSingleTypeButtonClick',
 			'reportSingleSelectedReportParametersSet = selectedReportParametersSet',
-			'reportSingleUpdateReport = updateReport',
-			'singleReportSelectedReportRecordGet = selectedReportRecordGet'
+			'reportSingleSelectedReportRecordGet = selectedReportRecordGet',
+			'reportSingleUpdateReport = updateReport'
 		],
 
 		/**
@@ -200,7 +201,7 @@
 		/**
 		 * Show report with force download
 		 */
-		onSingleReportDownloadButtonClick: function() {
+		onReportSingleDownloadButtonClick: function() {
 			this.showReport(true);
 		},
 
@@ -212,7 +213,7 @@
 		 *
 		 * @override
 		 */
-		onSingleReportModuleInit: function(parameters) {
+		onReportSingleModuleInit: function(parameters) {
 			parameters = Ext.isObject(parameters) ? parameters : {};
 
 			this.cmfg('reportSingleSelectedReportParametersSet'); // Reset class property
@@ -241,7 +242,7 @@
 		/**
 		 * @param {String} type
 		 */
-		onSingleReportTypeButtonClick: function(type) {
+		onReportSingleTypeButtonClick: function(type) {
 			if (Ext.Array.contains(this.managedReportTypes, type)) {
 				this.cmfg('reportSingleSelectedReportParametersSet', {
 					callIdentifier: 'create',
@@ -312,7 +313,7 @@
 		/**
 		 * TODO: implementation to get/set node properties (mainly report name/description for Properties window title)
 		 */
-		singleReportSelectedReportRecordGet: Ext.emptyFn
+		reportSingleSelectedReportRecordGet: Ext.emptyFn
 	});
 
 })();

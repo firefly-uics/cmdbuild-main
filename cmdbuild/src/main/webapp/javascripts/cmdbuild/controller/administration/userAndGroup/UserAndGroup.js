@@ -29,13 +29,6 @@
 		identifier: undefined,
 
 		/**
-		 * @parameter {CMDBuild.model.administration.userAndGroup.SelectedAccordion}
-		 *
-		 * @private
-		 */
-		selectedAccordion: undefined,
-
-		/**
 		 * @property {CMDBuild.controller.administration.userAndGroup.group.Group}
 		 */
 		controllerGroups: undefined,
@@ -44,6 +37,13 @@
 		 * @property {CMDBuild.controller.administration.userAndGroup.user.User}
 		 */
 		controllerUsers: undefined,
+
+		/**
+		 * @parameter {CMDBuild.model.administration.userAndGroup.SelectedAccordion}
+		 *
+		 * @private
+		 */
+		selectedAccordion: undefined,
 
 		/**
 		 * @cfg {CMDBuild.view.administration.userAndGroup.UserAndGroupView}

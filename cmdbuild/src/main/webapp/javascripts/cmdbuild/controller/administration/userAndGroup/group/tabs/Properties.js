@@ -171,9 +171,9 @@
 
 			this.form.setDisabledModify(true);
 
-			this.cmfg('mainViewportAccordionDeselect', this.cmfg('identifierGet'));
+			this.cmfg('mainViewportAccordionDeselect', this.cmfg('userAndGroupIdentifierGet'));
 			this.cmfg('mainViewportAccordionControllerUpdateStore', {
-				identifier: this.cmfg('identifierGet'),
+				identifier: this.cmfg('userAndGroupIdentifierGet'),
 				params: {
 					selectionId: decodedResponse[CMDBuild.core.constants.Proxy.ID]
 				}

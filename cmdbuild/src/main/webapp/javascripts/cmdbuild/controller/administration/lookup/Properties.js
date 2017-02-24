@@ -118,7 +118,7 @@
 			}
 
 			this.cmfg('mainViewportAccordionControllerUpdateStore', {
-				identifier: this.cmfg('identifierGet'),
+				identifier: this.cmfg('lookupIdentifierGet'),
 				params: {
 					selectionId: decodedResponse[CMDBuild.core.constants.Proxy.LOOKUP][CMDBuild.core.constants.Proxy.ID]
 				}

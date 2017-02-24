@@ -16,6 +16,7 @@
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
+			'identifierGet = taskManagerIdentifierGet',
 			'onTaskManagerItemDoubleClick',
 			'onTaskManagerModuleInit = onModuleInit',
 			'onTaskManagerRowSelected',

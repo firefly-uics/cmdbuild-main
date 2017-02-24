@@ -30,6 +30,7 @@
 			'accordionNodeByIdGet',
 			'accordionNodeByIdSelect',
 			'accordionUpdateStore',
+			'identifierGet',
 			'onAccordionBeforeItemClick',
 			'onAccordionBeforeSelect',
 			'onAccordionExpand'

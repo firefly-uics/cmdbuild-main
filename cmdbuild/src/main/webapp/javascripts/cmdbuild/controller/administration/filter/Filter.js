@@ -14,6 +14,7 @@
 		 * @cfg {Array}
 		 */
 		cmfgCatchedFunctions: [
+			'identifierGet = filterIdentifierGet',
 			'onFilterModuleInit = onModuleInit'
 		],
 
