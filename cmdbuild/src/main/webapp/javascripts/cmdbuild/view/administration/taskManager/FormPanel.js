@@ -8,7 +8,7 @@
 
 		requires: ['CMDBuild.core.constants.Proxy'],
 
-		mixins: ['CMDBuild.view.common.CMFormFunctions', 'CMDBuild.view.common.PanelFunctions2'], // FIXME: waiting for refactor (CMDBuild.view.common.PanelFunctions)
+		mixins: ['CMDBuild.view.common.PanelFunctions2'],
 
 		/**
 		 * @cfg {CMDBuild.controller.administration.taskManager.Form}

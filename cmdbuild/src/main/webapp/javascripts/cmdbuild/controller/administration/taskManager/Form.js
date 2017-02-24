@@ -24,7 +24,6 @@
 			'onTaskManagerFormSaveButtonClick',
 			'taskManagerFormClearSelection',
 			'taskManagerFormNavigationSetDisableNextButton',
-			'taskManagerFormPanelForwarder',
 			'taskManagerFormPanelsAdd',
 			'taskManagerFormPanelsRemoveAll',
 			'taskManagerFormToolbarTopStateManage',
@@ -247,16 +246,15 @@
 		 * Clear form panel
 		 *
 		 * @returns {Void}
-		 *
-		 * FIXME: waiting for refactor (CMDBuild.view.common.PanelFunctions)
 		 */
 		taskManagerFormClearSelection: function () {
 			this.cmfg('taskManagerFormPanelsRemoveAll');
-			this.cmfg('taskManagerFormPanelForwarder', {
-				functionName: 'disableModify',
-				params: true
+
+			this.view.panelFunctionModifyStateSet({
+				forceToolbarBottomState: true,
+				forceToolbarTopState: true,
+				state: false
 			});
-			this.cmfg('taskManagerFormPanelForwarder', { functionName: 'disableCMTbar' });
 		},
 
 		/**
@@ -268,36 +266,6 @@
 			state = Ext.isBoolean(state) ? state : false;
 
 			this.view.nextButton.setDisabled(state);
-		},
-
-		/**
-		 * Adapter method
-		 *
-		 * @param {Object} parameters
-		 * @param {Object} parameters.functionName
-		 * @param {Object} parameters.params
-		 *
-		 * @returns {Void}
-		 *
-		 * FIXME: waiting for refactor (CMDBuild.view.common.PanelFunctions)
-		 */
-		taskManagerFormPanelForwarder: function (parameters) {
-			this.view.cmTBar = this.view.getDockedComponent(CMDBuild.core.constants.Proxy.TOOLBAR_TOP).items.items;
-			this.view.cmButtons = this.view.getDockedComponent(CMDBuild.core.constants.Proxy.TOOLBAR_BOTTOM).items.items;
-
-			switch (parameters.functionName) {
-				case 'disableCMTbar':
-					return this.view.disableCMTbar();
-
-				case 'disableModify':
-					return this.view.disableModify(parameters.params);
-
-				case 'enableCMButtons':
-					return this.view.enableCMButtons();
-
-				case 'enableTabbedModify':
-					return this.view.enableTabbedModify(parameters.params);
-			}
 		},
 
 		/**
