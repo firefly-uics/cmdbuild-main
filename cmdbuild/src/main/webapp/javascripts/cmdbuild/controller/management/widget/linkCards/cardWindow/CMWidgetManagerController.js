@@ -5,9 +5,10 @@
 	 */
 	Ext.require([
 		'CMDBuild.controller.management.widget.CMCalendarController',
+		'CMDBuild.controller.management.widget.CMPresetFromCardController',
+		'CMDBuild.controller.management.widget.CMWebServiceController',
 		'CMDBuild.controller.management.widget.linkCards.LinkCardsController',
 		'CMDBuild.controller.management.widget.manageRelation.CMManageRelationController',
-		'CMDBuild.controller.management.widget.CMPresetFromCardController',
 		'CMDBuild.controller.management.widget.workflow.CMWorkflowController',
 		'CMDBuild.core.configurations.Timeout',
 		'CMDBuild.core.Message'
@@ -44,7 +45,7 @@
 					'.OpenReport': 'CMDBuild.controller.management.widget.openReport.OpenReport',
 					'.Ping': 'CMDBuild.controller.management.widget.Ping',
 					'.PresetFromCard': CMDBuild.controller.management.widget.CMPresetFromCardController,
-					'.WebService': CMDBuild.controller.management.common.widgets.CMWebServiceController,
+					'.WebService': CMDBuild.controller.management.widget.CMWebServiceController,
 					'.Workflow': CMDBuild.controller.management.widget.workflow.CMWorkflowController
 				},
 				view: view

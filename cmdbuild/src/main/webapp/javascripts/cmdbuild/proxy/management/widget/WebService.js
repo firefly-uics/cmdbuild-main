@@ -1,6 +1,6 @@
 (function () {
 
-	Ext.define('CMDBuild.proxy.widget.WebService', {
+	Ext.define('CMDBuild.proxy.management.widget.WebService', {
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
@@ -13,8 +13,6 @@
 		 * @param {Object} parameters
 		 *
 		 * @returns {Void}
-		 *
-		 * @management
 		 */
 		callWidget: function (parameters) {
 			parameters = Ext.isEmpty(parameters) ? {} : parameters;

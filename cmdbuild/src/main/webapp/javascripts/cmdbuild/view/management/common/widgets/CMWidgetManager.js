@@ -210,8 +210,8 @@
 					 * @param {Object} widget
 					 * @param {CMDBuild.model.CMActivityInstance} card or activity
 					 */
-					'.WebService': function(widget, card) {
-						var w = new CMDBuild.view.management.common.widgets.CMWebService();
+					'.WebService': function (widget, card) {
+						var w = Ext.create('CMDBuild.view.management.widget.webService.CMWebService');
 
 						me.widgetsContainer.addWidgt(w);
 

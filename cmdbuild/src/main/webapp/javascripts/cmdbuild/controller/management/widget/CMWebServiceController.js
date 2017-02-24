@@ -1,14 +1,18 @@
 (function() {
+
 	var DOM_NODE = "_domNode";
 	var NODE_TYPE = "_nodeType";
 
-	Ext.require(['CMDBuild.proxy.widget.WebService']);
+	Ext.require([
+		'CMDBuild.proxy.management.widget.WebService',
+		'CMDBuild.view.management.widget.webService.XMLUtility'
+	]);
 
-	Ext.define("CMDBuild.controller.management.common.widgets.CMWebServiceController", {
+	Ext.define("CMDBuild.controller.management.widget.CMWebServiceController", {
 		mixins: {
 			observable: "Ext.util.Observable",
 			widgetcontroller: "CMDBuild.controller.management.common.widgets.CMWidgetController",
-			webServiceWidgetDelegate: "CMDBuild.view.management.common.widgets.CMWebServiceDelegate"
+			webServiceWidgetDelegate: "CMDBuild.view.management.widget.webService.CMWebServiceDelegate"
 		},
 
 		constructor: function(view, ownerController, widgetDef, clientForm, card) {
@@ -58,7 +62,7 @@
 				var selectedRecords = this.view.getSelectedRecords();
 				for (var i=0, l=selectedRecords.length; i<l; ++i) {
 					var xmlNode = selectedRecords[i].get(DOM_NODE);
-					serializedNodes.push(CMDBuild.core.xml.XMLUtility.serializeToString(xmlNode));
+					serializedNodes.push(CMDBuild.view.management.widget.webService.XMLUtility.serializeToString(xmlNode));
 				}
 			}
 
@@ -85,13 +89,13 @@
 		// as WebServiceWidgetDelegate
 		/**
 		 *
-		 * @param {CMDBuild.view.management.common.widgets.CMWebService} widget
+		 * @param {CMDBuild.view.management.widget.webService.CMWebService} widget
 		 * the widget that calls the method
 		 * @param {Ext.data.Model} model
 		 * the model of the grid row for which the button was clicked
 		 */
 		onWebServiceWidgetShowAllInfoButtonClick: function(widget, model) {
-			new CMDBuild.view.management.common.widgets.CMXMLWindow({
+			Ext.create('CMDBuild.view.management.widget.webService.CMXMLWindow', {
 				xmlNode: model.get(DOM_NODE)
 			}).show();
 		}
@@ -191,7 +195,7 @@
 					el.mask(CMDBuild.Translation.pleaseWait);
 				}
 
-				CMDBuild.proxy.widget.WebService.callWidget({
+				CMDBuild.proxy.management.widget.WebService.callWidget({
 					method: 'GET',
 					params: {
 						className: entryTypeName,
@@ -205,7 +209,7 @@
 						me.loaded = true;
 						var xmlString = response.response || "";
 
-						var xmlUtility = CMDBuild.core.xml.XMLUtility;
+						var xmlUtility = CMDBuild.view.management.widget.webService.XMLUtility;
 						var xml = xmlUtility.xmlDOMFromString(xmlString);
 						var data = xmlUtility.fromDOMToArrayOfObjects(xml, //
 								getNodesToUseAsRows(me), //
@@ -230,4 +234,5 @@
 			}
 		});
 	}
+
 })();

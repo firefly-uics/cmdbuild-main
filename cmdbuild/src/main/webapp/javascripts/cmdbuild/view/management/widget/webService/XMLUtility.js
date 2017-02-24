@@ -1,8 +1,9 @@
 (function() {
+
 	var TYPE_DOCUMENT_NODE = 9;
 	var TYPE_TEXT_NODE = 3;
 
-	Ext.define("CMDBuild.core.xml.XMLUtility", {
+	Ext.define("CMDBuild.view.management.widget.webService.XMLUtility", {
 		statics: {
 			xmlDOMFromString: xmlDOMFromString,
 			genericExtTreeFromXMLDom: function(xmlDOM) {
