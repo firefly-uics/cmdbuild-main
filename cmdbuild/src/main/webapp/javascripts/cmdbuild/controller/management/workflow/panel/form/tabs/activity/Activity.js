@@ -395,7 +395,7 @@
 
 		onRemoveCardClick: function() {
 			var me = this;
-			Ext.Msg.confirm(
+			Ext.MessageBox.confirm(
 				CMDBuild.Translation.abortProcess, // title
 				CMDBuild.Translation.areYouSureYouWantToAbortThisProcess, // message
 				confirmCB);

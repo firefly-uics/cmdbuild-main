@@ -88,10 +88,10 @@
 		},
 
 		onDataViewSqlRemoveButtonClick: function() {
-			Ext.Msg.show({
+			Ext.MessageBox.show({
 				title: CMDBuild.Translation.common.confirmpopup.title,
 				msg: CMDBuild.Translation.common.confirmpopup.areyousure,
-				buttons: Ext.Msg.YESNO,
+				buttons: Ext.MessageBox.YESNO,
 				scope: this,
 
 				fn: function(buttonId, text, opt) {

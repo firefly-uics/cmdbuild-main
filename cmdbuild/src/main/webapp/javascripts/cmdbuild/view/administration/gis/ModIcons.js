@@ -271,7 +271,7 @@ Ext.define("CMDBuild.Administration.ModIcons", {
 	  		}
   		};
 
-  		Ext.Msg.confirm(title, msg, doRequest, this);
+  		Ext.MessageBox.confirm(title, msg, doRequest, this);
   	},
 
   	//private

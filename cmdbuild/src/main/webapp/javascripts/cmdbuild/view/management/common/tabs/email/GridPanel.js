@@ -52,11 +52,11 @@
 								scope: this,
 
 								handler: function (button, e) {
-									Ext.Msg.show({ // Ask to the user if is sure to delete all the unsent e-mails before
+									Ext.MessageBox.show({ // Ask to the user if is sure to delete all the unsent e-mails before
 										title: CMDBuild.Translation.common.confirmpopup.title,
 										msg: CMDBuild.Translation.emailRegenerationConfirmPopupText,
-										buttons: Ext.Msg.OKCANCEL,
-										icon: Ext.Msg.WARNING,
+										buttons: Ext.MessageBox.OKCANCEL,
+										icon: Ext.MessageBox.WARNING,
 										scope: this,
 
 										fn: function (buttonId, text, opt) {

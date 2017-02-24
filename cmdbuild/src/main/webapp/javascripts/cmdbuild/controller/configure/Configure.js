@@ -95,7 +95,7 @@
 				params: Ext.create('CMDBuild.model.configure.Configure', this.wizard.getData()).getDataDBConnection(),
 				scope: this,
 				success: function (response, options, decodedResponse){
-					Ext.Msg.show({
+					Ext.MessageBox.show({
 						title: CMDBuild.Translation.testConnection,
 						msg: CMDBuild.Translation.connectionSuccessful,
 						buttons: Ext.MessageBox.OK
@@ -172,7 +172,7 @@
 					params: Ext.create('CMDBuild.model.configure.Configure', this.wizard.getData()).getDataSubmit(),
 					scope: this,
 					success: function (response, options, decodedResponse) {
-						Ext.Msg.show({
+						Ext.MessageBox.show({
 							title: CMDBuild.Translation.configurationDone,
 							msg: CMDBuild.Translation.configurationWizardSuccessMessage,
 							buttons: Ext.MessageBox.OK,

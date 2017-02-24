@@ -342,10 +342,10 @@
 		 * @private
 		 */
 		utilityBulkUpdateConfirmationModalShow: function (message) {
-			Ext.Msg.show({
+			Ext.MessageBox.show({
 				title: CMDBuild.Translation.warning,
 				msg: message,
-				buttons: Ext.Msg.OKCANCEL,
+				buttons: Ext.MessageBox.OKCANCEL,
 				icon: Ext.MessageBox.WARNING,
 				scope: this,
 

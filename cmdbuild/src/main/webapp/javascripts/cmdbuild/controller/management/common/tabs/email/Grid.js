@@ -109,7 +109,7 @@
 		 * @param {Mixed} record
 		 */
 		onTabEmailGridDeleteEmailButtonClick: function (record) {
-			Ext.Msg.confirm(
+			Ext.MessageBox.confirm(
 				CMDBuild.Translation.common.confirmpopup.title,
 				CMDBuild.Translation.common.confirmpopup.areyousure,
 				function (btn) {

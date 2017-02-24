@@ -72,7 +72,7 @@
 				});
 			};
 
-			Ext.Msg.confirm(
+			Ext.MessageBox.confirm(
 				CMDBuild.Translation.attention,
 				CMDBuild.Translation.management.modcard.delete_card_confirm,
 				makeRequest,

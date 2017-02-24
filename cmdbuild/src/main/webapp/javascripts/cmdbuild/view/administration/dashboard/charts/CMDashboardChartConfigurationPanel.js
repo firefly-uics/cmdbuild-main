@@ -145,10 +145,10 @@
 			iconCls : "delete",
 			disabled: true,
 			handler: function() {
-				me.confirm = Ext.Msg.show({
+				me.confirm = Ext.MessageBox.show({
 					title: CMDBuild.Translation.administration.modDashboard.properties.remove,
 					msg: CMDBuild.Translation.common.confirmpopup.areyousure,
-					buttons: Ext.Msg.YESNO,
+					buttons: Ext.MessageBox.YESNO,
 					fn: function(button) {
 						if (button == "yes") {
 							me.delegate.onRemoveButtonClick();

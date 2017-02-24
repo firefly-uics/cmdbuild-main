@@ -181,11 +181,11 @@
 	}
 
 	function onDeleteClick() {
-		Ext.Msg.show({
+		Ext.MessageBox.show({
 			title: CMDBuild.Translation.administration.modClass.attributeProperties.delete_attribute,
 			msg: CMDBuild.Translation.common.confirmpopup.areyousure,
 			scope: this,
-			buttons: Ext.Msg.YESNO,
+			buttons: Ext.MessageBox.YESNO,
 			fn: function(button) {
 				if (button == "yes") {
 					deleteCurrentAttribute.call(this);
