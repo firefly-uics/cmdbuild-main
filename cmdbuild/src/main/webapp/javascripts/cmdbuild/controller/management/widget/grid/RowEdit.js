@@ -1,12 +1,12 @@
 (function () {
 
-	Ext.define('CMDBuild.controller.management.common.widgets.grid.RowEdit', {
+	Ext.define('CMDBuild.controller.management.widget.grid.RowEdit', {
 		extend: 'CMDBuild.controller.common.abstract.Base',
 
 		requires: ['CMDBuild.core.constants.Proxy'],
 
 		/**
-		 * @cfg {CMDBuild.controller.management.common.widgets.grid.Grid}
+		 * @cfg {CMDBuild.controller.management.widget.grid.Grid}
 		 */
 		parentDelegate: undefined,
 
@@ -29,21 +29,19 @@
 		record: undefined,
 
 		/**
-		 * @property {CMDBuild.view.management.common.widgets.grid.RowEditWindow}
+		 * @property {CMDBuild.view.management.widget.grid.RowEditWindow}
 		 */
 		view: undefined,
 
 		/**
 		 * @param {Object} configurationObject
-		 * @param {CMDBuild.controller.management.common.widgets.grid.Grid} configurationObject.parentDelegate
+		 * @param {CMDBuild.controller.management.widget.grid.Grid} configurationObject.parentDelegate
 		 * @param {Object} configurationObject.record
 		 */
 		constructor: function(configurationObject) {
 			this.callParent(arguments);
 
-			this.view = Ext.create('CMDBuild.view.management.common.widgets.grid.RowEditWindow', {
-				delegate: this
-			});
+			this.view = Ext.create('CMDBuild.view.management.widget.grid.RowEditWindow', { delegate: this });
 
 			// Shorthand
 			this.form = this.view.form;

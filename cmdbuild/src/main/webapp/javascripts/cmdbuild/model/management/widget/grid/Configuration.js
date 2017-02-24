@@ -2,7 +2,7 @@
 
 	Ext.require(['CMDBuild.core.constants.Proxy']);
 
-	Ext.define('CMDBuild.model.widget.grid.Configuration', {
+	Ext.define('CMDBuild.model.management.widget.grid.Configuration', {
 		extend: 'Ext.data.Model',
 
 		fields: [

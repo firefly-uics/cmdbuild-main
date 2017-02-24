@@ -1,16 +1,16 @@
 (function() {
 
-	Ext.define('CMDBuild.view.management.common.widgets.grid.ImportCSVWindow', {
+	Ext.define('CMDBuild.view.management.widget.grid.ImportCSVWindow', {
 		extend: 'CMDBuild.core.window.AbstractModal',
 
 		requires: [
 			'CMDBuild.core.constants.FieldWidths',
 			'CMDBuild.core.constants.Proxy',
-			'CMDBuild.proxy.widget.grid.Csv'
+			'CMDBuild.proxy.management.widget.grid.Csv'
 		],
 
 		/**
-		 * @cfg {CMDBuild.controller.management.common.widgets.grid.ImportCSV}
+		 * @cfg {CMDBuild.controller.management.widget.grid.ImportCSV}
 		 */
 		delegate: undefined,
 
@@ -70,7 +70,7 @@
 				editable: false,
 				allowBlank: false,
 
-				store: CMDBuild.proxy.widget.grid.Csv.getStoreSeparator(),
+				store: CMDBuild.proxy.management.widget.grid.Csv.getStoreSeparator(),
 				queryMode: 'local'
 			});
 
@@ -86,7 +86,7 @@
 				editable: false,
 				allowBlank: false,
 
-				store: CMDBuild.proxy.widget.grid.Csv.getStoreImportMode(),
+				store: CMDBuild.proxy.management.widget.grid.Csv.getStoreImportMode(),
 				queryMode: 'local'
 			});
 

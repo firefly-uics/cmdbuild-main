@@ -109,10 +109,10 @@
 					 * @param {Object} widget
 					 * @param {CMDBuild.model.CMActivityInstance} activity
 					 *
-					 * @returns {CMDBuild.view.management.common.widgets.grid.GridView}
+					 * @returns {CMDBuild.view.management.widget.grid.GridView}
 					 */
 					'.Grid': function(widget, card) {
-						var w = Ext.create('CMDBuild.view.management.common.widgets.grid.GridView');
+						var w = Ext.create('CMDBuild.view.management.widget.grid.GridView');
 
 						me.widgetsContainer.addWidgt(w);
 

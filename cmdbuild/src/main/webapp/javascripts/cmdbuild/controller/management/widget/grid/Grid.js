@@ -1,14 +1,14 @@
 (function() {
 
-	Ext.define('CMDBuild.controller.management.common.widgets.grid.Grid', {
+	Ext.define('CMDBuild.controller.management.widget.grid.Grid', {
 		extend: 'CMDBuild.controller.common.abstract.Widget',
 
 		requires: [
 			'CMDBuild.core.constants.Proxy',
 			'CMDBuild.core.Message',
 			'CMDBuild.core.Utils',
-			'CMDBuild.proxy.widget.grid.Grid',
-			'CMDBuild.model.widget.grid.Grid'
+			'CMDBuild.proxy.management.widget.grid.Grid',
+			'CMDBuild.model.management.widget.grid.Grid'
 		],
 
 		/**
@@ -71,7 +71,7 @@
 		filteredAttributes: ['Notes'],
 
 		/**
-		 * @property {CMDBuild.view.management.common.widgets.grid.GridPanel}
+		 * @property {CMDBuild.view.management.widget.grid.GridPanel}
 		 */
 		grid: undefined,
 
@@ -85,7 +85,7 @@
 		instancesDataStorage: {},
 
 		/**
-		 * @property {CMDBuild.view.management.common.widgets.grid.GridView}
+		 * @property {CMDBuild.view.management.widget.grid.GridView}
 		 */
 		view: undefined,
 
@@ -97,10 +97,10 @@
 		/**
 		 * @cfg {String}
 		 */
-		widgetConfigurationModelClassName: 'CMDBuild.model.widget.grid.Configuration',
+		widgetConfigurationModelClassName: 'CMDBuild.model.management.widget.grid.Configuration',
 
 		/**
-		 * @param {CMDBuild.view.management.common.widgets.grid.GridView} configurationObject.view
+		 * @param {CMDBuild.view.management.widget.grid.GridView} configurationObject.view
 		 * @param {CMDBuild.controller.management.common.CMWidgetManagerController} configurationObject.parentDelegate
 		 * @param {Object} configurationObject.widgetConfiguration
 		 * @param {Ext.form.Basic} configurationObject.clientForm
@@ -115,7 +115,7 @@
 
 			this.classType = _CMCache.getEntryTypeByName(this.widgetConf[CMDBuild.core.constants.Proxy.CLASS_NAME]);
 
-			this.grid = Ext.create('CMDBuild.view.management.common.widgets.grid.GridPanel', {
+			this.grid = Ext.create('CMDBuild.view.management.widget.grid.GridPanel', {
 				delegate: this
 			});
 
@@ -324,7 +324,7 @@
 		 */
 		decodeFunctionPresets: function(presetsString) {
 			// Validate presetsString
-			CMDBuild.proxy.widget.grid.Grid.getFunctions({
+			CMDBuild.proxy.management.widget.grid.Grid.getFunctions({
 				scope: this,
 				success: function(result, options, decodedResult) {
 					var isPresetsStringValid = false;
@@ -340,7 +340,7 @@
 						var widgetUnmanagedVariables = this.widgetConf[CMDBuild.core.constants.Proxy.VARIABLES];
 
 						// Instantiate model to transform attributes in fields
-						Ext.create('CMDBuild.model.widget.grid.Grid', this.cardAttributes);
+						Ext.create('CMDBuild.model.management.widget.grid.Grid', this.cardAttributes);
 
 						// Resolve templates for widget configuration "function" type
 						new CMDBuild.Management.TemplateResolver({
@@ -367,8 +367,8 @@
 							params[functionParams[index]] = widgetUnmanagedVariables[functionParams[index]];
 
 						this.grid.reconfigure(
-							CMDBuild.proxy.widget.grid.Grid.getStoreFromFunction({
-								fields: CMDBuild.model.widget.grid.Grid.getFields(),
+							CMDBuild.proxy.management.widget.grid.Grid.getStoreFromFunction({
+								fields: CMDBuild.model.management.widget.grid.Grid.getFields(),
 								extraParams: {
 									'function': presetsString,
 									params: Ext.encode(params)
@@ -475,14 +475,14 @@
 		 * Add empty row to grid store
 		 */
 		onAddRowButtonClick: function() {
-			this.grid.getStore().insert(0, Ext.create('CMDBuild.model.widget.grid.Grid', this.cardAttributes));
+			this.grid.getStore().insert(0, Ext.create('CMDBuild.model.management.widget.grid.Grid', this.cardAttributes));
 		},
 
 		/**
 		 * Opens importCSV configuration pop-up window
 		 */
 		onCSVImportButtonClick: function() {
-			Ext.create('CMDBuild.controller.management.common.widgets.grid.ImportCSV', {
+			Ext.create('CMDBuild.controller.management.widget.grid.ImportCSV', {
 				parentDelegate: this,
 				classId: this.classType.get(CMDBuild.core.constants.Proxy.ID)
 			});
@@ -501,7 +501,7 @@
 		 * @param {Object} record
 		 */
 		onEditRowButtonClick: function(record) {
-			Ext.create('CMDBuild.controller.management.common.widgets.grid.RowEdit', {
+			Ext.create('CMDBuild.controller.management.widget.grid.RowEdit', {
 				parentDelegate: this,
 				record: record
 			});

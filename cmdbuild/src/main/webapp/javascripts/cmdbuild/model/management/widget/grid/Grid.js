@@ -5,7 +5,7 @@
 	/**
 	 * Build grid model from class attributes
 	 */
-	Ext.define('CMDBuild.model.widget.grid.Grid', {
+	Ext.define('CMDBuild.model.management.widget.grid.Grid', {
 		extend: 'Ext.data.Model',
 
 		fields: [],
@@ -42,7 +42,7 @@
 					}
 				}, this);
 
-				CMDBuild.model.widget.grid.Grid.setFields(fieldsForModel);
+				CMDBuild.model.management.widget.grid.Grid.setFields(fieldsForModel);
 			}
 
 			this.callParent();

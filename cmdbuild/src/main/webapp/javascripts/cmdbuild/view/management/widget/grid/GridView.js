@@ -1,12 +1,12 @@
 (function() {
 
-	Ext.define('CMDBuild.view.management.common.widgets.grid.GridView', {
+	Ext.define('CMDBuild.view.management.widget.grid.GridView', {
 		extend: 'Ext.panel.Panel',
 
 		requires: ['CMDBuild.core.constants.Proxy'],
 
 		/**
-		 * @cfg {CMDBuild.controller.management.common.widgets.grid.Grid}
+		 * @cfg {CMDBuild.controller.management.widget.grid.Grid}
 		 */
 		delegate: undefined,
 

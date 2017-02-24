@@ -29,7 +29,7 @@
 					'.Calendar': CMDBuild.controller.management.common.widgets.CMCalendarController,
 					'.CreateModifyCard': 'CMDBuild.controller.management.widget.createModifyCard.CMCreateModifyCardController',
 					'.CustomForm': 'CMDBuild.controller.management.widget.customForm.CustomForm',
-					'.Grid': 'CMDBuild.controller.management.common.widgets.grid.Grid',
+					'.Grid': 'CMDBuild.controller.management.widget.grid.Grid',
 					'.LinkCards': CMDBuild.controller.management.widget.linkCards.LinkCardsController,
 					'.ManageEmail': 'CMDBuild.controller.management.widget.ManageEmail',
 					'.ManageRelation': CMDBuild.controller.management.widget.manageRelation.CMManageRelationController,

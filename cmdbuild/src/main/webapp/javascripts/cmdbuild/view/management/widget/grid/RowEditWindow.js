@@ -1,12 +1,12 @@
 (function() {
 
-	Ext.define('CMDBuild.view.management.common.widgets.grid.RowEditWindow', {
+	Ext.define('CMDBuild.view.management.widget.grid.RowEditWindow', {
 		extend: 'CMDBuild.core.window.AbstractModal',
 
 		requires: ['CMDBuild.core.constants.Proxy'],
 
 		/**
-		 * @cfg {CMDBuild.controller.management.common.widgets.grid.RowEdit}
+		 * @cfg {CMDBuild.controller.management.widget.grid.RowEdit}
 		 */
 		delegate: undefined,
 
@@ -21,8 +21,8 @@
 		title: CMDBuild.Translation.editRow,
 
 		dimensions: {
-			height: 0.50,
-			width: 0.70
+			height: 50,
+			width: 70
 		},
 
 		initComponent: function() {
