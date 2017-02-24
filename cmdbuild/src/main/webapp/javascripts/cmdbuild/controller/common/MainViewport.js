@@ -678,12 +678,8 @@
 						 */
 						viewModule.fireEvent('CM_iamtofront', parameters.params.node);
 
-						if (
-							Ext.isObject(controllerModule) && !Ext.Object.isEmpty(controllerModule) && Ext.isFunction(controllerModule.cmfg)
-							&& Ext.isObject(parameters.params) && !Ext.Object.isEmpty(parameters.params) // Avoid useless calls with no parameters
-						) {
+						if (Ext.isObject(controllerModule) && !Ext.Object.isEmpty(controllerModule) && Ext.isFunction(controllerModule.cmfg))
 							controllerModule.cmfg('onModuleInit', parameters.params);
-						}
 					}
 
 					return true;
