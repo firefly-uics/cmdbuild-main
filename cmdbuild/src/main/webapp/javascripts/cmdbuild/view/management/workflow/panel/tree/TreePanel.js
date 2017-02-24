@@ -14,7 +14,6 @@
 		delegate: undefined,
 
 		columns: [],
-		lines: false,
 
 		/**
 		 * @returns {Void}

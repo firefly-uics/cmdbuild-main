@@ -158,7 +158,7 @@
 		 * @param {Function} parameters.callback
 		 * @param {Boolean} parameters.disableFirstRowSelection
 		 * @param {Object} parameters.scope
-		 * @param {String} parameters.storeLoad
+		 * @param {String} parameters.storeLoad - ManagedValues: [force]
 		 *
 		 * @returns {Void}
 		 *
@@ -376,16 +376,12 @@
 					return _error('onWorkflowTreeRecordSelect(): unmanaged node parameter', this, node);
 			// END: Error handling
 
-			var parameters = {};
-			parameters.storeLoad = 'disabled';
-			parameters[CMDBuild.core.constants.Proxy.ACTIVITY_ID] = node.get(CMDBuild.core.constants.Proxy.ACTIVITY_ID);
-			parameters[CMDBuild.core.constants.Proxy.INSTANCE_ID] = node.get(CMDBuild.core.constants.Proxy.INSTANCE_ID);
-			parameters[CMDBuild.core.constants.Proxy.WORKFLOW_ID] = this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.ID);
+			var params = {};
+			params[CMDBuild.core.constants.Proxy.ACTIVITY_ID] = node.get(CMDBuild.core.constants.Proxy.ACTIVITY_ID);
+			params[CMDBuild.core.constants.Proxy.INSTANCE_ID] = node.get(CMDBuild.core.constants.Proxy.INSTANCE_ID);
+			params[CMDBuild.core.constants.Proxy.WORKFLOW_ID] = this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.ID);
 
-			if (!this.cmfg('workflowTreeAppliedFilterIsEmpty', CMDBuild.core.constants.Proxy.CONFIGURATION))
-				parameters[CMDBuild.core.constants.Proxy.FILTER] = this.cmfg('workflowTreeAppliedFilterGet');
-
-			this.cmfg('workflowUiUpdate', parameters);
+			this.cmfg('workflowUiUpdate', params);
 		},
 
 		/**
@@ -559,7 +555,7 @@
 		 * @param {Function} parameters.callback
 		 * @param {Boolean} parameters.disableFirstRowSelection
 		 * @param {Object} parameters.scope
-		 * @param {String} parameters.storeLoad
+		 * @param {String} parameters.storeLoad - ManagedValues: [force]
 		 *
 		 * @returns {Void}
 		 *
@@ -773,53 +769,58 @@
 		 * @private
 		 */
 		workflowTreeBuildColumns: function () {
-			var columnsDefinition = [
-				Ext.create('CMDBuild.view.management.workflow.panel.tree.TreeColumn', {
-					dataIndex: CMDBuild.core.constants.Proxy.ACTIVITY_DESCRIPTION,
-					scope: this
-				})
-			];
+			// Error handling
+				if (this.cmfg('workflowSelectedWorkflowIsEmpty'))
+					return _error('workflowTreeBuildColumns(): empty selected workflow property', this, this.cmfg('workflowSelectedWorkflowGet'));
 
-			if (!this.cmfg('workflowSelectedWorkflowIsEmpty') && !this.cmfg('workflowSelectedWorkflowAttributesIsEmpty')) {
-				var fieldManager = Ext.create('CMDBuild.core.fieldManager.FieldManager', { parentDelegate: this }),
-					attributes = CMDBuild.core.Utils.objectArraySort(this.cmfg('workflowSelectedWorkflowAttributesGetAll'), CMDBuild.core.constants.Proxy.INDEX);
+				if (this.cmfg('workflowSelectedWorkflowAttributesIsEmpty'))
+					return _error('workflowTreeBuildColumns(): empty selected attributes property', this, this.cmfg('workflowSelectedWorkflowAttributesGet'));
+			// END: Error handling
 
-				if (this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.IS_SUPER_CLASS))
-					columnsDefinition.push({
-						dataIndex: CMDBuild.core.constants.Proxy.WORKFLOW_DESCRIPTION,
-						text: CMDBuild.Translation.subClass
-					});
+			var attributes = CMDBuild.core.Utils.objectArraySort(this.cmfg('workflowSelectedWorkflowAttributesGetAll'), CMDBuild.core.constants.Proxy.INDEX),
+				columnsDefinition = [
+					Ext.create('CMDBuild.view.management.workflow.panel.tree.TreeColumn', {
+						dataIndex: CMDBuild.core.constants.Proxy.ACTIVITY_DESCRIPTION,
+						scope: this
+					})
+				],
+				fieldManager = Ext.create('CMDBuild.core.fieldManager.FieldManager', { parentDelegate: this });
 
-				Ext.Array.forEach(attributes, function (attributeModel, i, allAttributeModels) {
-					if (
-						Ext.isObject(attributeModel) && !Ext.Object.isEmpty(attributeModel)
-						&& attributeModel.get(CMDBuild.core.constants.Proxy.NAME) != CMDBuild.core.constants.Proxy.WORKFLOW_DESCRIPTION
-					) {
-						if (fieldManager.isAttributeManaged(attributeModel.get(CMDBuild.core.constants.Proxy.TYPE))) {
-							fieldManager.attributeModelSet(attributeModel);
-							fieldManager.push(
-								columnsDefinition,
-								this.applyCustomRenderer(fieldManager.buildColumn(), attributeModel)
-							);
-						} else if (attributeModel.get(CMDBuild.core.constants.Proxy.TYPE) != 'ipaddress') { // FIXME: future implementation - @deprecated - Old field manager
-							var column = CMDBuild.Management.FieldManager.getHeaderForAttr(attributeModel.get(CMDBuild.core.constants.Proxy.SOURCE_OBJECT));
+			if (this.cmfg('workflowSelectedWorkflowGet', CMDBuild.core.constants.Proxy.IS_SUPER_CLASS))
+				columnsDefinition.push({
+					dataIndex: CMDBuild.core.constants.Proxy.WORKFLOW_DESCRIPTION,
+					text: CMDBuild.Translation.subClass
+				});
 
-							if (Ext.isObject(column) && !Ext.Object.isEmpty(column)) {
-								column.text = column.header; // Create alias of header property because it's deprecated
+			Ext.Array.forEach(attributes, function (attributeModel, i, allAttributeModels) {
+				if (
+					Ext.isObject(attributeModel) && !Ext.Object.isEmpty(attributeModel)
+					&& attributeModel.get(CMDBuild.core.constants.Proxy.NAME) != CMDBuild.core.constants.Proxy.WORKFLOW_DESCRIPTION
+				) {
+					if (fieldManager.isAttributeManaged(attributeModel.get(CMDBuild.core.constants.Proxy.TYPE))) {
+						fieldManager.attributeModelSet(attributeModel);
+						fieldManager.push(
+							columnsDefinition,
+							this.applyCustomRenderer(fieldManager.buildColumn(), attributeModel)
+						);
+					} else if (attributeModel.get(CMDBuild.core.constants.Proxy.TYPE) != 'ipaddress') { // FIXME: future implementation - @deprecated - Old field manager
+						var column = CMDBuild.Management.FieldManager.getHeaderForAttr(attributeModel.get(CMDBuild.core.constants.Proxy.SOURCE_OBJECT));
 
-								// Remove width properties by default to be compatible with forceFit property
-								delete column.flex;
-								delete column.width;
-								delete column.minWidth;
+						if (Ext.isObject(column) && !Ext.Object.isEmpty(column)) {
+							column.text = column.header; // Create alias of header property because it's deprecated
 
-								this.addRendererToHeader(column);
+							// Remove width properties by default to be compatible with forceFit property
+							delete column.flex;
+							delete column.width;
+							delete column.minWidth;
 
-								fieldManager.push(columnsDefinition, column);
-							}
+							this.addRendererToHeader(column);
+
+							fieldManager.push(columnsDefinition, column);
 						}
 					}
-				}, this);
-			}
+				}
+			}, this);
 
 			return columnsDefinition;
 		},
@@ -985,7 +986,7 @@
 		 * @param {Boolean} parameters.flowStatus
 		 * @param {Object} parameters.scope
 		 * @param {Boolean} parameters.sortersReset
-		 * @param {String} parameters.storeLoad
+		 * @param {String} parameters.storeLoad - ManagedValues: [force]
 		 *
 		 * @returns {Void}
 		 */
@@ -996,6 +997,7 @@
 			parameters.filter = Ext.isObject(parameters.filter) && parameters.filter.isFilterAdvancedCompatible ? parameters.filter : {};
 			parameters.scope = Ext.isObject(parameters.scope) ? parameters.scope : this;
 			parameters.sortersReset = Ext.isBoolean(parameters.sortersReset) ? parameters.sortersReset : false;
+			parameters.storeLoad = Ext.isString(parameters.storeLoad) ? parameters.storeLoad : null;
 
 			// Error handling
 				if (this.cmfg('workflowSelectedWorkflowIsEmpty'))
@@ -1040,9 +1042,6 @@
 							scope: parameters.scope,
 							callback: parameters.callback
 						});
-
-					if (parameters.storeLoad == 'disabled')
-						return Ext.callback(parameters.callback, parameters.scope);
 
 					// Load store and select first card
 					return this.cmfg('workflowTreeStoreLoad', {

@@ -1076,7 +1076,7 @@
 		 * @param {Object} parameters.metadata
 		 * @param {Object} parameters.scope
 		 * @param {Boolean} parameters.sortersReset
-		 * @param {String} parameters.storeLoad - ManagedValues: [force, disabled]
+		 * @param {String} parameters.storeLoad - ManagedValues: [force]
 		 * @param {Object or String or Number} parameters.tabToSelect
 		 * @param {String} parameters.viewMode
 		 * @param {Number} parameters.workflowId or parameters.entityId
