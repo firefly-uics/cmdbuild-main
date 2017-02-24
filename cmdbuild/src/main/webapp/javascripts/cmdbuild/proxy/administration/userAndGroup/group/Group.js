@@ -41,12 +41,12 @@
 		 * @returns {Ext.data.Store or CMDBuild.core.cache.Store}
 		 */
 		getStoreStartingClass: function () {
-			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.ENTRY_TYPE, {
+			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.ENTITY, {
 				autoLoad: false,
 				model: 'CMDBuild.model.administration.userAndGroup.group.StartingClass',
 				proxy: {
 					type: 'ajax',
-					url: CMDBuild.proxy.index.Json.entryType.readAll,
+					url: CMDBuild.proxy.index.Json.entity.readAll,
 					reader: {
 						type: 'json',
 						root: CMDBuild.core.constants.Proxy.CLASSES

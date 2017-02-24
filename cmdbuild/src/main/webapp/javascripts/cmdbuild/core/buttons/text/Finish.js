@@ -1,7 +1,7 @@
 (function () {
 
 	Ext.define('CMDBuild.core.buttons.text.Finish', {
-		extend: 'CMDBuild.core.buttons.Abstract',
+		extend: 'CMDBuild.core.abstract.Button',
 
 		textDefault: CMDBuild.Translation.finish
 	});

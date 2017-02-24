@@ -249,7 +249,7 @@
 			}
 		},
 
-		entryType: { // TODO: rename entity
+		entity: {
 			readAll: 'services/json/schema/modclass/getallclasses',
 
 			item: {

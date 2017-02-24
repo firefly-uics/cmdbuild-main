@@ -1,7 +1,7 @@
 (function () {
 
 	Ext.define('CMDBuild.core.buttons.icon.fileTypes.Xml', {
-		extend: 'CMDBuild.core.buttons.Abstract',
+		extend: 'CMDBuild.core.abstract.Button',
 
 		iconCls: 'xml',
 		textDefault: CMDBuild.Translation.xml

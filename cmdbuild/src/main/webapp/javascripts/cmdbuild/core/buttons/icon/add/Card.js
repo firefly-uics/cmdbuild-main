@@ -1,7 +1,7 @@
 (function () {
 
 	Ext.define('CMDBuild.core.buttons.icon.add.Card', {
-		extend: 'CMDBuild.core.buttons.Abstract',
+		extend: 'CMDBuild.core.abstract.Button',
 
 		iconCls: 'add',
 		textDefault: CMDBuild.Translation.addCard,

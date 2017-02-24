@@ -73,12 +73,12 @@
 		 * @returns {Ext.data.Store or CMDBuild.core.cache.Store}
 		 */
 		getStoreTargetEntryType: function () {
-			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.ENTRY_TYPE, {
+			return CMDBuild.global.Cache.requestAsStore(CMDBuild.core.constants.Proxy.ENTITY, {
 				autoLoad: true,
 				model: 'CMDBuild.model.common.tabs.email.attachments.TargetClass',
 				proxy: {
 					type: 'ajax',
-					url: CMDBuild.proxy.index.Json.entryType.readAll,
+					url: CMDBuild.proxy.index.Json.entity.readAll,
 					reader: {
 						type: 'json',
 						root: CMDBuild.core.constants.Proxy.CLASSES
@@ -124,9 +124,9 @@
 		readAllEntryTypes: function (parameters) {
 			parameters = Ext.isEmpty(parameters) ? {} : parameters;
 
-			Ext.apply(parameters, { url: CMDBuild.proxy.index.Json.entryType.readAll });
+			Ext.apply(parameters, { url: CMDBuild.proxy.index.Json.entity.readAll });
 
-			CMDBuild.global.Cache.request(CMDBuild.core.constants.Proxy.ENTRY_TYPE, parameters);
+			CMDBuild.global.Cache.request(CMDBuild.core.constants.Proxy.ENTITY, parameters);
 		},
 
 		/**

@@ -17,9 +17,9 @@
 		readEntity: function (parameters) {
 			parameters = Ext.isEmpty(parameters) ? {} : parameters;
 
-			Ext.apply(parameters, { url: CMDBuild.proxy.index.Json.entryType.readAll });
+			Ext.apply(parameters, { url: CMDBuild.proxy.index.Json.entity.readAll });
 
-			CMDBuild.global.Cache.request(CMDBuild.core.constants.Proxy.ENTRY_TYPE, parameters);
+			CMDBuild.global.Cache.request(CMDBuild.core.constants.Proxy.ENTITY, parameters);
 		},
 
 		/**
@@ -30,7 +30,7 @@
 		readItem: function (parameters) {
 			parameters = Ext.isEmpty(parameters) ? {} : parameters;
 
-			Ext.apply(parameters, { url: CMDBuild.proxy.index.Json.entryType.item.read });
+			Ext.apply(parameters, { url: CMDBuild.proxy.index.Json.entity.item.read });
 
 			CMDBuild.global.Cache.request(CMDBuild.core.constants.Proxy.ITEM, parameters);
 		}

@@ -3,7 +3,7 @@
 	/**
 	 * @abstract
 	 */
-	Ext.define('CMDBuild.core.buttons.Abstract', {
+	Ext.define('CMDBuild.core.abstract.Button', {
 		extend: 'Ext.button.Button',
 
 		/**
