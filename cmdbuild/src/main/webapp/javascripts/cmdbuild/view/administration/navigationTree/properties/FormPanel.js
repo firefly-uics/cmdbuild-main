@@ -120,7 +120,7 @@
 
 						store: CMDBuild.proxy.administration.navigationTree.NavigationTree.getStoreTargetClass(),
 						queryMode: 'local'
-					})
+					}),
 					Ext.create('Ext.form.field.Hidden', { name: CMDBuild.core.constants.Proxy.ID })
 				]
 			});
